@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Financial Transactions Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#ccd9bd",
+                        "surface-variant": "#232628",
+                        "on-primary-container": "#223600",
+                        "error": "#ff7351",
+                        "on-error-container": "#ffd2c8",
+                        "secondary-container": "#3f4a36",
+                        "surface-container-highest": "#232628",
+                        "secondary": "#dae7cb",
+                        "on-secondary-container": "#c8d5b9",
+                        "on-secondary": "#4a5540",
+                        "on-secondary-fixed-variant": "#535f49",
+                        "tertiary": "#fffae4",
+                        "on-surface": "#f6f6f7",
+                        "surface-dim": "#0c0e0f",
+                        "primary-dim": "#aaee3d",
+                        "inverse-on-surface": "#545556",
+                        "surface-tint": "#b8fd4b",
+                        "tertiary-fixed": "#fcef58",
+                        "error-container": "#b92902",
+                        "on-secondary-fixed": "#37432f",
+                        "surface-container-lowest": "#000000",
+                        "surface-bright": "#292d2e",
+                        "primary": "#b8fd4b",
+                        "on-tertiary-fixed": "#4b4600",
+                        "outline-variant": "#464849",
+                        "on-tertiary-fixed-variant": "#6a6200",
+                        "surface": "#0c0e0f",
+                        "primary-fixed": "#b8fd4b",
+                        "on-tertiary": "#686100",
+                        "on-primary-fixed": "#304a00",
+                        "inverse-primary": "#456900",
+                        "inverse-surface": "#f9f9fa",
+                        "secondary-dim": "#ccd9bd",
+                        "on-error": "#450900",
+                        "tertiary-fixed-dim": "#eee04b",
+                        "primary-fixed-dim": "#aaee3d",
+                        "primary-container": "#83c300",
+                        "secondary-fixed": "#dae7cb",
+                        "on-background": "#f6f6f7",
+                        "tertiary-container": "#fcef58",
+                        "background": "#0c0e0f",
+                        "tertiary-dim": "#eee04b",
+                        "on-tertiary-container": "#5f5800",
+                        "surface-container-high": "#1d2021",
+                        "on-surface-variant": "#aaabac",
+                        "surface-container-low": "#111415",
+                        "on-primary": "#3d5e00",
+                        "on-primary-fixed-variant": "#456900",
+                        "error-dim": "#d53d18",
+                        "surface-container": "#181a1b",
+                        "outline": "#747577"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface flex min-h-screen">
+<!-- SideNavBar Component -->
+<nav class="h-screen w-72 flex flex-col fixed left-0 top-0 bg-zinc-950 bg-zinc-900/40 backdrop-blur-xl shadow-[24px_0_48px_-12px_rgba(0,0,0,0.45)] z-50">
+<div class="flex flex-col h-full p-6 gap-2">
+<div class="mb-8 px-4 flex flex-col gap-1">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center overflow-hidden">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="Abstract geometric tech logo glowing green on dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBW7OTRNE1rbK-9-yWKAgdNblecgwmmoso6492mFMqFitJ19ykJUJiSLyD4V5m4mISmXe9TUH7wKydj2b2T29fUtys1i0c2vJCuYYTeD02GRC3-w6El-HAaqW0iQk2gca9nQYAwv1q3KjzWM38FUtgH9UDTG8zWlg3yBvt7ApUcvdCYAA78HMM8WNqqRciNR4YJtsD4tB1akfDvYTjzc2ABRx4ZvRW0Kjiibau4BZl_U_mLj-luGRQETHmTYcOi4r5xMD8YH-DFdrM"/>
+</div>
+<span class="text-xl font-bold tracking-tighter text-white">Luminescent</span>
+</div>
+<span class="text-on-surface-variant text-xs font-medium ml-11">Premium Analytics</span>
+</div>
+<button class="bg-primary text-zinc-950 rounded-sm font-medium px-4 py-3 mb-6 hover:bg-primary-dim transition-colors shadow-[0_0_15px_rgba(184,253,75,0.4)] flex justify-center items-center">
+                New Analysis
+            </button>
+<div class="flex-1 flex flex-col gap-1 overflow-y-auto font-['Inter'] text-sm font-medium tracking-tight">
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined font-light">dashboard</span>
+                    Overview
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined font-light">monitoring</span>
+                    Sales
+                </a>
+<a class="bg-[#b8fd4b] text-zinc-950 rounded-full font-bold shadow-[0_0_15px_rgba(184,253,75,0.4)] px-4 py-3 flex items-center gap-3 active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span>
+                    Transactions
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined font-light">pie_chart</span>
+                    Portfolio
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined font-light">groups</span>
+                    CRM
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined font-light">account_balance_wallet</span>
+                    Expenses
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined font-light">query_stats</span>
+                    SaaS Metrics
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined font-light">assignment</span>
+                    Projects
+                </a>
+</div>
+<div class="mt-auto flex flex-col gap-1 font-['Inter'] text-sm font-medium tracking-tight border-t border-white/5 pt-4">
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined font-light">settings</span>
+                    Settings
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined font-light">help</span>
+                    Support
+                </a>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 ml-72 flex flex-col min-h-screen bg-surface">
+<!-- TopAppBar Component -->
+<header class="sticky top-0 z-40 w-full bg-zinc-950/80 backdrop-blur-md bg-zinc-900/20">
+<div class="flex justify-between items-center h-20 px-8">
+<div class="flex items-center gap-8">
+<span class="text-lg font-black text-white">Financial Intelligence</span>
+<nav class="hidden lg:flex items-center gap-6 font-['Inter'] text-xs font-bold uppercase tracking-widest">
+<a class="text-zinc-400 hover:text-white transition-colors hover:bg-zinc-800/40 rounded-lg px-2 py-1" href="#">Reports</a>
+<a class="text-zinc-400 hover:text-white transition-colors hover:bg-zinc-800/40 rounded-lg px-2 py-1" href="#">Analytics</a>
+<a class="text-zinc-400 hover:text-white transition-colors hover:bg-zinc-800/40 rounded-lg px-2 py-1" href="#">Team</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center bg-surface-container-highest rounded-sm px-4 py-2 border border-outline-variant/15 focus-within:border-primary/40 focus-within:ring-1 focus-within:ring-[#b8fd4b]/30 transition-all">
+<span class="material-symbols-outlined text-on-surface-variant text-sm mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm text-on-surface placeholder:text-on-surface-variant w-48 font-['Inter']" placeholder="Search transactions..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-zinc-400 hover:text-white hover:bg-zinc-800/40 rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-zinc-400 hover:text-white hover:bg-zinc-800/40 rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined">calendar_month</span>
+</button>
+<button class="text-zinc-400 hover:text-white hover:bg-zinc-800/40 rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+<button class="bg-primary text-zinc-950 font-bold text-xs uppercase tracking-wider px-4 py-2 rounded-sm hover:bg-primary-dim transition-colors shadow-[0_0_15px_rgba(184,253,75,0.2)]">
+                        Generate Report
+                    </button>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-white/10 ml-2">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="Close up portrait of professional young man in studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBe-dNNNLxksnkbsoyl8_BlWdwQgxNa_YpGxSkjrMzagUNAN10by2tb3kt5pH_mEIS_bMSYN5MhrHkxh7ggo6LUAwWF96DTIFhCVCm2m66rgqc75Rw9mMZyFIC7YslUt5dsSWyJJM-REv0uNh6yzfoGvzeuEcZ13KEDA7KWaXUXoehvkEYegjGBp6Bxl7lNMs-8NMx-meOinvVzF0jE68kFxoaamWwe-wrqg1rI44_eYBP2OcB2G_cTma7TbROJp49rl_aI0qC_l0I"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="p-8 flex flex-col gap-8 max-w-7xl mx-auto w-full">
+<!-- Page Header -->
+<div class="flex flex-col gap-2">
+<h1 class="text-[2rem] font-bold text-on-surface tracking-tight leading-none">Transactions</h1>
+<p class="text-on-surface-variant text-sm font-medium">Review and manage your recent financial activity.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Main Balance Card (Hero) -->
+<div class="col-span-1 lg:col-span-8 bg-surface-variant/80 backdrop-blur-xl rounded-xl p-8 relative overflow-hidden flex flex-col justify-between min-h-[280px]">
+<!-- Subtle Gradient Overlay -->
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none"></div>
+<div class="relative z-10 flex justify-between items-start">
+<div class="flex flex-col">
+<span class="text-label-sm font-bold uppercase tracking-widest text-on-surface-variant mb-2">Total Balance</span>
+<div class="flex items-baseline gap-3">
+<h2 class="text-[3.5rem] font-bold text-on-surface leading-none tracking-tighter">$1,248,392<span class="text-2xl text-on-surface-variant">.45</span></h2>
+</div>
+<div class="flex items-center gap-2 mt-4 bg-primary/10 px-3 py-1.5 rounded-full w-fit">
+<span class="material-symbols-outlined text-primary text-sm">trending_up</span>
+<span class="text-primary text-xs font-bold tracking-wide">+12.4% vs last month</span>
+</div>
+</div>
+<button class="bg-transparent border border-outline-variant/20 text-on-surface hover:bg-white/5 rounded-sm px-4 py-2 text-sm font-medium transition-colors backdrop-blur-md">
+                            Download Statement
+                        </button>
+</div>
+<!-- Placeholder for Chart -->
+<div class="relative z-10 mt-8 h-24 flex items-end gap-1 opacity-60">
+<div class="w-full h-[30%] bg-secondary-dim/30 rounded-t-sm"></div>
+<div class="w-full h-[40%] bg-secondary-dim/30 rounded-t-sm"></div>
+<div class="w-full h-[25%] bg-secondary-dim/30 rounded-t-sm"></div>
+<div class="w-full h-[60%] bg-secondary-dim/30 rounded-t-sm"></div>
+<div class="w-full h-[45%] bg-secondary-dim/30 rounded-t-sm"></div>
+<div class="w-full h-[80%] bg-secondary-dim/30 rounded-t-sm"></div>
+<div class="w-full h-[65%] bg-secondary-dim/30 rounded-t-sm"></div>
+<div class="w-full h-[90%] bg-primary/40 rounded-t-sm"></div>
+<div class="w-full h-[100%] bg-primary/80 rounded-t-sm relative">
+<div class="absolute -top-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_#b8fd4b]"></div>
+</div>
+</div>
+</div>
+<!-- Quick Stats Side Column -->
+<div class="col-span-1 lg:col-span-4 flex flex-col gap-6">
+<!-- Income Summary -->
+<div class="bg-surface-container rounded-xl p-6 flex flex-col gap-4 flex-1">
+<div class="flex justify-between items-center">
+<span class="text-label-sm font-bold uppercase tracking-widest text-on-surface-variant">Income</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary-dim text-sm">arrow_downward</span>
+</div>
+</div>
+<div>
+<h3 class="text-[1.5rem] font-semibold text-on-surface tracking-tight">$84,290.00</h3>
+<span class="text-xs text-on-surface-variant mt-1 block">Inflows this period</span>
+</div>
+</div>
+<!-- Expense Summary -->
+<div class="bg-surface-container rounded-xl p-6 flex flex-col gap-4 flex-1">
+<div class="flex justify-between items-center">
+<span class="text-label-sm font-bold uppercase tracking-widest text-on-surface-variant">Expenses</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-error text-sm">arrow_upward</span>
+</div>
+</div>
+<div>
+<h3 class="text-[1.5rem] font-semibold text-on-surface tracking-tight">$32,450.00</h3>
+<span class="text-xs text-on-surface-variant mt-1 block">Outflows this period</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Two Column Layout for Tables & Cards -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2">
+<!-- Transactions Table -->
+<div class="col-span-1 lg:col-span-2 bg-surface-container rounded-xl overflow-hidden flex flex-col">
+<div class="p-6 border-b border-white/5 flex justify-between items-center bg-surface-container-low/50">
+<h3 class="text-headline-sm text-on-surface font-semibold">Recent Transactions</h3>
+<button class="text-sm text-primary hover:text-primary-dim transition-colors font-medium">View All</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="text-label-sm font-bold text-on-surface-variant uppercase tracking-widest bg-surface-container-highest/30">
+<th class="p-4 font-bold">Transaction</th>
+<th class="p-4 font-bold">Date</th>
+<th class="p-4 font-bold">Account</th>
+<th class="p-4 font-bold text-right">Amount</th>
+<th class="p-4 font-bold text-center">Status</th>
+</tr>
+</thead>
+<tbody class="text-body-md text-on-surface">
+<tr class="hover:bg-surface-container-highest/20 transition-colors border-b border-white/5">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary-dim">code</span>
+</div>
+<div>
+<p class="font-medium text-on-surface">Stripe Processing</p>
+<p class="text-xs text-on-surface-variant mt-0.5">SaaS Revenue</p>
+</div>
+</div>
+</td>
+<td class="p-4 text-on-surface-variant">Oct 24, 2023</td>
+<td class="p-4 text-on-surface-variant">•••• 4209</td>
+<td class="p-4 text-right font-medium text-primary">+$12,450.00</td>
+<td class="p-4 text-center">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary">Completed</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-highest/20 transition-colors border-b border-white/5">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary-dim">cloud</span>
+</div>
+<div>
+<p class="font-medium text-on-surface">AWS Cloud Services</p>
+<p class="text-xs text-on-surface-variant mt-0.5">Infrastructure</p>
+</div>
+</div>
+</td>
+<td class="p-4 text-on-surface-variant">Oct 23, 2023</td>
+<td class="p-4 text-on-surface-variant">•••• 1184</td>
+<td class="p-4 text-right font-medium text-on-surface">-$3,240.50</td>
+<td class="p-4 text-center">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary">Completed</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-highest/20 transition-colors border-b border-white/5">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary-dim">design_services</span>
+</div>
+<div>
+<p class="font-medium text-on-surface">Figma Enterprise</p>
+<p class="text-xs text-on-surface-variant mt-0.5">Software</p>
+</div>
+</div>
+</td>
+<td class="p-4 text-on-surface-variant">Oct 21, 2023</td>
+<td class="p-4 text-on-surface-variant">•••• 1184</td>
+<td class="p-4 text-right font-medium text-on-surface">-$850.00</td>
+<td class="p-4 text-center">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-surface-variant text-on-surface-variant">Pending</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-highest/20 transition-colors border-b border-white/5">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary-dim">work</span>
+</div>
+<div>
+<p class="font-medium text-on-surface">Upwork Escrow</p>
+<p class="text-xs text-on-surface-variant mt-0.5">Contractors</p>
+</div>
+</div>
+</td>
+<td class="p-4 text-on-surface-variant">Oct 20, 2023</td>
+<td class="p-4 text-on-surface-variant">•••• 4209</td>
+<td class="p-4 text-right font-medium text-on-surface">-$4,500.00</td>
+<td class="p-4 text-center">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary">Completed</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-highest/20 transition-colors">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary-dim">storefront</span>
+</div>
+<div>
+<p class="font-medium text-on-surface">Shopify Payout</p>
+<p class="text-xs text-on-surface-variant mt-0.5">E-commerce</p>
+</div>
+</div>
+</td>
+<td class="p-4 text-on-surface-variant">Oct 19, 2023</td>
+<td class="p-4 text-on-surface-variant">•••• 4209</td>
+<td class="p-4 text-right font-medium text-primary">+$8,920.00</td>
+<td class="p-4 text-center">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary">Completed</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Right Sidebar Cards -->
+<div class="col-span-1 flex flex-col gap-6">
+<!-- Credit Card Management -->
+<div class="bg-surface-container rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute -right-10 -top-10 w-40 h-40 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors duration-500"></div>
+<div class="flex justify-between items-center mb-6 relative z-10">
+<h3 class="text-headline-sm text-on-surface font-semibold">Active Cards</h3>
+<button class="w-8 h-8 rounded-full bg-surface-container-highest hover:bg-surface-bright transition-colors flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<!-- Card Visual -->
+<div class="bg-gradient-to-tr from-surface-variant to-surface-bright rounded-xl p-5 mb-4 relative overflow-hidden border border-white/5 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)]">
+<div class="absolute top-0 right-0 p-4 opacity-20">
+<span class="material-symbols-outlined text-4xl text-white">contactless</span>
+</div>
+<div class="flex justify-between items-start mb-8">
+<span class="text-sm font-medium text-white tracking-widest uppercase">Corporate</span>
+<span class="text-xs text-white/60 font-mono tracking-widest">VISA</span>
+</div>
+<div class="font-mono text-lg text-white tracking-[0.2em] mb-4">
+                                •••• •••• •••• 4209
+                            </div>
+<div class="flex justify-between items-end">
+<div>
+<span class="text-[10px] text-white/60 uppercase tracking-widest block mb-1">Cardholder</span>
+<span class="text-sm text-white font-medium">Alex Luminescent</span>
+</div>
+<div>
+<span class="text-[10px] text-white/60 uppercase tracking-widest block mb-1">Expires</span>
+<span class="text-sm text-white font-medium font-mono">12/26</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-3 relative z-10">
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Current Limit</span>
+<span class="text-on-surface font-medium">$50,000</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[45%] rounded-full shadow-[0_0_10px_#b8fd4b]"></div>
+</div>
+<div class="flex justify-between items-center text-xs mt-1">
+<span class="text-on-surface-variant">Spent: $22,450</span>
+<span class="text-on-surface-variant">Available: $27,550</span>
+</div>
+</div>
+</div>
+<!-- Transfer Action Card -->
+<div class="bg-surface-container rounded-xl p-6">
+<h3 class="text-headline-sm text-on-surface font-semibold mb-6">Quick Transfer</h3>
+<div class="flex flex-col gap-4">
+<div class="bg-surface-container-highest rounded-sm p-3 border border-outline-variant/15 flex items-center justify-between group focus-within:border-primary/40 focus-within:ring-1 focus-within:ring-primary/30 transition-all">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-dim flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">account_balance</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest">From Account</span>
+<span class="text-sm text-on-surface font-medium">Main Ops (•••• 4209)</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm group-hover:text-on-surface cursor-pointer">expand_more</span>
+</div>
+<div class="flex justify-center -my-2 relative z-10">
+<div class="w-8 h-8 rounded-full bg-surface border-4 border-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">swap_vert</span>
+</div>
+</div>
+<div class="bg-surface-container-highest rounded-sm p-3 border border-outline-variant/15 flex items-center justify-between group focus-within:border-primary/40 focus-within:ring-1 focus-within:ring-primary/30 transition-all">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-dim flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">savings</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest">To Account</span>
+<span class="text-sm text-on-surface font-medium">Reserve (•••• 1184)</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-sm group-hover:text-on-surface cursor-pointer">expand_more</span>
+</div>
+<div class="relative mt-2">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant font-medium">$</span>
+<input class="w-full bg-surface-container-highest border border-outline-variant/15 rounded-sm py-3 pl-8 pr-4 text-on-surface font-medium focus:border-primary/40 focus:ring-1 focus:ring-primary/30 transition-all text-lg placeholder:text-on-surface-variant/50" placeholder="0.00" type="text"/>
+</div>
+<button class="w-full bg-surface-variant border border-outline-variant/20 hover:bg-surface-bright text-on-surface font-bold text-xs uppercase tracking-widest py-4 rounded-sm transition-colors mt-2">
+                                Initiate Transfer
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

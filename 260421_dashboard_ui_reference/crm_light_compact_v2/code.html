@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Precision Ledger</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#5e376b",
+                        "secondary-fixed-dim": "#aed278",
+                        "on-primary-container": "#416400",
+                        "tertiary-fixed-dim": "#e7b6f3",
+                        "tertiary-container": "#f3c1ff",
+                        "on-background": "#191c1d",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-variant": "#e1e3e4",
+                        "surface-container-low": "#f3f4f5",
+                        "inverse-surface": "#2e3132",
+                        "on-error-container": "#93000a",
+                        "primary": "#446900",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#2f093d",
+                        "inverse-on-surface": "#f0f1f2",
+                        "primary-container": "#a3e635",
+                        "secondary": "#496719",
+                        "surface": "#f8f9fa",
+                        "on-secondary-container": "#4d6c1d",
+                        "primary-fixed": "#b2f746",
+                        "on-secondary-fixed-variant": "#334f00",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#d9dadb",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "outline": "#727a64",
+                        "secondary-container": "#c7ec8e",
+                        "tertiary": "#784f85",
+                        "on-secondary-fixed": "#121f00",
+                        "surface-container-high": "#e7e8e9",
+                        "on-primary-fixed": "#121f00",
+                        "background": "#f8f9fa",
+                        "on-surface-variant": "#424936",
+                        "on-tertiary-container": "#734b80",
+                        "surface-tint": "#446900",
+                        "secondary-fixed": "#caef91",
+                        "surface-container": "#edeeef",
+                        "on-primary-fixed-variant": "#334f00",
+                        "inverse-primary": "#98da27",
+                        "outline-variant": "#c2cab0",
+                        "on-surface": "#191c1d",
+                        "primary-fixed-dim": "#98da27",
+                        "tertiary-fixed": "#fad7ff",
+                        "surface-bright": "#f8f9fa"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {},
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8F9FA; color: #191c1d; }
+        .ghost-border { border: 1px solid rgba(194, 202, 176, 0.2); }
+        .glass-overlay { background-color: rgba(225, 227, 228, 0.7); backdrop-filter: blur(12px); }
+        .ambient-shadow { box-shadow: 0 4px 16px rgba(68, 105, 0, 0.08); }
+        .cta-gradient { background: linear-gradient(45deg, #446900, #a3e635); }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden bg-surface">
+<!-- SideNavBar -->
+<nav class="bg-slate-50 dark:bg-slate-950 text-lime-500 dark:text-lime-400 font-['Inter'] text-[11px] font-medium tracking-wide docked left-0 h-screen w-16 md:w-20 border-r border-slate-200/15 dark:border-slate-800/15 flat no shadows transition-all duration-200 ease-in-out flex flex-col items-center py-4 gap-y-6 z-50">
+<div class="flex flex-col items-center gap-1 mb-4">
+<img alt="System Operator" class="w-8 h-8 rounded-full ghost-border" data-alt="Close up of a professional male face with neutral expression, studio lighting, highly detailed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBknALSRMplQk8P6mdW11KecNnu-d1LAn5SdapVUzcZ1qFMa_w1PqBKSgXdfileuZGQ2vYeCkXPPh-K404gRbmiK2nqdXufHAKOPAI4H8NRdGeo45o4E2qwIGqRy3tomZ_Ql_-Sru2jMyOp1gjo-QMsvaovg50tiKlt3mg4swe26g-KNMYGClfjIgW4JZp-5__kQcKoWF0pM19LTP4nKcaxPRPIkDDRDSZ969aaQAvybHE-uIFUC07Lx0A1xguYWMAxqwQrxn0c-3E"/>
+<div class="text-[9px] font-bold uppercase text-slate-400 mt-2 text-center">OP_01<br/><span class="font-normal opacity-70">Verified</span></div>
+</div>
+<a class="flex flex-col items-center gap-1 w-full py-2 text-lime-500 dark:text-lime-400 border-r-2 border-lime-500 bg-lime-500/5 group relative" href="#">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+<span class="text-[10px] mt-1 opacity-100 group-hover:opacity-100 transition-opacity">Overview</span>
+</a>
+<a class="flex flex-col items-center gap-1 w-full py-2 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-900 group relative transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">monitoring</span>
+<span class="text-[10px] mt-1 opacity-70 group-hover:opacity-100 transition-opacity">Analytics</span>
+</a>
+<a class="flex flex-col items-center gap-1 w-full py-2 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-900 group relative transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">receipt_long</span>
+<span class="text-[10px] mt-1 opacity-70 group-hover:opacity-100 transition-opacity">Ledger</span>
+</a>
+<a class="flex flex-col items-center gap-1 w-full py-2 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-900 group relative transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+<span class="text-[10px] mt-1 opacity-70 group-hover:opacity-100 transition-opacity">Assets</span>
+</a>
+<a class="flex flex-col items-center gap-1 w-full py-2 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-900 group relative transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">hub</span>
+<span class="text-[10px] mt-1 opacity-70 group-hover:opacity-100 transition-opacity">Nodes</span>
+</a>
+<div class="flex-grow"></div>
+<a class="flex flex-col items-center gap-1 w-full py-2 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-900 group relative transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="text-[10px] mt-1 opacity-70 group-hover:opacity-100 transition-opacity">System</span>
+</a>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col h-screen overflow-hidden">
+<!-- TopAppBar -->
+<header class="bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-md text-lime-400 dark:text-lime-300 font-['Inter'] text-[12px] tracking-tight docked full-width top-0 h-10 border-b border-slate-200/20 dark:border-slate-800/20 flat no shadows flex justify-between items-center w-full px-3 z-40 shrink-0">
+<div class="flex items-center gap-4">
+<span class="text-sm font-black tracking-tighter text-slate-900 dark:text-slate-100">PRECISION_LEDGER</span>
+<div class="relative hidden sm:block h-[24px]">
+<span class="material-symbols-outlined absolute left-2 top-1/2 transform -translate-y-1/2 text-[14px] text-slate-400">search</span>
+<input class="h-full w-48 pl-7 pr-3 bg-surface-container-lowest ghost-border text-[11px] rounded text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-container/10 transition-all placeholder:text-slate-400" placeholder="Search entity..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors p-1 rounded-sm text-slate-500 dark:text-slate-400 flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">notifications</span>
+</button>
+<button class="hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors p-1 rounded-sm text-slate-500 dark:text-slate-400 flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+</button>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-4 lg:p-6 bg-surface">
+<div class="max-w-7xl mx-auto space-y-4">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-6">
+<div>
+<h1 class="text-[1.5rem] font-bold tracking-tight text-on-surface leading-none">Global Overview</h1>
+<p class="text-[11px] text-on-surface-variant mt-1 font-medium tracking-wide uppercase opacity-70">Q3 Enterprise Pipeline Dashboard</p>
+</div>
+<div class="flex gap-2">
+<button class="h-[28px] px-3 bg-surface-container-lowest ghost-border text-on-surface text-[11px] font-medium rounded flex items-center gap-1 hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[14px]">download</span> Export
+                        </button>
+<button class="h-[28px] px-3 cta-gradient text-on-primary text-[11px] font-medium rounded flex items-center gap-1 hover:opacity-90 transition-opacity ambient-shadow">
+<span class="material-symbols-outlined text-[14px]">add</span> New Entity
+                        </button>
+</div>
+</div>
+<!-- Metrics Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- KPI 1 -->
+<div class="bg-surface-container-lowest p-4 rounded-lg ghost-border relative overflow-hidden group">
+<div class="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-primary/5 to-transparent pointer-events-none"></div>
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Total Pipeline</span>
+<span class="material-symbols-outlined text-[16px] text-primary">trending_up</span>
+</div>
+<div class="text-[2rem] font-bold text-on-surface tracking-tighter leading-none mb-1">$42.8M</div>
+<div class="flex items-center gap-1 text-[11px]">
+<span class="text-primary font-medium flex items-center"><span class="material-symbols-outlined text-[12px]">arrow_upward</span> 12.4%</span>
+<span class="text-on-surface-variant opacity-60">vs last quarter</span>
+</div>
+</div>
+<!-- KPI 2 -->
+<div class="bg-surface-container-lowest p-4 rounded-lg ghost-border relative overflow-hidden">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Active Deals</span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">assignment</span>
+</div>
+<div class="text-[2rem] font-bold text-on-surface tracking-tighter leading-none mb-1">143</div>
+<div class="flex items-center gap-1 text-[11px]">
+<span class="text-error font-medium flex items-center"><span class="material-symbols-outlined text-[12px]">arrow_downward</span> 2.1%</span>
+<span class="text-on-surface-variant opacity-60">vs last quarter</span>
+</div>
+</div>
+<!-- KPI 3 -->
+<div class="bg-surface-container-lowest p-4 rounded-lg ghost-border relative overflow-hidden">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Avg Deal Size</span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">account_balance</span>
+</div>
+<div class="text-[2rem] font-bold text-on-surface tracking-tighter leading-none mb-1">$299k</div>
+<div class="flex items-center gap-1 text-[11px]">
+<span class="text-primary font-medium flex items-center"><span class="material-symbols-outlined text-[12px]">arrow_upward</span> 5.8%</span>
+<span class="text-on-surface-variant opacity-60">vs last quarter</span>
+</div>
+</div>
+</div>
+<!-- Lower Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+<!-- Priority Engagement -->
+<div class="lg:col-span-2 bg-surface-container-lowest rounded-lg ghost-border flex flex-col h-full">
+<div class="p-3 border-b border-outline-variant/20 flex justify-between items-center bg-surface-container-low/50">
+<h2 class="text-[12px] font-semibold text-on-surface">Priority Engagement</h2>
+<button class="text-[10px] font-medium text-primary hover:text-primary-container transition-colors">View All</button>
+</div>
+<div class="p-2 flex-1 overflow-y-auto max-h-[300px]">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="text-[10px] font-bold uppercase tracking-wide text-on-surface-variant opacity-70 border-b border-outline-variant/20">
+<th class="pb-2 px-2 font-normal">Entity</th>
+<th class="pb-2 px-2 font-normal">Value</th>
+<th class="pb-2 px-2 font-normal">Stage</th>
+<th class="pb-2 px-2 font-normal text-right">Probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="group hover:bg-surface-container-low transition-colors cursor-pointer border-b border-outline-variant/10 last:border-0">
+<td class="py-2 px-2">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded bg-primary-container/20 text-primary flex items-center justify-center text-[10px] font-bold">AX</div>
+<div>
+<div class="text-[12px] font-medium text-on-surface">Apex Global</div>
+<div class="text-[10px] text-on-surface-variant">Financial Svcs</div>
+</div>
+</div>
+</td>
+<td class="py-2 px-2 text-[12px] font-medium text-on-surface">$1.2M</td>
+<td class="py-2 px-2">
+<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-tertiary-container/30 text-tertiary">Negotiation</span>
+</td>
+<td class="py-2 px-2 text-right">
+<div class="flex items-center justify-end gap-2">
+<div class="text-[11px] font-medium text-on-surface">85%</div>
+<div class="w-12 h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[85%] rounded-full"></div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="group hover:bg-surface-container-low transition-colors cursor-pointer border-b border-outline-variant/10 last:border-0">
+<td class="py-2 px-2">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] font-bold">N</div>
+<div>
+<div class="text-[12px] font-medium text-on-surface">NexoTech</div>
+<div class="text-[10px] text-on-surface-variant">Software</div>
+</div>
+</div>
+</td>
+<td class="py-2 px-2 text-[12px] font-medium text-on-surface">$850k</td>
+<td class="py-2 px-2">
+<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-secondary-container/30 text-secondary">Proposal</span>
+</td>
+<td class="py-2 px-2 text-right">
+<div class="flex items-center justify-end gap-2">
+<div class="text-[11px] font-medium text-on-surface">60%</div>
+<div class="w-12 h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[60%] rounded-full"></div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="group hover:bg-surface-container-low transition-colors cursor-pointer border-b border-outline-variant/10 last:border-0">
+<td class="py-2 px-2">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] font-bold">S</div>
+<div>
+<div class="text-[12px] font-medium text-on-surface">Stellar Ind</div>
+<div class="text-[10px] text-on-surface-variant">Manufacturing</div>
+</div>
+</div>
+</td>
+<td class="py-2 px-2 text-[12px] font-medium text-on-surface">$2.4M</td>
+<td class="py-2 px-2">
+<span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-surface-container-high text-on-surface-variant">Discovery</span>
+</td>
+<td class="py-2 px-2 text-right">
+<div class="flex items-center justify-end gap-2">
+<div class="text-[11px] font-medium text-on-surface">25%</div>
+<div class="w-12 h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-outline w-[25%] rounded-full"></div>
+</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Action Items -->
+<div class="bg-surface-container-lowest rounded-lg ghost-border flex flex-col h-full">
+<div class="p-3 border-b border-outline-variant/20 flex justify-between items-center bg-surface-container-low/50">
+<h2 class="text-[12px] font-semibold text-on-surface">Action Items</h2>
+<span class="w-4 h-4 rounded-full bg-error text-on-error text-[9px] font-bold flex items-center justify-center">3</span>
+</div>
+<div class="p-2 flex-1 overflow-y-auto max-h-[300px]">
+<ul class="space-y-1">
+<li class="p-2 hover:bg-surface-container-low rounded transition-colors group flex gap-2 items-start cursor-pointer">
+<div class="w-4 h-4 mt-0.5 rounded border border-outline-variant flex items-center justify-center group-hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-[10px] opacity-0 group-hover:opacity-50 text-primary">check</span>
+</div>
+<div class="flex-1">
+<div class="text-[11px] font-medium text-on-surface leading-tight">Send revised MSA to Apex Global</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-[9px] text-error font-medium flex items-center gap-0.5"><span class="material-symbols-outlined text-[10px]">schedule</span> Today, 2:00 PM</span>
+</div>
+</div>
+</li>
+<li class="p-2 hover:bg-surface-container-low rounded transition-colors group flex gap-2 items-start cursor-pointer">
+<div class="w-4 h-4 mt-0.5 rounded border border-outline-variant flex items-center justify-center group-hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-[10px] opacity-0 group-hover:opacity-50 text-primary">check</span>
+</div>
+<div class="flex-1">
+<div class="text-[11px] font-medium text-on-surface leading-tight">Prepare Q4 forecasting model</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-[9px] text-on-surface-variant font-medium flex items-center gap-0.5"><span class="material-symbols-outlined text-[10px]">schedule</span> Tomorrow</span>
+</div>
+</div>
+</li>
+<li class="p-2 hover:bg-surface-container-low rounded transition-colors group flex gap-2 items-start cursor-pointer">
+<div class="w-4 h-4 mt-0.5 rounded border border-outline-variant flex items-center justify-center group-hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-[10px] opacity-0 group-hover:opacity-50 text-primary">check</span>
+</div>
+<div class="flex-1">
+<div class="text-[11px] font-medium text-on-surface leading-tight">Review Stellar Ind technical reqs</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-[9px] text-on-surface-variant font-medium flex items-center gap-0.5"><span class="material-symbols-outlined text-[10px]">schedule</span> Oct 12</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="text-[9px] text-secondary font-medium">David K.</span>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

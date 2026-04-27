@@ -1,0 +1,1179 @@
+{
+  "analytics": {
+    "coreTenants": [
+      {
+        "tenantMasterName": "(주)한익스프레스",
+        "monthlyRentTotal": 155328845,
+        "earliestExpiry": "2026-12-31",
+        "areaShare": 1,
+        "costShare": 1,
+        "leasedAreaSqm": 18706.18,
+        "averageENoc": 27449.95,
+        "monthlyCostTotal": 155328845,
+        "latestExpiry": "2026-12-31",
+        "leaseSpaceCount": 1,
+        "businessRegistrationNo": "130-81-16025",
+        "tenantId": "tenant_brn_1308116025",
+        "assetCount": 1
+      }
+    ],
+    "goodsTypeMix": [
+      {
+        "value": 18706.170000000002,
+        "recordCount": 3,
+        "label": "공산품"
+      }
+    ],
+    "expirySnapshot": {
+      "byBucket": [
+        {
+          "count": 0,
+          "label": "0-3 months"
+        },
+        {
+          "count": 0,
+          "label": "4-6 months"
+        },
+        {
+          "count": 3,
+          "label": "7-12 months"
+        },
+        {
+          "count": 0,
+          "label": "12+ months"
+        }
+      ],
+      "entries": [
+        {
+          "tenantMasterName": "(주)한익스프레스",
+          "earliestExpiry": "2026-12-31",
+          "leasedAreaSqm": 6235.39,
+          "monthsToExpiry": 8,
+          "monthlyCostTotal": 51776281.67,
+          "spaceLabel": "1",
+          "latestExpiry": "2026-12-31",
+          "monthlyCombinedTotal": 51776281.67,
+          "floorLabel": "1",
+          "tenantId": "tenant_brn_1308116025",
+          "currentEndDate": "2026-12-31",
+          "leaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+          "detailAreaLabel": ""
+        },
+        {
+          "tenantMasterName": "(주)한익스프레스",
+          "earliestExpiry": "2026-12-31",
+          "leasedAreaSqm": 6235.39,
+          "monthsToExpiry": 8,
+          "monthlyCostTotal": 51776281.67,
+          "spaceLabel": "2",
+          "latestExpiry": "2026-12-31",
+          "monthlyCombinedTotal": 51776281.67,
+          "floorLabel": "2",
+          "tenantId": "tenant_brn_1308116025",
+          "currentEndDate": "2026-12-31",
+          "leaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+          "detailAreaLabel": ""
+        },
+        {
+          "tenantMasterName": "(주)한익스프레스",
+          "earliestExpiry": "2026-12-31",
+          "leasedAreaSqm": 6235.39,
+          "monthsToExpiry": 8,
+          "monthlyCostTotal": 51776281.67,
+          "spaceLabel": "3",
+          "latestExpiry": "2026-12-31",
+          "monthlyCombinedTotal": 51776281.67,
+          "floorLabel": "3",
+          "tenantId": "tenant_brn_1308116025",
+          "currentEndDate": "2026-12-31",
+          "leaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+          "detailAreaLabel": ""
+        }
+      ]
+    },
+    "rentVsMf": [
+      {
+        "monthlyTotal": 51776281.67,
+        "leaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+        "tenantMasterName": "(주)한익스프레스",
+        "monthlyRentTotal": 51776281.67,
+        "rentPerPy": 27450,
+        "leasedAreaPy": 1886.21
+      },
+      {
+        "monthlyTotal": 51776281.67,
+        "leaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+        "monthlyRentTotal": 51776281.67,
+        "tenantMasterName": "(주)한익스프레스",
+        "rentPerPy": 27450,
+        "leasedAreaPy": 1886.21
+      },
+      {
+        "monthlyTotal": 51776281.67,
+        "leaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+        "tenantMasterName": "(주)한익스프레스",
+        "monthlyRentTotal": 51776281.67,
+        "rentPerPy": 27450,
+        "leasedAreaPy": 1886.21
+      }
+    ],
+    "uniqueTenants": [
+      {
+        "tenantMasterName": "(주)한익스프레스",
+        "earliestExpiry": "2026-12-31",
+        "latestExpiry": "2026-12-31",
+        "monthlyRentTotal": 155328845,
+        "leaseSpaceCount": 1,
+        "businessRegistrationNo": "130-81-16025",
+        "tenantId": "tenant_brn_1308116025",
+        "leasedAreaSqm": 18706.18,
+        "assetCount": 1,
+        "averageENoc": 27449.95,
+        "monthlyCostTotal": 155328845
+      }
+    ],
+    "eNocAudit": {
+      "summary": {
+        "rowCount": 3,
+        "missingInputCount": 3,
+        "nonZeroVarianceCount": 0,
+        "computedRowCount": 0
+      },
+      "rows": [
+        {
+          "tenantMasterName": "(주)한익스프레스",
+          "exclusiveRatio": 1,
+          "currentMoneyAsOf": "2026-01-01",
+          "leasedAreaSqm": 6235.39,
+          "rentPerPy": 27450,
+          "currentPeriodYears": 1,
+          "rfMonths": 0.5,
+          "currentMoneyBasis": "latest_linked_history",
+          "tenantId": "tenant_brn_1308116025",
+          "leaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+          "calculationStatus": "review_required",
+          "exclusiveAreaSqm": 6235.39
+        },
+        {
+          "tenantMasterName": "(주)한익스프레스",
+          "exclusiveRatio": 1,
+          "currentMoneyAsOf": "2026-01-01",
+          "leasedAreaSqm": 6235.39,
+          "currentPeriodYears": 1,
+          "rentPerPy": 27450,
+          "rfMonths": 0.5,
+          "currentMoneyBasis": "latest_linked_history",
+          "tenantId": "tenant_brn_1308116025",
+          "calculationStatus": "review_required",
+          "leaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+          "exclusiveAreaSqm": 6235.39
+        },
+        {
+          "tenantMasterName": "(주)한익스프레스",
+          "exclusiveRatio": 1,
+          "currentMoneyAsOf": "2026-01-01",
+          "leasedAreaSqm": 6235.39,
+          "currentPeriodYears": 1,
+          "rentPerPy": 27450,
+          "rfMonths": 0.5,
+          "currentMoneyBasis": "latest_linked_history",
+          "tenantId": "tenant_brn_1308116025",
+          "calculationStatus": "review_required",
+          "leaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+          "exclusiveAreaSqm": 6235.39
+        }
+      ],
+      "formula": "((rentPerPy * ((periodYears*12 - rfMonths - foMonths)/(periodYears*12)) + mfPerPy) / exclusiveRatio) - (tiAmount / (exclusiveAreaSqm*0.3025) / (periodYears*12))"
+    },
+    "contractExpiry": [
+      {
+        "spaceLabel": "1",
+        "tenantMasterName": "(주)한익스프레스",
+        "floorLabel": "1",
+        "currentEndDate": "2026-12-31",
+        "leaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+        "monthsToExpiry": 8,
+        "detailAreaLabel": ""
+      },
+      {
+        "spaceLabel": "2",
+        "tenantMasterName": "(주)한익스프레스",
+        "floorLabel": "2",
+        "currentEndDate": "2026-12-31",
+        "leaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+        "monthsToExpiry": 8,
+        "detailAreaLabel": ""
+      },
+      {
+        "spaceLabel": "3",
+        "tenantMasterName": "(주)한익스프레스",
+        "floorLabel": "3",
+        "currentEndDate": "2026-12-31",
+        "leaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+        "monthsToExpiry": 8,
+        "detailAreaLabel": ""
+      }
+    ],
+    "monthlyCostByTenant": [
+      {
+        "tenantId": "tenant_brn_1308116025",
+        "tenantMasterName": "(주)한익스프레스",
+        "monthlyRentTotal": 155328845,
+        "leasedAreaSqm": 18706.18,
+        "leaseSpaceCount": 1,
+        "monthlyCostTotal": 155328845
+      }
+    ]
+  },
+  "overview": {
+    "monthlyRentTotal": 155328845,
+    "approvalDate": "2016-06-03",
+    "grossFloorAreaEffectiveAt": "2021-03-05",
+    "latitude": 37.2101065,
+    "grossFloorAreaTimelineBasis": {
+      "effectiveAt": "2021-03-05",
+      "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+      "rule": "later_of_first_configured_at_and_approval_date",
+      "approvalDate": "2016-06-03",
+      "firstConfiguredAt": "2021-03-05",
+      "effectiveMonth": "2021-03"
+    },
+    "issueCount": 1,
+    "vacancyRate": 0,
+    "floors": [
+      {
+        "tenants": [
+          {
+            "tenantId": "tenant_brn_1308116025",
+            "tenantMasterName": "(주)한익스프레스",
+            "share": 1,
+            "leasedAreaSqm": 6235.39,
+            "detailAreaLabel": ""
+          }
+        ],
+        "floorLabel": "3",
+        "totalFloorAreaSqm": 6235.39
+      },
+      {
+        "tenants": [
+          {
+            "tenantId": "tenant_brn_1308116025",
+            "tenantMasterName": "(주)한익스프레스",
+            "share": 1,
+            "leasedAreaSqm": 6235.39,
+            "detailAreaLabel": ""
+          }
+        ],
+        "floorLabel": "2",
+        "totalFloorAreaSqm": 6235.39
+      },
+      {
+        "tenants": [
+          {
+            "tenantId": "tenant_brn_1308116025",
+            "tenantMasterName": "(주)한익스프레스",
+            "share": 1,
+            "leasedAreaSqm": 6235.39,
+            "detailAreaLabel": ""
+          }
+        ],
+        "floorLabel": "1",
+        "totalFloorAreaSqm": 6235.39
+      }
+    ],
+    "areaTableStatus": "unknown",
+    "assetId": "asset_a112527002",
+    "uniqueTenantCount": 1,
+    "standardizedAddress": "경기도 이천시 대월면 대월로 627-61",
+    "rowCount": 1,
+    "sector": "물류센터",
+    "tenantCount": 1,
+    "longitude": 127.4938952,
+    "topTenants": [
+      {
+        "latestExpiry": "2026-12-31",
+        "earliestExpiry": "2026-12-31",
+        "tenantMasterName": "(주)한익스프레스",
+        "monthlyRentTotal": 155328845,
+        "leaseSpaceCount": 1,
+        "businessRegistrationNo": "130-81-16025",
+        "tenantId": "tenant_brn_1308116025",
+        "leasedAreaSqm": 18706.18,
+        "assetCount": 1,
+        "averageENoc": 27449.95,
+        "monthlyCostTotal": 155328845
+      }
+    ],
+    "assetCode": "A112527002",
+    "manager": {
+      "teamName": "로지스틱스매니지먼트",
+      "assetCode": "A112527002",
+      "fundCode": "112527",
+      "assetName": "부국물류센터",
+      "fundName": "이지스전문투자형사모부동산투자신탁제404호",
+      "managerName": "이정훈B",
+      "email": "jhlee@igisam.com"
+    },
+    "grossFloorAreaTimelineRule": "later_of_first_configured_at_and_approval_date",
+    "floorCount": "3F / 0B",
+    "monthlyMfTotal": null,
+    "leasedAreaSqm": 18706.18,
+    "fetchedAt": "2026-04-22",
+    "firstConfiguredAt": "2021-03-05",
+    "averageENoc": 27449.95,
+    "monthlyCostTotal": 155328845,
+    "vacancyAreaSqm": 0,
+    "landAreaSqm": 22559,
+    "leaseSpaceCount": 1,
+    "grossFloorAreaEffectiveMonth": "2021-03",
+    "assetName": "부국물류센터",
+    "grossFloorAreaSqm": 18706.18
+  },
+  "topTenants": [
+    {
+      "earliestExpiry": "2026-12-31",
+      "latestExpiry": "2026-12-31",
+      "tenantMasterName": "(주)한익스프레스",
+      "monthlyRentTotal": 155328845,
+      "leaseSpaceCount": 1,
+      "businessRegistrationNo": "130-81-16025",
+      "tenantId": "tenant_brn_1308116025",
+      "leasedAreaSqm": 18706.18,
+      "assetCount": 1,
+      "averageENoc": 27449.95,
+      "monthlyCostTotal": 155328845
+    }
+  ],
+  "meta": {
+    "selection": {
+      "assetName": "부국물류센터",
+      "assetId": "asset_a112527002"
+    },
+    "timing": {
+      "refreshedAt": "2026-04-27T16:07:14",
+      "fetchedAt": "2026-04-22",
+      "derivedAt": "",
+      "fetchedAts": [
+        "2026-04-22"
+      ]
+    },
+    "generatedAt": "2026-04-27T16:07:14",
+    "basisDisplay": {
+      "derivedAt": "",
+      "asOf": "2026-01-01",
+      "generatedAt": "2026-04-27T16:07:14",
+      "fetchedAt": "2026-04-22",
+      "refreshedAt": "2026-04-27T16:07:14",
+      "source": "DB_GENERAL + DB_HISTORY + DB_ASSET",
+      "page": "asset",
+      "fetchedAts": [
+        "2026-04-22"
+      ]
+    },
+    "formulaVersion": "E.NOC_v2",
+    "page": "asset",
+    "rowCount": 1,
+    "basis": {
+      "rowScope": "selected_asset_rows",
+      "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
+      "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
+      "page": "asset",
+      "rowUnit": "lease_space_id",
+      "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
+      "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
+    }
+  },
+  "stackingPlan": [
+    {
+      "tenants": [
+        {
+          "tenantId": "tenant_brn_1308116025",
+          "tenantMasterName": "(주)한익스프레스",
+          "leasedAreaSqm": 6235.39,
+          "share": 1,
+          "detailAreaLabel": ""
+        }
+      ],
+      "floorLabel": "3",
+      "totalFloorAreaSqm": 6235.39
+    },
+    {
+      "tenants": [
+        {
+          "tenantId": "tenant_brn_1308116025",
+          "tenantMasterName": "(주)한익스프레스",
+          "leasedAreaSqm": 6235.39,
+          "share": 1,
+          "detailAreaLabel": ""
+        }
+      ],
+      "floorLabel": "2",
+      "totalFloorAreaSqm": 6235.39
+    },
+    {
+      "tenants": [
+        {
+          "tenantId": "tenant_brn_1308116025",
+          "tenantMasterName": "(주)한익스프레스",
+          "leasedAreaSqm": 6235.39,
+          "share": 1,
+          "detailAreaLabel": ""
+        }
+      ],
+      "floorLabel": "1",
+      "totalFloorAreaSqm": 6235.39
+    }
+  ],
+  "generatedAt": "2026-04-27T16:07:14",
+  "basisDisplay": {
+    "derivedAt": "",
+    "asOf": "2026-01-01",
+    "generatedAt": "2026-04-27T16:07:14",
+    "refreshedAt": "2026-04-27T16:07:14",
+    "fetchedAt": "2026-04-22",
+    "page": "asset",
+    "source": "DB_GENERAL + DB_HISTORY + DB_ASSET",
+    "fetchedAts": [
+      "2026-04-22"
+    ]
+  },
+  "filters": {
+    "selectedAssetId": "asset_a112527002",
+    "assets": [
+      {
+        "assetId": "asset_a120085001",
+        "assetName": "경산 쿠팡물류센터",
+        "uniqueTenantCount": 1,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 45996.45,
+        "monthlyCostTotal": 1060724933,
+        "vacancyRate": 0.22740490773422375
+      },
+      {
+        "assetId": "asset_a112527001",
+        "assetName": "동산물류센터",
+        "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 4,
+        "averageENoc": 26784.1,
+        "vacancyRate": 0.011449620876710885,
+        "monthlyCostTotal": 435167477
+      },
+      {
+        "assetId": "asset_a112755001",
+        "assetName": "두동 LG전자 통합물류센터",
+        "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 1,
+        "averageENoc": 38181.11,
+        "vacancyRate": 0.0008472422420663569,
+        "monthlyCostTotal": 630228000
+      },
+      {
+        "assetId": "asset_a112527002",
+        "assetName": "부국물류센터",
+        "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 1,
+        "averageENoc": 27449.95,
+        "vacancyRate": 0,
+        "monthlyCostTotal": 155328845
+      },
+      {
+        "assetName": "부산송정물류센터",
+        "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 1,
+        "assetId": "asset_a112109001",
+        "vacancyRate": 0.027004153491596173
+      },
+      {
+        "assetId": "asset_a112299001",
+        "assetName": "스카이박스1, 스카이박스2",
+        "uniqueTenantCount": 6,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 37283.28,
+        "monthlyCostTotal": 669324200,
+        "vacancyRate": 0.3071110862557777
+      },
+      {
+        "assetName": "아레나스안성",
+        "uniqueTenantCount": 3,
+        "fetchedAt": "2026-04-22",
+        "assetId": "asset_a112505001",
+        "vacancyRate": 0.7478773512350668
+      },
+      {
+        "assetId": "asset_a112127001",
+        "assetName": "아레나스양지물류센터",
+        "uniqueTenantCount": 2,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 6706,
+        "monthlyCostTotal": 552212356,
+        "vacancyRate": 0.22161516861964634
+      },
+      {
+        "assetId": "asset_ap00014001",
+        "assetName": "안성 성은지구 물류센터",
+        "uniqueTenantCount": 4,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 24627.67,
+        "monthlyCostTotal": 604357000,
+        "vacancyRate": 0.3013357213767869
+      },
+      {
+        "assetId": "asset_a112500003",
+        "assetName": "안성 홈플러스 중부허브 물류센터",
+        "uniqueTenantCount": 1,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 63365.46,
+        "vacancyRate": 0.016556145554103226,
+        "monthlyCostTotal": 629174800
+      },
+      {
+        "assetId": "asset_s00002001",
+        "assetName": "양산 유산동 물류센터",
+        "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 3,
+        "averageENoc": 24901.1,
+        "monthlyCostTotal": 251987517,
+        "vacancyRate": 0.3656956897910055
+      },
+      {
+        "assetId": "asset_a112527003",
+        "assetName": "에이블로지스물류센터",
+        "uniqueTenantCount": 1,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 27039.41,
+        "monthlyCostTotal": 245219187,
+        "vacancyRate": 0
+      },
+      {
+        "assetId": "asset_a112606001",
+        "assetName": "여주 본두리 물류센터",
+        "uniqueTenantCount": 3,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 32389.54,
+        "monthlyCostTotal": 1028369423,
+        "vacancyRate": 0.035098733326698266
+      },
+      {
+        "assetId": "asset_a112573001",
+        "assetName": "이천 마장면 물류센터",
+        "uniqueTenantCount": 2,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 27884.74,
+        "vacancyRate": 0.030459886244241004,
+        "monthlyCostTotal": 275622000
+      },
+      {
+        "assetId": "asset_a112721001",
+        "assetName": "인천석남물류센터",
+        "uniqueTenantCount": 1,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 31632.69,
+        "monthlyCostTotal": 2863471002,
+        "vacancyRate": 0.00020146451000519652
+      },
+      {
+        "assetId": "asset_a112500002",
+        "assetName": "평택아디다스물류센터",
+        "uniqueTenantCount": 1,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 28607.48,
+        "monthlyCostTotal": 460486000,
+        "vacancyRate": 0
+      },
+      {
+        "assetId": "asset_a112642001",
+        "assetName": "화성 석포리 물류센터",
+        "uniqueTenantCount": 1,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 39312.35,
+        "monthlyCostTotal": 1272556102,
+        "vacancyRate": 0
+      }
+    ],
+    "selectorMeta": {
+      "sortOptions": [
+        {
+          "key": "asset_name_asc",
+          "label": "자산명순"
+        },
+        {
+          "key": "monthly_cost_desc",
+          "label": "월 임관리비 높은순"
+        },
+        {
+          "key": "vacancy_rate_desc",
+          "label": "공실률 높은순"
+        },
+        {
+          "key": "e_noc_desc",
+          "label": "E.NOC 높은순"
+        }
+      ],
+      "defaultSort": "asset_name_asc"
+    }
+  },
+  "rows": [
+    {
+      "insuranceSpecialClause": "없음",
+      "firstOperationDate": "2016-07-01",
+      "tenantMasterName": "(주)한익스프레스",
+      "totalGrossAreaSqm": 18706.18,
+      "floorSplitIndex": 1,
+      "sourceDocRef": "",
+      "currentPeriodYears": 1,
+      "isDelinquent": false,
+      "leaseId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231",
+      "historyCandidateCount": 1,
+      "fundCode": "112527",
+      "recentContractDate": "2025-12-31",
+      "currentMoneyBasis": "latest_linked_history",
+      "coldStorageType": "N",
+      "currentEndDate": "2026-12-31",
+      "historyCandidates": [
+        {
+          "matchConfidence": "lease_space_id",
+          "reason": "재계약",
+          "monthlyRentTotal": 155328845,
+          "tenantMasterName": "(주)한익스프레스",
+          "baseDate": "2026-01-01",
+          "assetCode": "A112527002",
+          "leasedAreaSqm": 18706,
+          "rentPerPy": 27450,
+          "linkedLeaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+          "historyEventId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na|2026-01-01|153",
+          "baseMonth": "2026-01",
+          "isLatest": true,
+          "fundCode": "112527",
+          "floorLabel": "1~3",
+          "coldStorageType": "N",
+          "rawTenantName": "(주)한익스프레스",
+          "isSelectedForMoney": true,
+          "businessRegistrationNo": "130-81-16025",
+          "assetName": "부국물류센터",
+          "rowNumber": 153,
+          "fundName": "이지스전문투자형사모부동산투자신탁제404호",
+          "sector": "물류센터",
+          "detailAreaLabel": "",
+          "exclusiveAreaSqm": 18706
+        }
+      ],
+      "rowNumber": 47,
+      "detailAreaLabel": "",
+      "sector": "물류센터",
+      "exclusiveAreaSqm": 6235.39,
+      "depositAmount": 465986535,
+      "assetCode": "A112527002",
+      "warehouseAreaSqm": 5883.39,
+      "currentMonthlyCostTotal": 51776281.67,
+      "currentMoneyAsOf": "2026-01-01",
+      "extensionCount": 5,
+      "exclusiveRatioRaw": 100,
+      "firstEndDate": "2018-06-30",
+      "sourceRowHash": "A112527002|1308116025|1~3||20260101|20261231|18706.18|18706.18",
+      "goodsType": "공산품",
+      "floorLabel": "1",
+      "historyLinkStatus": "lease_space_id",
+      "fundName": "이지스전문투자형사모부동산투자신탁제404호",
+      "contractStatusRaw": "Y",
+      "otherSpecialClause": "없음",
+      "historyLinked": true,
+      "historyLatestDate": "2026-01-01",
+      "currentMonthlyRentTotal": 51776281.67,
+      "firstContractDate": "2016-07-01",
+      "assetId": "asset_a112527002",
+      "isContractActive": true,
+      "rawTenantName": "(주)한익스프레스",
+      "businessRegistrationNo": "130-81-16025",
+      "currentStartDate": "2026-01-01",
+      "leaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "(주)한익스프레스",
+        "latestOperatingIncome": 1275632125,
+        "financialStatementType": "OFS",
+        "fetchedAt": "2026-04-21",
+        "latestRevenue": 582739477960,
+        "hasFinancialData": false,
+        "headquartersAddress": "경기도 화성시 양감면 초록로 103 (주)한익스프레스",
+        "latestDebtRatio": 406.21,
+        "latestFinancialYear": "2025",
+        "listedYn": "Y",
+        "dartCorpCode": "00129509",
+        "industryCode": "49301",
+        "matchStatus": "matched",
+        "latestEmployeeCount": 420,
+        "groupName": "",
+        "businessRegistrationNo": "130-81-16025",
+        "tenantId": "tenant_brn_1308116025",
+        "corpRegistrationNo": "1243110015051",
+        "latestReportName": ""
+      },
+      "firstStartDate": "2016-07-01",
+      "sourceFloorLabel": "1~3",
+      "isSingleTenant": true,
+      "exclusiveRatio": 1,
+      "manager": {
+        "teamName": "로지스틱스매니지먼트",
+        "assetCode": "A112527002",
+        "fundCode": "112527",
+        "assetName": "부국물류센터",
+        "managerName": "이정훈B",
+        "fundName": "이지스전문투자형사모부동산투자신탁제404호",
+        "email": "jhlee@igisam.com"
+      },
+      "leasedAreaSqm": 6235.39,
+      "floorSplitCount": 3,
+      "rfMonths": 0.5,
+      "currentMoneyStatus": "latest_history_money_missing",
+      "fundId": "fund_112527",
+      "isPreLeased": false,
+      "officeAreaSqm": 352,
+      "tenantId": "tenant_brn_1308116025",
+      "is3pl": false,
+      "calculationStatus": "review_required",
+      "linkedIssues": [
+        {
+          "owner": "",
+          "issueId": "issue_21",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "부국물류센터",
+          "priority": "미정",
+          "content": "공용부 세부면적 없는 이유 확인 필요",
+          "conclusion": "",
+          "relatedSheet": "전체",
+          "assetId": "asset_a112527002",
+          "recordedAt": "2026-04-16",
+          "managerQuestion": "",
+          "rawId": "21",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        }
+      ],
+      "assetName": "부국물류센터",
+      "currentRentPerPy": 27450,
+      "asset": {
+        "queryKey": "41500|35029|0|0003|0002",
+        "approvalDate": "2016-06-03",
+        "assetCode": "A112527002",
+        "platGbCd": "0",
+        "floorCount": "3F / 0B",
+        "latitude": 37.2101065,
+        "buildingHubStatus": "ok",
+        "fetchedAt": "2026-04-22",
+        "firstConfiguredAt": "2021-03-05",
+        "bjdongCd": "35029",
+        "buildingName": "부국물류센터",
+        "landAreaSqm": 22559,
+        "areaTableStatus": "unknown",
+        "assetId": "asset_a112527002",
+        "geocodeStatus": "ok_naver_geocode",
+        "assetName": "부국물류센터",
+        "sigunguCd": "41500",
+        "grossFloorAreaSqm": 18706.18,
+        "bun": "3",
+        "standardizedAddress": "경기도 이천시 대월면 대월로 627-61",
+        "longitude": 127.4938952,
+        "ji": "2"
+      }
+    },
+    {
+      "insuranceSpecialClause": "없음",
+      "firstOperationDate": "2016-07-01",
+      "tenantMasterName": "(주)한익스프레스",
+      "totalGrossAreaSqm": 18706.18,
+      "floorSplitIndex": 2,
+      "sourceDocRef": "",
+      "currentPeriodYears": 1,
+      "isDelinquent": false,
+      "leaseId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231",
+      "historyCandidateCount": 1,
+      "recentContractDate": "2025-12-31",
+      "fundCode": "112527",
+      "currentMoneyBasis": "latest_linked_history",
+      "coldStorageType": "N",
+      "currentEndDate": "2026-12-31",
+      "historyCandidates": [
+        {
+          "matchConfidence": "lease_space_id",
+          "reason": "재계약",
+          "monthlyRentTotal": 155328845,
+          "tenantMasterName": "(주)한익스프레스",
+          "baseDate": "2026-01-01",
+          "assetCode": "A112527002",
+          "leasedAreaSqm": 18706,
+          "rentPerPy": 27450,
+          "linkedLeaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+          "historyEventId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na|2026-01-01|153",
+          "isLatest": true,
+          "baseMonth": "2026-01",
+          "fundCode": "112527",
+          "floorLabel": "1~3",
+          "rawTenantName": "(주)한익스프레스",
+          "coldStorageType": "N",
+          "isSelectedForMoney": true,
+          "businessRegistrationNo": "130-81-16025",
+          "assetName": "부국물류센터",
+          "rowNumber": 153,
+          "fundName": "이지스전문투자형사모부동산투자신탁제404호",
+          "detailAreaLabel": "",
+          "sector": "물류센터",
+          "exclusiveAreaSqm": 18706
+        }
+      ],
+      "rowNumber": 47,
+      "sector": "물류센터",
+      "detailAreaLabel": "",
+      "exclusiveAreaSqm": 6235.39,
+      "depositAmount": 465986535,
+      "assetCode": "A112527002",
+      "warehouseAreaSqm": 5883.39,
+      "currentMonthlyCostTotal": 51776281.67,
+      "currentMoneyAsOf": "2026-01-01",
+      "extensionCount": 5,
+      "exclusiveRatioRaw": 100,
+      "firstEndDate": "2018-06-30",
+      "sourceRowHash": "A112527002|1308116025|1~3||20260101|20261231|18706.18|18706.18",
+      "goodsType": "공산품",
+      "floorLabel": "2",
+      "historyLinkStatus": "lease_space_id",
+      "fundName": "이지스전문투자형사모부동산투자신탁제404호",
+      "contractStatusRaw": "Y",
+      "otherSpecialClause": "없음",
+      "historyLinked": true,
+      "historyLatestDate": "2026-01-01",
+      "currentMonthlyRentTotal": 51776281.67,
+      "assetId": "asset_a112527002",
+      "firstContractDate": "2016-07-01",
+      "isContractActive": true,
+      "rawTenantName": "(주)한익스프레스",
+      "businessRegistrationNo": "130-81-16025",
+      "currentStartDate": "2026-01-01",
+      "leaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "(주)한익스프레스",
+        "latestOperatingIncome": 1275632125,
+        "financialStatementType": "OFS",
+        "fetchedAt": "2026-04-21",
+        "latestRevenue": 582739477960,
+        "hasFinancialData": false,
+        "headquartersAddress": "경기도 화성시 양감면 초록로 103 (주)한익스프레스",
+        "latestDebtRatio": 406.21,
+        "latestFinancialYear": "2025",
+        "listedYn": "Y",
+        "dartCorpCode": "00129509",
+        "industryCode": "49301",
+        "matchStatus": "matched",
+        "latestEmployeeCount": 420,
+        "groupName": "",
+        "businessRegistrationNo": "130-81-16025",
+        "tenantId": "tenant_brn_1308116025",
+        "corpRegistrationNo": "1243110015051",
+        "latestReportName": ""
+      },
+      "firstStartDate": "2016-07-01",
+      "sourceFloorLabel": "1~3",
+      "isSingleTenant": true,
+      "exclusiveRatio": 1,
+      "manager": {
+        "teamName": "로지스틱스매니지먼트",
+        "assetCode": "A112527002",
+        "fundCode": "112527",
+        "assetName": "부국물류센터",
+        "fundName": "이지스전문투자형사모부동산투자신탁제404호",
+        "managerName": "이정훈B",
+        "email": "jhlee@igisam.com"
+      },
+      "leasedAreaSqm": 6235.39,
+      "floorSplitCount": 3,
+      "currentMoneyStatus": "latest_history_money_missing",
+      "rfMonths": 0.5,
+      "fundId": "fund_112527",
+      "isPreLeased": false,
+      "officeAreaSqm": 352,
+      "tenantId": "tenant_brn_1308116025",
+      "calculationStatus": "review_required",
+      "is3pl": false,
+      "assetName": "부국물류센터",
+      "linkedIssues": [
+        {
+          "owner": "",
+          "issueId": "issue_21",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "부국물류센터",
+          "priority": "미정",
+          "content": "공용부 세부면적 없는 이유 확인 필요",
+          "conclusion": "",
+          "relatedSheet": "전체",
+          "recordedAt": "2026-04-16",
+          "managerQuestion": "",
+          "assetId": "asset_a112527002",
+          "rawId": "21",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        }
+      ],
+      "currentRentPerPy": 27450,
+      "asset": {
+        "queryKey": "41500|35029|0|0003|0002",
+        "assetCode": "A112527002",
+        "approvalDate": "2016-06-03",
+        "platGbCd": "0",
+        "latitude": 37.2101065,
+        "floorCount": "3F / 0B",
+        "buildingHubStatus": "ok",
+        "fetchedAt": "2026-04-22",
+        "firstConfiguredAt": "2021-03-05",
+        "buildingName": "부국물류센터",
+        "landAreaSqm": 22559,
+        "bjdongCd": "35029",
+        "areaTableStatus": "unknown",
+        "assetId": "asset_a112527002",
+        "geocodeStatus": "ok_naver_geocode",
+        "sigunguCd": "41500",
+        "assetName": "부국물류센터",
+        "bun": "3",
+        "standardizedAddress": "경기도 이천시 대월면 대월로 627-61",
+        "grossFloorAreaSqm": 18706.18,
+        "ji": "2",
+        "longitude": 127.4938952
+      }
+    },
+    {
+      "insuranceSpecialClause": "없음",
+      "firstOperationDate": "2016-07-01",
+      "tenantMasterName": "(주)한익스프레스",
+      "totalGrossAreaSqm": 18706.18,
+      "floorSplitIndex": 3,
+      "sourceDocRef": "",
+      "currentPeriodYears": 1,
+      "isDelinquent": false,
+      "leaseId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231",
+      "historyCandidateCount": 1,
+      "recentContractDate": "2025-12-31",
+      "fundCode": "112527",
+      "coldStorageType": "N",
+      "currentMoneyBasis": "latest_linked_history",
+      "currentEndDate": "2026-12-31",
+      "historyCandidates": [
+        {
+          "matchConfidence": "lease_space_id",
+          "reason": "재계약",
+          "monthlyRentTotal": 155328845,
+          "tenantMasterName": "(주)한익스프레스",
+          "baseDate": "2026-01-01",
+          "assetCode": "A112527002",
+          "leasedAreaSqm": 18706,
+          "rentPerPy": 27450,
+          "linkedLeaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+          "historyEventId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na|2026-01-01|153",
+          "baseMonth": "2026-01",
+          "isLatest": true,
+          "fundCode": "112527",
+          "floorLabel": "1~3",
+          "coldStorageType": "N",
+          "rawTenantName": "(주)한익스프레스",
+          "businessRegistrationNo": "130-81-16025",
+          "isSelectedForMoney": true,
+          "assetName": "부국물류센터",
+          "rowNumber": 153,
+          "fundName": "이지스전문투자형사모부동산투자신탁제404호",
+          "sector": "물류센터",
+          "detailAreaLabel": "",
+          "exclusiveAreaSqm": 18706
+        }
+      ],
+      "rowNumber": 47,
+      "sector": "물류센터",
+      "detailAreaLabel": "",
+      "exclusiveAreaSqm": 6235.39,
+      "depositAmount": 465986535,
+      "assetCode": "A112527002",
+      "warehouseAreaSqm": 5883.39,
+      "currentMoneyAsOf": "2026-01-01",
+      "currentMonthlyCostTotal": 51776281.67,
+      "extensionCount": 5,
+      "exclusiveRatioRaw": 100,
+      "firstEndDate": "2018-06-30",
+      "goodsType": "공산품",
+      "sourceRowHash": "A112527002|1308116025|1~3||20260101|20261231|18706.18|18706.18",
+      "floorLabel": "3",
+      "historyLinkStatus": "lease_space_id",
+      "fundName": "이지스전문투자형사모부동산투자신탁제404호",
+      "contractStatusRaw": "Y",
+      "otherSpecialClause": "없음",
+      "historyLinked": true,
+      "historyLatestDate": "2026-01-01",
+      "currentMonthlyRentTotal": 51776281.67,
+      "isContractActive": true,
+      "assetId": "asset_a112527002",
+      "firstContractDate": "2016-07-01",
+      "businessRegistrationNo": "130-81-16025",
+      "rawTenantName": "(주)한익스프레스",
+      "currentStartDate": "2026-01-01",
+      "leaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "(주)한익스프레스",
+        "latestOperatingIncome": 1275632125,
+        "financialStatementType": "OFS",
+        "fetchedAt": "2026-04-21",
+        "latestRevenue": 582739477960,
+        "hasFinancialData": false,
+        "latestDebtRatio": 406.21,
+        "headquartersAddress": "경기도 화성시 양감면 초록로 103 (주)한익스프레스",
+        "latestFinancialYear": "2025",
+        "dartCorpCode": "00129509",
+        "listedYn": "Y",
+        "industryCode": "49301",
+        "groupName": "",
+        "matchStatus": "matched",
+        "latestEmployeeCount": 420,
+        "businessRegistrationNo": "130-81-16025",
+        "tenantId": "tenant_brn_1308116025",
+        "corpRegistrationNo": "1243110015051",
+        "latestReportName": ""
+      },
+      "firstStartDate": "2016-07-01",
+      "sourceFloorLabel": "1~3",
+      "isSingleTenant": true,
+      "exclusiveRatio": 1,
+      "manager": {
+        "teamName": "로지스틱스매니지먼트",
+        "assetCode": "A112527002",
+        "fundCode": "112527",
+        "assetName": "부국물류센터",
+        "fundName": "이지스전문투자형사모부동산투자신탁제404호",
+        "managerName": "이정훈B",
+        "email": "jhlee@igisam.com"
+      },
+      "leasedAreaSqm": 6235.39,
+      "floorSplitCount": 3,
+      "currentMoneyStatus": "latest_history_money_missing",
+      "rfMonths": 0.5,
+      "fundId": "fund_112527",
+      "isPreLeased": false,
+      "tenantId": "tenant_brn_1308116025",
+      "officeAreaSqm": 352,
+      "linkedIssues": [
+        {
+          "owner": "",
+          "issueId": "issue_21",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "부국물류센터",
+          "priority": "미정",
+          "content": "공용부 세부면적 없는 이유 확인 필요",
+          "relatedSheet": "전체",
+          "conclusion": "",
+          "assetId": "asset_a112527002",
+          "managerQuestion": "",
+          "recordedAt": "2026-04-16",
+          "rawId": "21",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        }
+      ],
+      "assetName": "부국물류센터",
+      "calculationStatus": "review_required",
+      "is3pl": false,
+      "asset": {
+        "queryKey": "41500|35029|0|0003|0002",
+        "assetCode": "A112527002",
+        "approvalDate": "2016-06-03",
+        "platGbCd": "0",
+        "latitude": 37.2101065,
+        "floorCount": "3F / 0B",
+        "buildingHubStatus": "ok",
+        "fetchedAt": "2026-04-22",
+        "firstConfiguredAt": "2021-03-05",
+        "buildingName": "부국물류센터",
+        "landAreaSqm": 22559,
+        "bjdongCd": "35029",
+        "areaTableStatus": "unknown",
+        "assetId": "asset_a112527002",
+        "geocodeStatus": "ok_naver_geocode",
+        "sigunguCd": "41500",
+        "assetName": "부국물류센터",
+        "standardizedAddress": "경기도 이천시 대월면 대월로 627-61",
+        "bun": "3",
+        "grossFloorAreaSqm": 18706.18,
+        "ji": "2",
+        "longitude": 127.4938952
+      },
+      "currentRentPerPy": 27450
+    }
+  ],
+  "areaBreakdown": {
+    "exclusiveRatio": 1,
+    "otherExclusiveAreaSqm": null,
+    "warehouseAreaSqm": 17650.170000000002,
+    "otherCommonAreaSqm": null,
+    "leasedAreaSqm": 18706.170000000002,
+    "vacancyAreaSqm": 0,
+    "parkingAreaSqm": null,
+    "coreAreaSqm": null,
+    "dockAreaSqm": null,
+    "officeAreaSqm": 1056,
+    "corridorAreaSqm": null,
+    "mechanicalAreaSqm": null,
+    "grossFloorAreaSqm": 18706.18,
+    "rampAreaSqm": null,
+    "exclusiveAreaSqm": 18706.170000000002
+  },
+  "basis": {
+    "rowScope": "selected_asset_rows",
+    "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
+    "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
+    "page": "asset",
+    "rowUnit": "lease_space_id",
+    "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
+    "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
+  },
+  "kpis": [
+    {
+      "label": "임대율",
+      "value": 1,
+      "key": "occupancy_rate",
+      "valueType": "percent",
+      "status": "ok"
+    },
+    {
+      "label": "총 임대면적",
+      "value": 18706.18,
+      "key": "leased_area_total",
+      "valueType": "area",
+      "status": "ok"
+    },
+    {
+      "label": "공실면적",
+      "value": 0,
+      "key": "vacancy_area_total",
+      "valueType": "area",
+      "status": "ok"
+    },
+    {
+      "label": "현재 임차인 수",
+      "value": 1,
+      "key": "unique_tenant_count",
+      "valueType": "number",
+      "status": "ok"
+    },
+    {
+      "label": "월 임관리비 총액",
+      "value": 155328845,
+      "key": "monthly_total_cost",
+      "valueType": "currency",
+      "status": "review_required"
+    },
+    {
+      "label": "E.NOC",
+      "value": 27449.95,
+      "key": "average_e_noc",
+      "valueType": "currency",
+      "status": "ok"
+    }
+  ]
+}

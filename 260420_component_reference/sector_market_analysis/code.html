@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+
+<html class="antialiased" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sector Analysis | The Architectural Ledger</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-container": "#0d1c2f",
+                    "surface-dim": "#d8dadc",
+                    "surface-container": "#eceef0",
+                    "on-secondary-fixed": "#0b1c30",
+                    "on-primary-fixed": "#131b2e",
+                    "tertiary": "#000000",
+                    "outline-variant": "#c6c6cd",
+                    "primary-fixed-dim": "#bec6e0",
+                    "secondary": "#505f76",
+                    "surface-container-low": "#f2f4f6",
+                    "secondary-fixed-dim": "#b7c8e1",
+                    "background": "#f7f9fb",
+                    "primary": "#000000",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#131b2e",
+                    "on-tertiary-container": "#76859b",
+                    "on-error-container": "#93000a",
+                    "inverse-on-surface": "#eff1f3",
+                    "secondary-fixed": "#d3e4fe",
+                    "error": "#ba1a1a",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#bec6e0",
+                    "on-error": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "on-background": "#191c1e",
+                    "error-container": "#ffdad6",
+                    "on-secondary-container": "#54647a",
+                    "surface-tint": "#565e74",
+                    "secondary-container": "#d0e1fb",
+                    "on-secondary-fixed-variant": "#38485d",
+                    "surface-bright": "#f7f9fb",
+                    "tertiary-fixed": "#d5e3fd",
+                    "surface": "#f7f9fb",
+                    "on-surface": "#191c1e",
+                    "outline": "#76777d",
+                    "on-tertiary": "#ffffff",
+                    "inverse-surface": "#2d3133",
+                    "primary-fixed": "#dae2fd",
+                    "on-tertiary-fixed": "#0d1c2f",
+                    "surface-variant": "#e0e3e5",
+                    "surface-container-high": "#e6e8ea",
+                    "on-surface-variant": "#45464d",
+                    "on-primary-container": "#7c839b",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "tertiary-fixed-dim": "#b9c7e0",
+                    "on-tertiary-fixed-variant": "#3a485c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": [
+                            "Manrope"
+                    ],
+                    "body": [
+                            "Inter"
+                    ],
+                    "label": [
+                            "Inter"
+                    ]
+            }
+          },
+        },
+      }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .ambient-shadow {
+                box-shadow: 0 8px 32px -8px rgba(25, 28, 30, 0.06);
+            }
+            .ghost-border {
+                border: 1px solid rgba(198, 198, 205, 0.2);
+            }
+            .material-symbols-outlined {
+                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            }
+            .material-symbols-outlined[data-weight="fill"] {
+                font-variation-settings: 'FILL' 1;
+            }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen flex flex-col md:flex-row">
+<!-- TopNavBar (Mobile) -->
+<header class="md:hidden w-full sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/20 dark:border-slate-800/20 shadow-sm">
+<div class="flex items-center justify-between px-4 h-16 w-full">
+<div class="font-headline font-extrabold text-xl tracking-tighter text-slate-900 dark:text-slate-50">
+                IGIS Logistics
+            </div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-slate-500 cursor-pointer active:opacity-80 transition-opacity" data-icon="search">search</span>
+<span class="material-symbols-outlined text-slate-500 cursor-pointer active:opacity-80 transition-opacity" data-icon="notifications">notifications</span>
+<img alt="Executive Profile" class="w-8 h-8 rounded-full border border-outline-variant/20" data-alt="professional headshot of an executive in a grey suit against a neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7eYHRxwXF5uDue0z4wdncsnR6XOVS8TX8SfanBNMJkxLLcekJ6KFoYet1HHkTmb-K9zE2sClBOqpuRG_xfZw_HO6fRWVtWACXug7TCp8yJ90-uihgiHxKUUgEZmxkhb4T6DsZEE2e_hjIoBFYIdvzN1Sd6byt_s31thqEADLA2PlJSEB3uMi1szICuxRuu-4iB2rV1ZDej_WqmbOlliwnJ1LPWhmhvSvM38-6l58TchxcX01fL8MKsMXm9pqq211a1rhobue7P0k"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar (Web) -->
+<nav class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 z-50 bg-slate-50 dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 py-6">
+<div class="px-6 mb-8">
+<h1 class="font-headline font-bold text-lg text-slate-900 dark:text-slate-50">The Ledger</h1>
+<p class="text-xs text-on-surface-variant mt-1">Asset Management</p>
+</div>
+<div class="flex-1 overflow-y-auto px-4">
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 m-2 transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:translate-x-1 duration-200 font-headline font-medium text-sm rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                    Home
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 m-2 transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:translate-x-1 duration-200 font-headline font-medium text-sm rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="domain">domain</span>
+                    Asset
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 m-2 transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:translate-x-1 duration-200 font-headline font-medium text-sm rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="business_center">business_center</span>
+                    Company
+                </a>
+<!-- Active State -->
+<a class="flex items-center gap-3 px-4 py-3 m-2 transition-all bg-white dark:bg-slate-900 text-slate-950 dark:text-white font-bold shadow-sm rounded-md font-headline text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="analytics" data-weight="fill">analytics</span>
+                    Sector
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 m-2 transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:translate-x-1 duration-200 font-headline font-medium text-sm rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+                    Analysis Tools
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 m-2 transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:translate-x-1 duration-200 font-headline font-medium text-sm rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="database">database</span>
+                    Data Playground
+                </a>
+</div>
+</div>
+<div class="mt-auto px-4 border-t border-outline-variant/10 pt-4">
+<a class="flex items-center gap-3 px-4 py-3 m-2 transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:translate-x-1 duration-200 font-headline font-medium text-sm rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+                Support
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 m-2 transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:translate-x-1 duration-200 font-headline font-medium text-sm rounded-md" href="#">
+<span class="material-symbols-outlined" data-icon="manage_accounts">manage_accounts</span>
+                Account
+            </a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 p-6 lg:p-12 w-full max-w-[1600px] mx-auto">
+<!-- Header -->
+<header class="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+<div>
+<h2 class="font-headline text-3xl font-extrabold tracking-tight text-on-surface mb-2">Sector Intelligence</h2>
+<p class="text-on-surface-variant font-body text-sm max-w-2xl">Macro-level analysis and comparative performance across logistics, office, and retail verticals globally.</p>
+</div>
+<!-- Contextual Actions -->
+<div class="flex items-center gap-3">
+<button class="bg-surface-container-lowest border ghost-border px-4 py-2 rounded-lg text-sm font-medium text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="filter_list">filter_list</span>
+                    Global Filters
+                </button>
+<button class="bg-gradient-to-br from-primary to-primary-container text-white px-5 py-2 rounded-lg text-sm font-medium shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="download">download</span>
+                    Export Report
+                </button>
+</div>
+</header>
+<!-- KPI Grid (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+<!-- Logistics -->
+<div class="bg-surface-container-lowest p-6 rounded-xl ambient-shadow flex flex-col relative overflow-hidden group hover:bg-surface-container-low transition-colors duration-300 cursor-pointer">
+<div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-primary-fixed/30 to-transparent rounded-bl-full opacity-50"></div>
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline font-semibold text-sm text-on-surface-variant">Logistics</h3>
+<span class="material-symbols-outlined text-primary-container" data-icon="local_shipping">local_shipping</span>
+</div>
+<div class="font-headline text-3xl font-extrabold text-on-surface tracking-tight mb-1">$42.8B</div>
+<div class="flex items-center gap-2 text-xs font-medium">
+<span class="text-green-700 bg-green-50 px-1.5 py-0.5 rounded flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]" data-icon="trending_up">trending_up</span>
+                        +4.2%
+                    </span>
+<span class="text-on-surface-variant">AUM</span>
+</div>
+</div>
+<!-- Office -->
+<div class="bg-surface-container-lowest p-6 rounded-xl ambient-shadow flex flex-col relative overflow-hidden group hover:bg-surface-container-low transition-colors duration-300 cursor-pointer">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline font-semibold text-sm text-on-surface-variant">Office</h3>
+<span class="material-symbols-outlined text-secondary" data-icon="corporate_fare">corporate_fare</span>
+</div>
+<div class="font-headline text-3xl font-extrabold text-on-surface tracking-tight mb-1">$28.1B</div>
+<div class="flex items-center gap-2 text-xs font-medium">
+<span class="text-red-700 bg-red-50 px-1.5 py-0.5 rounded flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]" data-icon="trending_down">trending_down</span>
+                        -1.8%
+                    </span>
+<span class="text-on-surface-variant">AUM</span>
+</div>
+</div>
+<!-- Retail -->
+<div class="bg-surface-container-lowest p-6 rounded-xl ambient-shadow flex flex-col relative overflow-hidden group hover:bg-surface-container-low transition-colors duration-300 cursor-pointer">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline font-semibold text-sm text-on-surface-variant">Retail</h3>
+<span class="material-symbols-outlined text-secondary" data-icon="storefront">storefront</span>
+</div>
+<div class="font-headline text-3xl font-extrabold text-on-surface tracking-tight mb-1">$15.4B</div>
+<div class="flex items-center gap-2 text-xs font-medium">
+<span class="text-green-700 bg-green-50 px-1.5 py-0.5 rounded flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]" data-icon="trending_up">trending_up</span>
+                        +0.5%
+                    </span>
+<span class="text-on-surface-variant">AUM</span>
+</div>
+</div>
+<!-- Multi-Family -->
+<div class="bg-surface-container-lowest p-6 rounded-xl ambient-shadow flex flex-col relative overflow-hidden group hover:bg-surface-container-low transition-colors duration-300 cursor-pointer">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline font-semibold text-sm text-on-surface-variant">Multi-Family</h3>
+<span class="material-symbols-outlined text-secondary" data-icon="apartment">apartment</span>
+</div>
+<div class="font-headline text-3xl font-extrabold text-on-surface tracking-tight mb-1">$19.2B</div>
+<div class="flex items-center gap-2 text-xs font-medium">
+<span class="text-green-700 bg-green-50 px-1.5 py-0.5 rounded flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]" data-icon="trending_up">trending_up</span>
+                        +2.1%
+                    </span>
+<span class="text-on-surface-variant">AUM</span>
+</div>
+</div>
+</div>
+<!-- Main Analytics Section (Asymmetric Layout) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+<!-- Left Column: Trend Analysis (2/3 width) -->
+<div class="lg:col-span-2 flex flex-col gap-8">
+<!-- Chart Container -->
+<div class="bg-surface-container-lowest rounded-xl p-6 ambient-shadow">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h3 class="font-headline font-bold text-lg text-on-surface">Yield Trends by Sector</h3>
+<p class="text-xs text-on-surface-variant mt-1">Rolling 36-month capitalization rates (%)</p>
+</div>
+<div class="flex gap-2">
+<span class="text-xs font-medium bg-surface-container-low px-2 py-1 rounded text-on-surface-variant">36M</span>
+<span class="text-xs font-medium bg-surface-container-lowest border ghost-border px-2 py-1 rounded text-on-surface cursor-pointer">60M</span>
+</div>
+</div>
+<!-- Faux Chart Area -->
+<div class="relative h-64 w-full border-b border-l border-outline-variant/20">
+<!-- Y-Axis Labels -->
+<div class="absolute -left-8 top-0 h-full flex flex-col justify-between text-[10px] text-on-surface-variant font-mono tabular-nums py-2">
+<span>8.0</span>
+<span>6.0</span>
+<span>4.0</span>
+<span>2.0</span>
+</div>
+<!-- Grid Lines -->
+<div class="absolute inset-0 flex flex-col justify-between py-2">
+<div class="w-full border-t border-outline-variant/10"></div>
+<div class="w-full border-t border-outline-variant/10"></div>
+<div class="w-full border-t border-outline-variant/10"></div>
+<div class="w-full border-t border-outline-variant/10"></div>
+</div>
+<!-- Faux Lines (SVG for crispness) -->
+<svg class="absolute inset-0 h-full w-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<!-- Logistics Line -->
+<polyline fill="none" points="0,60 20,58 40,55 60,40 80,35 100,30" stroke="#131b2e" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline>
+<!-- Office Line -->
+<polyline fill="none" points="0,45 20,48 40,50 60,65 80,70 100,75" stroke="#505f76" stroke-dasharray="4 2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline>
+</svg>
+<!-- X-Axis Labels -->
+<div class="absolute -bottom-6 left-0 w-full flex justify-between text-[10px] text-on-surface-variant">
+<span>Q1 '21</span>
+<span>Q3 '21</span>
+<span>Q1 '22</span>
+<span>Q3 '22</span>
+<span>Q1 '23</span>
+<span>Q3 '23</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="flex gap-6 mt-10 justify-center">
+<div class="flex items-center gap-2">
+<div class="w-3 h-0.5 bg-[#131b2e]"></div>
+<span class="text-xs font-medium text-on-surface">Logistics</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-0.5 bg-[#505f76] border-b border-dashed border-white"></div>
+<span class="text-xs font-medium text-on-surface-variant">Office</span>
+</div>
+</div>
+</div>
+<!-- Geographic Heatmap Panel -->
+<div class="bg-surface-container-lowest rounded-xl p-6 ambient-shadow">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline font-bold text-lg text-on-surface">Capital Allocation Heatmap</h3>
+<button class="text-xs font-medium text-on-surface hover:text-primary-container transition-colors flex items-center gap-1">
+                            Expand Map <span class="material-symbols-outlined text-[14px]" data-icon="open_in_full">open_in_full</span>
+</button>
+</div>
+<div class="relative w-full h-48 bg-surface-container-low rounded-lg overflow-hidden group">
+<img alt="World Map" class="w-full h-full object-cover opacity-60 mix-blend-multiply grayscale" data-alt="minimalist stylized grey world map on a light grey background with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmD1wVxqsiOPftK9Q6tFOGolNuNNElSfKRsiBmArHvV0c3csbUrWJ4D6uLvI0ZhA_OEqK-RgAC_RW8l1VYKzd6Zyznjlct0fgcFHhbWWieWBPYG9J0p_kw3t7ut5ZZbZPSUUiO-Sl9dIqTu2-7ed4sfoRMpywyu6t-Adc-Q366rjLFkwdKN9RVxOXoUxAwGHy3bJAvrSzc2zh5w1F_oIjwVJIJfoi8z2qbgUqcPRfAEm9kgB-bUlI2wp_cDiLhn5pMbLBjjpwRL7A"/>
+<!-- Heatmap Nodes -->
+<div class="absolute top-1/4 left-1/4 w-4 h-4 bg-primary-container rounded-full opacity-80 blur-[2px]"></div>
+<div class="absolute top-1/3 left-1/2 w-6 h-6 bg-primary-container rounded-full opacity-60 blur-[4px]"></div>
+<div class="absolute top-1/2 right-1/4 w-8 h-8 bg-secondary rounded-full opacity-50 blur-[6px]"></div>
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-white/20 backdrop-blur-sm">
+<button class="bg-white text-on-surface px-4 py-2 rounded shadow-sm text-sm font-medium">View Detailed Regions</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Rankings & Comparisons (1/3 width) -->
+<div class="flex flex-col gap-8">
+<!-- Sector Comparison Panel -->
+<div class="bg-surface-container-lowest rounded-xl p-6 ambient-shadow h-full">
+<h3 class="font-headline font-bold text-lg text-on-surface mb-6">Sector Risk/Return Profile</h3>
+<div class="flex flex-col gap-6">
+<!-- Metric 1 -->
+<div>
+<div class="flex justify-between text-xs font-medium mb-2">
+<span class="text-on-surface">Volatility (Sharpe)</span>
+<span class="text-on-surface-variant font-mono">1.2 vs 0.8</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+<div class="h-full bg-primary-container w-[60%]"></div>
+<div class="h-full bg-secondary w-[40%]"></div>
+</div>
+<div class="flex justify-between text-[10px] text-on-surface-variant mt-1">
+<span>Logistics (Higher)</span>
+<span>Office</span>
+</div>
+</div>
+<!-- Metric 2 -->
+<div>
+<div class="flex justify-between text-xs font-medium mb-2">
+<span class="text-on-surface">Liquidity Premium</span>
+<span class="text-on-surface-variant font-mono">45bps</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[80%]"></div>
+</div>
+</div>
+<!-- Metric 3 -->
+<div>
+<div class="flex justify-between text-xs font-medium mb-2">
+<span class="text-on-surface">Occupancy Rate</span>
+<span class="text-on-surface-variant font-mono">98% vs 82%</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+<div class="h-full bg-primary-container w-[75%]"></div>
+<div class="h-full bg-error/50 w-[25%]"></div>
+</div>
+</div>
+</div>
+<!-- Top Assets Table (High Density) -->
+<div class="mt-8 pt-6 border-t border-outline-variant/20">
+<h4 class="font-headline font-semibold text-sm text-on-surface mb-4">Top Performing Assets</h4>
+<div class="w-full">
+<!-- Table Header -->
+<div class="flex justify-between text-[10px] text-on-surface-variant font-medium uppercase tracking-wider mb-2 px-2">
+<span class="w-1/2">Asset Name</span>
+<span class="w-1/4 text-right">IRR</span>
+<span class="w-1/4 text-right">Type</span>
+</div>
+<!-- Table Rows -->
+<div class="flex flex-col">
+<div class="flex justify-between text-sm py-2 px-2 hover:bg-surface-container-low transition-colors rounded">
+<span class="w-1/2 font-medium truncate pr-2">Frankfurt Gateway</span>
+<span class="w-1/4 text-right font-mono tabular-nums text-green-700">14.2%</span>
+<span class="w-1/4 text-right text-xs text-on-surface-variant">LOG</span>
+</div>
+<div class="flex justify-between text-sm py-2 px-2 hover:bg-surface-container-low transition-colors rounded">
+<span class="w-1/2 font-medium truncate pr-2">Tokyo Bay Hub</span>
+<span class="w-1/4 text-right font-mono tabular-nums text-green-700">12.8%</span>
+<span class="w-1/4 text-right text-xs text-on-surface-variant">LOG</span>
+</div>
+<div class="flex justify-between text-sm py-2 px-2 hover:bg-surface-container-low transition-colors rounded">
+<span class="w-1/2 font-medium truncate pr-2">London City Point</span>
+<span class="w-1/4 text-right font-mono tabular-nums text-on-surface">8.4%</span>
+<span class="w-1/4 text-right text-xs text-on-surface-variant">OFF</span>
+</div>
+<div class="flex justify-between text-sm py-2 px-2 hover:bg-surface-container-low transition-colors rounded">
+<span class="w-1/2 font-medium truncate pr-2">Seoul Prime Tower</span>
+<span class="w-1/4 text-right font-mono tabular-nums text-red-600">4.1%</span>
+<span class="w-1/4 text-right text-xs text-on-surface-variant">OFF</span>
+</div>
+</div>
+</div>
+<button class="w-full mt-4 py-2 text-xs font-medium text-primary-container hover:bg-surface-container-low rounded transition-colors text-center">
+                            View Full Ranking Directory
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

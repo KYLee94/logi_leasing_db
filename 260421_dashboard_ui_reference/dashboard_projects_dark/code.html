@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Luminescent Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#ccd9bd",
+                        "surface-variant": "#232628",
+                        "on-primary-container": "#223600",
+                        "error": "#ff7351",
+                        "on-error-container": "#ffd2c8",
+                        "secondary-container": "#3f4a36",
+                        "surface-container-highest": "#232628",
+                        "secondary": "#dae7cb",
+                        "on-secondary-container": "#c8d5b9",
+                        "on-secondary": "#4a5540",
+                        "on-secondary-fixed-variant": "#535f49",
+                        "tertiary": "#fffae4",
+                        "on-surface": "#f6f6f7",
+                        "surface-dim": "#0c0e0f",
+                        "primary-dim": "#aaee3d",
+                        "inverse-on-surface": "#545556",
+                        "surface-tint": "#b8fd4b",
+                        "tertiary-fixed": "#fcef58",
+                        "error-container": "#b92902",
+                        "on-secondary-fixed": "#37432f",
+                        "surface-container-lowest": "#000000",
+                        "surface-bright": "#292d2e",
+                        "primary": "#b8fd4b",
+                        "on-tertiary-fixed": "#4b4600",
+                        "outline-variant": "#464849",
+                        "on-tertiary-fixed-variant": "#6a6200",
+                        "surface": "#0c0e0f",
+                        "primary-fixed": "#b8fd4b",
+                        "on-tertiary": "#686100",
+                        "on-primary-fixed": "#304a00",
+                        "inverse-primary": "#456900",
+                        "inverse-surface": "#f9f9fa",
+                        "secondary-dim": "#ccd9bd",
+                        "on-error": "#450900",
+                        "tertiary-fixed-dim": "#eee04b",
+                        "primary-fixed-dim": "#aaee3d",
+                        "primary-container": "#83c300",
+                        "secondary-fixed": "#dae7cb",
+                        "on-background": "#f6f6f7",
+                        "tertiary-container": "#fcef58",
+                        "background": "#0c0e0f",
+                        "tertiary-dim": "#eee04b",
+                        "on-tertiary-container": "#5f5800",
+                        "surface-container-high": "#1d2021",
+                        "on-surface-variant": "#aaabac",
+                        "surface-container-low": "#111415",
+                        "on-primary": "#3d5e00",
+                        "on-primary-fixed-variant": "#456900",
+                        "error-dim": "#d53d18",
+                        "surface-container": "#181a1b",
+                        "outline": "#747577"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased flex selection:bg-primary/30 selection:text-primary">
+<!-- SideNavBar -->
+<nav class="bg-zinc-950 h-screen w-72 flex flex-col fixed left-0 top-0 shadow-[24px_0_48px_-12px_rgba(0,0,0,0.45)] z-50">
+<div class="bg-zinc-900/40 backdrop-blur-xl flex flex-col h-full p-6 gap-2">
+<!-- Header -->
+<div class="flex items-center gap-4 mb-8 px-2">
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden shrink-0">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="close up portrait of young woman with short dark hair in moody studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDduPSXwnxn6k4uoWhA0wvZ6RdcvGBHuqm8FrD90niycX6OFwL1k-pLRJQ_nDAun84BS4w8-KBwm3K2N_P1FQsUgFYXzGSM1mmHQgxojEKjPfIG2L6MeSL9mAMUnJy7-CtPs0zprr8kLlX1k3Cb92cFx9fq2PH-mhUKwyIwaofcL7MRTGwfOdUZpr6U8ZH9SahJEXIj-sbOLSe4JY-108h-2iFCwphfmJ14IlJ2tBxUpUUXizKLzaRtYb-Vk_AXj9jTJl-ceu2nK6c"/>
+</div>
+<div class="flex flex-col">
+<span class="text-xl font-bold tracking-tighter text-white">Luminescent</span>
+<span class="text-[0.68rem] font-bold uppercase tracking-widest text-zinc-500">Premium Analytics</span>
+</div>
+</div>
+<!-- CTA -->
+<button class="bg-primary text-on-primary-fixed w-full py-3 rounded-lg font-bold text-sm mb-6 hover:bg-primary-dim transition-all active:scale-[0.98]">
+                New Analysis
+            </button>
+<!-- Tabs -->
+<div class="flex-1 flex flex-col gap-1 font-['Inter'] text-sm font-medium tracking-tight">
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+                    Overview
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[20px]">monitoring</span>
+                    Sales
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[20px]">payments</span>
+                    Transactions
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[20px]">pie_chart</span>
+                    Portfolio
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[20px]">groups</span>
+                    CRM
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+                    Expenses
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[20px]">query_stats</span>
+                    SaaS Metrics
+                </a>
+<!-- Active Tab based on intent: Projects -->
+<a class="bg-[#b8fd4b] text-zinc-950 rounded-full font-bold shadow-[0_0_15px_rgba(184,253,75,0.4)] px-4 py-3 flex items-center gap-3 active:scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">assignment</span>
+                    Projects
+                </a>
+</div>
+<!-- Footer Tabs -->
+<div class="mt-auto pt-4 flex flex-col gap-1 font-['Inter'] text-sm font-medium tracking-tight border-t border-zinc-800/50">
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+                    Settings
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+                    Support
+                </a>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 ml-72 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-zinc-950/80 backdrop-blur-md sticky top-0 z-40 w-full ml-0">
+<div class="bg-zinc-900/20 flex justify-between items-center h-20 px-8">
+<!-- Brand / Search area -->
+<div class="flex items-center gap-8">
+<div class="text-lg font-black text-white">Financial Intelligence</div>
+<div class="relative group focus-within:ring-1 focus-within:ring-[#b8fd4b]/30 rounded-lg transition-all">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-[18px]">search</span>
+<input class="bg-surface-container-highest border-none text-sm text-on-surface rounded-lg pl-10 pr-4 py-2 w-64 placeholder:text-zinc-600 focus:ring-0" placeholder="Search..." type="text"/>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex items-center gap-6 font-['Inter'] text-xs font-bold uppercase tracking-widest">
+<a class="text-zinc-400 hover:text-white transition-colors py-2" href="#">Reports</a>
+<!-- Assuming Analytics is loosely active for this view if needed, but keeping all inactive to focus on sidebar intent -->
+<a class="text-zinc-400 hover:text-white transition-colors py-2" href="#">Analytics</a>
+<a class="text-zinc-400 hover:text-white transition-colors py-2" href="#">Team</a>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 text-zinc-400">
+<button class="w-10 h-10 flex items-center justify-center hover:bg-zinc-800/40 rounded-lg transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center hover:bg-zinc-800/40 rounded-lg transition-colors">
+<span class="material-symbols-outlined">calendar_month</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center hover:bg-zinc-800/40 rounded-lg transition-colors">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+<button class="bg-surface-container-highest border border-outline-variant/15 text-[#b8fd4b] px-4 py-2 rounded-lg text-sm font-semibold hover:bg-zinc-800/40 transition-all font-['Inter']">
+                        Generate Report
+                    </button>
+<div class="w-9 h-9 rounded-full bg-surface-container overflow-hidden ml-2 cursor-pointer border border-outline-variant/15">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="close up portrait of young woman with short dark hair in moody studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvwdwNB4aSHhei4_uLuS36Wz3hAouWo8f4r4aOkk4_IXY4p-0JPiDAVzodwZm-0CItikDrDtyNEsCXNrmAimJajEt1VRb2TK2F26Den_hxqOn1gb4-K1NwOQGqZ1OGfjfOa27fPIzldJmBvGQTR5ChmHKfsLKWFTqwraS5k76-7hmQK2luZCpExBS3mG1A8Z1WXZzb7HHE5epAy0kZ0eIXubPViJ5inDUCNFxRqmJmRh7CX_Q_iW0cUDT1VXYpRRnIxvTkeKFzq-k"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Dashboard Canvas -->
+<div class="p-8 grid grid-cols-12 gap-6 auto-rows-min max-w-7xl mx-auto w-full">
+<!-- Hero Metric: Task Completion -->
+<div class="col-span-12 lg:col-span-8 bg-surface-variant/40 backdrop-blur-xl rounded-xl p-8 relative overflow-hidden flex flex-col justify-between min-h-[320px] border border-outline-variant/10">
+<!-- Subtle Gradient Glow -->
+<div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-primary/15 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
+<div class="relative z-10 flex flex-col h-full">
+<div class="flex justify-between items-start mb-8">
+<div>
+<span class="text-[0.68rem] font-bold uppercase tracking-widest text-on-surface-variant mb-1 block">Global Trajectory</span>
+<h2 class="text-xl font-semibold text-on-surface">Task Velocity</h2>
+</div>
+<div class="flex gap-2">
+<span class="bg-surface-container px-3 py-1 rounded-full text-[0.68rem] font-bold text-primary flex items-center gap-1 border border-outline-variant/15">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +12.4%
+                             </span>
+</div>
+</div>
+<div class="mt-auto">
+<div class="text-[4rem] leading-none font-bold text-on-surface tracking-tighter mb-2">
+                            94.2<span class="text-2xl text-on-surface-variant">%</span>
+</div>
+<p class="text-sm text-on-surface-variant max-w-sm">
+                            Aggregate completion rate across all active Q3 initiatives. Team output is exceeding projected bandwidth by a significant margin.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Team Workload Distribution -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container rounded-xl p-8 flex flex-col border border-outline-variant/10">
+<div class="mb-6">
+<span class="text-[0.68rem] font-bold uppercase tracking-widest text-on-surface-variant mb-1 block">Resource Allocation</span>
+<h2 class="text-xl font-semibold text-on-surface">Workload Index</h2>
+</div>
+<div class="flex flex-col gap-6 mt-auto">
+<!-- Bar 1 -->
+<div>
+<div class="flex justify-between text-sm mb-2">
+<span class="font-medium text-on-surface">Engineering</span>
+<span class="text-primary font-bold">88%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 88%"></div>
+</div>
+</div>
+<!-- Bar 2 -->
+<div>
+<div class="flex justify-between text-sm mb-2">
+<span class="font-medium text-on-surface">Design Studio</span>
+<span class="text-on-surface-variant">64%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary-fixed-dim h-full rounded-full" style="width: 64%"></div>
+</div>
+</div>
+<!-- Bar 3 -->
+<div>
+<div class="flex justify-between text-sm mb-2">
+<span class="font-medium text-on-surface">Data Science</span>
+<span class="text-error font-bold">104%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-error h-full rounded-full" style="width: 100%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Active Projects -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-low rounded-xl p-8 border border-outline-variant/10">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h2 class="text-xl font-semibold text-on-surface">Active Deployments</h2>
+</div>
+<button class="text-[0.68rem] font-bold uppercase tracking-widest text-primary hover:text-primary-dim transition-colors">View All</button>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Project Card -->
+<div class="bg-surface-container p-5 rounded-lg flex items-center justify-between group hover:bg-surface-container-high transition-colors cursor-pointer border border-transparent hover:border-outline-variant/15">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">data_object</span>
+</div>
+<div>
+<h3 class="text-sm font-semibold text-on-surface">Nexus API Integration</h3>
+<p class="text-[0.68rem] text-on-surface-variant uppercase tracking-wide mt-1">Backend Core</p>
+</div>
+</div>
+<div class="w-48">
+<div class="flex justify-between text-xs mb-1">
+<span class="text-on-surface-variant">Progress</span>
+<span class="text-on-surface">75%</span>
+</div>
+<div class="w-full bg-surface h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full shadow-[0_0_8px_rgba(184,253,75,0.4)]" style="width: 75%"></div>
+</div>
+</div>
+</div>
+<!-- Project Card -->
+<div class="bg-surface-container p-5 rounded-lg flex items-center justify-between group hover:bg-surface-container-high transition-colors cursor-pointer border border-transparent hover:border-outline-variant/15">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center text-secondary-fixed-dim">
+<span class="material-symbols-outlined">view_quilt</span>
+</div>
+<div>
+<h3 class="text-sm font-semibold text-on-surface">Dashboard Overhaul v2</h3>
+<p class="text-[0.68rem] text-on-surface-variant uppercase tracking-wide mt-1">Frontend Client</p>
+</div>
+</div>
+<div class="w-48">
+<div class="flex justify-between text-xs mb-1">
+<span class="text-on-surface-variant">Progress</span>
+<span class="text-on-surface">32%</span>
+</div>
+<div class="w-full bg-surface h-1 rounded-full overflow-hidden">
+<div class="bg-secondary-fixed-dim h-full rounded-full" style="width: 32%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Deadlines Timeline -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container-low rounded-xl p-8 border border-outline-variant/10">
+<div class="mb-8">
+<h2 class="text-xl font-semibold text-on-surface">Upcoming Nodes</h2>
+</div>
+<div class="relative pl-4 border-l border-surface-container-highest flex flex-col gap-8">
+<!-- Timeline Item -->
+<div class="relative">
+<div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_8px_rgba(184,253,75,0.6)]"></div>
+<div class="text-[0.68rem] font-bold uppercase text-primary tracking-widest mb-1">Today, 14:00</div>
+<h4 class="text-sm font-medium text-on-surface">Schema Finalization</h4>
+</div>
+<!-- Timeline Item -->
+<div class="relative">
+<div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-surface-container-highest border border-outline-variant/30"></div>
+<div class="text-[0.68rem] font-bold uppercase text-on-surface-variant tracking-widest mb-1">Oct 24, 09:00</div>
+<h4 class="text-sm font-medium text-on-surface">Client Presentation</h4>
+</div>
+<!-- Timeline Item -->
+<div class="relative">
+<div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-surface-container-highest border border-outline-variant/30"></div>
+<div class="text-[0.68rem] font-bold uppercase text-on-surface-variant tracking-widest mb-1">Oct 28, EOD</div>
+<h4 class="text-sm font-medium text-on-surface">Code Freeze (Q3)</h4>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

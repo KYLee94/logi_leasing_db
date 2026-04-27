@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Strategic Ledger - Analysis Tools</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#d8e3fb",
+                        "outline-variant": "#c5c6cd",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#1a2a3e",
+                        "on-secondary-fixed": "#001a42",
+                        "on-tertiary-container": "#8191a9",
+                        "surface-container-low": "#f3f4f3",
+                        "surface-container": "#eeeeed",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#004395",
+                        "on-secondary-container": "#fefcff",
+                        "surface-tint": "#545f73",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#bcc7de",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#d3e4fe",
+                        "secondary-container": "#2170e4",
+                        "primary-container": "#1e293b",
+                        "secondary-fixed": "#d8e2ff",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#f1f1f0",
+                        "surface": "#f9f9f8",
+                        "primary": "#091426",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "inverse-surface": "#2f3130",
+                        "surface-dim": "#dadad9",
+                        "tertiary": "#041528",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "on-primary-container": "#8590a6",
+                        "on-error": "#ffffff",
+                        "on-background": "#1a1c1c",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-surface": "#1a1c1c",
+                        "surface-variant": "#e2e2e2",
+                        "on-primary-fixed-variant": "#3c475a",
+                        "outline": "#75777d",
+                        "inverse-primary": "#bcc7de",
+                        "surface-bright": "#f9f9f8",
+                        "background": "#f9f9f8",
+                        "on-surface-variant": "#45474c",
+                        "secondary": "#0058be",
+                        "on-primary-fixed": "#111c2d",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#e8e8e7",
+                        "on-tertiary-fixed": "#0b1c30"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body min-h-screen flex flex-col md:flex-row antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- Mobile TopNav (Visible only on md:hidden) -->
+<header class="md:hidden bg-[#f9f9f8] text-[#091426] font-['Manrope'] font-medium tracking-tight docked full-width top-0 sticky z-50 flat no-line tonal-layering flex justify-between items-center h-16 px-8 w-full border-b border-surface-container-highest">
+<div class="text-lg font-bold tracking-tighter text-[#091426]">Strategic Ledger</div>
+<div class="flex items-center gap-4">
+<button class="hover:text-blue-600 transition-colors scale-95 duration-150 ease-in-out">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="hover:text-blue-600 transition-colors scale-95 duration-150 ease-in-out">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<img alt="User Profile Avatar" class="w-8 h-8 rounded-full" data-alt="professional corporate headshot of a person looking confident against a clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2o5MPWlRrKlqswNcvIx8J2RXkf3RpJHgMkhmxNkWZES8GZzeukIfNLrhoIN1tt9cG8FT5S8lECGzRh-xoa28lZJfPrw8OpEws8yde9XMdFtJpCCNuq7OkpT3Y_ObtsULH9WKqgTN7QzM1zBQz_SbkiJi1nvgu3XtVWOwPmhLrtzGIXAN0zkYBShVNAXRDDoJ7xAyYqPPyJtxYE-3NzHtfVnQUT5YfEsMiJW8SKG4pPvSVfZO5uhPZSqsvkqTy2PEV6582auz7W7w"/>
+</div>
+</header>
+<!-- SideNavBar (Hidden on Mobile) -->
+<nav class="hidden md:flex bg-[#f3f4f3] text-[#091426] font-['Inter'] text-sm font-semibold uppercase tracking-wider docked left-0 h-screen w-64 fixed no-border tonal-shift-against-background flat no shadows flex-col py-6 space-y-2 z-40">
+<div class="px-6 pb-6 border-b border-surface-container-high/50 mb-4">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center text-on-primary font-bold">AL</div>
+<div class="text-xl font-extrabold text-[#091426]">Asset Ledger</div>
+</div>
+<div class="text-xs text-on-surface-variant font-medium normal-case tracking-normal">Logistics Global</div>
+</div>
+<div class="flex-1 px-3 space-y-1 overflow-y-auto">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded text-slate-500 hover:bg-[#e2e2e2] transition-all translate-x-1 duration-200 group" href="#">
+<span class="material-symbols-outlined text-xl group-hover:text-primary transition-colors">home</span>
+<span class="group-hover:text-primary transition-colors">Home</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded text-slate-500 hover:bg-[#e2e2e2] transition-all translate-x-1 duration-200 group" href="#">
+<span class="material-symbols-outlined text-xl group-hover:text-primary transition-colors">inventory_2</span>
+<span class="group-hover:text-primary transition-colors">Asset</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded text-slate-500 hover:bg-[#e2e2e2] transition-all translate-x-1 duration-200 group" href="#">
+<span class="material-symbols-outlined text-xl group-hover:text-primary transition-colors">business</span>
+<span class="group-hover:text-primary transition-colors">Company</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded text-slate-500 hover:bg-[#e2e2e2] transition-all translate-x-1 duration-200 group" href="#">
+<span class="material-symbols-outlined text-xl group-hover:text-primary transition-colors">analytics</span>
+<span class="group-hover:text-primary transition-colors">Sector</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded text-[#091426] font-bold border-r-4 border-[#3B82F6] bg-[#e2e2e2] hover:bg-[#e2e2e2] transition-all translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined fill text-xl">construction</span>
+<span>Analysis Tools</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded text-slate-500 hover:bg-[#e2e2e2] transition-all translate-x-1 duration-200 group" href="#">
+<span class="material-symbols-outlined text-xl group-hover:text-primary transition-colors">database</span>
+<span class="group-hover:text-primary transition-colors">Data Playground</span>
+</a>
+</div>
+<div class="px-6 pt-4 border-t border-surface-container-high/50">
+<button class="w-full py-2 px-4 bg-gradient-to-b from-primary to-primary-container text-on-primary rounded text-xs font-semibold tracking-wide shadow-[0_4px_12px_-2px_rgba(30,41,59,0.2)] hover:shadow-[0_6px_16px_-4px_rgba(30,41,59,0.3)] transition-all mb-4">Generate Report</button>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded text-slate-500 hover:bg-[#e2e2e2] transition-all text-xs" href="#">
+<span class="material-symbols-outlined text-lg">help</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-slate-500 hover:bg-[#e2e2e2] transition-all text-xs" href="#">
+<span class="material-symbols-outlined text-lg">logout</span>
+<span>Sign Out</span>
+</a>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 flex flex-col min-h-screen bg-background">
+<!-- TopAppBar (Web Desktop) -->
+<header class="hidden md:flex bg-surface-container-low/80 backdrop-blur-md h-20 items-center justify-between px-8 sticky top-0 z-30">
+<div class="flex items-center gap-4">
+<h1 class="font-headline text-2xl font-medium tracking-tight text-primary">Comparison Workspace</h1>
+<span class="px-2.5 py-1 bg-secondary-fixed text-on-secondary-fixed text-xs font-bold uppercase tracking-wider rounded">Analysis</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="material-symbols-outlined text-on-surface-variant absolute left-3 top-1/2 -translate-y-1/2">search</span>
+<input class="bg-surface-container border border-outline-variant/20 rounded pl-10 pr-4 py-2 text-sm focus:border-secondary focus:bg-surface-container-lowest focus:ring-0 transition-all w-64 font-body placeholder:text-on-surface-variant/60" placeholder="Search assets or benchmarks..." type="text"/>
+</div>
+<div class="flex items-center gap-4 border-l border-outline-variant/20 pl-6">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-9 h-9 rounded-full bg-surface-container-highest border border-outline-variant/30 overflow-hidden cursor-pointer">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="professional corporate headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaRAJRwcMDdqpeEI4kofCxvGQOvHsqOW9Z1ByUfsx5OPHK4fA9za1Vb06_3_7zPWJU3nQf6Euc4bmn5U5smt_02l5r0BZVRW50ihUri9yC5xtTkmluP22bjZC4_IN1fUku5RIwCo0Z3H2xc17-3XY_uHFZlnsWzqM8x9WS64rD9zQHuzqJDBY4KMWpHHw5TIgbuK-GlY4Jhw0A5Szb0AKCscpAI9MlZXZN7GYGfS4lldGG3sFslmVi6VaxTXhFaq7IgKmVTlaEzD0"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="p-6 md:p-8 flex-1 grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+<!-- Left Side Panel (Selection & Filters) -->
+<aside class="xl:col-span-3 space-y-6">
+<!-- Selection Card -->
+<div class="bg-surface-container-lowest rounded shadow-[0_4px_24px_-4px_rgba(30,41,59,0.04)] p-6">
+<h2 class="font-headline text-lg font-medium tracking-tight text-primary mb-4 flex items-center justify-between">
+                        Asset Selection
+                        <span class="material-symbols-outlined text-sm text-on-surface-variant cursor-pointer">tune</span>
+</h2>
+<div class="space-y-4">
+<div class="relative">
+<span class="material-symbols-outlined text-on-surface-variant absolute left-3 top-1/2 -translate-y-1/2 text-sm">add_circle</span>
+<input class="w-full bg-surface-container-low border border-outline-variant/20 rounded pl-9 pr-3 py-2 text-sm focus:border-secondary focus:bg-surface-container-lowest transition-all font-body" placeholder="Select Baseline Asset..." type="text" value="LHR-Delta Logistics Park"/>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined text-on-surface-variant absolute left-3 top-1/2 -translate-y-1/2 text-sm">compare_arrows</span>
+<input class="w-full bg-surface-container-low border border-outline-variant/20 rounded pl-9 pr-3 py-2 text-sm focus:border-secondary focus:bg-surface-container-lowest transition-all font-body" placeholder="Add comparison..." type="text"/>
+</div>
+<button class="w-full py-2 bg-surface-container-high text-on-surface text-sm font-medium rounded hover:bg-surface-container transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span> Add Another
+                        </button>
+</div>
+</div>
+<!-- Benchmarking Filter Card -->
+<div class="bg-surface-container-lowest rounded shadow-[0_4px_24px_-4px_rgba(30,41,59,0.04)] p-6">
+<h2 class="font-headline text-lg font-medium tracking-tight text-primary mb-4">Portfolio Benchmarks</h2>
+<div class="space-y-3">
+<label class="flex items-center gap-3 p-2 hover:bg-surface-container-low rounded cursor-pointer transition-colors">
+<input checked="" class="rounded border-outline-variant text-secondary focus:ring-secondary/50 bg-transparent" type="checkbox"/>
+<span class="text-sm font-body text-on-surface">Regional Average (UK)</span>
+</label>
+<label class="flex items-center gap-3 p-2 hover:bg-surface-container-low rounded cursor-pointer transition-colors">
+<input class="rounded border-outline-variant text-secondary focus:ring-secondary/50 bg-transparent" type="checkbox"/>
+<span class="text-sm font-body text-on-surface">Sector Average (Industrial)</span>
+</label>
+<label class="flex items-center gap-3 p-2 hover:bg-surface-container-low rounded cursor-pointer transition-colors">
+<input class="rounded border-outline-variant text-secondary focus:ring-secondary/50 bg-transparent" type="checkbox"/>
+<span class="text-sm font-body text-on-surface">Top Quartile Performers</span>
+</label>
+</div>
+<div class="mt-5 pt-5 border-t border-surface-container-high">
+<button class="text-sm text-secondary hover:underline font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">edit_attributes</span> Configure Custom Benchmark
+                         </button>
+</div>
+</div>
+</aside>
+<!-- Main Comparison Canvas -->
+<div class="xl:col-span-9 space-y-8">
+<!-- Core Metrics Grid -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline text-xl font-medium tracking-tight text-primary">Operational Metrics</h3>
+<div class="flex gap-2">
+<button class="p-1.5 rounded bg-surface-container-highest text-on-surface"><span class="material-symbols-outlined text-sm">view_column</span></button>
+<button class="p-1.5 rounded text-on-surface-variant hover:bg-surface-container-low"><span class="material-symbols-outlined text-sm">table_rows</span></button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Asset Column 1 -->
+<div class="bg-surface-container-lowest rounded p-6 shadow-[0_4px_32px_-4px_rgba(30,41,59,0.06)] border border-primary/5">
+<div class="mb-6 pb-4 border-b border-surface-container-high">
+<div class="text-xs font-label text-on-surface-variant uppercase tracking-wider mb-1">Baseline</div>
+<h4 class="font-headline text-lg font-semibold text-primary">LHR-Delta Park</h4>
+<p class="text-sm text-on-surface-variant">London, UK • 1.2m sqft</p>
+</div>
+<div class="space-y-5">
+<div>
+<div class="flex justify-between text-sm mb-1">
+<span class="text-on-surface-variant font-medium">Occupancy</span>
+<span class="font-bold text-primary">94.2%</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 94.2%"></div>
+</div>
+</div>
+<div class="flex justify-between items-end border-b border-surface-container-high pb-2">
+<span class="text-sm text-on-surface-variant font-medium">Passing Rent</span>
+<span class="font-bold text-primary text-base">£14.50 <span class="text-xs text-on-surface-variant font-normal">/sqft</span></span>
+</div>
+<div class="flex justify-between items-end border-b border-surface-container-high pb-2">
+<span class="text-sm text-on-surface-variant font-medium">Vacancy Area</span>
+<span class="font-bold text-primary text-base">69,600 <span class="text-xs text-on-surface-variant font-normal">sqft</span></span>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-sm text-on-surface-variant font-medium">WALT</span>
+<div class="text-right">
+<span class="font-bold text-primary text-base">4.2 <span class="text-xs text-on-surface-variant font-normal">yrs</span></span>
+<div class="text-[10px] text-error font-medium flex items-center justify-end gap-0.5"><span class="material-symbols-outlined text-[10px]">trending_down</span> Below Avg</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Asset Column 2 -->
+<div class="bg-surface-container-lowest rounded p-6 shadow-[0_4px_32px_-4px_rgba(30,41,59,0.06)]">
+<div class="mb-6 pb-4 border-b border-surface-container-high">
+<div class="text-xs font-label text-on-surface-variant uppercase tracking-wider mb-1">Comparison</div>
+<h4 class="font-headline text-lg font-semibold text-primary">MAN-Omega Hub</h4>
+<p class="text-sm text-on-surface-variant">Manchester, UK • 0.8m sqft</p>
+</div>
+<div class="space-y-5">
+<div>
+<div class="flex justify-between text-sm mb-1">
+<span class="text-on-surface-variant font-medium">Occupancy</span>
+<span class="font-bold text-primary">98.5%</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full" style="width: 98.5%"></div>
+</div>
+</div>
+<div class="flex justify-between items-end border-b border-surface-container-high pb-2">
+<span class="text-sm text-on-surface-variant font-medium">Passing Rent</span>
+<div class="text-right">
+<span class="font-bold text-primary text-base">£11.20 <span class="text-xs text-on-surface-variant font-normal">/sqft</span></span>
+<div class="text-[10px] text-on-surface-variant font-medium flex items-center justify-end gap-0.5"><span class="material-symbols-outlined text-[10px] text-error">arrow_drop_down</span> -£3.30 vs Base</div>
+</div>
+</div>
+<div class="flex justify-between items-end border-b border-surface-container-high pb-2">
+<span class="text-sm text-on-surface-variant font-medium">Vacancy Area</span>
+<span class="font-bold text-primary text-base">12,000 <span class="text-xs text-on-surface-variant font-normal">sqft</span></span>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-sm text-on-surface-variant font-medium">WALT</span>
+<div class="text-right">
+<span class="font-bold text-primary text-base">6.8 <span class="text-xs text-on-surface-variant font-normal">yrs</span></span>
+<div class="text-[10px] text-[#059669] font-medium flex items-center justify-end gap-0.5"><span class="material-symbols-outlined text-[10px]">trending_up</span> Strong</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Benchmark Column -->
+<div class="bg-surface-container-low rounded p-6 border border-outline-variant/15 border-dashed flex flex-col justify-between">
+<div class="mb-6 pb-4 border-b border-outline-variant/20">
+<div class="text-xs font-label text-on-surface-variant uppercase tracking-wider mb-1">Benchmark</div>
+<h4 class="font-headline text-lg font-medium text-on-surface-variant">UK Regional Avg</h4>
+<p class="text-sm text-on-surface-variant/70">Industrial • Q3 2023</p>
+</div>
+<div class="space-y-6 flex-1 flex flex-col justify-center">
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Occupancy</span>
+<span class="font-mono text-on-surface">95.0%</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Avg Rent</span>
+<span class="font-mono text-on-surface">£12.80</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Avg WALT</span>
+<span class="font-mono text-on-surface">5.5 yrs</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- What-to-Review Section (Bento Box) -->
+<section>
+<h3 class="font-headline text-xl font-medium tracking-tight text-primary mb-6">Review Highlights</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Outlier Alert -->
+<div class="bg-surface-container-lowest rounded p-6 shadow-[0_4px_24px_-4px_rgba(30,41,59,0.04)] border-l-4 border-l-error flex gap-4">
+<div class="text-error bg-error-container/50 w-10 h-10 rounded flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div>
+<h4 class="font-headline text-base font-semibold text-primary mb-1">WALT Outlier Detected</h4>
+<p class="text-sm text-on-surface-variant mb-3 leading-relaxed">LHR-Delta Park's WALT (4.2 yrs) is significantly below the regional benchmark (5.5 yrs). Two major tenant expiries are scheduled within 18 months.</p>
+<button class="text-sm font-medium text-secondary hover:underline">View Expiry Schedule →</button>
+</div>
+</div>
+<!-- Data Integrity Alert -->
+<div class="bg-surface-container-lowest rounded p-6 shadow-[0_4px_24px_-4px_rgba(30,41,59,0.04)] border-l-4 border-l-[#f59e0b] flex gap-4">
+<div class="text-[#d97706] bg-[#fef3c7] w-10 h-10 rounded flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined">data_alert</span>
+</div>
+<div>
+<h4 class="font-headline text-base font-semibold text-primary mb-1">Missing Data Metrics</h4>
+<p class="text-sm text-on-surface-variant mb-3 leading-relaxed">MAN-Omega Hub is missing recent EPC ratings for 3 units. Comparison confidence on sustainability metrics is reduced.</p>
+<button class="text-sm font-medium text-secondary hover:underline">Review Missing Fields →</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="md:hidden bg-surface-container-lowest border-t border-surface-container-high fixed bottom-0 w-full z-50 flex justify-around py-3 pb-safe">
+<a class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium font-label">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="text-[10px] font-medium font-label">Asset</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-secondary font-medium transition-colors" href="#">
+<div class="bg-secondary-container/20 px-4 py-0.5 rounded-full">
+<span class="material-symbols-outlined fill text-secondary">construction</span>
+</div>
+<span class="text-[10px] font-bold font-label">Analysis</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">database</span>
+<span class="text-[10px] font-medium font-label">Data</span>
+</a>
+</nav>
+</body></html>

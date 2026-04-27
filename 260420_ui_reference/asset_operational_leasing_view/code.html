@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Asset Command - Operational Leasing View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#f9f9f8",
+                        "on-primary-fixed": "#111c2d",
+                        "inverse-primary": "#bcc7de",
+                        "primary-container": "#1e293b",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "primary-fixed": "#d8e3fb",
+                        "inverse-surface": "#2f3130",
+                        "surface-container-high": "#e8e8e7",
+                        "on-tertiary-container": "#8191a9",
+                        "on-secondary-container": "#fefcff",
+                        "outline-variant": "#c5c6cd",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "on-primary-container": "#8590a6",
+                        "on-secondary-fixed": "#001a42",
+                        "tertiary": "#041528",
+                        "primary-fixed-dim": "#bcc7de",
+                        "primary": "#091426",
+                        "surface-container-low": "#f3f4f3",
+                        "surface-container": "#eeeeed",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface": "#f9f9f8",
+                        "tertiary-fixed": "#d3e4fe",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#004395",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#2170e4",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#1a1c1c",
+                        "surface-variant": "#e2e2e2",
+                        "error": "#ba1a1a",
+                        "secondary": "#0058be",
+                        "surface-bright": "#f9f9f8",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-primary-fixed-variant": "#3c475a",
+                        "inverse-on-surface": "#f1f1f0",
+                        "surface-container-highest": "#e2e2e2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#1a1c1c",
+                        "surface-dim": "#dadad9",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "outline": "#75777d",
+                        "tertiary-container": "#1a2a3e",
+                        "on-surface-variant": "#45474c",
+                        "surface-tint": "#545f73"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.25rem",
+                        "xl": "0.25rem",
+                        "full": "0.25rem"
+                    },
+                    "spacing": {},
+                    "fontFamily": {
+                        "headline": [
+                            "Manrope"
+                        ],
+                        "body": [
+                            "Inter"
+                        ],
+                        "label": [
+                            "Inter"
+                        ]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-surface');
+            font-family: theme('fontFamily.body');
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- SideNavBar -->
+<nav class="bg-[#f3f4f3] dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-inter text-sm font-medium tracking-normal h-screen w-64 rounded-none flex flex-col h-full border-r-0 p-4 border-r border-outline-variant/15">
+<div class="mb-8">
+<h1 class="font-manrope font-semibold text-lg text-slate-900 dark:text-white">The Strategic Ledger</h1>
+<p class="text-on-surface-variant text-xs mt-1">Institutional Grade</p>
+</div>
+<ul class="flex flex-col gap-1 flex-1">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 hover:translate-x-1 duration-200 rounded-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span>Home</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-sm shadow-sm transition-all duration-200 hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="domain" data-weight="fill" style="font-variation-settings: 'FILL' 1;">domain</span>
+<span>Asset</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 hover:translate-x-1 duration-200 rounded-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="corporate_fare">corporate_fare</span>
+<span>Company</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 hover:translate-x-1 duration-200 rounded-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="analytics">analytics</span>
+<span>Sector</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 hover:translate-x-1 duration-200 rounded-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="insights">insights</span>
+<span>Analysis Tools</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 hover:translate-x-1 duration-200 rounded-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="database">database</span>
+<span>Data Playground</span>
+</a>
+</li>
+</ul>
+<ul class="flex flex-col gap-1 mt-auto pt-4 border-t border-outline-variant/15">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 hover:translate-x-1 duration-200 rounded-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
+<span>Support</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 hover:translate-x-1 duration-200 rounded-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="logout">logout</span>
+<span>Sign Out</span>
+</a>
+</li>
+</ul>
+</nav>
+<div class="flex flex-col flex-1 h-full overflow-hidden">
+<!-- TopAppBar -->
+<header class="bg-[#f9f9f8] dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-manrope font-medium tracking-tight flex justify-between items-center w-full px-6 py-3 max-w-full docked full-width top-0 z-10 relative">
+<div class="flex items-center gap-4">
+<span class="text-xl font-bold tracking-tighter text-slate-900 dark:text-white">Asset Command</span>
+</div>
+<div class="flex-1 max-w-md mx-6">
+<div class="relative flex items-center bg-surface-container-low outline outline-1 outline-outline-variant/15 rounded focus-within:outline-secondary focus-within:bg-surface-container-lowest transition-all">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant text-[20px]">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-sm py-2 pl-10 pr-4 text-on-surface placeholder:text-on-surface-variant" placeholder="Search operational records..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4 text-slate-500 dark:text-slate-400">
+<button class="hover:text-blue-600 dark:hover:text-blue-300 transition-colors opacity-100 hover:opacity-80 transition-opacity p-1">
+<span class="material-symbols-outlined text-[22px]" data-icon="notifications">notifications</span>
+</button>
+<button class="hover:text-blue-600 dark:hover:text-blue-300 transition-colors opacity-100 hover:opacity-80 transition-opacity p-1">
+<span class="material-symbols-outlined text-[22px]" data-icon="flag">flag</span>
+</button>
+<button class="hover:text-blue-600 dark:hover:text-blue-300 transition-colors opacity-100 hover:opacity-80 transition-opacity p-1">
+<span class="material-symbols-outlined text-[22px]" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+<div class="absolute bottom-0 left-0 bg-slate-200/50 dark:bg-slate-800/50 h-[1px] w-full pointer-events-none"></div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto p-8 relative">
+<div class="max-w-7xl mx-auto space-y-8 pb-12">
+<!-- Asset Header & Banner -->
+<div class="space-y-6">
+<div class="flex justify-between items-end">
+<div>
+<p class="font-inter text-[0.75rem] font-semibold tracking-[0.05em] text-on-surface-variant uppercase mb-2">Operational Leasing View</p>
+<h2 class="font-manrope text-[2.75rem] font-semibold tracking-[-0.02em] leading-tight text-primary">Frankfurt Distribution Hub Alpha</h2>
+<p class="font-inter text-[0.875rem] text-on-surface-variant mt-2">ID: FRA-LOG-0042 • Acquired: Q3 2018</p>
+</div>
+<div class="flex gap-3">
+<button class="bg-surface-container-high text-on-surface font-inter font-medium text-sm px-4 py-2 rounded transition-colors hover:bg-surface-variant">Export Ledger</button>
+<button class="bg-gradient-to-b from-primary to-primary-container text-on-primary font-inter font-semibold text-sm px-4 py-2 rounded shadow-[0_12px_32px_-4px_rgba(30,41,59,0.08)]">Edit Record</button>
+</div>
+</div>
+<!-- Review Required Banner -->
+<div class="bg-error-container text-on-error-container p-4 rounded flex items-start gap-3 outline outline-1 outline-error/20">
+<span class="material-symbols-outlined mt-0.5 text-error" data-icon="warning">warning</span>
+<div>
+<h4 class="font-manrope font-medium text-[0.875rem] text-error">Review Required</h4>
+<p class="font-inter text-[0.875rem] mt-1 leading-relaxed">Lease agreement for Unit B (Schenker) expires in 45 days. Countersigned renewal not present in ledger.</p>
+</div>
+</div>
+</div>
+<!-- KPI Strip (Asymmetric Grid) -->
+<div class="grid grid-cols-4 gap-6">
+<div class="bg-surface-container-lowest p-6 flex flex-col justify-between h-32 outline outline-1 outline-outline-variant/15 rounded">
+<span class="font-inter text-[0.75rem] font-semibold tracking-[0.05em] text-on-surface-variant uppercase">Occupancy Rate</span>
+<div class="flex items-baseline gap-2">
+<span class="font-manrope text-[2rem] font-medium tracking-tight text-primary">92.4%</span>
+<span class="font-inter text-[0.875rem] text-secondary font-medium">+1.2%</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 flex flex-col justify-between h-32 outline outline-1 outline-outline-variant/15 rounded">
+<span class="font-inter text-[0.75rem] font-semibold tracking-[0.05em] text-on-surface-variant uppercase">Avg. Rent Level</span>
+<div class="flex items-baseline gap-2">
+<span class="font-manrope text-[2rem] font-medium tracking-tight text-primary">€6.40</span>
+<span class="font-inter text-[0.875rem] text-on-surface-variant">/SQM/MO</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 flex flex-col justify-between h-32 outline outline-1 outline-outline-variant/15 rounded">
+<span class="font-inter text-[0.75rem] font-semibold tracking-[0.05em] text-on-surface-variant uppercase">Vacancy Area</span>
+<div class="flex items-baseline gap-2">
+<span class="font-manrope text-[2rem] font-medium tracking-tight text-primary">4,200</span>
+<span class="font-inter text-[0.875rem] text-on-surface-variant">SQM</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 flex flex-col justify-between h-32 outline outline-1 outline-outline-variant/15 rounded">
+<span class="font-inter text-[0.75rem] font-semibold tracking-[0.05em] text-on-surface-variant uppercase">Outstanding Issues</span>
+<div class="flex items-baseline gap-2">
+<span class="font-manrope text-[2rem] font-medium tracking-tight text-error">3</span>
+<span class="font-inter text-[0.875rem] text-on-surface-variant">Actionable</span>
+</div>
+</div>
+</div>
+<!-- Main Layout Area -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Left Column: Stacking Plan & Area Breakdown -->
+<div class="col-span-4 space-y-8">
+<!-- Area Breakdown -->
+<div class="bg-surface-container-lowest p-6 outline outline-1 outline-outline-variant/15 rounded">
+<h3 class="font-manrope text-[1.5rem] font-medium tracking-[-0.01em] text-primary mb-6">Area Breakdown</h3>
+<div class="space-y-4">
+<div class="flex justify-between items-center pb-3 border-b border-outline-variant/15">
+<span class="font-inter text-[0.875rem] text-on-surface">Total GLA</span>
+<span class="font-manrope font-medium text-primary">55,000 SQM</span>
+</div>
+<div class="flex justify-between items-center pb-3 border-b border-outline-variant/15">
+<span class="font-inter text-[0.875rem] text-on-surface-variant">Warehouse Space</span>
+<span class="font-inter text-[0.875rem] text-on-surface">48,500 SQM</span>
+</div>
+<div class="flex justify-between items-center pb-3">
+<span class="font-inter text-[0.875rem] text-on-surface-variant">Office &amp; Ancillary</span>
+<span class="font-inter text-[0.875rem] text-on-surface">6,500 SQM</span>
+</div>
+</div>
+</div>
+<!-- Stacking Plan Visualization -->
+<div class="bg-surface-container-lowest p-6 outline outline-1 outline-outline-variant/15 rounded">
+<div class="flex justify-between items-end mb-6">
+<h3 class="font-manrope text-[1.5rem] font-medium tracking-[-0.01em] text-primary">Stacking Plan</h3>
+<div class="flex gap-3">
+<div class="flex items-center gap-1.5"><div class="w-2 h-2 bg-secondary rounded-sm"></div><span class="text-[0.65rem] uppercase tracking-wider font-semibold text-on-surface-variant">Occupied</span></div>
+<div class="flex items-center gap-1.5"><div class="w-2 h-2 bg-surface-variant rounded-sm"></div><span class="text-[0.65rem] uppercase tracking-wider font-semibold text-on-surface-variant">Vacant</span></div>
+<div class="flex items-center gap-1.5"><div class="w-2 h-2 bg-error rounded-sm"></div><span class="text-[0.65rem] uppercase tracking-wider font-semibold text-on-surface-variant">Review</span></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<!-- Level 2 -->
+<div class="flex gap-2 h-12">
+<div class="flex-1 bg-surface-variant rounded flex items-center justify-center relative group cursor-pointer">
+<span class="font-inter text-xs text-on-surface-variant">U2-A</span>
+</div>
+<div class="flex-[2] bg-secondary/10 border border-secondary/20 rounded flex items-center justify-center relative group cursor-pointer">
+<span class="font-inter text-xs text-secondary font-medium">U2-B</span>
+</div>
+</div>
+<!-- Level 1 -->
+<div class="flex gap-2 h-16">
+<div class="flex-[1.5] bg-secondary/10 border border-secondary/20 rounded flex items-center justify-center relative group cursor-pointer">
+<span class="font-inter text-xs text-secondary font-medium">U1-A</span>
+</div>
+<div class="flex-[1.5] bg-error/10 border border-error/30 rounded flex items-center justify-center relative group cursor-pointer">
+<span class="font-inter text-xs text-error font-medium">U1-B</span>
+</div>
+<div class="flex-1 bg-secondary/10 border border-secondary/20 rounded flex items-center justify-center relative group cursor-pointer">
+<span class="font-inter text-xs text-secondary font-medium">U1-C</span>
+</div>
+</div>
+<!-- Ground -->
+<div class="flex gap-2 h-24">
+<div class="flex-[3] bg-secondary/10 border border-secondary/20 rounded flex items-center justify-center relative group cursor-pointer">
+<span class="font-inter text-xs text-secondary font-medium">G-A</span>
+</div>
+<div class="flex-[1] bg-surface-variant rounded flex items-center justify-center relative group cursor-pointer">
+<span class="font-inter text-xs text-on-surface-variant">G-B</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Tenant Roster Table -->
+<div class="col-span-8 bg-surface-container-lowest outline outline-1 outline-outline-variant/15 rounded flex flex-col">
+<div class="p-6 pb-4 border-b border-outline-variant/15 flex justify-between items-center bg-primary-container text-on-primary-fixed rounded-t">
+<h3 class="font-manrope text-[1.5rem] font-medium tracking-[-0.01em] text-white">Tenant Roster</h3>
+<button class="text-white opacity-80 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+</div>
+<div class="overflow-x-auto flex-1">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant/15 bg-surface-container-low">
+<th class="py-3 px-6 font-inter text-[0.75rem] font-semibold tracking-[0.05em] text-on-surface-variant uppercase">Tenant Name</th>
+<th class="py-3 px-6 font-inter text-[0.75rem] font-semibold tracking-[0.05em] text-on-surface-variant uppercase">Unit/Level</th>
+<th class="py-3 px-6 font-inter text-[0.75rem] font-semibold tracking-[0.05em] text-on-surface-variant uppercase text-right">Area (SQM)</th>
+<th class="py-3 px-6 font-inter text-[0.75rem] font-semibold tracking-[0.05em] text-on-surface-variant uppercase text-right">Rent (EUR)</th>
+<th class="py-3 px-6 font-inter text-[0.75rem] font-semibold tracking-[0.05em] text-on-surface-variant uppercase">Expiry Date</th>
+<th class="py-3 px-6 font-inter text-[0.75rem] font-semibold tracking-[0.05em] text-on-surface-variant uppercase">Status</th>
+</tr>
+</thead>
+<tbody class="font-inter text-[0.875rem]">
+<tr class="border-b border-outline-variant/15 hover:bg-surface-container-low/50 transition-colors">
+<td class="py-4 px-6 font-medium text-primary">Amazon Logistik GmbH</td>
+<td class="py-4 px-6 text-on-surface-variant">G-A</td>
+<td class="py-4 px-6 text-right tabular-nums text-on-surface">25,000</td>
+<td class="py-4 px-6 text-right tabular-nums text-on-surface">6.80</td>
+<td class="py-4 px-6 text-on-surface">2028-12-31</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary"></div>
+<span class="text-on-surface-variant">Stable</span>
+</div>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/15 bg-surface-container-low/30 hover:bg-surface-container-low/80 transition-colors">
+<td class="py-4 px-6 font-medium text-primary">DB Schenker AG</td>
+<td class="py-4 px-6 text-on-surface-variant">U1-B</td>
+<td class="py-4 px-6 text-right tabular-nums text-on-surface">12,500</td>
+<td class="py-4 px-6 text-right tabular-nums text-on-surface">6.20</td>
+<td class="py-4 px-6 font-medium text-error">2023-11-15</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-error"></div>
+<span class="text-error font-medium">Expiring &lt; 6M</span>
+</div>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/15 hover:bg-surface-container-low/50 transition-colors">
+<td class="py-4 px-6 font-medium text-on-surface-variant italic">Unknown Entity</td>
+<td class="py-4 px-6 text-on-surface-variant">U2-A</td>
+<td class="py-4 px-6 text-right tabular-nums text-on-surface-variant">2,200</td>
+<td class="py-4 px-6 text-right tabular-nums text-on-surface-variant">-</td>
+<td class="py-4 px-6 text-on-surface-variant">-</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-surface-tint"></div>
+<span class="text-on-surface-variant">Conflict</span>
+</div>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/15 bg-surface-container-low/30 hover:bg-surface-container-low/80 transition-colors">
+<td class="py-4 px-6 font-medium text-primary">Kuehne + Nagel</td>
+<td class="py-4 px-6 text-on-surface-variant">U1-A</td>
+<td class="py-4 px-6 text-right tabular-nums text-on-surface">8,000</td>
+<td class="py-4 px-6 text-right tabular-nums text-on-surface">6.50</td>
+<td class="py-4 px-6 text-on-surface">2026-06-30</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary"></div>
+<span class="text-on-surface-variant">Stable</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

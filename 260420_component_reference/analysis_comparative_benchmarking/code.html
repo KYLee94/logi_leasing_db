@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Strategic Ledger - Comparative Workspace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Manrope:wght@500;600;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e8e8e7",
+                        "surface-dim": "#dadad9",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#3c475a",
+                        "background": "#f9f9f8",
+                        "surface-bright": "#f9f9f8",
+                        "on-tertiary-container": "#8191a9",
+                        "outline": "#75777d",
+                        "on-secondary-container": "#fefcff",
+                        "on-primary-container": "#8590a6",
+                        "tertiary": "#041528",
+                        "inverse-primary": "#bcc7de",
+                        "surface-container-low": "#f3f4f3",
+                        "on-surface-variant": "#45474c",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "inverse-surface": "#2f3130",
+                        "outline-variant": "#c5c6cd",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#1a1c1c",
+                        "surface-variant": "#e2e2e2",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-primary-fixed": "#111c2d",
+                        "on-background": "#1a1c1c",
+                        "surface-tint": "#545f73",
+                        "secondary-fixed": "#d8e2ff",
+                        "tertiary-container": "#1a2a3e",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "on-primary": "#ffffff",
+                        "surface": "#f9f9f8",
+                        "tertiary-fixed": "#d3e4fe",
+                        "on-secondary-fixed-variant": "#004395",
+                        "secondary-container": "#2170e4",
+                        "primary-container": "#1e293b",
+                        "on-secondary-fixed": "#001a42",
+                        "inverse-on-surface": "#f1f1f0",
+                        "primary-fixed-dim": "#bcc7de",
+                        "primary": "#091426",
+                        "surface-container": "#eeeeed",
+                        "primary-fixed": "#d8e3fb",
+                        "secondary": "#0058be",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-headline { font-family: 'Manrope', sans-serif; }
+        /* Typography Hierarchy Implementations */
+        .text-display-md { font-size: 2.75rem; line-height: 1.1; font-weight: 600; letter-spacing: -0.02em; }
+        .text-headline-sm { font-size: 1.5rem; line-height: 1.2; font-weight: 500; letter-spacing: -0.01em; }
+        .text-label-md { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+        .text-body-md { font-size: 0.875rem; line-height: 1.5; font-weight: 400; }
+        
+        /* Ambient Shadow */
+        .shadow-ambient { box-shadow: 0 12px 32px -4px rgba(30, 41, 59, 0.08); }
+        /* Ghost Border */
+        .ghost-border { box-shadow: inset 0 0 0 1px rgba(197, 198, 205, 0.15); }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased flex min-h-screen">
+<!-- SideNavBar (Shared Component) -->
+<aside class="fixed left-0 h-screen w-64 flex flex-col bg-surface-container-low z-50 text-primary font-body text-sm tracking-wide transition-all duration-150 ease-in">
+<!-- Header -->
+<div class="px-8 py-8 flex flex-col items-start gap-4">
+<div class="w-12 h-12 bg-primary rounded flex items-center justify-center text-on-primary font-headline font-black text-xl">
+                SL
+            </div>
+<div>
+<h2 class="font-headline font-black text-xl uppercase tracking-widest text-primary">The Ledger</h2>
+<p class="text-xs text-outline tracking-wider uppercase mt-1">Institutional Logistics</p>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav class="flex flex-col flex-1 py-4 space-y-2 px-4">
+<!-- Inactive Tab -->
+<a class="flex items-center gap-4 px-4 py-3 rounded text-outline hover:text-primary hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">home</span>
+<span class="font-medium">Home</span>
+</a>
+<!-- Inactive Tab -->
+<a class="flex items-center gap-4 px-4 py-3 rounded text-outline hover:text-primary hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">domain</span>
+<span class="font-medium">Asset</span>
+</a>
+<!-- Inactive Tab -->
+<a class="flex items-center gap-4 px-4 py-3 rounded text-outline hover:text-primary hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">business</span>
+<span class="font-medium">Company</span>
+</a>
+<!-- Inactive Tab -->
+<a class="flex items-center gap-4 px-4 py-3 rounded text-outline hover:text-primary hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">category</span>
+<span class="font-medium">Sector</span>
+</a>
+<!-- Active Tab -->
+<a class="flex items-center gap-4 px-4 py-3 bg-background text-secondary font-semibold border-r-4 border-secondary shadow-sm transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">query_stats</span>
+<span>Analysis Tools</span>
+</a>
+<!-- Inactive Tab -->
+<a class="flex items-center gap-4 px-4 py-3 rounded text-outline hover:text-primary hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">database</span>
+<span class="font-medium">Data Playground</span>
+</a>
+</nav>
+<!-- Footer Tabs -->
+<div class="p-4 mt-auto space-y-2">
+<a class="flex items-center gap-4 px-4 py-3 rounded text-outline hover:text-primary hover:bg-surface-variant transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">contact_support</span>
+<span class="font-medium">Support</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded text-outline hover:text-primary hover:bg-surface-variant transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+<span class="font-medium">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Canvas -->
+<div class="ml-64 flex-1 flex flex-col min-h-screen">
+<!-- TopNavBar (Shared Component) -->
+<header class="sticky top-0 z-40 w-full h-16 px-8 flex justify-between items-center bg-background text-primary font-headline font-medium tracking-tight">
+<div class="flex items-center gap-8">
+<!-- Search on Right implies right-aligned cluster, but let's put title/brand here if needed. Leaving empty as requested structure -->
+</div>
+<div class="flex items-center gap-6">
+<div class="relative flex items-center ghost-border rounded bg-surface-container-low px-4 py-2 w-64 focus-within:bg-surface-container-lowest focus-within:ring-1 focus-within:ring-secondary transition-all">
+<span class="material-symbols-outlined text-outline mr-2 text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-outline text-primary outline-none" placeholder="Search Ledgers..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-outline hover:text-secondary transition-all duration-200 scale-95 active:scale-90">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-outline hover:text-secondary transition-all duration-200 scale-95 active:scale-90">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<button class="text-outline hover:text-secondary transition-all duration-200 scale-95 active:scale-90">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Workspace Content -->
+<main class="flex-1 p-12 lg:px-16 flex flex-col gap-12">
+<!-- Workspace Header -->
+<section class="flex flex-col gap-2">
+<h1 class="font-headline text-display-md text-primary">Comparative Workspace</h1>
+<p class="text-body-md text-on-surface-variant max-w-2xl">Ad-hoc analytical environment for cross-entity benchmarking. Isolate operational delta and structural risk factors across selected portfolios or assets.</p>
+</section>
+<!-- The Instrument: Multi-Entity Selector -->
+<section class="bg-surface-container-low rounded p-6 flex items-end gap-6 ghost-border">
+<div class="flex-1 flex flex-col gap-3">
+<label class="text-label-md text-outline">Baseline Entity</label>
+<div class="bg-surface-container-lowest h-12 rounded px-4 flex items-center justify-between cursor-pointer hover:bg-surface-bright transition-colors shadow-ambient">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-medium text-primary">Logistics Park Alpha - Dallas</span>
+</div>
+<span class="material-symbols-outlined text-outline">expand_more</span>
+</div>
+</div>
+<div class="flex items-center justify-center pb-3 px-4">
+<span class="material-symbols-outlined text-outline text-3xl font-light">compare_arrows</span>
+</div>
+<div class="flex-1 flex flex-col gap-3">
+<label class="text-label-md text-outline">Comparison Entity</label>
+<div class="bg-surface-container-lowest h-12 rounded px-4 flex items-center justify-between cursor-pointer hover:bg-surface-bright transition-colors shadow-ambient">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-medium text-primary">Regional Distribution Hub - Fort Worth</span>
+</div>
+<span class="material-symbols-outlined text-outline">expand_more</span>
+</div>
+</div>
+<button class="h-12 px-6 rounded bg-surface-container-high text-primary font-semibold hover:bg-surface-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span> Add Pivot
+                </button>
+</section>
+<!-- Top Row: Metric Comparison Cards (Asymmetric Grid) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Card 1: NOI Spread -->
+<div class="bg-surface-container-lowest rounded p-8 flex flex-col gap-6 ghost-border">
+<div class="flex justify-between items-start">
+<h3 class="text-label-md text-outline">NOI Spread (TTM)</h3>
+<span class="material-symbols-outlined text-outline text-sm">info</span>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex items-baseline justify-between border-b border-surface-container-high pb-2">
+<span class="text-body-md text-on-surface-variant">Baseline</span>
+<span class="font-headline text-2xl font-semibold text-primary">$4.2M</span>
+</div>
+<div class="flex items-baseline justify-between border-b border-surface-container-high pb-2">
+<span class="text-body-md text-on-surface-variant">Comparison</span>
+<span class="font-headline text-2xl font-semibold text-primary">$3.8M</span>
+</div>
+<div class="flex items-center justify-between pt-2">
+<span class="text-label-md text-outline">Delta</span>
+<span class="text-body-md font-semibold text-secondary flex items-center gap-1">
+                                +10.5% <span class="material-symbols-outlined text-sm">trending_up</span>
+</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Risk Factors -->
+<div class="bg-surface-container-lowest rounded p-8 flex flex-col gap-6 ghost-border">
+<div class="flex justify-between items-start">
+<h3 class="text-label-md text-outline">Weighted Risk Exposure</h3>
+<span class="material-symbols-outlined text-outline text-sm">warning</span>
+</div>
+<div class="flex items-center gap-8 h-full">
+<div class="flex-1 flex flex-col items-center justify-center gap-2 border-r border-surface-container-high pr-8">
+<span class="text-display-md text-primary">Low</span>
+<span class="text-label-md text-outline">Baseline</span>
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden mt-2">
+<div class="w-1/4 h-full bg-secondary"></div>
+</div>
+</div>
+<div class="flex-1 flex flex-col items-center justify-center gap-2 pl-4">
+<span class="text-display-md text-primary">Med</span>
+<span class="text-label-md text-outline">Comparison</span>
+<div class="w-full h-1 bg-surface-container-high rounded-full overflow-hidden mt-2">
+<div class="w-3/4 h-full bg-primary-container"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3: Yields -->
+<div class="bg-surface-container-lowest rounded p-8 flex flex-col gap-6 ghost-border">
+<div class="flex justify-between items-start">
+<h3 class="text-label-md text-outline">Going-in Yield</h3>
+<span class="material-symbols-outlined text-outline text-sm">show_chart</span>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-4">
+<div class="w-2 h-8 bg-primary rounded-full"></div>
+<div class="flex-1 flex justify-between items-baseline">
+<span class="text-body-md text-on-surface-variant">Baseline</span>
+<span class="font-headline text-xl font-semibold text-primary">4.85%</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-2 h-8 bg-secondary rounded-full"></div>
+<div class="flex-1 flex justify-between items-baseline">
+<span class="text-body-md text-on-surface-variant">Comparison</span>
+<span class="font-headline text-xl font-semibold text-primary">5.12%</span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-surface-container-high">
+<p class="text-body-md text-on-surface-variant text-sm">Comparison indicates a <span class="font-semibold text-primary">27 bps</span> spread premium.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Middle Row: Analytical Charts (Layout Assymetry) -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Chart Area (Span 2) -->
+<div class="lg:col-span-2 bg-surface-container-lowest rounded p-8 ghost-border flex flex-col h-[400px]">
+<div class="flex justify-between items-center mb-8">
+<h3 class="font-headline text-headline-sm text-primary">Occupancy vs. Market Growth (5Y)</h3>
+<div class="flex gap-4">
+<div class="flex items-center gap-2"><span class="w-3 h-3 bg-primary rounded-full"></span><span class="text-label-md">Baseline</span></div>
+<div class="flex items-center gap-2"><span class="w-3 h-3 bg-secondary rounded-full"></span><span class="text-label-md">Comparison</span></div>
+</div>
+</div>
+<!-- Mock Bar Chart Layout -->
+<div class="flex-1 flex items-end justify-between gap-4 border-b border-l border-surface-container-high pb-4 pl-4 relative">
+<!-- Y Axis Labels -->
+<div class="absolute -left-8 top-0 bottom-4 flex flex-col justify-between text-xs text-outline font-label h-full">
+<span>100%</span>
+<span>75%</span>
+<span>50%</span>
+<span>25%</span>
+<span>0%</span>
+</div>
+<!-- Grid Lines (Subtle) -->
+<div class="absolute inset-0 pl-4 pb-4 pointer-events-none flex flex-col justify-between">
+<div class="w-full border-t border-surface-container-high/50"></div>
+<div class="w-full border-t border-surface-container-high/50"></div>
+<div class="w-full border-t border-surface-container-high/50"></div>
+<div class="w-full border-t border-surface-container-high/50"></div>
+<div class="w-full border-t border-surface-container-high/50 opacity-0"></div>
+</div>
+<!-- Data Groups -->
+<div class="flex gap-2 w-full justify-center h-full items-end z-10 group relative">
+<div class="w-12 bg-primary h-[85%] rounded-t opacity-90 hover:opacity-100 transition-opacity"></div>
+<div class="w-12 bg-secondary h-[80%] rounded-t opacity-90 hover:opacity-100 transition-opacity"></div>
+<span class="absolute -bottom-8 text-xs text-outline font-label">2019</span>
+</div>
+<div class="flex gap-2 w-full justify-center h-full items-end z-10">
+<div class="w-12 bg-primary h-[88%] rounded-t opacity-90"></div>
+<div class="w-12 bg-secondary h-[82%] rounded-t opacity-90"></div>
+<span class="absolute -bottom-8 text-xs text-outline font-label">2020</span>
+</div>
+<div class="flex gap-2 w-full justify-center h-full items-end z-10">
+<div class="w-12 bg-primary h-[92%] rounded-t opacity-90"></div>
+<div class="w-12 bg-secondary h-[85%] rounded-t opacity-90"></div>
+<span class="absolute -bottom-8 text-xs text-outline font-label">2021</span>
+</div>
+<div class="flex gap-2 w-full justify-center h-full items-end z-10">
+<div class="w-12 bg-primary h-[95%] rounded-t opacity-90"></div>
+<div class="w-12 bg-secondary h-[88%] rounded-t opacity-90"></div>
+<span class="absolute -bottom-8 text-xs text-outline font-label">2022</span>
+</div>
+<div class="flex gap-2 w-full justify-center h-full items-end z-10">
+<div class="w-12 bg-primary h-[98%] rounded-t opacity-90"></div>
+<div class="w-12 bg-secondary h-[94%] rounded-t opacity-90"></div>
+<span class="absolute -bottom-8 text-xs text-outline font-label">2023</span>
+</div>
+</div>
+</div>
+<!-- Narrative Box (Span 1) -->
+<div class="bg-surface-container-low rounded p-8 flex flex-col justify-between">
+<div>
+<h3 class="font-headline text-headline-sm text-primary mb-4">Workspace Insights</h3>
+<p class="text-body-md text-on-surface-variant mb-6">
+                            The Baseline Entity demonstrates superior occupancy resilience over the trailing 5-year period. While the Comparison Entity shows higher going-in yield, it carries elevated structural vacancy risk during market softening.
+                        </p>
+<ul class="space-y-3">
+<li class="flex items-start gap-3 text-body-md">
+<span class="material-symbols-outlined text-secondary text-sm mt-0.5">check_circle</span>
+<span>Baseline: Consistent &gt;90% occupancy.</span>
+</li>
+<li class="flex items-start gap-3 text-body-md">
+<span class="material-symbols-outlined text-outline text-sm mt-0.5">warning</span>
+<span>Comparison: Exhibited an 8% dip in Q3 2020.</span>
+</li>
+</ul>
+</div>
+<button class="w-full py-3 bg-gradient-to-b from-primary to-primary-container text-on-primary font-semibold rounded mt-8 shadow-ambient flex justify-center items-center gap-2">
+                        Generate Narrative Report <span class="material-symbols-outlined text-sm">description</span>
+</button>
+</div>
+</section>
+<!-- Bottom Row: Detailed Benchmarking Table (Ledger View) -->
+<section class="bg-surface-container-lowest rounded overflow-hidden ghost-border">
+<div class="p-6 bg-surface-container-low border-b border-surface-container-highest flex justify-between items-center">
+<h3 class="font-headline text-headline-sm text-primary">Technical Benchmark Matrix</h3>
+<button class="text-label-md text-secondary hover:underline flex items-center gap-1">
+                        Export CSV <span class="material-symbols-outlined text-sm">download</span>
+</button>
+</div>
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<!-- Header: primary-container background with on-primary text for contrast -->
+<thead>
+<tr class="bg-primary-container text-on-primary font-label text-label-md">
+<th class="p-4 font-semibold tracking-wider">Metric Parameter</th>
+<th class="p-4 font-semibold tracking-wider">Baseline Entity</th>
+<th class="p-4 font-semibold tracking-wider">Comparison Entity</th>
+<th class="p-4 font-semibold tracking-wider text-right">Variance</th>
+<th class="p-4 font-semibold tracking-wider text-center">Status</th>
+</tr>
+</thead>
+<tbody class="text-body-md">
+<!-- Rows: Alternate between background and surface-container-low -->
+<tr class="bg-background hover:bg-surface-variant transition-colors border-b border-surface-container-highest">
+<td class="p-4 text-on-surface-variant">Clear Height</td>
+<td class="p-4 text-primary font-medium">36 ft</td>
+<td class="p-4 text-primary font-medium">32 ft</td>
+<td class="p-4 text-secondary text-right font-medium">+4 ft</td>
+<td class="p-4 flex justify-center"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span></td>
+</tr>
+<tr class="bg-surface-container-low hover:bg-surface-variant transition-colors border-b border-surface-container-highest">
+<td class="p-4 text-on-surface-variant">Dock High Doors</td>
+<td class="p-4 text-primary font-medium">124</td>
+<td class="p-4 text-primary font-medium">98</td>
+<td class="p-4 text-secondary text-right font-medium">+26</td>
+<td class="p-4 flex justify-center"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span></td>
+</tr>
+<tr class="bg-background hover:bg-surface-variant transition-colors border-b border-surface-container-highest">
+<td class="p-4 text-on-surface-variant">Truck Court Depth</td>
+<td class="p-4 text-primary font-medium">135 ft</td>
+<td class="p-4 text-primary font-medium">180 ft</td>
+<td class="p-4 text-outline text-right font-medium">-45 ft</td>
+<td class="p-4 flex justify-center"><span class="w-1.5 h-1.5 rounded-full bg-outline"></span></td>
+</tr>
+<tr class="bg-surface-container-low hover:bg-surface-variant transition-colors border-b border-surface-container-highest">
+<td class="p-4 text-on-surface-variant">WALT (Years)</td>
+<td class="p-4 text-primary font-medium">4.2</td>
+<td class="p-4 text-primary font-medium">6.8</td>
+<td class="p-4 text-outline text-right font-medium">-2.6</td>
+<td class="p-4 flex justify-center"><span class="w-1.5 h-1.5 rounded-full bg-outline"></span></td>
+</tr>
+<tr class="bg-background hover:bg-surface-variant transition-colors">
+<td class="p-4 text-on-surface-variant">ESG Certification</td>
+<td class="p-4 text-primary font-medium">LEED Gold</td>
+<td class="p-4 text-primary font-medium">None</td>
+<td class="p-4 text-secondary text-right font-medium">Premium</td>
+<td class="p-4 flex justify-center"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+</div>
+</body></html>

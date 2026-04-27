@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Customer CRM Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#ccd9bd",
+                    "surface-variant": "#232628",
+                    "on-primary-container": "#223600",
+                    "error": "#ff7351",
+                    "on-error-container": "#ffd2c8",
+                    "secondary-container": "#3f4a36",
+                    "surface-container-highest": "#232628",
+                    "secondary": "#dae7cb",
+                    "on-secondary-container": "#c8d5b9",
+                    "on-secondary": "#4a5540",
+                    "on-secondary-fixed-variant": "#535f49",
+                    "tertiary": "#fffae4",
+                    "on-surface": "#f6f6f7",
+                    "surface-dim": "#0c0e0f",
+                    "primary-dim": "#aaee3d",
+                    "inverse-on-surface": "#545556",
+                    "surface-tint": "#b8fd4b",
+                    "tertiary-fixed": "#fcef58",
+                    "error-container": "#b92902",
+                    "on-secondary-fixed": "#37432f",
+                    "surface-container-lowest": "#000000",
+                    "surface-bright": "#292d2e",
+                    "primary": "#b8fd4b",
+                    "on-tertiary-fixed": "#4b4600",
+                    "outline-variant": "#464849",
+                    "on-tertiary-fixed-variant": "#6a6200",
+                    "surface": "#0c0e0f",
+                    "primary-fixed": "#b8fd4b",
+                    "on-tertiary": "#686100",
+                    "on-primary-fixed": "#304a00",
+                    "inverse-primary": "#456900",
+                    "inverse-surface": "#f9f9fa",
+                    "secondary-dim": "#ccd9bd",
+                    "on-error": "#450900",
+                    "tertiary-fixed-dim": "#eee04b",
+                    "primary-fixed-dim": "#aaee3d",
+                    "primary-container": "#83c300",
+                    "secondary-fixed": "#dae7cb",
+                    "on-background": "#f6f6f7",
+                    "tertiary-container": "#fcef58",
+                    "background": "#0c0e0f",
+                    "tertiary-dim": "#eee04b",
+                    "on-tertiary-container": "#5f5800",
+                    "surface-container-high": "#1d2021",
+                    "on-surface-variant": "#aaabac",
+                    "surface-container-low": "#111415",
+                    "on-primary": "#3d5e00",
+                    "on-primary-fixed-variant": "#456900",
+                    "error-dim": "#d53d18",
+                    "surface-container": "#181a1b",
+                    "outline": "#747577"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": [
+                            "Inter"
+                    ],
+                    "body": [
+                            "Inter"
+                    ],
+                    "label": [
+                            "Inter"
+                    ]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="bg-zinc-950 h-screen w-72 flex flex-col fixed left-0 top-0 bg-zinc-900/40 backdrop-blur-xl shadow-[24px_0_48px_-12px_rgba(0,0,0,0.45)] flex flex-col h-full p-6 gap-2 z-50">
+<div class="mb-8 flex items-center gap-4">
+<div class="h-10 w-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="User Profile Avatar" class="h-full w-full object-cover" data-alt="Professional headshot of a person in business attire against a neutral grey background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDV-_eVkVlti0hBoX8lfCobgaONXo8iV95hXIgcdj8avscapuyeHH06HOSxV_MakNO6benkVmPSixEhepq7NOviXuM2fQl1uLyfvEiJh61kA3P_23QArgQ5Fg8KdxL2DmVw68g-2LDbdUKcloBCSiJlE86TKlaPmcXO_NQuNucLwoA81WrvnC6Qf45L0B3dDwKw3VsTpF1Q2nAHW2KeYXKElNQSYE3-h6WofZ4bS-a6QDYgTgTCEJ9SrpWnV_KpDGOUftFMm22_zBM"/>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tighter text-white">Luminescent</h1>
+<p class="text-xs text-zinc-400">Premium Analytics</p>
+</div>
+</div>
+<button class="mb-6 w-full py-3 bg-primary text-surface-container-lowest rounded-sm font-bold hover:bg-primary-dim transition-all duration-300 shadow-[0_0_15px_rgba(184,253,75,0.2)]">
+            New Analysis
+        </button>
+<div class="flex-1 flex flex-col gap-2 font-['Inter'] text-sm font-medium tracking-tight text-[#b8fd4b]">
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">dashboard</span>
+                Overview
+            </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">monitoring</span>
+                Sales
+            </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">payments</span>
+                Transactions
+            </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">pie_chart</span>
+                Portfolio
+            </a>
+<a class="bg-[#b8fd4b] text-zinc-950 rounded-full font-bold shadow-[0_0_15px_rgba(184,253,75,0.4)] px-4 py-3 flex items-center gap-3 active:scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">groups</span>
+                CRM
+            </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">account_balance_wallet</span>
+                Expenses
+            </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">query_stats</span>
+                SaaS Metrics
+            </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg active:scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">assignment</span>
+                Projects
+            </a>
+</div>
+<div class="mt-auto border-t border-outline-variant/15 pt-4 flex flex-col gap-2">
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">settings</span>
+                Settings
+            </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">help</span>
+                Support
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 ml-72 flex flex-col min-h-screen relative">
+<!-- TopAppBar -->
+<header class="bg-zinc-950/80 backdrop-blur-md sticky top-0 z-40 w-full bg-zinc-900/20 flat no-border flex justify-between items-center h-20 px-8 text-[#b8fd4b]">
+<div class="flex items-center gap-8">
+<h2 class="text-lg font-black text-white">Financial Intelligence</h2>
+<nav class="hidden md:flex gap-6 font-['Inter'] text-xs font-bold uppercase tracking-widest">
+<a class="text-zinc-400 hover:text-white transition-colors py-2" href="#">Reports</a>
+<a class="text-zinc-400 hover:text-white transition-colors py-2" href="#">Analytics</a>
+<a class="text-[#b8fd4b] border-b-2 border-[#b8fd4b] pb-1 py-2" href="#">Team</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-zinc-400">
+<button class="hover:text-white transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="hover:text-white transition-colors"><span class="material-symbols-outlined">calendar_month</span></button>
+<button class="hover:text-white transition-colors"><span class="material-symbols-outlined">tune</span></button>
+</div>
+<button class="px-4 py-2 bg-primary text-surface-container-lowest text-xs font-bold rounded-sm hover:bg-primary-dim transition-all">Generate Report</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant/30">
+<img alt="User profile" class="h-full w-full object-cover" data-alt="Close up of a man's face looking confident in professional attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVvBm1qTLL7_8uOnMz8zyHjpkyq5U81IoIH2Bcao2tJaOxwh7bUG0Bi0HS9HhXM463yzU5BT1iNwIjN0IpO8cBTCQ-qv3LvmAtuPAJfBySKZKHbSn7lVS-2v6BJbjvCcLp7bv3TZT3oc_J7VwKPJFr3a-_vKq8g9K7mWvzrdnoGhPljvhHcOV0Y08eD2pelLoq_A-6LE3blUqFAmDpk4PH5MHUbl-i3KNnsf0hrIQDRi3HIihoeAdMndTu-oCroZTB9xjETrNVsNA"/>
+</div>
+</div>
+</header>
+<!-- Dashboard Canvas -->
+<main class="flex-1 p-8 overflow-y-auto">
+<!-- Hero Metrics Row -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+<!-- Primary Metric (Asymmetrical Wide) -->
+<div class="lg:col-span-2 bg-surface-container-low rounded-[1.5rem] p-8 relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-50 z-0 pointer-events-none"></div>
+<div class="relative z-10">
+<p class="text-[0.68rem] font-bold text-zinc-400 uppercase tracking-widest mb-2">Total Pipeline Value</p>
+<div class="flex items-end gap-4 mb-6">
+<h3 class="text-[3.5rem] font-bold text-white leading-none tracking-tighter">$4.2M</h3>
+<span class="text-primary flex items-center text-sm font-medium bg-primary/10 px-2 py-1 rounded-full mb-2">
+<span class="material-symbols-outlined text-sm mr-1">trending_up</span> +12.5%
+                            </span>
+</div>
+<div class="h-24 w-full bg-surface-container-highest rounded-lg relative overflow-hidden">
+<!-- Faux chart area -->
+<div class="absolute bottom-0 left-0 right-0 h-full w-full bg-gradient-to-t from-primary/20 to-transparent flex items-end">
+<svg class="w-full h-16 text-primary" fill="none" preserveaspectratio="none" stroke="currentColor" stroke-width="2" viewbox="0 0 100 100">
+<path d="M0 100 Q 10 80, 20 90 T 40 70 T 60 50 T 80 40 T 100 20" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+</div>
+</div>
+<!-- Active Deals Stack -->
+<div class="flex flex-col gap-6">
+<div class="bg-surface-container rounded-xl p-6 flex-1 border border-outline-variant/10 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.45)]">
+<p class="text-[0.68rem] font-bold text-zinc-400 uppercase tracking-widest mb-1">Active Deals</p>
+<h4 class="text-[1.5rem] font-semibold text-white">142</h4>
+<div class="mt-4 flex items-center justify-between text-xs text-zinc-500">
+<span>vs last month</span>
+<span class="text-secondary-fixed-dim">+8 new</span>
+</div>
+</div>
+<div class="bg-surface-container rounded-xl p-6 flex-1 border border-outline-variant/10 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.45)]">
+<p class="text-[0.68rem] font-bold text-zinc-400 uppercase tracking-widest mb-1">Avg Deal Size</p>
+<h4 class="text-[1.5rem] font-semibold text-white">$29.5k</h4>
+<div class="mt-4 flex items-center justify-between text-xs text-zinc-500">
+<span>Target: $25k</span>
+<span class="text-primary">On Track</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Complex Data Row -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Detailed Customer List (Bento Box Style) -->
+<div class="lg:col-span-2 bg-surface-container-low rounded-[1.5rem] p-8 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.45)] border border-outline-variant/10">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-[1.5rem] font-semibold text-white">Priority Engagement</h3>
+<button class="text-primary text-xs font-bold uppercase tracking-widest hover:text-primary-dim transition-colors">View All</button>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Customer Row 1 -->
+<div class="flex items-center justify-between p-4 rounded-xl bg-surface-container-highest hover:bg-surface-bright transition-colors cursor-pointer group border border-outline-variant/15">
+<div class="flex items-center gap-4">
+<div class="relative">
+<img alt="Customer Avatar" class="h-12 w-12 rounded-full object-cover border-2 border-surface-container-low group-hover:border-primary transition-colors" data-alt="Professional portrait of a woman in a bright modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZRRmRx62ooEM9Na0jTxJF8_3u7VyaU4amH4ccOvwfmtdcFYzK6dXfpvavHut0jr7sUtcVju3nbVjLqlM1f67Br21aTOMp5Y9pMSAEF8umrXjbcZMdOmzhsRRfsNdOqYdxifFOUDoBurXoqqXWMW1Rrc1wzq_ccDhxdf8VDrUZ3pg4OrvBFVqK4ZRjZ_rFYQg25pI1iiKJx2AJly9hI1IimoDdVhvwnLLfKF9bXf1ll19JMCkQ8a6bLcmK5elVxwQcgpbLqFyV_U0"/>
+<div class="absolute -bottom-1 -right-1 h-4 w-4 bg-primary rounded-full border-2 border-surface-container-highest"></div>
+</div>
+<div>
+<h5 class="text-sm font-semibold text-white">TechCorp Solutions</h5>
+<p class="text-xs text-zinc-400">Sarah Jenkins • Director of IT</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="text-right hidden sm:block">
+<p class="text-xs text-zinc-400 mb-1">Engagement Score</p>
+<div class="flex gap-1">
+<div class="h-1.5 w-4 bg-primary rounded-full"></div>
+<div class="h-1.5 w-4 bg-primary rounded-full"></div>
+<div class="h-1.5 w-4 bg-primary rounded-full"></div>
+<div class="h-1.5 w-4 bg-surface-variant rounded-full"></div>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-semibold text-white">$120k</p>
+<p class="text-[0.68rem] text-primary uppercase font-bold tracking-wider">Closing</p>
+</div>
+</div>
+</div>
+<!-- Customer Row 2 -->
+<div class="flex items-center justify-between p-4 rounded-xl bg-surface-container-highest hover:bg-surface-bright transition-colors cursor-pointer group border border-outline-variant/15">
+<div class="flex items-center gap-4">
+<div class="relative">
+<img alt="Customer Avatar" class="h-12 w-12 rounded-full object-cover border-2 border-surface-container-low group-hover:border-primary transition-colors" data-alt="Portrait of a mature man in a tailored suit looking contemplative" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpOY2DqyB7U9sXwCcMgbia1TELAfVnrhkmiJLYkQ66wy6NLAPgXuXi-cdw26e4Iwslh0viB0oa4BauZugcrQ4FGJfW1HEjCACH7b2WvMzCL4P_MMu0yLK0ndvl-dbmhWCS_1FS6zDLYIGEvXGdbrvfWGVVDiK7Gigxxph8R1rkyjbmlZ8CF8z93evGg6VnNb0eqX4uU6h08NRJkM1A37w7vBfwhlSKp_kqmlL0lTwkf92Q9bf-WVNxw15oiVX0xAzbpuL7FsX8dIg"/>
+</div>
+<div>
+<h5 class="text-sm font-semibold text-white">Global Logistics</h5>
+<p class="text-xs text-zinc-400">Marcus Chen • VP Operations</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="text-right hidden sm:block">
+<p class="text-xs text-zinc-400 mb-1">Engagement Score</p>
+<div class="flex gap-1">
+<div class="h-1.5 w-4 bg-secondary-dim rounded-full"></div>
+<div class="h-1.5 w-4 bg-secondary-dim rounded-full"></div>
+<div class="h-1.5 w-4 bg-surface-variant rounded-full"></div>
+<div class="h-1.5 w-4 bg-surface-variant rounded-full"></div>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-semibold text-white">$85k</p>
+<p class="text-[0.68rem] text-secondary-dim uppercase font-bold tracking-wider">Proposal</p>
+</div>
+</div>
+</div>
+<!-- Customer Row 3 -->
+<div class="flex items-center justify-between p-4 rounded-xl bg-surface-container-highest hover:bg-surface-bright transition-colors cursor-pointer group border border-outline-variant/15">
+<div class="flex items-center gap-4">
+<div class="relative">
+<div class="h-12 w-12 rounded-full bg-surface-variant flex items-center justify-center text-zinc-400 border-2 border-surface-container-low group-hover:border-error transition-colors">
+<span class="material-symbols-outlined">domain</span>
+</div>
+</div>
+<div>
+<h5 class="text-sm font-semibold text-white">Apex Manufacturing</h5>
+<p class="text-xs text-zinc-400">Unassigned</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="text-right hidden sm:block">
+<p class="text-xs text-zinc-400 mb-1">Engagement Score</p>
+<div class="flex gap-1">
+<div class="h-1.5 w-4 bg-error rounded-full"></div>
+<div class="h-1.5 w-4 bg-surface-variant rounded-full"></div>
+<div class="h-1.5 w-4 bg-surface-variant rounded-full"></div>
+<div class="h-1.5 w-4 bg-surface-variant rounded-full"></div>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-semibold text-white">$45k</p>
+<p class="text-[0.68rem] text-error uppercase font-bold tracking-wider">At Risk</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Actionable Tasks Side panel -->
+<div class="bg-surface-container-low rounded-[1.5rem] p-8 border border-outline-variant/10 flex flex-col shadow-[0_24px_48px_-12px_rgba(0,0,0,0.45)]">
+<h3 class="text-[1.5rem] font-semibold text-white mb-6">Action Items</h3>
+<div class="flex-1 flex flex-col gap-4">
+<!-- Task 1 -->
+<div class="p-4 bg-surface-container rounded-xl border border-outline-variant/20 hover:border-primary/50 transition-colors cursor-pointer">
+<div class="flex items-start justify-between mb-2">
+<span class="bg-primary/10 text-primary text-[0.68rem] px-2 py-1 rounded font-bold uppercase tracking-wider">Urgent</span>
+<span class="text-xs text-zinc-500">Today, 2:00 PM</span>
+</div>
+<h6 class="text-sm font-medium text-white mb-1">Finalize TechCorp Contract</h6>
+<p class="text-xs text-zinc-400 line-clamp-2">Review redlines with legal and send final DocuSign to Sarah Jenkins.</p>
+</div>
+<!-- Task 2 -->
+<div class="p-4 bg-surface-container rounded-xl border border-outline-variant/20 hover:border-primary/50 transition-colors cursor-pointer">
+<div class="flex items-start justify-between mb-2">
+<span class="bg-surface-variant text-zinc-300 text-[0.68rem] px-2 py-1 rounded font-bold uppercase tracking-wider">Follow Up</span>
+<span class="text-xs text-zinc-500">Tomorrow</span>
+</div>
+<h6 class="text-sm font-medium text-white mb-1">Check-in with Global Logistics</h6>
+<p class="text-xs text-zinc-400 line-clamp-2">Ensure they received the updated pricing proposal and schedule a review call.</p>
+</div>
+<!-- Empty State / Add Task -->
+<button class="mt-auto p-4 border border-dashed border-outline-variant/40 rounded-xl text-zinc-500 hover:text-white hover:border-white transition-all flex items-center justify-center gap-2 text-sm font-medium">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">add</span>
+                            Log New Activity
+                        </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

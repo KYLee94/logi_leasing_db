@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Asset Command - Sector Benchmarking</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#f9f9f8",
+                        "on-primary-fixed": "#111c2d",
+                        "inverse-primary": "#bcc7de",
+                        "primary-container": "#1e293b",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "primary-fixed": "#d8e3fb",
+                        "inverse-surface": "#2f3130",
+                        "surface-container-high": "#e8e8e7",
+                        "on-tertiary-container": "#8191a9",
+                        "on-secondary-container": "#fefcff",
+                        "outline-variant": "#c5c6cd",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "on-primary-container": "#8590a6",
+                        "on-secondary-fixed": "#001a42",
+                        "tertiary": "#041528",
+                        "primary-fixed-dim": "#bcc7de",
+                        "primary": "#091426",
+                        "surface-container-low": "#f3f4f3",
+                        "surface-container": "#eeeeed",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface": "#f9f9f8",
+                        "tertiary-fixed": "#d3e4fe",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#004395",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#2170e4",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#1a1c1c",
+                        "surface-variant": "#e2e2e2",
+                        "error": "#ba1a1a",
+                        "secondary": "#0058be",
+                        "surface-bright": "#f9f9f8",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-primary-fixed-variant": "#3c475a",
+                        "inverse-on-surface": "#f1f1f0",
+                        "surface-container-highest": "#e2e2e2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#1a1c1c",
+                        "surface-dim": "#dadad9",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "outline": "#75777d",
+                        "tertiary-container": "#1a2a3e",
+                        "on-surface-variant": "#45474c",
+                        "surface-tint": "#545f73"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Manrope', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased flex h-screen overflow-hidden">
+<!-- SideNavBar -->
+<nav class="bg-[#f3f4f3] dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-inter text-sm font-medium tracking-normal h-screen w-64 rounded-none border-r border-transparent flex flex-col h-full p-4 shrink-0 hidden md:flex" style="background-color: var(--surface-container-low);">
+<div class="mb-8 px-2">
+<h1 class="font-manrope font-semibold text-lg text-slate-900 dark:text-white" style="font-family: 'Manrope', sans-serif;">The Strategic Ledger</h1>
+<p class="text-xs text-on-surface-variant mt-1 uppercase tracking-widest font-semibold opacity-70">Institutional Grade</p>
+</div>
+<ul class="flex-1 space-y-1">
+<li>
+<a class="flex items-center px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 hover:translate-x-1 duration-200 rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">dashboard</span>
+                    Home
+                </a>
+</li>
+<li>
+<a class="flex items-center px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 hover:translate-x-1 duration-200 rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">domain</span>
+                    Asset
+                </a>
+</li>
+<li>
+<a class="flex items-center px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 hover:translate-x-1 duration-200 rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">corporate_fare</span>
+                    Company
+                </a>
+</li>
+<li>
+<a class="flex items-center px-3 py-2 bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-sm shadow-sm hover:translate-x-1 duration-200 rounded-DEFAULT font-bold" href="#" style="background-color: var(--surface-container-lowest); color: var(--secondary);">
+<span class="material-symbols-outlined mr-3 text-[20px]">analytics</span>
+                    Sector
+                </a>
+</li>
+<li>
+<a class="flex items-center px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 hover:translate-x-1 duration-200 rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">insights</span>
+                    Analysis Tools
+                </a>
+</li>
+<li>
+<a class="flex items-center px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 hover:translate-x-1 duration-200 rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">database</span>
+                    Data Playground
+                </a>
+</li>
+</ul>
+<div class="mt-auto pt-4 border-t border-transparent" style="border-color: rgba(0,0,0,0.05);">
+<ul class="space-y-1">
+<li>
+<a class="flex items-center px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 hover:translate-x-1 duration-200 rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">help</span>
+                        Support
+                    </a>
+</li>
+<li>
+<a class="flex items-center px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 hover:translate-x-1 duration-200 rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">logout</span>
+                        Sign Out
+                    </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col h-full overflow-hidden">
+<!-- TopAppBar -->
+<header class="bg-[#f9f9f8] dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-manrope font-medium tracking-tight w-full top-0 flex justify-between items-center px-6 py-3 shrink-0" style="background-color: var(--background);">
+<div class="flex items-center gap-6">
+<span class="text-xl font-bold tracking-tighter text-slate-900 dark:text-white" style="font-family: 'Manrope', sans-serif;">Asset Command</span>
+<div class="relative hidden lg:block w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="w-full pl-10 pr-4 py-1.5 bg-surface-container-low border border-outline-variant/15 rounded-DEFAULT text-sm focus:outline-none focus:border-secondary focus:bg-surface-container-lowest transition-colors placeholder:text-on-surface-variant" placeholder="Search portfolio..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors Active: opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-[24px]">notifications</span>
+</button>
+<button class="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors Active: opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-[24px]">flag</span>
+</button>
+<button class="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 transition-colors Active: opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-[24px]">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Separation line mimicking TopAppBar style_separation_logic but using background structural logic -->
+<div class="bg-slate-200/50 dark:bg-slate-800/50 h-[1px] w-full shrink-0" style="background-color: var(--surface-container-highest);"></div>
+<!-- Scrollable Canvas -->
+<main class="flex-1 overflow-y-auto p-6 lg:p-8 space-y-8 no-scrollbar bg-background">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<p class="text-label-md font-label uppercase tracking-[0.05em] text-on-surface-variant mb-2">Portfolio Analytics</p>
+<h2 class="text-display-md font-headline font-semibold tracking-[-0.02em] text-primary leading-tight">Sector Benchmarking</h2>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 bg-surface-container-high text-on-surface font-body text-sm font-medium rounded-DEFAULT hover:bg-surface-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">download</span> Export Report
+                    </button>
+<button class="px-4 py-2 bg-gradient-to-b from-primary to-primary-container text-on-primary font-body text-sm font-semibold rounded-DEFAULT shadow-[0_12px_32px_-4px_rgba(30,41,59,0.08)] hover:opacity-90 transition-opacity flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">tune</span> Adjust Parameters
+                    </button>
+</div>
+</div>
+<!-- Main Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left Column (Wider Data visualization) -->
+<div class="lg:col-span-8 space-y-8">
+<!-- Regional Concentration (Bar Chart Placeholder via CSS) -->
+<section class="bg-surface-container-lowest p-6 rounded-DEFAULT shadow-[0_12px_32px_-4px_rgba(30,41,59,0.02)] border border-outline-variant/15 flex flex-col h-[400px]">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="text-headline-sm font-headline font-medium text-primary tracking-[-0.01em]">Regional Concentration</h3>
+<p class="text-body-md text-on-surface-variant mt-1">GLA distribution by sub-market (sqm)</p>
+</div>
+<button class="text-secondary hover:underline text-sm font-medium flex items-center gap-1">
+                                View Details <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<!-- CSS Driven Bar Chart visualization -->
+<div class="flex-1 flex items-end gap-4 mt-auto w-full pt-8 px-4">
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full bg-surface-container-low rounded-t-DEFAULT relative group h-[220px]">
+<div class="absolute bottom-0 w-full bg-primary rounded-t-DEFAULT transition-all duration-500 h-[85%]"></div>
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-inverse-surface text-inverse-on-surface text-xs py-1 px-2 rounded-DEFAULT whitespace-nowrap pointer-events-none z-10">4.2M sqm</div>
+</div>
+<span class="text-label-md font-label uppercase tracking-wider text-on-surface-variant">Gyeonggi</span>
+</div>
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full bg-surface-container-low rounded-t-DEFAULT relative group h-[220px]">
+<div class="absolute bottom-0 w-full bg-primary-container rounded-t-DEFAULT transition-all duration-500 h-[60%]"></div>
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-inverse-surface text-inverse-on-surface text-xs py-1 px-2 rounded-DEFAULT whitespace-nowrap pointer-events-none z-10">2.8M sqm</div>
+</div>
+<span class="text-label-md font-label uppercase tracking-wider text-on-surface-variant">Incheon</span>
+</div>
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full bg-surface-container-low rounded-t-DEFAULT relative group h-[220px]">
+<div class="absolute bottom-0 w-full bg-surface-tint rounded-t-DEFAULT transition-all duration-500 h-[45%]"></div>
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-inverse-surface text-inverse-on-surface text-xs py-1 px-2 rounded-DEFAULT whitespace-nowrap pointer-events-none z-10">1.9M sqm</div>
+</div>
+<span class="text-label-md font-label uppercase tracking-wider text-on-surface-variant">Seoul</span>
+</div>
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full bg-surface-container-low rounded-t-DEFAULT relative group h-[220px]">
+<div class="absolute bottom-0 w-full bg-outline rounded-t-DEFAULT transition-all duration-500 h-[25%]"></div>
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-inverse-surface text-inverse-on-surface text-xs py-1 px-2 rounded-DEFAULT whitespace-nowrap pointer-events-none z-10">1.1M sqm</div>
+</div>
+<span class="text-label-md font-label uppercase tracking-wider text-on-surface-variant">Busan</span>
+</div>
+</div>
+</section>
+<!-- Asset Ranking Table (Ledger View) -->
+<section class="bg-surface-container-lowest rounded-DEFAULT border border-outline-variant/15 overflow-hidden">
+<div class="p-6 border-b border-outline-variant/15 flex justify-between items-center bg-surface-container-lowest">
+<h3 class="text-headline-sm font-headline font-medium text-primary tracking-[-0.01em]">Performance Ranking</h3>
+<div class="flex gap-2">
+<select class="text-sm bg-surface-container-low border-transparent focus:border-secondary focus:ring-0 rounded-DEFAULT py-1.5 pl-3 pr-8 text-on-surface font-medium cursor-pointer">
+<option>Occupancy</option>
+<option>Average Rent</option>
+<option>WALT</option>
+</select>
+</div>
+</div>
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-primary-container text-on-primary-fixed bg-opacity-5">
+<th class="py-3 px-6 text-label-md font-label uppercase tracking-[0.05em] font-semibold">Asset ID</th>
+<th class="py-3 px-6 text-label-md font-label uppercase tracking-[0.05em] font-semibold">Location</th>
+<th class="py-3 px-6 text-label-md font-label uppercase tracking-[0.05em] font-semibold text-right">Occupancy</th>
+<th class="py-3 px-6 text-label-md font-label uppercase tracking-[0.05em] font-semibold text-right">WALT (Yrs)</th>
+<th class="py-3 px-6 text-label-md font-label uppercase tracking-[0.05em] font-semibold text-center">Status</th>
+</tr>
+</thead>
+<tbody class="text-body-md font-body text-on-surface">
+<tr class="bg-background hover:bg-surface-container-low transition-colors border-b border-outline-variant/10">
+<td class="py-4 px-6 font-medium text-primary">ICN-Logistics-04</td>
+<td class="py-4 px-6 text-on-surface-variant">Incheon Free Economic Zone</td>
+<td class="py-4 px-6 text-right font-medium text-[#047857]">100.0%</td>
+<td class="py-4 px-6 text-right">7.2</td>
+<td class="py-4 px-6 text-center">
+<span class="inline-block w-2 h-2 rounded-full bg-teal-600" title="Stable"></span>
+</td>
+</tr>
+<tr class="bg-surface-container-lowest hover:bg-surface-container-low transition-colors border-b border-outline-variant/10">
+<td class="py-4 px-6 font-medium text-primary">GYG-Hub-12</td>
+<td class="py-4 px-6 text-on-surface-variant">Gyeonggi-do Central</td>
+<td class="py-4 px-6 text-right font-medium text-[#047857]">98.5%</td>
+<td class="py-4 px-6 text-right">5.8</td>
+<td class="py-4 px-6 text-center">
+<span class="inline-block w-2 h-2 rounded-full bg-teal-600" title="Stable"></span>
+</td>
+</tr>
+<tr class="bg-background hover:bg-surface-container-low transition-colors border-b border-outline-variant/10">
+<td class="py-4 px-6 font-medium text-primary">SEL-Urban-01</td>
+<td class="py-4 px-6 text-on-surface-variant">Seoul Metro (Last Mile)</td>
+<td class="py-4 px-6 text-right font-medium text-[#b45309]">82.1%</td>
+<td class="py-4 px-6 text-right">2.1</td>
+<td class="py-4 px-6 text-center">
+<span class="inline-block w-2 h-2 rounded-full bg-amber-600" title="Watch"></span>
+</td>
+</tr>
+<tr class="bg-surface-container-lowest hover:bg-surface-container-low transition-colors">
+<td class="py-4 px-6 font-medium text-primary">BSN-Port-03</td>
+<td class="py-4 px-6 text-on-surface-variant">Busan New Port</td>
+<td class="py-4 px-6 text-right font-medium text-error">74.0%</td>
+<td class="py-4 px-6 text-right">1.5</td>
+<td class="py-4 px-6 text-center">
+<span class="inline-block w-2 h-2 rounded-full bg-error" title="Critical"></span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- Right Column (Narrow Utility Rail) -->
+<div class="lg:col-span-4 space-y-8">
+<!-- Portfolio Benchmarking Matrix (Summary) -->
+<section class="bg-surface-container-low p-6 rounded-DEFAULT">
+<h3 class="text-headline-sm font-headline font-medium text-primary tracking-[-0.01em] mb-6">Benchmarking Matrix</h3>
+<div class="space-y-6">
+<!-- Metric 1 -->
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="text-label-md font-label uppercase tracking-widest text-on-surface-variant">Avg Occupancy</span>
+<span class="text-lg font-headline font-semibold text-primary">94.2%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 94.2%;"></div>
+</div>
+<div class="flex justify-between mt-1">
+<span class="text-xs text-on-surface-variant">Hist: 91.5%</span>
+<span class="text-xs font-medium text-[#047857]">+2.7%</span>
+</div>
+</div>
+<!-- Metric 2 -->
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="text-label-md font-label uppercase tracking-widest text-on-surface-variant">WALE</span>
+<span class="text-lg font-headline font-semibold text-primary">4.8 Yrs</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 65%;"></div>
+</div>
+<div class="flex justify-between mt-1">
+<span class="text-xs text-on-surface-variant">Hist: 5.2 Yrs</span>
+<span class="text-xs font-medium text-error">-0.4 Yrs</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Geographic Overview (Map Placeholder) -->
+<section class="bg-surface-container-lowest p-1 rounded-DEFAULT border border-outline-variant/15 relative overflow-hidden h-64 group">
+<div class="absolute inset-0 bg-surface-container-high animate-pulse z-0"></div>
+<img alt="Map view" class="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-multiply z-10 transition-transform duration-700 group-hover:scale-105" data-alt="Clean, minimalist topographic map rendering of South Korea with subdued monochromatic tones, subtle blue data pins indicating logistics hubs, institutional editorial aesthetic" data-location="South Korea" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhJ5WpyvIygdUG9qRgXzcXAUMDOWJ0vx6HJLTx_aFe7uxmGvmemu4_FxdLBXzZrmXu0vDwjkhgnlj3OhGsd8BCqRCtV0T1jzhAn-4JbNkmfPssT_9d6sLHBGqwJD9LCUqrzikCxmcH3L-xIY_GP44KZb6Us3r7ZW1qACC8z2zrJ_Dl7FLvUb7EVE1w8F8H7-IWsysh7sks4xxIBjVgPqADhkwu1hmIDXnB-VNkxD5nJAzoPBM7zKmFF6DtTIcvieS_RJtzGxjReEQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent z-20"></div>
+<div class="absolute bottom-4 left-4 z-30">
+<h4 class="text-on-primary font-headline font-medium text-sm">Geographic Hubs</h4>
+<p class="text-on-primary/80 text-xs mt-1 font-body">4 Active Regions</p>
+</div>
+<button class="absolute top-4 right-4 z-30 bg-surface-container-lowest/80 backdrop-blur-md p-1.5 rounded-DEFAULT text-primary hover:bg-surface-container-lowest transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">fullscreen</span>
+</button>
+</section>
+<!-- Issue Concentration -->
+<section class="bg-surface-container-lowest p-6 rounded-DEFAULT border border-outline-variant/15">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-headline-sm font-headline font-medium text-primary tracking-[-0.01em]">Review Flags</h3>
+<span class="bg-error-container text-on-error-container text-xs font-bold px-2 py-1 rounded-DEFAULT">12 Active</span>
+</div>
+<ul class="space-y-4">
+<li class="flex items-start gap-3 pb-3 border-b border-outline-variant/10">
+<span class="material-symbols-outlined text-error text-[20px] mt-0.5">warning</span>
+<div>
+<p class="text-sm font-medium text-primary">BSN-Port-03 <span class="text-on-surface-variant font-normal text-xs ml-1">(5 flags)</span></p>
+<p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Lease expiration data mismatch in core system vs. PDF abstract.</p>
+</div>
+</li>
+<li class="flex items-start gap-3 pb-3 border-b border-outline-variant/10">
+<span class="material-symbols-outlined text-amber-600 text-[20px] mt-0.5">info</span>
+<div>
+<p class="text-sm font-medium text-primary">SEL-Urban-01 <span class="text-on-surface-variant font-normal text-xs ml-1">(3 flags)</span></p>
+<p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Pending tenant insurance certification renewal.</p>
+</div>
+</li>
+<li class="pt-1">
+<button class="text-sm text-secondary hover:text-secondary-container font-medium w-full text-left transition-colors">
+                                    View all flagged assets →
+                                </button>
+</li>
+</ul>
+</section>
+</div>
+</div>
+<!-- Bottom Spacer for breathing room -->
+<div class="h-12"></div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,18 @@
+{
+  "name": "igis-logi-dashboard-v1",
+  "private": true,
+  "scripts": {
+    "export:public-snapshots": "node scripts/export-public-snapshots.cjs",
+    "qa:perf": "node scripts/qa/dashboard-perf-check.cjs",
+    "qa:data-contract": "node scripts/qa/dashboard-data-contract-check.cjs",
+    "qa:ux-storyline": "node scripts/qa/dashboard-ux-storyline-check.cjs",
+    "clasp:login": "npx clasp login",
+    "clasp:create": "npx clasp create --type standalone --title \"IGIS Logistics Leasing Dashboard v1\"",
+    "clasp:push": "npx clasp push --force",
+    "clasp:open": "npx clasp open"
+  },
+  "devDependencies": {
+    "@google/clasp": "^3.3.0",
+    "playwright": "^1.59.1"
+  }
+}

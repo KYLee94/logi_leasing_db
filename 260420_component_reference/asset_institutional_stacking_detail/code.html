@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Institutional Asset Detail Page</title>
+<!-- Google Fonts: Manrope (Display) & Inter (Body) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e8e8e7",
+                        "surface-dim": "#dadad9",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#3c475a",
+                        "background": "#f9f9f8",
+                        "surface-bright": "#f9f9f8",
+                        "on-tertiary-container": "#8191a9",
+                        "outline": "#75777d",
+                        "on-secondary-container": "#fefcff",
+                        "on-primary-container": "#8590a6",
+                        "tertiary": "#041528",
+                        "inverse-primary": "#bcc7de",
+                        "surface-container-low": "#f3f4f3",
+                        "on-surface-variant": "#45474c",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "inverse-surface": "#2f3130",
+                        "outline-variant": "#c5c6cd",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#1a1c1c",
+                        "surface-variant": "#e2e2e2",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-primary-fixed": "#111c2d",
+                        "on-background": "#1a1c1c",
+                        "surface-tint": "#545f73",
+                        "secondary-fixed": "#d8e2ff",
+                        "tertiary-container": "#1a2a3e",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "on-primary": "#ffffff",
+                        "surface": "#f9f9f8",
+                        "tertiary-fixed": "#d3e4fe",
+                        "on-secondary-fixed-variant": "#004395",
+                        "secondary-container": "#2170e4",
+                        "primary-container": "#1e293b",
+                        "on-secondary-fixed": "#001a42",
+                        "inverse-on-surface": "#f1f1f0",
+                        "primary-fixed-dim": "#bcc7de",
+                        "primary": "#091426",
+                        "surface-container": "#eeeeed",
+                        "primary-fixed": "#d8e3fb",
+                        "secondary": "#0058be",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-surface');
+            -webkit-font-smoothing: antialiased;
+        }
+        /* Material Icon fill utility */
+        .icon-fill-1 { font-variation-settings: 'FILL' 1; }
+        
+        /* Custom scrollbar for data tables if needed, keeping it minimal */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: theme('colors.surface-variant'); border-radius: 4px; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden font-body text-sm bg-[#f9f9f8]">
+<!-- Shared Component: SideNavBar -->
+<nav class="hidden md:flex bg-[#f3f4f3] dark:bg-slate-800/50 text-[#091426] dark:text-slate-100 font-['Inter'] text-sm tracking-wide docked left-0 h-screen w-64 flex-col border-r-0 z-50 shrink-0">
+<!-- Header -->
+<div class="px-8 py-8 shrink-0">
+<div class="flex items-center space-x-3 mb-2">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center text-on-primary font-headline font-bold">SL</div>
+<h1 class="font-['Manrope'] font-black text-xl uppercase tracking-widest text-[#091426] dark:text-white">The Ledger</h1>
+</div>
+<p class="text-xs text-on-surface-variant font-medium tracking-wide">Institutional Logistics</p>
+</div>
+<!-- Main Nav Links -->
+<div class="flex flex-col py-4 space-y-2 h-full overflow-y-auto px-4">
+<a class="flex items-center px-4 py-3 rounded text-slate-500 hover:text-[#091426] dark:hover:text-white hover:bg-[#e2e2e2] dark:hover:bg-slate-700 transition-colors duration-150 ease-in group" href="#">
+<span class="material-symbols-outlined mr-4 text-[20px]">home</span>
+<span>Home</span>
+</a>
+<!-- ACTIVE TAB -->
+<a class="flex items-center px-4 py-3 rounded bg-[#f9f9f8] dark:bg-slate-900 text-[#3B82F6] font-semibold border-r-4 border-[#3B82F6] duration-150 ease-in" href="#">
+<span class="material-symbols-outlined mr-4 text-[20px] icon-fill-1">domain</span>
+<span>Asset</span>
+</a>
+<a class="flex items-center px-4 py-3 rounded text-slate-500 hover:text-[#091426] dark:hover:text-white hover:bg-[#e2e2e2] dark:hover:bg-slate-700 transition-colors duration-150 ease-in group" href="#">
+<span class="material-symbols-outlined mr-4 text-[20px]">business</span>
+<span>Company</span>
+</a>
+<a class="flex items-center px-4 py-3 rounded text-slate-500 hover:text-[#091426] dark:hover:text-white hover:bg-[#e2e2e2] dark:hover:bg-slate-700 transition-colors duration-150 ease-in group" href="#">
+<span class="material-symbols-outlined mr-4 text-[20px]">category</span>
+<span>Sector</span>
+</a>
+<div class="pt-6 pb-2 px-4">
+<p class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant/60">Intelligence</p>
+</div>
+<a class="flex items-center px-4 py-3 rounded text-slate-500 hover:text-[#091426] dark:hover:text-white hover:bg-[#e2e2e2] dark:hover:bg-slate-700 transition-colors duration-150 ease-in group" href="#">
+<span class="material-symbols-outlined mr-4 text-[20px]">query_stats</span>
+<span>Analysis Tools</span>
+</a>
+<a class="flex items-center px-4 py-3 rounded text-slate-500 hover:text-[#091426] dark:hover:text-white hover:bg-[#e2e2e2] dark:hover:bg-slate-700 transition-colors duration-150 ease-in group" href="#">
+<span class="material-symbols-outlined mr-4 text-[20px]">database</span>
+<span>Data Playground</span>
+</a>
+</div>
+<!-- Footer Nav -->
+<div class="px-4 py-6 mt-auto shrink-0 space-y-2">
+<a class="flex items-center px-4 py-2.5 rounded text-slate-500 hover:text-[#091426] dark:hover:text-white hover:bg-[#e2e2e2] dark:hover:bg-slate-700 transition-colors duration-150 ease-in group" href="#">
+<span class="material-symbols-outlined mr-4 text-[18px]">contact_support</span>
+<span>Support</span>
+</a>
+<a class="flex items-center px-4 py-2.5 rounded text-slate-500 hover:text-[#091426] dark:hover:text-white hover:bg-[#e2e2e2] dark:hover:bg-slate-700 transition-colors duration-150 ease-in group" href="#">
+<span class="material-symbols-outlined mr-4 text-[18px]">settings</span>
+<span>Settings</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col h-screen overflow-hidden bg-background">
+<!-- Shared Component: TopNavBar -->
+<header class="bg-[#f9f9f8] dark:bg-slate-900 text-[#091426] dark:text-slate-100 font-['Manrope'] font-medium tracking-tight docked full-width top-0 sticky z-40 border-b-0 shrink-0">
+<div class="flex justify-between items-center h-16 px-8 w-full border-b border-[#f3f4f3]/0 shadow-sm shadow-[#1e293b]/5">
+<!-- Left: Branding (Hidden on desktop as sidebar has it, visible on mobile) -->
+<div class="md:hidden flex items-center">
+<span class="text-lg font-bold tracking-tighter text-[#091426] dark:text-white">Strategic Ledger</span>
+</div>
+<!-- Center/Spacer -->
+<div class="hidden md:flex flex-1"></div>
+<!-- Right: Actions & Profile -->
+<div class="flex items-center space-x-6">
+<div class="flex items-center space-x-4">
+<button class="text-slate-500 hover:text-[#3B82F6] transition-all duration-200 scale-95 active:scale-90 flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+</button>
+<button class="text-slate-500 hover:text-[#3B82F6] transition-all duration-200 scale-95 active:scale-90 flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">help_outline</span>
+</button>
+</div>
+<div class="h-6 w-px bg-[#e2e2e2]"></div>
+<button class="text-slate-500 hover:text-[#3B82F6] transition-all duration-200 scale-95 active:scale-90 flex items-center space-x-2">
+<span class="material-symbols-outlined text-[28px] icon-fill-1">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-8 space-y-8">
+<!-- Asset Header & Context -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-2">
+<div>
+<div class="flex items-center space-x-3 mb-1">
+<span class="inline-block w-2 h-2 rounded-full bg-secondary-container"></span>
+<p class="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-[0.05em]">Logistics Center Alpha</p>
+</div>
+<h2 class="font-headline text-display-md text-primary font-semibold tracking-[-0.02em] leading-none mb-2">Genoa Port Terminal facility</h2>
+<p class="font-body text-sm text-on-surface-variant">Via Marina 14, 16126 Genoa, IT • Acquired Q3 2021</p>
+</div>
+<!-- Asset Selector Dropdown (Simulated) -->
+<button class="flex items-center space-x-3 bg-surface-container-low px-4 py-2.5 rounded hover:bg-surface-variant transition-colors group">
+<div class="text-left">
+<p class="text-[10px] font-label font-bold uppercase tracking-wider text-on-surface-variant/70 mb-0.5">Change Asset</p>
+<p class="font-headline text-sm font-semibold text-primary">Portfolio EU-South</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">unfold_more</span>
+</button>
+</div>
+<!-- Global 'Review Required' Flag (if critical) -->
+<div class="bg-surface-container-low rounded p-4 flex items-start space-x-3">
+<span class="material-symbols-outlined text-on-error-container text-[20px] mt-0.5">assignment_late</span>
+<div>
+<p class="font-headline text-sm font-semibold text-primary mb-1">Review Required: Critical Documentation Missing</p>
+<p class="font-body text-sm text-on-surface-variant">Lease agreement for Unit B (Schenker) expires in 45 days. Countersigned renewal not present in ledger.</p>
+</div>
+<button class="ml-auto mt-1 px-4 py-1.5 bg-primary/5 hover:bg-primary/10 text-primary font-label text-xs font-semibold rounded transition-colors">
+                    View Document
+                </button>
+</div>
+<!-- High-Density Summary Strip -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Data Card -->
+<div class="bg-surface-container-lowest p-6 rounded flex flex-col">
+<p class="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-[0.05em] mb-2">Occupancy Rate</p>
+<div class="flex items-baseline space-x-2">
+<span class="font-headline text-[2.5rem] font-semibold text-primary tracking-[-0.02em] leading-none">94.2</span>
+<span class="font-headline text-xl font-medium text-on-surface-variant">%</span>
+</div>
+<p class="font-body text-xs text-on-surface-variant mt-3 flex items-center">
+<span class="material-symbols-outlined text-[14px] mr-1 text-secondary">trending_up</span> +1.2% YTD
+                    </p>
+</div>
+<!-- Data Card -->
+<div class="bg-surface-container-lowest p-6 rounded flex flex-col">
+<p class="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-[0.05em] mb-2">Net Operating Income</p>
+<div class="flex items-baseline space-x-2">
+<span class="font-headline text-[2.5rem] font-semibold text-primary tracking-[-0.02em] leading-none">€4.8</span>
+<span class="font-headline text-xl font-medium text-on-surface-variant">M</span>
+</div>
+<p class="font-body text-xs text-on-surface-variant mt-3 flex items-center">
+                        Annualized (Forward 12M)
+                    </p>
+</div>
+<!-- Data Card -->
+<div class="bg-surface-container-lowest p-6 rounded flex flex-col">
+<p class="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-[0.05em] mb-2">WALT</p>
+<div class="flex items-baseline space-x-2">
+<span class="font-headline text-[2.5rem] font-semibold text-primary tracking-[-0.02em] leading-none">6.4</span>
+<span class="font-headline text-xl font-medium text-on-surface-variant">Yrs</span>
+</div>
+<p class="font-body text-xs text-error mt-3 flex items-center font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-error mr-2"></span> Below target (7.0)
+                    </p>
+</div>
+<!-- Data Card -->
+<div class="bg-surface-container-lowest p-6 rounded flex flex-col">
+<p class="font-label text-xs font-semibold text-on-surface-variant uppercase tracking-[0.05em] mb-2">Gross Leasable Area</p>
+<div class="flex items-baseline space-x-2">
+<span class="font-headline text-[2.5rem] font-semibold text-primary tracking-[-0.02em] leading-none">124</span>
+<span class="font-headline text-xl font-medium text-on-surface-variant">k SQM</span>
+</div>
+<p class="font-body text-xs text-on-surface-variant mt-3">
+                        Across 4 primary units
+                    </p>
+</div>
+</div>
+<!-- Asymmetrical Layout Section -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10 pt-4 pb-12">
+<!-- Left Column: Advanced Stacking Plan (7 columns) -->
+<div class="lg:col-span-7 flex flex-col">
+<div class="flex justify-between items-end mb-6">
+<h3 class="font-headline text-headline-sm font-medium text-primary tracking-[-0.01em]">Architectural Stacking Plan</h3>
+<div class="flex items-center space-x-4">
+<div class="flex items-center text-xs font-body text-on-surface-variant"><span class="w-2.5 h-2.5 rounded bg-tertiary-fixed mr-2"></span>Occupied</div>
+<div class="flex items-center text-xs font-body text-on-surface-variant"><span class="w-2.5 h-2.5 rounded bg-error-container mr-2"></span>&lt;6 Mo Expiry</div>
+<div class="flex items-center text-xs font-body text-on-surface-variant"><span class="w-2.5 h-2.5 rounded bg-surface-variant mr-2"></span>Vacant</div>
+</div>
+</div>
+<!-- Stacking Visualization Container -->
+<div class="bg-surface-container-lowest p-8 rounded flex flex-col-reverse gap-2 shadow-[0_12px_32px_-4px_rgba(30,41,59,0.02)] border border-outline-variant/10">
+<!-- Level 1 (Ground) -->
+<div class="flex items-stretch h-20 group cursor-pointer">
+<div class="w-16 flex items-center justify-start shrink-0">
+<span class="font-label text-xs font-bold text-on-surface-variant">L1</span>
+</div>
+<div class="flex-1 flex gap-1">
+<!-- Unit A -->
+<div class="flex-[3] bg-tertiary-fixed hover:bg-tertiary-fixed-dim transition-colors rounded-sm flex items-center justify-between px-4 relative overflow-hidden">
+<div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="z-10">
+<p class="font-headline text-sm font-semibold text-primary">Unit A</p>
+<p class="font-body text-xs text-primary/70">Maersk Logistics</p>
+</div>
+<div class="z-10 text-right hidden sm:block">
+<p class="font-body text-xs font-medium text-primary">45,000 SQM</p>
+<p class="font-body text-[10px] text-primary/60">Exp 2028</p>
+</div>
+</div>
+<!-- Unit B -->
+<div class="flex-[2] bg-error-container hover:bg-[#ffcdc8] transition-colors rounded-sm flex items-center justify-between px-4 relative overflow-hidden">
+<div class="z-10">
+<p class="font-headline text-sm font-semibold text-on-error-container">Unit B</p>
+<p class="font-body text-xs text-on-error-container/70">Schenker</p>
+</div>
+<span class="material-symbols-outlined text-[16px] text-on-error-container z-10">warning</span>
+</div>
+</div>
+</div>
+<!-- Level 2 -->
+<div class="flex items-stretch h-16 group cursor-pointer">
+<div class="w-16 flex items-center justify-start shrink-0">
+<span class="font-label text-xs font-bold text-on-surface-variant">L2</span>
+</div>
+<div class="flex-1 flex gap-1">
+<!-- Full Floor Unit C -->
+<div class="flex-1 bg-tertiary-fixed hover:bg-tertiary-fixed-dim transition-colors rounded-sm flex items-center justify-between px-4">
+<div>
+<p class="font-headline text-sm font-semibold text-primary">Unit C</p>
+<p class="font-body text-xs text-primary/70">DHL Supply Chain</p>
+</div>
+<div class="text-right hidden sm:block">
+<p class="font-body text-xs font-medium text-primary">32,000 SQM</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Level 3 (Mezzanine/Office) -->
+<div class="flex items-stretch h-12 group cursor-pointer">
+<div class="w-16 flex items-center justify-start shrink-0">
+<span class="font-label text-xs font-bold text-on-surface-variant">MZ</span>
+</div>
+<div class="flex-1 flex gap-1">
+<!-- Office 1 -->
+<div class="flex-[1] bg-tertiary-fixed hover:bg-tertiary-fixed-dim transition-colors rounded-sm flex items-center justify-center px-2">
+<p class="font-headline text-xs font-semibold text-primary truncate">OFC-1</p>
+</div>
+<!-- Office 2 (Vacant) -->
+<div class="flex-[1] bg-surface-variant hover:bg-[#d5d5d5] transition-colors rounded-sm flex items-center justify-center px-2 border border-dashed border-outline/20">
+<p class="font-headline text-xs font-medium text-on-surface-variant/50">Vacant</p>
+</div>
+<!-- Office 3 -->
+<div class="flex-[2] bg-tertiary-fixed hover:bg-tertiary-fixed-dim transition-colors rounded-sm flex items-center justify-between px-4">
+<p class="font-headline text-xs font-semibold text-primary truncate">Port Authority HQ</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Detail Context beneath Stacking Plan -->
+<div class="mt-6 flex items-start space-x-4">
+<div class="w-10 h-10 rounded bg-surface-container-low flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant">info</span>
+</div>
+<div>
+<p class="font-body text-sm text-on-surface text-leading-relaxed">
+                                The ground level (L1) comprises the bulk of high-clearance warehousing. Unit B is currently flagged due to an impending lease expiration without a secured renewal option. Mezzanine level features mixed administrative spaces with one current vacancy.
+                            </p>
+</div>
+</div>
+</div>
+<!-- Right Column: Tenant Mix & Breakdown (5 columns) -->
+<div class="lg:col-span-5 flex flex-col">
+<h3 class="font-headline text-headline-sm font-medium text-primary tracking-[-0.01em] mb-6">Tenant Roster</h3>
+<div class="bg-surface-container-lowest rounded overflow-hidden">
+<!-- Header Row -->
+<div class="grid grid-cols-12 gap-2 bg-primary-container px-5 py-3">
+<div class="col-span-5 font-label text-[11px] font-bold text-on-primary-fixed uppercase tracking-wider">Tenant</div>
+<div class="col-span-2 font-label text-[11px] font-bold text-on-primary-fixed uppercase tracking-wider text-right">Unit</div>
+<div class="col-span-3 font-label text-[11px] font-bold text-on-primary-fixed uppercase tracking-wider text-right">Area (SQM)</div>
+<div class="col-span-2 font-label text-[11px] font-bold text-on-primary-fixed uppercase tracking-wider text-right">Exp</div>
+</div>
+<!-- Rows -->
+<div class="flex flex-col">
+<!-- Row 1 -->
+<div class="grid grid-cols-12 gap-2 px-5 py-4 bg-background items-center hover:bg-surface-container-low transition-colors group cursor-default">
+<div class="col-span-5 flex items-center">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary mr-3"></div>
+<div>
+<p class="font-headline text-sm font-semibold text-primary">Maersk Logistics</p>
+<p class="font-body text-[10px] text-on-surface-variant mt-0.5">Global Key Account</p>
+</div>
+</div>
+<div class="col-span-2 text-right font-body text-sm text-on-surface-variant">A</div>
+<div class="col-span-3 text-right font-body text-sm font-medium text-primary">45,000</div>
+<div class="col-span-2 text-right font-body text-sm text-on-surface-variant">2028</div>
+</div>
+<!-- Row 2 -->
+<div class="grid grid-cols-12 gap-2 px-5 py-4 bg-surface-container-low items-center hover:bg-[#ececec] transition-colors group cursor-default">
+<div class="col-span-5 flex items-center">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary mr-3"></div>
+<p class="font-headline text-sm font-semibold text-primary">DHL Supply Chain</p>
+</div>
+<div class="col-span-2 text-right font-body text-sm text-on-surface-variant">C</div>
+<div class="col-span-3 text-right font-body text-sm font-medium text-primary">32,000</div>
+<div class="col-span-2 text-right font-body text-sm text-on-surface-variant">2031</div>
+</div>
+<!-- Row 3 (Alert) -->
+<div class="grid grid-cols-12 gap-2 px-5 py-4 bg-background items-center hover:bg-surface-container-low transition-colors group cursor-default">
+<div class="col-span-5 flex items-center">
+<div class="w-1.5 h-1.5 rounded-full bg-error mr-3"></div>
+<p class="font-headline text-sm font-semibold text-primary">Schenker</p>
+</div>
+<div class="col-span-2 text-right font-body text-sm text-on-surface-variant">B</div>
+<div class="col-span-3 text-right font-body text-sm font-medium text-primary">28,500</div>
+<div class="col-span-2 text-right font-body text-sm text-error font-medium">2024</div>
+</div>
+<!-- Row 4 -->
+<div class="grid grid-cols-12 gap-2 px-5 py-4 bg-surface-container-low items-center hover:bg-[#ececec] transition-colors group cursor-default">
+<div class="col-span-5 flex items-center">
+<div class="w-1.5 h-1.5 rounded-full bg-outline mr-3"></div>
+<p class="font-headline text-sm font-medium text-on-surface-variant">Port Authority HQ</p>
+</div>
+<div class="col-span-2 text-right font-body text-sm text-on-surface-variant">MZ-3</div>
+<div class="col-span-3 text-right font-body text-sm font-medium text-primary">4,200</div>
+<div class="col-span-2 text-right font-body text-sm text-on-surface-variant">2026</div>
+</div>
+</div>
+</div>
+<!-- Action Area -->
+<div class="mt-8 flex justify-end">
+<button class="bg-gradient-to-b from-primary to-primary-container text-on-primary px-6 py-2.5 rounded font-label text-sm font-semibold hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-[0.98]">
+                            Generate Rent Roll Report
+                        </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,1601 @@
+{
+  "analytics": {
+    "goodsTypeMix": [
+      {
+        "value": 18817,
+        "recordCount": 4,
+        "label": "생활 잡화, 식품"
+      },
+      {
+        "value": 12572,
+        "recordCount": 1,
+        "label": "화장품"
+      }
+    ],
+    "coreTenants": [
+      {
+        "tenantMasterName": "INPNP",
+        "earliestExpiry": "2032-01-31",
+        "latestExpiry": "2032-01-31",
+        "areaShare": 0.3784,
+        "leaseSpaceCount": 1,
+        "businessRegistrationNo": "",
+        "tenantId": "tenant_name_inpnp",
+        "leasedAreaSqm": 11877,
+        "assetCount": 1
+      },
+      {
+        "earliestExpiry": "2031-11-30",
+        "tenantMasterName": "JM 로지스",
+        "latestExpiry": "2031-11-30",
+        "areaShare": 0.2211,
+        "leaseSpaceCount": 1,
+        "businessRegistrationNo": "",
+        "tenantId": "tenant_name_jm로지스",
+        "leasedAreaSqm": 6940,
+        "assetCount": 1
+      },
+      {
+        "tenantMasterName": "(주)휠라선",
+        "earliestExpiry": "2028-12-31",
+        "latestExpiry": "2028-12-31",
+        "areaShare": 0.4005,
+        "leaseSpaceCount": 1,
+        "businessRegistrationNo": "488-81-01794",
+        "tenantId": "tenant_brn_4888101794",
+        "leasedAreaSqm": 12572,
+        "assetCount": 1
+      }
+    ],
+    "rentVsMf": [
+      {
+        "leaseSpaceId": "asset_a112505001|tenant_name_inpnp|20251211|20320131|1|na",
+        "tenantMasterName": "INPNP",
+        "leasedAreaPy": 2450.25
+      },
+      {
+        "leaseSpaceId": "asset_a112505001|tenant_name_inpnp|20251211|20320131|1|na",
+        "tenantMasterName": "INPNP",
+        "leasedAreaPy": 1142.54
+      },
+      {
+        "leaseSpaceId": "asset_a112505001|tenant_name_jm로지스|20251101|20311130|1|na",
+        "tenantMasterName": "JM 로지스",
+        "leasedAreaPy": 880.88
+      },
+      {
+        "leaseSpaceId": "asset_a112505001|tenant_name_jm로지스|20251101|20311130|1|na",
+        "tenantMasterName": "JM 로지스",
+        "leasedAreaPy": 1218.47
+      },
+      {
+        "leaseSpaceId": "asset_a112505001|tenant_brn_4888101794|20250408|20281231|b2|na",
+        "tenantMasterName": "(주)휠라선",
+        "leasedAreaPy": 3803.03
+      }
+    ],
+    "expirySnapshot": {
+      "byBucket": [
+        {
+          "count": 0,
+          "label": "0-3 months"
+        },
+        {
+          "count": 0,
+          "label": "4-6 months"
+        },
+        {
+          "count": 0,
+          "label": "7-12 months"
+        },
+        {
+          "count": 5,
+          "label": "12+ months"
+        }
+      ],
+      "entries": [
+        {
+          "spaceLabel": "B2",
+          "earliestExpiry": "2028-12-31",
+          "tenantMasterName": "(주)휠라선",
+          "latestExpiry": "2028-12-31",
+          "floorLabel": "B2",
+          "tenantId": "tenant_brn_4888101794",
+          "currentEndDate": "2028-12-31",
+          "leaseSpaceId": "asset_a112505001|tenant_brn_4888101794|20250408|20281231|b2|na",
+          "leasedAreaSqm": 12572,
+          "monthsToExpiry": 32,
+          "detailAreaLabel": ""
+        },
+        {
+          "spaceLabel": "1",
+          "tenantMasterName": "JM 로지스",
+          "earliestExpiry": "2031-11-30",
+          "latestExpiry": "2031-11-30",
+          "floorLabel": "1",
+          "currentEndDate": "2031-11-30",
+          "tenantId": "tenant_name_jm로지스",
+          "leaseSpaceId": "asset_a112505001|tenant_name_jm로지스|20251101|20311130|1|na",
+          "leasedAreaSqm": 2912,
+          "monthsToExpiry": 67,
+          "detailAreaLabel": ""
+        },
+        {
+          "spaceLabel": "1",
+          "earliestExpiry": "2031-11-30",
+          "tenantMasterName": "JM 로지스",
+          "latestExpiry": "2031-11-30",
+          "floorLabel": "1",
+          "tenantId": "tenant_name_jm로지스",
+          "currentEndDate": "2031-11-30",
+          "leaseSpaceId": "asset_a112505001|tenant_name_jm로지스|20251101|20311130|1|na",
+          "leasedAreaSqm": 4028,
+          "monthsToExpiry": 67,
+          "detailAreaLabel": ""
+        },
+        {
+          "spaceLabel": "1",
+          "tenantMasterName": "INPNP",
+          "earliestExpiry": "2032-01-31",
+          "latestExpiry": "2032-01-31",
+          "floorLabel": "1",
+          "currentEndDate": "2032-01-31",
+          "tenantId": "tenant_name_inpnp",
+          "leaseSpaceId": "asset_a112505001|tenant_name_inpnp|20251211|20320131|1|na",
+          "leasedAreaSqm": 8100,
+          "monthsToExpiry": 69,
+          "detailAreaLabel": ""
+        },
+        {
+          "spaceLabel": "1",
+          "earliestExpiry": "2032-01-31",
+          "tenantMasterName": "INPNP",
+          "latestExpiry": "2032-01-31",
+          "floorLabel": "1",
+          "tenantId": "tenant_name_inpnp",
+          "currentEndDate": "2032-01-31",
+          "leaseSpaceId": "asset_a112505001|tenant_name_inpnp|20251211|20320131|1|na",
+          "leasedAreaSqm": 3777,
+          "monthsToExpiry": 69,
+          "detailAreaLabel": ""
+        }
+      ]
+    },
+    "uniqueTenants": [
+      {
+        "tenantMasterName": "INPNP",
+        "earliestExpiry": "2032-01-31",
+        "latestExpiry": "2032-01-31",
+        "leaseSpaceCount": 1,
+        "businessRegistrationNo": "",
+        "tenantId": "tenant_name_inpnp",
+        "leasedAreaSqm": 11877,
+        "assetCount": 1
+      },
+      {
+        "earliestExpiry": "2031-11-30",
+        "latestExpiry": "2031-11-30",
+        "tenantMasterName": "JM 로지스",
+        "leaseSpaceCount": 1,
+        "businessRegistrationNo": "",
+        "tenantId": "tenant_name_jm로지스",
+        "leasedAreaSqm": 6940,
+        "assetCount": 1
+      },
+      {
+        "tenantMasterName": "(주)휠라선",
+        "earliestExpiry": "2028-12-31",
+        "latestExpiry": "2028-12-31",
+        "leaseSpaceCount": 1,
+        "businessRegistrationNo": "488-81-01794",
+        "tenantId": "tenant_brn_4888101794",
+        "leasedAreaSqm": 12572,
+        "assetCount": 1
+      }
+    ],
+    "eNocAudit": {
+      "summary": {
+        "rowCount": 5,
+        "nonZeroVarianceCount": 0,
+        "missingInputCount": 5,
+        "computedRowCount": 0
+      },
+      "rows": [
+        {
+          "tenantMasterName": "INPNP",
+          "currentMoneyAsOf": "",
+          "leasedAreaSqm": 8100,
+          "currentPeriodYears": 6.1,
+          "currentMoneyBasis": "unresolved",
+          "tenantId": "tenant_name_inpnp",
+          "tiAmount": 4900000000,
+          "calculationStatus": "review_required",
+          "leaseSpaceId": "asset_a112505001|tenant_name_inpnp|20251211|20320131|1|na",
+          "foMonths": 2
+        },
+        {
+          "tenantMasterName": "INPNP",
+          "currentMoneyAsOf": "",
+          "leasedAreaSqm": 3777,
+          "currentPeriodYears": 6.1,
+          "currentMoneyBasis": "unresolved",
+          "tenantId": "tenant_name_inpnp",
+          "leaseSpaceId": "asset_a112505001|tenant_name_inpnp|20251211|20320131|1|na",
+          "calculationStatus": "review_required",
+          "foMonths": 2
+        },
+        {
+          "tenantMasterName": "JM 로지스",
+          "currentMoneyAsOf": "",
+          "leasedAreaSqm": 2912,
+          "currentPeriodYears": 6.1,
+          "currentMoneyBasis": "unresolved",
+          "tenantId": "tenant_name_jm로지스",
+          "tiAmount": 3900000000,
+          "leaseSpaceId": "asset_a112505001|tenant_name_jm로지스|20251101|20311130|1|na",
+          "calculationStatus": "review_required",
+          "foMonths": 1
+        },
+        {
+          "tenantMasterName": "JM 로지스",
+          "currentMoneyAsOf": "",
+          "leasedAreaSqm": 4028,
+          "currentPeriodYears": 6.1,
+          "currentMoneyBasis": "unresolved",
+          "tenantId": "tenant_name_jm로지스",
+          "calculationStatus": "review_required",
+          "leaseSpaceId": "asset_a112505001|tenant_name_jm로지스|20251101|20311130|1|na",
+          "foMonths": 1
+        },
+        {
+          "tenantMasterName": "(주)휠라선",
+          "currentMoneyAsOf": "",
+          "leasedAreaSqm": 12572,
+          "currentPeriodYears": 3.7,
+          "currentMoneyBasis": "unresolved",
+          "tenantId": "tenant_brn_4888101794",
+          "tiAmount": 620000000,
+          "leaseSpaceId": "asset_a112505001|tenant_brn_4888101794|20250408|20281231|b2|na",
+          "calculationStatus": "review_required",
+          "foMonths": 4
+        }
+      ],
+      "formula": "((rentPerPy * ((periodYears*12 - rfMonths - foMonths)/(periodYears*12)) + mfPerPy) / exclusiveRatio) - (tiAmount / (exclusiveAreaSqm*0.3025) / (periodYears*12))"
+    },
+    "contractExpiry": [
+      {
+        "spaceLabel": "1",
+        "tenantMasterName": "INPNP",
+        "floorLabel": "1",
+        "currentEndDate": "2032-01-31",
+        "leaseSpaceId": "asset_a112505001|tenant_name_inpnp|20251211|20320131|1|na",
+        "monthsToExpiry": 69,
+        "detailAreaLabel": ""
+      },
+      {
+        "spaceLabel": "1",
+        "tenantMasterName": "INPNP",
+        "floorLabel": "1",
+        "currentEndDate": "2032-01-31",
+        "leaseSpaceId": "asset_a112505001|tenant_name_inpnp|20251211|20320131|1|na",
+        "monthsToExpiry": 69,
+        "detailAreaLabel": ""
+      },
+      {
+        "spaceLabel": "1",
+        "tenantMasterName": "JM 로지스",
+        "floorLabel": "1",
+        "currentEndDate": "2031-11-30",
+        "leaseSpaceId": "asset_a112505001|tenant_name_jm로지스|20251101|20311130|1|na",
+        "monthsToExpiry": 67,
+        "detailAreaLabel": ""
+      },
+      {
+        "spaceLabel": "1",
+        "tenantMasterName": "JM 로지스",
+        "floorLabel": "1",
+        "currentEndDate": "2031-11-30",
+        "leaseSpaceId": "asset_a112505001|tenant_name_jm로지스|20251101|20311130|1|na",
+        "monthsToExpiry": 67,
+        "detailAreaLabel": ""
+      },
+      {
+        "spaceLabel": "B2",
+        "tenantMasterName": "(주)휠라선",
+        "floorLabel": "B2",
+        "currentEndDate": "2028-12-31",
+        "leaseSpaceId": "asset_a112505001|tenant_brn_4888101794|20250408|20281231|b2|na",
+        "monthsToExpiry": 32,
+        "detailAreaLabel": ""
+      }
+    ],
+    "monthlyCostByTenant": [
+      {
+        "tenantId": "tenant_name_inpnp",
+        "tenantMasterName": "INPNP",
+        "leasedAreaSqm": 11877,
+        "leaseSpaceCount": 1
+      },
+      {
+        "tenantId": "tenant_name_jm로지스",
+        "tenantMasterName": "JM 로지스",
+        "leasedAreaSqm": 6940,
+        "leaseSpaceCount": 1
+      },
+      {
+        "tenantId": "tenant_brn_4888101794",
+        "tenantMasterName": "(주)휠라선",
+        "leasedAreaSqm": 12572,
+        "leaseSpaceCount": 1
+      }
+    ]
+  },
+  "overview": {
+    "monthlyRentTotal": null,
+    "approvalDate": "2024-05-29",
+    "grossFloorAreaEffectiveAt": "2024-05-29",
+    "latitude": 37.0803652,
+    "grossFloorAreaTimelineBasis": {
+      "effectiveAt": "2024-05-29",
+      "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+      "rule": "later_of_first_configured_at_and_approval_date",
+      "approvalDate": "2024-05-29",
+      "effectiveMonth": "2024-05",
+      "firstConfiguredAt": "2020-12-08"
+    },
+    "issueCount": 3,
+    "vacancyRate": 0.7478773512350668,
+    "areaTableStatus": "unknown",
+    "floors": [
+      {
+        "tenants": [
+          {
+            "tenantId": "tenant_brn_4888101794",
+            "tenantMasterName": "(주)휠라선",
+            "share": 1,
+            "leasedAreaSqm": 12572,
+            "detailAreaLabel": ""
+          }
+        ],
+        "floorLabel": "B2",
+        "totalFloorAreaSqm": 12572
+      },
+      {
+        "tenants": [
+          {
+            "tenantId": "tenant_name_inpnp",
+            "tenantMasterName": "INPNP",
+            "leasedAreaSqm": 8100,
+            "share": 0.4305,
+            "detailAreaLabel": ""
+          },
+          {
+            "tenantId": "tenant_name_inpnp",
+            "tenantMasterName": "INPNP",
+            "leasedAreaSqm": 3777,
+            "share": 0.2007,
+            "detailAreaLabel": ""
+          },
+          {
+            "tenantId": "tenant_name_jm로지스",
+            "tenantMasterName": "JM 로지스",
+            "share": 0.1548,
+            "leasedAreaSqm": 2912,
+            "detailAreaLabel": ""
+          },
+          {
+            "tenantId": "tenant_name_jm로지스",
+            "tenantMasterName": "JM 로지스",
+            "leasedAreaSqm": 4028,
+            "share": 0.2141,
+            "detailAreaLabel": ""
+          }
+        ],
+        "floorLabel": "1",
+        "totalFloorAreaSqm": 18817
+      }
+    ],
+    "assetId": "asset_a112505001",
+    "standardizedAddress": "경기도 안성시 양성면 양성로 301",
+    "uniqueTenantCount": 3,
+    "rowCount": 5,
+    "tenantCount": 3,
+    "sector": "물류센터",
+    "longitude": 127.2055776,
+    "assetCode": "A112505001",
+    "topTenants": [
+      {
+        "tenantMasterName": "INPNP",
+        "latestExpiry": "2032-01-31",
+        "earliestExpiry": "2032-01-31",
+        "leaseSpaceCount": 1,
+        "businessRegistrationNo": "",
+        "tenantId": "tenant_name_inpnp",
+        "leasedAreaSqm": 11877,
+        "assetCount": 1
+      },
+      {
+        "earliestExpiry": "2031-11-30",
+        "latestExpiry": "2031-11-30",
+        "tenantMasterName": "JM 로지스",
+        "leaseSpaceCount": 1,
+        "businessRegistrationNo": "",
+        "tenantId": "tenant_name_jm로지스",
+        "leasedAreaSqm": 6940,
+        "assetCount": 1
+      },
+      {
+        "latestExpiry": "2028-12-31",
+        "earliestExpiry": "2028-12-31",
+        "tenantMasterName": "(주)휠라선",
+        "leaseSpaceCount": 1,
+        "businessRegistrationNo": "488-81-01794",
+        "tenantId": "tenant_brn_4888101794",
+        "leasedAreaSqm": 12572,
+        "assetCount": 1
+      }
+    ],
+    "manager": {
+      "teamName": "개발관리실",
+      "assetCode": "A112505001",
+      "fundCode": "112505",
+      "assetName": "아레나스안성",
+      "fundName": "이지스아레나스케이엘아이피1의2사모부동산모투자회사",
+      "managerName": "최성현",
+      "email": "shyung.choi@igisam.com"
+    },
+    "grossFloorAreaTimelineRule": "later_of_first_configured_at_and_approval_date",
+    "monthlyMfTotal": null,
+    "floorCount": "4F / B2",
+    "leasedAreaSqm": 31389,
+    "fetchedAt": "2026-04-22",
+    "firstConfiguredAt": "2020-12-08",
+    "averageENoc": null,
+    "vacancyAreaSqm": 93109.93,
+    "monthlyCostTotal": null,
+    "landAreaSqm": 49884,
+    "leaseSpaceCount": 3,
+    "grossFloorAreaEffectiveMonth": "2024-05",
+    "assetName": "아레나스안성",
+    "grossFloorAreaSqm": 124498.93
+  },
+  "topTenants": [
+    {
+      "earliestExpiry": "2032-01-31",
+      "latestExpiry": "2032-01-31",
+      "tenantMasterName": "INPNP",
+      "leaseSpaceCount": 1,
+      "businessRegistrationNo": "",
+      "tenantId": "tenant_name_inpnp",
+      "leasedAreaSqm": 11877,
+      "assetCount": 1
+    },
+    {
+      "tenantMasterName": "JM 로지스",
+      "earliestExpiry": "2031-11-30",
+      "latestExpiry": "2031-11-30",
+      "leaseSpaceCount": 1,
+      "businessRegistrationNo": "",
+      "tenantId": "tenant_name_jm로지스",
+      "leasedAreaSqm": 6940,
+      "assetCount": 1
+    },
+    {
+      "earliestExpiry": "2028-12-31",
+      "latestExpiry": "2028-12-31",
+      "tenantMasterName": "(주)휠라선",
+      "leaseSpaceCount": 1,
+      "businessRegistrationNo": "488-81-01794",
+      "tenantId": "tenant_brn_4888101794",
+      "leasedAreaSqm": 12572,
+      "assetCount": 1
+    }
+  ],
+  "meta": {
+    "selection": {
+      "assetName": "아레나스안성",
+      "assetId": "asset_a112505001"
+    },
+    "timing": {
+      "refreshedAt": "2026-04-27T16:07:14",
+      "fetchedAt": "2026-04-22",
+      "derivedAt": "",
+      "fetchedAts": [
+        "2026-04-22"
+      ]
+    },
+    "generatedAt": "2026-04-27T16:07:14",
+    "basisDisplay": {
+      "derivedAt": "",
+      "asOf": "2026-04-27T16:07:14",
+      "generatedAt": "2026-04-27T16:07:14",
+      "fetchedAt": "2026-04-22",
+      "refreshedAt": "2026-04-27T16:07:14",
+      "page": "asset",
+      "source": "DB_GENERAL + DB_HISTORY + DB_ASSET",
+      "fetchedAts": [
+        "2026-04-22"
+      ]
+    },
+    "formulaVersion": "E.NOC_v2",
+    "page": "asset",
+    "rowCount": 5,
+    "basis": {
+      "rowScope": "selected_asset_rows",
+      "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
+      "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
+      "page": "asset",
+      "rowUnit": "lease_space_id",
+      "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
+      "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
+    }
+  },
+  "stackingPlan": [
+    {
+      "tenants": [
+        {
+          "tenantId": "tenant_brn_4888101794",
+          "tenantMasterName": "(주)휠라선",
+          "share": 1,
+          "leasedAreaSqm": 12572,
+          "detailAreaLabel": ""
+        }
+      ],
+      "floorLabel": "B2",
+      "totalFloorAreaSqm": 12572
+    },
+    {
+      "tenants": [
+        {
+          "tenantId": "tenant_name_inpnp",
+          "tenantMasterName": "INPNP",
+          "share": 0.4305,
+          "leasedAreaSqm": 8100,
+          "detailAreaLabel": ""
+        },
+        {
+          "tenantId": "tenant_name_inpnp",
+          "tenantMasterName": "INPNP",
+          "leasedAreaSqm": 3777,
+          "share": 0.2007,
+          "detailAreaLabel": ""
+        },
+        {
+          "tenantId": "tenant_name_jm로지스",
+          "tenantMasterName": "JM 로지스",
+          "leasedAreaSqm": 2912,
+          "share": 0.1548,
+          "detailAreaLabel": ""
+        },
+        {
+          "tenantId": "tenant_name_jm로지스",
+          "tenantMasterName": "JM 로지스",
+          "share": 0.2141,
+          "leasedAreaSqm": 4028,
+          "detailAreaLabel": ""
+        }
+      ],
+      "floorLabel": "1",
+      "totalFloorAreaSqm": 18817
+    }
+  ],
+  "generatedAt": "2026-04-27T16:07:14",
+  "basisDisplay": {
+    "derivedAt": "",
+    "asOf": "2026-04-27T16:07:14",
+    "generatedAt": "2026-04-27T16:07:14",
+    "refreshedAt": "2026-04-27T16:07:14",
+    "fetchedAt": "2026-04-22",
+    "source": "DB_GENERAL + DB_HISTORY + DB_ASSET",
+    "page": "asset",
+    "fetchedAts": [
+      "2026-04-22"
+    ]
+  },
+  "filters": {
+    "selectedAssetId": "asset_a112505001",
+    "assets": [
+      {
+        "assetId": "asset_a120085001",
+        "assetName": "경산 쿠팡물류센터",
+        "uniqueTenantCount": 1,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 45996.45,
+        "monthlyCostTotal": 1060724933,
+        "vacancyRate": 0.22740490773422375
+      },
+      {
+        "assetId": "asset_a112527001",
+        "assetName": "동산물류센터",
+        "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 4,
+        "averageENoc": 26784.1,
+        "monthlyCostTotal": 435167477,
+        "vacancyRate": 0.011449620876710885
+      },
+      {
+        "assetId": "asset_a112755001",
+        "assetName": "두동 LG전자 통합물류센터",
+        "uniqueTenantCount": 1,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 38181.11,
+        "vacancyRate": 0.0008472422420663569,
+        "monthlyCostTotal": 630228000
+      },
+      {
+        "assetId": "asset_a112527002",
+        "assetName": "부국물류센터",
+        "uniqueTenantCount": 1,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 27449.95,
+        "monthlyCostTotal": 155328845,
+        "vacancyRate": 0
+      },
+      {
+        "assetName": "부산송정물류센터",
+        "uniqueTenantCount": 1,
+        "fetchedAt": "2026-04-22",
+        "assetId": "asset_a112109001",
+        "vacancyRate": 0.027004153491596173
+      },
+      {
+        "assetId": "asset_a112299001",
+        "assetName": "스카이박스1, 스카이박스2",
+        "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 6,
+        "averageENoc": 37283.28,
+        "monthlyCostTotal": 669324200,
+        "vacancyRate": 0.3071110862557777
+      },
+      {
+        "assetName": "아레나스안성",
+        "uniqueTenantCount": 3,
+        "fetchedAt": "2026-04-22",
+        "assetId": "asset_a112505001",
+        "vacancyRate": 0.7478773512350668
+      },
+      {
+        "assetId": "asset_a112127001",
+        "assetName": "아레나스양지물류센터",
+        "uniqueTenantCount": 2,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 6706,
+        "vacancyRate": 0.22161516861964634,
+        "monthlyCostTotal": 552212356
+      },
+      {
+        "assetId": "asset_ap00014001",
+        "assetName": "안성 성은지구 물류센터",
+        "uniqueTenantCount": 4,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 24627.67,
+        "vacancyRate": 0.3013357213767869,
+        "monthlyCostTotal": 604357000
+      },
+      {
+        "assetId": "asset_a112500003",
+        "assetName": "안성 홈플러스 중부허브 물류센터",
+        "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 1,
+        "averageENoc": 63365.46,
+        "vacancyRate": 0.016556145554103226,
+        "monthlyCostTotal": 629174800
+      },
+      {
+        "assetId": "asset_s00002001",
+        "assetName": "양산 유산동 물류센터",
+        "uniqueTenantCount": 3,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 24901.1,
+        "vacancyRate": 0.3656956897910055,
+        "monthlyCostTotal": 251987517
+      },
+      {
+        "assetId": "asset_a112527003",
+        "assetName": "에이블로지스물류센터",
+        "uniqueTenantCount": 1,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 27039.41,
+        "vacancyRate": 0,
+        "monthlyCostTotal": 245219187
+      },
+      {
+        "assetId": "asset_a112606001",
+        "assetName": "여주 본두리 물류센터",
+        "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 3,
+        "averageENoc": 32389.54,
+        "monthlyCostTotal": 1028369423,
+        "vacancyRate": 0.035098733326698266
+      },
+      {
+        "assetId": "asset_a112573001",
+        "assetName": "이천 마장면 물류센터",
+        "uniqueTenantCount": 2,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 27884.74,
+        "vacancyRate": 0.030459886244241004,
+        "monthlyCostTotal": 275622000
+      },
+      {
+        "assetId": "asset_a112721001",
+        "assetName": "인천석남물류센터",
+        "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 1,
+        "averageENoc": 31632.69,
+        "vacancyRate": 0.00020146451000519652,
+        "monthlyCostTotal": 2863471002
+      },
+      {
+        "assetId": "asset_a112500002",
+        "assetName": "평택아디다스물류센터",
+        "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 1,
+        "averageENoc": 28607.48,
+        "monthlyCostTotal": 460486000,
+        "vacancyRate": 0
+      },
+      {
+        "assetId": "asset_a112642001",
+        "assetName": "화성 석포리 물류센터",
+        "uniqueTenantCount": 1,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 39312.35,
+        "monthlyCostTotal": 1272556102,
+        "vacancyRate": 0
+      }
+    ],
+    "selectorMeta": {
+      "sortOptions": [
+        {
+          "key": "asset_name_asc",
+          "label": "자산명순"
+        },
+        {
+          "key": "monthly_cost_desc",
+          "label": "월 임관리비 높은순"
+        },
+        {
+          "key": "vacancy_rate_desc",
+          "label": "공실률 높은순"
+        },
+        {
+          "key": "e_noc_desc",
+          "label": "E.NOC 높은순"
+        }
+      ],
+      "defaultSort": "asset_name_asc"
+    }
+  },
+  "areaBreakdown": {
+    "exclusiveRatio": null,
+    "otherExclusiveAreaSqm": null,
+    "warehouseAreaSqm": null,
+    "otherCommonAreaSqm": null,
+    "leasedAreaSqm": 31389,
+    "vacancyAreaSqm": 93109.93,
+    "parkingAreaSqm": null,
+    "coreAreaSqm": null,
+    "dockAreaSqm": null,
+    "officeAreaSqm": null,
+    "grossFloorAreaSqm": 124498.93,
+    "mechanicalAreaSqm": null,
+    "corridorAreaSqm": null,
+    "rampAreaSqm": null,
+    "exclusiveAreaSqm": null
+  },
+  "rows": [
+    {
+      "insuranceSpecialClause": "없음",
+      "firstOperationDate": "2026-02-01",
+      "tenantMasterName": "INPNP",
+      "totalGrossAreaSqm": 124553.92,
+      "floorSplitIndex": 1,
+      "sourceDocRef": "",
+      "currentPeriodYears": 6.1,
+      "isDelinquent": true,
+      "leaseId": "asset_a112505001|tenant_name_inpnp|20251211|20320131",
+      "historyCandidateCount": 0,
+      "fundCode": "112505",
+      "recentContractDate": "2025-12-11",
+      "currentMoneyBasis": "unresolved",
+      "coldStorageType": "N",
+      "currentEndDate": "2032-01-31",
+      "rowNumber": 57,
+      "detailAreaLabel": "",
+      "sector": "물류센터",
+      "depositAmount": 227876040,
+      "assetCode": "A112505001",
+      "currentMoneyAsOf": "",
+      "extensionCount": 0,
+      "firstEndDate": "2032-01-31",
+      "sourceRowHash": "A112505001|INPNP|1||20251211|20320131|8100|",
+      "goodsType": "생활 잡화, 식품",
+      "floorLabel": "1",
+      "historyLinkStatus": "review_required",
+      "tiAmount": 4900000000,
+      "fundName": "이지스아레나스케이엘아이피1의2사모부동산모투자회사",
+      "contractStatusRaw": "Y",
+      "otherSpecialClause": "파레트랙 계약",
+      "historyLinked": false,
+      "historyLatestDate": "",
+      "isContractActive": true,
+      "firstContractDate": "2025-12-09",
+      "assetId": "asset_a112505001",
+      "rawTenantName": "INPNP",
+      "businessRegistrationNo": "",
+      "currentStartDate": "2025-12-11",
+      "leaseSpaceId": "asset_a112505001|tenant_name_inpnp|20251211|20320131|1|na",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "INPNP",
+        "financialStatementType": "",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "headquartersAddress": "",
+        "latestFinancialYear": "",
+        "listedYn": "",
+        "dartCorpCode": "",
+        "industryCode": "",
+        "groupName": "",
+        "matchStatus": "unmatched",
+        "businessRegistrationNo": "",
+        "tenantId": "tenant_name_inpnp",
+        "corpRegistrationNo": "",
+        "latestReportName": ""
+      },
+      "firstStartDate": "2025-12-11",
+      "foMonths": 2,
+      "sourceFloorLabel": "1",
+      "isSingleTenant": false,
+      "manager": {
+        "teamName": "개발관리실",
+        "assetCode": "A112505001",
+        "fundCode": "112505",
+        "assetName": "아레나스안성",
+        "fundName": "이지스아레나스케이엘아이피1의2사모부동산모투자회사",
+        "managerName": "최성현",
+        "email": "shyung.choi@igisam.com"
+      },
+      "leasedAreaSqm": 8100,
+      "floorSplitCount": 1,
+      "currentMoneyStatus": "history_unmatched",
+      "fundId": "fund_112505",
+      "isPreLeased": false,
+      "tenantId": "tenant_name_inpnp",
+      "is3pl": true,
+      "assetName": "아레나스안성",
+      "linkedIssues": [
+        {
+          "owner": "",
+          "issueId": "issue_3",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "아레나스 안성",
+          "priority": "미정",
+          "content": "DB_히스토리 누적 시트 값 추가 요청",
+          "relatedSheet": "DB_히스토리",
+          "conclusion": "",
+          "managerQuestion": "",
+          "assetId": "asset_a112505001",
+          "recordedAt": "2026-04-14",
+          "rawId": "3",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        },
+        {
+          "owner": "",
+          "issueId": "issue_4",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "아레나스 안성",
+          "priority": "미정",
+          "content": "INPNP, JM 로지스 정확한 기업명칭",
+          "relatedSheet": "전체",
+          "conclusion": "",
+          "recordedAt": "2026-04-14",
+          "assetId": "asset_a112505001",
+          "managerQuestion": "",
+          "rawId": "4",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        },
+        {
+          "owner": "",
+          "issueId": "issue_5",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "아레나스 안성",
+          "priority": "미정",
+          "content": "전용면적 포함 세부면적 정확히 추가 확인 필요",
+          "relatedSheet": "전체",
+          "conclusion": "",
+          "assetId": "asset_a112505001",
+          "managerQuestion": "",
+          "recordedAt": "2026-04-14",
+          "rawId": "5",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        }
+      ],
+      "calculationStatus": "missing",
+      "asset": {
+        "queryKey": "41550|36027|0|0051|0003",
+        "approvalDate": "2024-05-29",
+        "assetCode": "A112505001",
+        "platGbCd": "0",
+        "floorCount": "4F / B2",
+        "latitude": 37.0803652,
+        "buildingHubStatus": "ok",
+        "fetchedAt": "2026-04-22",
+        "firstConfiguredAt": "2020-12-08",
+        "landAreaSqm": 49884,
+        "bjdongCd": "36027",
+        "buildingName": "아레나스안성",
+        "areaTableStatus": "unknown",
+        "assetId": "asset_a112505001",
+        "geocodeStatus": "ok_naver_geocode",
+        "assetName": "아레나스안성",
+        "sigunguCd": "41550",
+        "grossFloorAreaSqm": 124498.93,
+        "bun": "51",
+        "standardizedAddress": "경기도 안성시 양성면 양성로 301",
+        "ji": "3",
+        "longitude": 127.2055776
+      }
+    },
+    {
+      "insuranceSpecialClause": "없음",
+      "firstOperationDate": "2026-02-01",
+      "tenantMasterName": "INPNP",
+      "totalGrossAreaSqm": 124553.92,
+      "floorSplitIndex": 1,
+      "sourceDocRef": "",
+      "currentPeriodYears": 6.1,
+      "isDelinquent": true,
+      "leaseId": "asset_a112505001|tenant_name_inpnp|20251211|20320131",
+      "historyCandidateCount": 0,
+      "fundCode": "112505",
+      "recentContractDate": "2025-12-11",
+      "coldStorageType": "Y",
+      "currentMoneyBasis": "unresolved",
+      "currentEndDate": "2032-01-31",
+      "rowNumber": 58,
+      "detailAreaLabel": "",
+      "sector": "물류센터",
+      "depositAmount": 212527320,
+      "assetCode": "A112505001",
+      "currentMoneyAsOf": "",
+      "extensionCount": 0,
+      "firstEndDate": "2032-01-31",
+      "sourceRowHash": "A112505001|INPNP|1||20251211|20320131|3777|",
+      "goodsType": "생활 잡화, 식품",
+      "floorLabel": "1",
+      "historyLinkStatus": "review_required",
+      "fundName": "이지스아레나스케이엘아이피1의2사모부동산모투자회사",
+      "contractStatusRaw": "Y",
+      "otherSpecialClause": "파레트랙 계약",
+      "historyLinked": false,
+      "historyLatestDate": "",
+      "isContractActive": true,
+      "firstContractDate": "2025-12-09",
+      "assetId": "asset_a112505001",
+      "businessRegistrationNo": "",
+      "rawTenantName": "INPNP",
+      "currentStartDate": "2025-12-11",
+      "leaseSpaceId": "asset_a112505001|tenant_name_inpnp|20251211|20320131|1|na",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "INPNP",
+        "financialStatementType": "",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "headquartersAddress": "",
+        "latestFinancialYear": "",
+        "dartCorpCode": "",
+        "listedYn": "",
+        "industryCode": "",
+        "matchStatus": "unmatched",
+        "groupName": "",
+        "businessRegistrationNo": "",
+        "tenantId": "tenant_name_inpnp",
+        "corpRegistrationNo": "",
+        "latestReportName": ""
+      },
+      "firstStartDate": "2025-12-11",
+      "foMonths": 2,
+      "sourceFloorLabel": "1",
+      "isSingleTenant": false,
+      "manager": {
+        "teamName": "개발관리실",
+        "assetCode": "A112505001",
+        "fundCode": "112505",
+        "assetName": "아레나스안성",
+        "managerName": "최성현",
+        "fundName": "이지스아레나스케이엘아이피1의2사모부동산모투자회사",
+        "email": "shyung.choi@igisam.com"
+      },
+      "leasedAreaSqm": 3777,
+      "floorSplitCount": 1,
+      "currentMoneyStatus": "history_unmatched",
+      "fundId": "fund_112505",
+      "isPreLeased": false,
+      "tenantId": "tenant_name_inpnp",
+      "is3pl": true,
+      "assetName": "아레나스안성",
+      "calculationStatus": "missing",
+      "linkedIssues": [
+        {
+          "owner": "",
+          "issueId": "issue_3",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "아레나스 안성",
+          "priority": "미정",
+          "content": "DB_히스토리 누적 시트 값 추가 요청",
+          "relatedSheet": "DB_히스토리",
+          "conclusion": "",
+          "recordedAt": "2026-04-14",
+          "managerQuestion": "",
+          "assetId": "asset_a112505001",
+          "rawId": "3",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        },
+        {
+          "owner": "",
+          "issueId": "issue_4",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "아레나스 안성",
+          "priority": "미정",
+          "content": "INPNP, JM 로지스 정확한 기업명칭",
+          "relatedSheet": "전체",
+          "conclusion": "",
+          "recordedAt": "2026-04-14",
+          "assetId": "asset_a112505001",
+          "managerQuestion": "",
+          "rawId": "4",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        },
+        {
+          "owner": "",
+          "issueId": "issue_5",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "아레나스 안성",
+          "priority": "미정",
+          "content": "전용면적 포함 세부면적 정확히 추가 확인 필요",
+          "conclusion": "",
+          "relatedSheet": "전체",
+          "assetId": "asset_a112505001",
+          "managerQuestion": "",
+          "recordedAt": "2026-04-14",
+          "rawId": "5",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        }
+      ],
+      "asset": {
+        "queryKey": "41550|36027|0|0051|0003",
+        "assetCode": "A112505001",
+        "approvalDate": "2024-05-29",
+        "platGbCd": "0",
+        "latitude": 37.0803652,
+        "floorCount": "4F / B2",
+        "buildingHubStatus": "ok",
+        "fetchedAt": "2026-04-22",
+        "firstConfiguredAt": "2020-12-08",
+        "buildingName": "아레나스안성",
+        "landAreaSqm": 49884,
+        "bjdongCd": "36027",
+        "areaTableStatus": "unknown",
+        "assetId": "asset_a112505001",
+        "geocodeStatus": "ok_naver_geocode",
+        "sigunguCd": "41550",
+        "assetName": "아레나스안성",
+        "standardizedAddress": "경기도 안성시 양성면 양성로 301",
+        "bun": "51",
+        "grossFloorAreaSqm": 124498.93,
+        "longitude": 127.2055776,
+        "ji": "3"
+      }
+    },
+    {
+      "insuranceSpecialClause": "없음",
+      "firstOperationDate": "2025-12-01",
+      "tenantMasterName": "JM 로지스",
+      "totalGrossAreaSqm": 124553.92,
+      "floorSplitIndex": 1,
+      "sourceDocRef": "",
+      "currentPeriodYears": 6.1,
+      "isDelinquent": true,
+      "leaseId": "asset_a112505001|tenant_name_jm로지스|20251101|20311130",
+      "historyCandidateCount": 0,
+      "fundCode": "112505",
+      "recentContractDate": "2025-11-01",
+      "coldStorageType": "N",
+      "currentMoneyBasis": "unresolved",
+      "currentEndDate": "2031-11-30",
+      "rowNumber": 59,
+      "detailAreaLabel": "",
+      "sector": "물류센터",
+      "depositAmount": 81931140,
+      "assetCode": "A112505001",
+      "currentMoneyAsOf": "",
+      "extensionCount": 0,
+      "firstEndDate": "2031-11-30",
+      "sourceRowHash": "A112505001|JM 로지스|1||20251101|20311130|2912|",
+      "goodsType": "생활 잡화, 식품",
+      "floorLabel": "1",
+      "historyLinkStatus": "review_required",
+      "tiAmount": 3900000000,
+      "fundName": "이지스아레나스케이엘아이피1의2사모부동산모투자회사",
+      "contractStatusRaw": "Y",
+      "otherSpecialClause": "파레트랙 계약",
+      "historyLinked": false,
+      "historyLatestDate": "",
+      "isContractActive": true,
+      "firstContractDate": "2025-10-17",
+      "assetId": "asset_a112505001",
+      "businessRegistrationNo": "",
+      "rawTenantName": "JM 로지스",
+      "currentStartDate": "2025-11-01",
+      "leaseSpaceId": "asset_a112505001|tenant_name_jm로지스|20251101|20311130|1|na",
+      "firstStartDate": "2025-11-01",
+      "foMonths": 1,
+      "sourceFloorLabel": "1",
+      "isSingleTenant": false,
+      "manager": {
+        "teamName": "개발관리실",
+        "assetCode": "A112505001",
+        "fundCode": "112505",
+        "assetName": "아레나스안성",
+        "fundName": "이지스아레나스케이엘아이피1의2사모부동산모투자회사",
+        "managerName": "최성현",
+        "email": "shyung.choi@igisam.com"
+      },
+      "leasedAreaSqm": 2912,
+      "floorSplitCount": 1,
+      "currentMoneyStatus": "history_unmatched",
+      "fundId": "fund_112505",
+      "isPreLeased": false,
+      "tenantId": "tenant_name_jm로지스",
+      "assetName": "아레나스안성",
+      "is3pl": true,
+      "calculationStatus": "missing",
+      "linkedIssues": [
+        {
+          "owner": "",
+          "issueId": "issue_3",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "아레나스 안성",
+          "priority": "미정",
+          "content": "DB_히스토리 누적 시트 값 추가 요청",
+          "conclusion": "",
+          "relatedSheet": "DB_히스토리",
+          "recordedAt": "2026-04-14",
+          "assetId": "asset_a112505001",
+          "managerQuestion": "",
+          "rawId": "3",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        },
+        {
+          "owner": "",
+          "issueId": "issue_4",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "아레나스 안성",
+          "priority": "미정",
+          "content": "INPNP, JM 로지스 정확한 기업명칭",
+          "conclusion": "",
+          "relatedSheet": "전체",
+          "assetId": "asset_a112505001",
+          "managerQuestion": "",
+          "recordedAt": "2026-04-14",
+          "rawId": "4",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        },
+        {
+          "owner": "",
+          "issueId": "issue_5",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "아레나스 안성",
+          "priority": "미정",
+          "content": "전용면적 포함 세부면적 정확히 추가 확인 필요",
+          "relatedSheet": "전체",
+          "conclusion": "",
+          "managerQuestion": "",
+          "assetId": "asset_a112505001",
+          "recordedAt": "2026-04-14",
+          "rawId": "5",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        }
+      ],
+      "asset": {
+        "queryKey": "41550|36027|0|0051|0003",
+        "approvalDate": "2024-05-29",
+        "assetCode": "A112505001",
+        "platGbCd": "0",
+        "floorCount": "4F / B2",
+        "latitude": 37.0803652,
+        "buildingHubStatus": "ok",
+        "fetchedAt": "2026-04-22",
+        "firstConfiguredAt": "2020-12-08",
+        "buildingName": "아레나스안성",
+        "bjdongCd": "36027",
+        "landAreaSqm": 49884,
+        "areaTableStatus": "unknown",
+        "assetId": "asset_a112505001",
+        "geocodeStatus": "ok_naver_geocode",
+        "sigunguCd": "41550",
+        "assetName": "아레나스안성",
+        "grossFloorAreaSqm": 124498.93,
+        "standardizedAddress": "경기도 안성시 양성면 양성로 301",
+        "bun": "51",
+        "longitude": 127.2055776,
+        "ji": "3"
+      }
+    },
+    {
+      "insuranceSpecialClause": "없음",
+      "firstOperationDate": "2025-12-01",
+      "tenantMasterName": "JM 로지스",
+      "totalGrossAreaSqm": 124553.92,
+      "floorSplitIndex": 1,
+      "sourceDocRef": "",
+      "currentPeriodYears": 6.1,
+      "isDelinquent": true,
+      "leaseId": "asset_a112505001|tenant_name_jm로지스|20251101|20311130",
+      "historyCandidateCount": 0,
+      "recentContractDate": "2025-11-01",
+      "fundCode": "112505",
+      "coldStorageType": "Y",
+      "currentMoneyBasis": "unresolved",
+      "currentEndDate": "2031-11-30",
+      "rowNumber": 60,
+      "sector": "물류센터",
+      "detailAreaLabel": "",
+      "depositAmount": 226609380,
+      "assetCode": "A112505001",
+      "currentMoneyAsOf": "",
+      "extensionCount": 0,
+      "firstEndDate": "2031-11-30",
+      "goodsType": "생활 잡화, 식품",
+      "sourceRowHash": "A112505001|JM 로지스|1||20251101|20311130|4028|",
+      "floorLabel": "1",
+      "historyLinkStatus": "review_required",
+      "fundName": "이지스아레나스케이엘아이피1의2사모부동산모투자회사",
+      "contractStatusRaw": "Y",
+      "otherSpecialClause": "파레트랙 계약",
+      "historyLinked": false,
+      "historyLatestDate": "",
+      "assetId": "asset_a112505001",
+      "firstContractDate": "2025-10-17",
+      "isContractActive": true,
+      "businessRegistrationNo": "",
+      "rawTenantName": "JM 로지스",
+      "currentStartDate": "2025-11-01",
+      "leaseSpaceId": "asset_a112505001|tenant_name_jm로지스|20251101|20311130|1|na",
+      "firstStartDate": "2025-11-01",
+      "foMonths": 1,
+      "sourceFloorLabel": "1",
+      "isSingleTenant": false,
+      "manager": {
+        "teamName": "개발관리실",
+        "assetCode": "A112505001",
+        "fundCode": "112505",
+        "assetName": "아레나스안성",
+        "managerName": "최성현",
+        "fundName": "이지스아레나스케이엘아이피1의2사모부동산모투자회사",
+        "email": "shyung.choi@igisam.com"
+      },
+      "leasedAreaSqm": 4028,
+      "floorSplitCount": 1,
+      "currentMoneyStatus": "history_unmatched",
+      "fundId": "fund_112505",
+      "isPreLeased": false,
+      "tenantId": "tenant_name_jm로지스",
+      "calculationStatus": "missing",
+      "linkedIssues": [
+        {
+          "owner": "",
+          "issueId": "issue_3",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "아레나스 안성",
+          "priority": "미정",
+          "content": "DB_히스토리 누적 시트 값 추가 요청",
+          "relatedSheet": "DB_히스토리",
+          "conclusion": "",
+          "recordedAt": "2026-04-14",
+          "assetId": "asset_a112505001",
+          "managerQuestion": "",
+          "rawId": "3",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        },
+        {
+          "owner": "",
+          "issueId": "issue_4",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "아레나스 안성",
+          "priority": "미정",
+          "content": "INPNP, JM 로지스 정확한 기업명칭",
+          "relatedSheet": "전체",
+          "conclusion": "",
+          "managerQuestion": "",
+          "assetId": "asset_a112505001",
+          "recordedAt": "2026-04-14",
+          "rawId": "4",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        },
+        {
+          "owner": "",
+          "issueId": "issue_5",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "아레나스 안성",
+          "priority": "미정",
+          "content": "전용면적 포함 세부면적 정확히 추가 확인 필요",
+          "conclusion": "",
+          "relatedSheet": "전체",
+          "recordedAt": "2026-04-14",
+          "assetId": "asset_a112505001",
+          "managerQuestion": "",
+          "rawId": "5",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        }
+      ],
+      "is3pl": true,
+      "assetName": "아레나스안성",
+      "asset": {
+        "queryKey": "41550|36027|0|0051|0003",
+        "approvalDate": "2024-05-29",
+        "assetCode": "A112505001",
+        "platGbCd": "0",
+        "floorCount": "4F / B2",
+        "latitude": 37.0803652,
+        "buildingHubStatus": "ok",
+        "fetchedAt": "2026-04-22",
+        "firstConfiguredAt": "2020-12-08",
+        "buildingName": "아레나스안성",
+        "bjdongCd": "36027",
+        "landAreaSqm": 49884,
+        "areaTableStatus": "unknown",
+        "assetId": "asset_a112505001",
+        "geocodeStatus": "ok_naver_geocode",
+        "sigunguCd": "41550",
+        "assetName": "아레나스안성",
+        "grossFloorAreaSqm": 124498.93,
+        "standardizedAddress": "경기도 안성시 양성면 양성로 301",
+        "bun": "51",
+        "longitude": 127.2055776,
+        "ji": "3"
+      }
+    },
+    {
+      "insuranceSpecialClause": "없음",
+      "firstOperationDate": "2025-08-01",
+      "tenantMasterName": "(주)휠라선",
+      "totalGrossAreaSqm": 124553.92,
+      "floorSplitIndex": 1,
+      "sourceDocRef": "",
+      "currentPeriodYears": 3.7,
+      "isDelinquent": true,
+      "leaseId": "asset_a112505001|tenant_brn_4888101794|20250408|20281231",
+      "historyCandidateCount": 0,
+      "fundCode": "112505",
+      "recentContractDate": "2025-04-08",
+      "currentMoneyBasis": "unresolved",
+      "coldStorageType": "N",
+      "currentEndDate": "2028-12-31",
+      "rowNumber": 61,
+      "detailAreaLabel": "",
+      "sector": "물류센터",
+      "depositAmount": 707344980,
+      "assetCode": "A112505001",
+      "currentMoneyAsOf": "",
+      "extensionCount": 0,
+      "firstEndDate": "2028-12-31",
+      "sourceRowHash": "A112505001|4888101794|B2||20250408|20281231|12572|",
+      "goodsType": "화장품",
+      "floorLabel": "B2",
+      "historyLinkStatus": "review_required",
+      "tiAmount": 620000000,
+      "fundName": "이지스아레나스케이엘아이피1의2사모부동산모투자회사",
+      "contractStatusRaw": "Y",
+      "otherSpecialClause": "없음",
+      "historyLinked": false,
+      "historyLatestDate": "",
+      "isContractActive": true,
+      "assetId": "asset_a112505001",
+      "firstContractDate": "2025-04-03",
+      "rawTenantName": "(주)휠라선",
+      "businessRegistrationNo": "488-81-01794",
+      "currentStartDate": "2025-04-08",
+      "leaseSpaceId": "asset_a112505001|tenant_brn_4888101794|20250408|20281231|b2|na",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "(주)휠라선",
+        "latestOperatingIncome": -1380151544,
+        "financialStatementType": "CFS_DOC",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "latestRevenue": 26145000000,
+        "latestDebtRatio": 60.72,
+        "headquartersAddress": "서울특별시 종로구 청계천로 41 (서린동, 영풍빌딩) 21층",
+        "latestFinancialYear": "2024",
+        "dartCorpCode": "01506361",
+        "listedYn": "Y",
+        "industryCode": "10903",
+        "matchStatus": "matched",
+        "groupName": "",
+        "latestEmployeeCount": 55,
+        "businessRegistrationNo": "488-81-01794",
+        "tenantId": "tenant_brn_4888101794",
+        "corpRegistrationNo": "1101117627768",
+        "latestReportName": ""
+      },
+      "firstStartDate": "2025-04-08",
+      "foMonths": 4,
+      "sourceFloorLabel": "B2",
+      "isSingleTenant": false,
+      "manager": {
+        "teamName": "개발관리실",
+        "assetCode": "A112505001",
+        "fundCode": "112505",
+        "assetName": "아레나스안성",
+        "managerName": "최성현",
+        "fundName": "이지스아레나스케이엘아이피1의2사모부동산모투자회사",
+        "email": "shyung.choi@igisam.com"
+      },
+      "leasedAreaSqm": 12572,
+      "floorSplitCount": 1,
+      "currentMoneyStatus": "history_unmatched",
+      "fundId": "fund_112505",
+      "isPreLeased": false,
+      "tenantId": "tenant_brn_4888101794",
+      "assetName": "아레나스안성",
+      "is3pl": true,
+      "linkedIssues": [
+        {
+          "owner": "",
+          "issueId": "issue_3",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "아레나스 안성",
+          "priority": "미정",
+          "content": "DB_히스토리 누적 시트 값 추가 요청",
+          "relatedSheet": "DB_히스토리",
+          "conclusion": "",
+          "managerQuestion": "",
+          "assetId": "asset_a112505001",
+          "recordedAt": "2026-04-14",
+          "rawId": "3",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        },
+        {
+          "owner": "",
+          "issueId": "issue_4",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "아레나스 안성",
+          "priority": "미정",
+          "content": "INPNP, JM 로지스 정확한 기업명칭",
+          "relatedSheet": "전체",
+          "conclusion": "",
+          "assetId": "asset_a112505001",
+          "managerQuestion": "",
+          "recordedAt": "2026-04-14",
+          "rawId": "4",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        },
+        {
+          "owner": "",
+          "issueId": "issue_5",
+          "needsDevelopment": "",
+          "certainty": "",
+          "relatedAssetLabel": "아레나스 안성",
+          "priority": "미정",
+          "content": "전용면적 포함 세부면적 정확히 추가 확인 필요",
+          "conclusion": "",
+          "relatedSheet": "전체",
+          "managerQuestion": "",
+          "assetId": "asset_a112505001",
+          "recordedAt": "2026-04-14",
+          "rawId": "5",
+          "category": "자산별 담당자 확인 필요 사항",
+          "resolved": false
+        }
+      ],
+      "calculationStatus": "missing",
+      "asset": {
+        "queryKey": "41550|36027|0|0051|0003",
+        "assetCode": "A112505001",
+        "approvalDate": "2024-05-29",
+        "platGbCd": "0",
+        "latitude": 37.0803652,
+        "floorCount": "4F / B2",
+        "buildingHubStatus": "ok",
+        "fetchedAt": "2026-04-22",
+        "firstConfiguredAt": "2020-12-08",
+        "buildingName": "아레나스안성",
+        "landAreaSqm": 49884,
+        "bjdongCd": "36027",
+        "areaTableStatus": "unknown",
+        "assetId": "asset_a112505001",
+        "geocodeStatus": "ok_naver_geocode",
+        "sigunguCd": "41550",
+        "assetName": "아레나스안성",
+        "standardizedAddress": "경기도 안성시 양성면 양성로 301",
+        "bun": "51",
+        "grossFloorAreaSqm": 124498.93,
+        "longitude": 127.2055776,
+        "ji": "3"
+      }
+    }
+  ],
+  "basis": {
+    "rowScope": "selected_asset_rows",
+    "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
+    "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
+    "rowUnit": "lease_space_id",
+    "page": "asset",
+    "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
+    "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
+  },
+  "kpis": [
+    {
+      "label": "임대율",
+      "value": 0.2521226487649332,
+      "key": "occupancy_rate",
+      "valueType": "percent",
+      "status": "ok"
+    },
+    {
+      "label": "총 임대면적",
+      "value": 31389,
+      "key": "leased_area_total",
+      "valueType": "area",
+      "status": "ok"
+    },
+    {
+      "label": "공실면적",
+      "value": 93109.93,
+      "key": "vacancy_area_total",
+      "valueType": "area",
+      "status": "ok"
+    },
+    {
+      "label": "현재 임차인 수",
+      "value": 3,
+      "key": "unique_tenant_count",
+      "valueType": "number",
+      "status": "ok"
+    },
+    {
+      "label": "월 임관리비 총액",
+      "key": "monthly_total_cost",
+      "valueType": "currency",
+      "status": "review_required"
+    },
+    {
+      "label": "E.NOC",
+      "key": "average_e_noc",
+      "valueType": "currency",
+      "status": "review_required"
+    }
+  ]
+}

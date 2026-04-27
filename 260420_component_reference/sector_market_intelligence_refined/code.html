@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Global Realty Trust - Market Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#526074",
+                        "primary": "#545f73",
+                        "primary-container": "#d8e3fb",
+                        "on-secondary-container": "#455367",
+                        "tertiary-dim": "#465467",
+                        "secondary-fixed": "#d5e3fc",
+                        "inverse-surface": "#0b0f10",
+                        "surface-bright": "#f7f9fb",
+                        "on-error-container": "#752121",
+                        "on-tertiary-fixed": "#2e3d4e",
+                        "primary-dim": "#485367",
+                        "surface-container-low": "#f0f4f7",
+                        "on-tertiary-fixed-variant": "#4a596c",
+                        "surface-container-highest": "#d9e4ea",
+                        "on-secondary-fixed": "#324053",
+                        "surface-container": "#e8eff3",
+                        "outline-variant": "#a9b4b9",
+                        "on-tertiary-container": "#414f62",
+                        "inverse-primary": "#dae6fe",
+                        "on-primary-fixed": "#354053",
+                        "secondary-fixed-dim": "#c7d5ed",
+                        "primary-fixed-dim": "#cad5ed",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#cfdce3",
+                        "error-container": "#fe8983",
+                        "on-error": "#fff7f6",
+                        "outline": "#717c82",
+                        "background": "#f7f9fb",
+                        "surface": "#f7f9fb",
+                        "error-dim": "#4e0309",
+                        "surface-variant": "#d9e4ea",
+                        "on-secondary": "#f8f8ff",
+                        "tertiary-container": "#cfdef5",
+                        "surface-tint": "#545f73",
+                        "secondary-container": "#d5e3fc",
+                        "on-primary-container": "#475266",
+                        "on-primary": "#f6f7ff",
+                        "tertiary-fixed": "#cfdef5",
+                        "on-surface": "#2a3439",
+                        "secondary-dim": "#465468",
+                        "surface-container-high": "#e1e9ee",
+                        "primary-fixed": "#d8e3fb",
+                        "on-primary-fixed-variant": "#515c70",
+                        "tertiary": "#526073",
+                        "on-tertiary": "#f7f9ff",
+                        "error": "#9f403d",
+                        "on-background": "#2a3439",
+                        "on-surface-variant": "#566166",
+                        "on-secondary-fixed-variant": "#4e5c71",
+                        "inverse-on-surface": "#9a9d9f",
+                        "tertiary-fixed-dim": "#c1d0e6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d9e4ea;
+            border-radius: 2px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a9b4b9;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface flex h-screen overflow-hidden antialiased">
+<!-- SideNavBar (Web Only) -->
+<nav class="hidden md:flex flex-col h-screen w-64 border-r bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-800 py-6 shrink-0">
+<!-- Header -->
+<div class="px-6 mb-10 flex flex-col items-start">
+<div class="h-10 w-10 bg-surface-container-highest rounded-DEFAULT mb-4 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="domain">domain</span>
+</div>
+<h1 class="font-headline font-black text-[#1e293b] dark:text-white text-lg tracking-tight">Global Realty Trust</h1>
+<p class="font-label font-extrabold text-xs uppercase tracking-wider text-slate-500 mt-1">Institutional Grade</p>
+</div>
+<!-- Navigation Links -->
+<ul class="flex-1 space-y-1">
+<li>
+<a class="flex items-center px-6 py-3 font-label font-extrabold text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-950 transition-all duration-150 opacity-100 hover:opacity-80" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="domain">domain</span>
+                    Portfolio
+                </a>
+</li>
+<li>
+<a class="flex items-center px-6 py-3 font-label font-extrabold text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-950 transition-all duration-150 opacity-100 hover:opacity-80" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="account_balance">account_balance</span>
+                    Asset Ledger
+                </a>
+</li>
+<!-- Active Tab -->
+<li>
+<a class="flex items-center px-6 py-3 font-label font-extrabold text-xs uppercase tracking-wider bg-white dark:bg-slate-950 text-[#1e293b] dark:text-white border-r-4 border-[#1e293b] dark:border-slate-100 opacity-100" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="query_stats" data-weight="fill" style="font-variation-settings: 'FILL' 1;">query_stats</span>
+                    Market Analytics
+                </a>
+</li>
+<li>
+<a class="flex items-center px-6 py-3 font-label font-extrabold text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-950 transition-all duration-150 opacity-100 hover:opacity-80" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="description">description</span>
+                    Financial Reports
+                </a>
+</li>
+<li>
+<a class="flex items-center px-6 py-3 font-label font-extrabold text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-950 transition-all duration-150 opacity-100 hover:opacity-80" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="fact_check">fact_check</span>
+                    Compliance
+                </a>
+</li>
+</ul>
+<!-- Footer -->
+<div class="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800">
+<a class="flex items-center px-6 py-3 font-label font-extrabold text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-950 transition-all duration-150 opacity-100 hover:opacity-80" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="help_outline">help_outline</span>
+                Support
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col relative overflow-hidden bg-surface">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-8 py-3 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 shadow-[0_4px_24px_rgba(42,52,57,0.06)] absolute top-0 z-50">
+<!-- Left: Brand (Mobile) & Search -->
+<div class="flex items-center gap-6">
+<!-- Mobile Brand (Hidden on md+) -->
+<div class="md:hidden font-headline text-lg font-extrabold text-slate-900 dark:text-white uppercase tracking-widest">
+                    Architectural Ledger
+                </div>
+<!-- Search -->
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm" data-icon="search">search</span>
+<input class="pl-9 pr-4 py-1.5 bg-surface-container-highest border-b border-outline-variant/20 focus:border-[#1e293b] focus:outline-none focus:ring-0 rounded-DEFAULT font-body text-sm text-on-surface w-64 transition-colors placeholder:text-outline" placeholder="Search markets, assets..." type="text"/>
+</div>
+</div>
+<!-- Right: Actions & Profile -->
+<div class="flex items-center gap-6">
+<button class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-200 scale-100 active:scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-200 scale-100 active:scale-95">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-8 rounded-DEFAULT bg-surface-container-high overflow-hidden border border-outline-variant/20">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="Corporate headshot of a professional man in a dark suit against a neutral grey background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdBo3VUFMZBNK89Vyivw3jK0MdzRlO5FB82PkLUF2EJESOdwEftiOQuJi8PaDrFPo_gflIc0BIElSzVAdGvi0_pmV-fYfHCJvUySigOPSM8-_k6dRlVxGPIm2HICit-WhP-0im80kk5xhgMEaCE8SHb_IcDQGl-4QtTfMZEDiWTzWTCEbf3Jesr3Q7PqckNUhbPiJaygD0KmZDzgKt-wvLLy5df7kfPhRf0R_0AzH5g2beYk10Ez-VjPMRsuGQHg7kwsYgglg8Ry8"/>
+</div>
+</div>
+</header>
+<!-- Scrollable Canvas -->
+<main class="flex-1 overflow-y-auto pt-20 px-8 pb-12 w-full max-w-7xl mx-auto">
+<!-- Page Header -->
+<div class="mb-10">
+<h2 class="font-headline font-extrabold text-4xl text-[#1e293b] tracking-tight mb-2">Market Analytics</h2>
+<p class="font-body text-on-surface-variant text-base max-w-2xl">Macro-level performance ranking, geographic concentration, and longitudinal yield trends across core asset classes.</p>
+</div>
+<!-- Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Primary Column (Left 8 cols) -->
+<div class="lg:col-span-8 flex flex-col gap-8">
+<!-- KPI Cluster -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+<!-- KPI 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-DEFAULT shadow-[0_4px_24px_rgba(42,52,57,0.06)] flex flex-col justify-between min-h-[140px] border border-surface-container-low">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-4 border-b border-outline-variant/20 pb-2">Aggregate Yield</span>
+<div class="flex items-baseline gap-2 mt-auto">
+<span class="font-headline font-extrabold text-4xl text-[#1e293b]">5.42%</span>
+<span class="font-label text-xs font-bold text-[#1e293b] flex items-center"><span class="material-symbols-outlined text-[14px] mr-1" data-icon="arrow_upward">arrow_upward</span>12bps</span>
+</div>
+</div>
+<!-- KPI 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-DEFAULT shadow-[0_4px_24px_rgba(42,52,57,0.06)] flex flex-col justify-between min-h-[140px] border border-surface-container-low">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-4 border-b border-outline-variant/20 pb-2">AUM Market Value</span>
+<div class="flex items-baseline gap-2 mt-auto">
+<span class="font-headline font-extrabold text-4xl text-[#1e293b]">$12.4B</span>
+<span class="font-label text-xs text-on-surface-variant">Q3 '23</span>
+</div>
+</div>
+<!-- KPI 3 -->
+<div class="bg-surface-container-lowest p-6 rounded-DEFAULT shadow-[0_4px_24px_rgba(42,52,57,0.06)] flex flex-col justify-between min-h-[140px] border border-surface-container-low">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-4 border-b border-outline-variant/20 pb-2">Occupancy Variance</span>
+<div class="flex items-baseline gap-2 mt-auto">
+<span class="font-headline font-extrabold text-4xl text-[#1e293b]">94.1%</span>
+<span class="font-label text-xs font-bold text-error flex items-center"><span class="material-symbols-outlined text-[14px] mr-1" data-icon="arrow_downward">arrow_downward</span>-0.4%</span>
+</div>
+</div>
+</div>
+<!-- Sector Ranking Chart -->
+<div class="bg-surface-container-lowest p-8 rounded-DEFAULT shadow-[0_4px_24px_rgba(42,52,57,0.06)] border border-surface-container-low">
+<div class="flex justify-between items-center mb-8 border-b border-outline-variant/20 pb-4">
+<h3 class="font-headline font-extrabold text-xl text-[#1e293b]">Sector Performance Ranking</h3>
+<button class="font-label text-xs uppercase tracking-widest text-primary flex items-center hover:text-[#1e293b] transition-colors">
+                                Export Data <span class="material-symbols-outlined text-[16px] ml-1" data-icon="download">download</span>
+</button>
+</div>
+<!-- Clean Bar Chart Visualization -->
+<div class="space-y-6">
+<!-- Logistics -->
+<div class="flex items-center gap-6">
+<div class="w-24 shrink-0 font-label text-sm text-on-surface-variant uppercase tracking-wide">Logistics</div>
+<div class="flex-1 h-6 bg-surface-container-low relative">
+<div class="absolute top-0 left-0 h-full bg-[#1e293b] w-[85%] border-r-2 border-white"></div>
+</div>
+<div class="w-16 shrink-0 text-right font-headline font-bold text-[#1e293b]">8.2%</div>
+</div>
+<!-- Multi-Family -->
+<div class="flex items-center gap-6">
+<div class="w-24 shrink-0 font-label text-sm text-on-surface-variant uppercase tracking-wide">Multi-Fam</div>
+<div class="flex-1 h-6 bg-surface-container-low relative">
+<div class="absolute top-0 left-0 h-full bg-primary w-[72%] border-r-2 border-white"></div>
+</div>
+<div class="w-16 shrink-0 text-right font-headline font-bold text-on-surface">6.1%</div>
+</div>
+<!-- Retail -->
+<div class="flex items-center gap-6">
+<div class="w-24 shrink-0 font-label text-sm text-on-surface-variant uppercase tracking-wide">Retail</div>
+<div class="flex-1 h-6 bg-surface-container-low relative">
+<div class="absolute top-0 left-0 h-full bg-tertiary-dim w-[45%] border-r-2 border-white"></div>
+</div>
+<div class="w-16 shrink-0 text-right font-headline font-bold text-on-surface">4.5%</div>
+</div>
+<!-- Office -->
+<div class="flex items-center gap-6">
+<div class="w-24 shrink-0 font-label text-sm text-on-surface-variant uppercase tracking-wide">Office</div>
+<div class="flex-1 h-6 bg-surface-container-low relative">
+<div class="absolute top-0 left-0 h-full bg-outline w-[30%] border-r-2 border-white"></div>
+</div>
+<div class="w-16 shrink-0 text-right font-headline font-bold text-on-surface">2.1%</div>
+</div>
+</div>
+<!-- Axis -->
+<div class="mt-4 flex justify-between ml-30 pl-[120px] pr-16 font-label text-[10px] text-outline-variant border-t border-outline-variant/20 pt-2">
+<span>0%</span>
+<span>2%</span>
+<span>4%</span>
+<span>6%</span>
+<span>8%</span>
+<span>10%</span>
+</div>
+</div>
+<!-- Top Asset Table -->
+<div class="bg-surface-container-lowest pt-8 rounded-DEFAULT shadow-[0_4px_24px_rgba(42,52,57,0.06)] border border-surface-container-low overflow-hidden">
+<div class="px-8 mb-6">
+<h3 class="font-headline font-extrabold text-xl text-[#1e293b]">Top Performing Assets (IRR)</h3>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant/20 bg-surface-container-low/50">
+<th class="px-8 py-4 font-label text-[10px] uppercase tracking-widest text-on-surface-variant">Asset ID</th>
+<th class="px-8 py-4 font-label text-[10px] uppercase tracking-widest text-on-surface-variant">Location</th>
+<th class="px-8 py-4 font-label text-[10px] uppercase tracking-widest text-on-surface-variant">Sector</th>
+<th class="px-8 py-4 font-label text-[10px] uppercase tracking-widest text-on-surface-variant text-right">Target IRR</th>
+<th class="px-8 py-4 font-label text-[10px] uppercase tracking-widest text-on-surface-variant text-right">Actual IRR</th>
+</tr>
+</thead>
+<tbody class="font-body text-sm">
+<tr class="border-b border-outline-variant/15 hover:bg-surface-bright transition-colors">
+<td class="px-8 py-5 font-bold text-[#1e293b]">LGA-North-01</td>
+<td class="px-8 py-5 text-on-surface-variant">New York, NY</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center px-2 py-0.5 rounded-DEFAULT bg-surface-container-highest text-[10px] font-label uppercase tracking-wide text-on-surface">Logistics</span>
+</td>
+<td class="px-8 py-5 text-right text-on-surface-variant">12.0%</td>
+<td class="px-8 py-5 text-right font-bold text-[#1e293b]">14.2%</td>
+</tr>
+<tr class="border-b border-outline-variant/15 hover:bg-surface-bright transition-colors">
+<td class="px-8 py-5 font-bold text-[#1e293b]">DFW-Hub-B</td>
+<td class="px-8 py-5 text-on-surface-variant">Dallas, TX</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center px-2 py-0.5 rounded-DEFAULT bg-surface-container-highest text-[10px] font-label uppercase tracking-wide text-on-surface">Logistics</span>
+</td>
+<td class="px-8 py-5 text-right text-on-surface-variant">11.5%</td>
+<td class="px-8 py-5 text-right font-bold text-[#1e293b]">13.8%</td>
+</tr>
+<tr class="border-b border-outline-variant/15 hover:bg-surface-bright transition-colors">
+<td class="px-8 py-5 font-bold text-[#1e293b]">MIA-Retail-Core</td>
+<td class="px-8 py-5 text-on-surface-variant">Miami, FL</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center px-2 py-0.5 rounded-DEFAULT bg-surface-container-highest text-[10px] font-label uppercase tracking-wide text-on-surface">Retail</span>
+</td>
+<td class="px-8 py-5 text-right text-on-surface-variant">9.0%</td>
+<td class="px-8 py-5 text-right font-bold text-[#1e293b]">10.1%</td>
+</tr>
+<tr class="hover:bg-surface-bright transition-colors">
+<td class="px-8 py-5 font-bold text-[#1e293b]">CHI-Loop-Twr</td>
+<td class="px-8 py-5 text-on-surface-variant">Chicago, IL</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center px-2 py-0.5 rounded-DEFAULT bg-surface-container-highest text-[10px] font-label uppercase tracking-wide text-on-surface">Office</span>
+</td>
+<td class="px-8 py-5 text-right text-on-surface-variant">8.5%</td>
+<td class="px-8 py-5 text-right font-bold text-[#1e293b]">8.7%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Secondary Column (Right 4 cols) -->
+<div class="lg:col-span-4 flex flex-col gap-8">
+<!-- Geographic Concentration (Map Placeholder) -->
+<div class="bg-surface-container-lowest p-6 rounded-DEFAULT shadow-[0_4px_24px_rgba(42,52,57,0.06)] border border-surface-container-low flex flex-col h-[400px]">
+<h3 class="font-headline font-extrabold text-lg text-[#1e293b] mb-4 border-b border-outline-variant/20 pb-4">Geographic Concentration</h3>
+<div class="flex-1 relative bg-surface-container-low overflow-hidden rounded-DEFAULT">
+<!-- Abstract Map Representation (Institutional Styling) -->
+<div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=800&amp;q=80')] bg-cover bg-center grayscale opacity-30 mix-blend-multiply" data-alt="Monochrome minimalist abstract map view showing structural grid lines and regional boundaries in high contrast"></div>
+<!-- Data Nodes -->
+<div class="absolute top-[30%] left-[70%] w-6 h-6 bg-[#1e293b] rounded-full border-2 border-white flex items-center justify-center shadow-lg">
+<div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+</div>
+<div class="absolute top-[60%] left-[40%] w-4 h-4 bg-primary rounded-full border-2 border-white shadow-lg"></div>
+<div class="absolute top-[45%] left-[25%] w-8 h-8 bg-tertiary-dim rounded-full border-2 border-white opacity-80 flex items-center justify-center shadow-lg">
+<div class="w-2 h-2 bg-white rounded-full"></div>
+</div>
+<div class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-sm p-3 border border-outline-variant/20 rounded-DEFAULT">
+<div class="flex justify-between items-center font-label text-xs">
+<span class="text-on-surface-variant font-bold">Top Region:</span>
+<span class="text-[#1e293b] font-extrabold">Northeast (42%)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Trend Analysis: Yield vs Benchmark -->
+<div class="bg-surface-container-lowest p-6 rounded-DEFAULT shadow-[0_4px_24px_rgba(42,52,57,0.06)] border border-surface-container-low flex-1">
+<h3 class="font-headline font-extrabold text-lg text-[#1e293b] mb-4 border-b border-outline-variant/20 pb-4">Yield Trend vs Benchmark</h3>
+<!-- Minimal Line Chart Area -->
+<div class="relative h-48 w-full mt-4">
+<!-- Y-Axis Grid -->
+<div class="absolute inset-0 flex flex-col justify-between">
+<div class="border-t border-outline-variant/15 w-full h-0"></div>
+<div class="border-t border-outline-variant/15 w-full h-0"></div>
+<div class="border-t border-outline-variant/15 w-full h-0"></div>
+<div class="border-t border-outline-variant/30 w-full h-0"></div> <!-- Baseline -->
+</div>
+<!-- SVG Chart Lines -->
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<!-- Benchmark Line (Dotted/Grey) -->
+<polyline fill="none" points="0,70 20,68 40,65 60,62 80,60 100,58" stroke="#717c82" stroke-dasharray="4,4" stroke-width="1.5"></polyline>
+<!-- Portfolio Line (Solid/Blue) -->
+<polyline fill="none" points="0,80 20,72 40,60 60,55 80,45 100,35" stroke="#1e293b" stroke-width="2"></polyline>
+</svg>
+<!-- Data Points (Portfolio) -->
+<div class="absolute w-2 h-2 bg-[#1e293b] rounded-full" style="left: calc(100% - 4px); top: calc(35% - 4px);"></div>
+</div>
+<!-- X-Axis Labels -->
+<div class="flex justify-between font-label text-[10px] text-outline-variant mt-2 px-1">
+<span>Q1</span>
+<span>Q2</span>
+<span>Q3</span>
+<span>Q4</span>
+<span>Q1</span>
+<span>Q2</span>
+</div>
+<!-- Legend -->
+<div class="flex gap-4 mt-6 pt-4 border-t border-outline-variant/20">
+<div class="flex items-center gap-2">
+<div class="w-3 h-0.5 bg-[#1e293b]"></div>
+<span class="font-label text-xs text-on-surface">Portfolio</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-0.5 bg-outline border border-dashed"></div>
+<span class="font-label text-xs text-on-surface-variant">NCREIF Benchmark</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

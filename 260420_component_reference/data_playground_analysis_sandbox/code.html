@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Data Playground - Strategic Ledger</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed": "#d8e3fb",
+                        "outline-variant": "#c5c6cd",
+                        "on-secondary": "#ffffff",
+                        "tertiary-container": "#1a2a3e",
+                        "on-secondary-fixed": "#001a42",
+                        "on-tertiary-container": "#8191a9",
+                        "surface-container-low": "#f3f4f3",
+                        "surface-container": "#eeeeed",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#004395",
+                        "on-secondary-container": "#fefcff",
+                        "surface-tint": "#545f73",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#bcc7de",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#d3e4fe",
+                        "secondary-container": "#2170e4",
+                        "primary-container": "#1e293b",
+                        "secondary-fixed": "#d8e2ff",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#f1f1f0",
+                        "surface": "#f9f9f8",
+                        "primary": "#091426",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "inverse-surface": "#2f3130",
+                        "surface-dim": "#dadad9",
+                        "tertiary": "#041528",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "on-primary-container": "#8590a6",
+                        "on-error": "#ffffff",
+                        "on-background": "#1a1c1c",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-surface": "#1a1c1c",
+                        "surface-variant": "#e2e2e2",
+                        "on-primary-fixed-variant": "#3c475a",
+                        "outline": "#75777d",
+                        "inverse-primary": "#bcc7de",
+                        "surface-bright": "#f9f9f8",
+                        "background": "#f9f9f8",
+                        "on-surface-variant": "#45474c",
+                        "secondary": "#0058be",
+                        "on-primary-fixed": "#111c2d",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#e8e8e7",
+                        "on-tertiary-fixed": "#0b1c30"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {},
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined.filled { font-variation-settings: 'FILL' 1; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex antialiased">
+<!-- SideNavBar Component -->
+<nav class="bg-[#f3f4f3] dark:bg-slate-900 text-[#091426] dark:text-slate-100 font-['Inter'] text-sm font-semibold uppercase tracking-wider docked left-0 h-screen w-64 fixed no-border tonal-shift-against-background flat no shadows flex flex-col py-6 space-y-2 z-40 hidden md:flex">
+<div class="px-6 pb-6">
+<h2 class="text-xl font-extrabold text-[#091426] dark:text-white font-headline tracking-tighter">Asset Ledger</h2>
+<p class="text-xs text-on-surface-variant mt-1">Logistics Global</p>
+</div>
+<div class="flex-1 overflow-y-auto px-4 space-y-1">
+<a class="flex items-center px-4 py-3 rounded text-slate-500 dark:text-slate-400 hover:bg-[#e2e2e2] dark:hover:bg-slate-800 transition-all translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">home</span>
+                Home
+            </a>
+<a class="flex items-center px-4 py-3 rounded text-slate-500 dark:text-slate-400 hover:bg-[#e2e2e2] dark:hover:bg-slate-800 transition-all translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">inventory_2</span>
+                Asset
+            </a>
+<a class="flex items-center px-4 py-3 rounded text-slate-500 dark:text-slate-400 hover:bg-[#e2e2e2] dark:hover:bg-slate-800 transition-all translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">business</span>
+                Company
+            </a>
+<a class="flex items-center px-4 py-3 rounded text-slate-500 dark:text-slate-400 hover:bg-[#e2e2e2] dark:hover:bg-slate-800 transition-all translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">analytics</span>
+                Sector
+            </a>
+<a class="flex items-center px-4 py-3 rounded text-slate-500 dark:text-slate-400 hover:bg-[#e2e2e2] dark:hover:bg-slate-800 transition-all translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">construction</span>
+                Analysis Tools
+            </a>
+<a class="flex items-center px-4 py-3 rounded text-[#091426] dark:text-white font-bold border-r-4 border-[#3B82F6] bg-[#e2e2e2] dark:bg-slate-800 translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined filled mr-3 text-[20px]">database</span>
+                Data Playground
+            </a>
+</div>
+<div class="px-4 mt-auto space-y-1">
+<button class="w-full mb-4 bg-primary text-on-primary font-semibold py-2 px-4 rounded text-sm bg-gradient-to-b from-primary to-primary-container shadow-sm hover:opacity-90 transition-opacity">
+                Generate Report
+            </button>
+<a class="flex items-center px-4 py-2 rounded text-slate-500 dark:text-slate-400 hover:bg-[#e2e2e2] dark:hover:bg-slate-800 transition-all" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">help</span>
+                Support
+            </a>
+<a class="flex items-center px-4 py-2 rounded text-slate-500 dark:text-slate-400 hover:bg-[#e2e2e2] dark:hover:bg-slate-800 transition-all" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">logout</span>
+                Sign Out
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar Component (Mobile Only or as Secondary Header) -->
+<header class="bg-[#f9f9f8] dark:bg-slate-950 text-[#091426] dark:text-slate-100 font-['Manrope'] font-medium tracking-tight docked full-width top-0 sticky z-30 bg-[#f3f4f3] dark:bg-slate-900 flat no-line tonal-layering flex justify-between items-center h-16 px-8 w-full md:hidden">
+<div class="text-lg font-bold tracking-tighter text-[#091426] dark:text-white">Strategic Ledger</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-500 hover:text-blue-600 transition-colors scale-95 duration-150 ease-in-out">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-slate-500 hover:text-blue-600 transition-colors scale-95 duration-150 ease-in-out">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<!-- Page Canvas -->
+<div class="flex-1 p-6 md:p-10 lg:p-12 max-w-screen-2xl mx-auto w-full">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+<div>
+<h1 class="font-headline text-[2.75rem] font-semibold tracking-[-0.02em] text-primary leading-none mb-2">Analysis Sandbox</h1>
+<p class="text-on-surface-variant text-sm max-w-2xl">Construct dynamic views of the portfolio. Select dimensions, metrics, and filters to generate custom tabular data and visualizations.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-high text-on-surface font-semibold text-sm rounded hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[18px]">save</span>
+                        Save View
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-gradient-to-b from-primary to-primary-container text-on-primary font-semibold text-sm rounded shadow-sm hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                        Export CSV
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Controls Sidebar (Left Rail) -->
+<div class="lg:col-span-3 space-y-8">
+<!-- Configuration Container -->
+<div class="bg-surface-container-low rounded p-6 shadow-sm ring-1 ring-outline-variant/15">
+<h3 class="font-headline text-lg font-medium text-primary mb-6 border-b border-outline-variant/15 pb-3">Query Configuration</h3>
+<!-- Dimensions -->
+<div class="mb-6">
+<h4 class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant mb-3">Dimensions (Rows)</h4>
+<div class="space-y-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="form-checkbox h-4 w-4 text-secondary border-outline-variant rounded-[2px] bg-surface-container-lowest focus:ring-secondary focus:ring-offset-0" type="checkbox"/>
+<span class="text-sm text-on-surface group-hover:text-primary transition-colors">Region</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="form-checkbox h-4 w-4 text-secondary border-outline-variant rounded-[2px] bg-surface-container-lowest focus:ring-secondary focus:ring-offset-0" type="checkbox"/>
+<span class="text-sm text-on-surface group-hover:text-primary transition-colors">Asset Type</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="form-checkbox h-4 w-4 text-secondary border-outline-variant rounded-[2px] bg-surface-container-lowest focus:ring-secondary focus:ring-offset-0" type="checkbox"/>
+<span class="text-sm text-on-surface group-hover:text-primary transition-colors">Property Grade</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="form-checkbox h-4 w-4 text-secondary border-outline-variant rounded-[2px] bg-surface-container-lowest focus:ring-secondary focus:ring-offset-0" type="checkbox"/>
+<span class="text-sm text-on-surface group-hover:text-primary transition-colors">Lease Expiry Year</span>
+</label>
+</div>
+</div>
+<!-- Metrics -->
+<div class="mb-6">
+<h4 class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant mb-3">Metrics (Values)</h4>
+<div class="space-y-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="form-checkbox h-4 w-4 text-secondary border-outline-variant rounded-[2px] bg-surface-container-lowest focus:ring-secondary focus:ring-offset-0" type="checkbox"/>
+<span class="text-sm text-on-surface group-hover:text-primary transition-colors">Total Area (SQM)</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="form-checkbox h-4 w-4 text-secondary border-outline-variant rounded-[2px] bg-surface-container-lowest focus:ring-secondary focus:ring-offset-0" type="checkbox"/>
+<span class="text-sm text-on-surface group-hover:text-primary transition-colors">Occupancy Rate (%)</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="form-checkbox h-4 w-4 text-secondary border-outline-variant rounded-[2px] bg-surface-container-lowest focus:ring-secondary focus:ring-offset-0" type="checkbox"/>
+<span class="text-sm text-on-surface group-hover:text-primary transition-colors">WALE (Years)</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="form-checkbox h-4 w-4 text-secondary border-outline-variant rounded-[2px] bg-surface-container-lowest focus:ring-secondary focus:ring-offset-0" type="checkbox"/>
+<span class="text-sm text-on-surface group-hover:text-primary transition-colors">Annualized Base Rent</span>
+</label>
+</div>
+</div>
+<!-- Filters -->
+<div>
+<h4 class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant mb-3">Active Filters</h4>
+<div class="space-y-3">
+<div>
+<label class="block text-[11px] font-medium text-on-surface-variant mb-1 uppercase tracking-wide">Status</label>
+<select class="w-full text-sm bg-surface-container-lowest border-outline-variant/30 rounded focus:border-secondary focus:ring-1 focus:ring-secondary py-1.5 px-2">
+<option>Active &amp; Under Construction</option>
+<option>Active Only</option>
+<option>Under Construction Only</option>
+</select>
+</div>
+<div>
+<label class="block text-[11px] font-medium text-on-surface-variant mb-1 uppercase tracking-wide">Date Range</label>
+<select class="w-full text-sm bg-surface-container-lowest border-outline-variant/30 rounded focus:border-secondary focus:ring-1 focus:ring-secondary py-1.5 px-2">
+<option>Q3 2023 - Present</option>
+<option>YTD 2023</option>
+<option>Full Year 2022</option>
+<option>Custom Range...</option>
+</select>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-4 border-t border-outline-variant/15">
+<button class="w-full py-2 bg-surface-container-high text-primary font-medium text-sm rounded hover:bg-surface-variant transition-colors flex justify-center items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+                                Apply Query
+                            </button>
+</div>
+</div>
+</div>
+<!-- Main Data Canvas (Right Area) -->
+<div class="lg:col-span-9 space-y-8">
+<!-- View Toggles & Summary -->
+<div class="flex flex-col sm:flex-row justify-between items-end gap-4 border-b border-outline-variant/20 pb-4">
+<div>
+<h2 class="font-headline text-xl font-medium text-primary">Portfolio Aggregation</h2>
+<p class="text-sm text-on-surface-variant mt-1">Grouped by Region, Asset Type. Showing 12 rows.</p>
+</div>
+<div class="flex bg-surface-container-low rounded p-1 ring-1 ring-outline-variant/15">
+<button class="px-3 py-1.5 bg-surface-container-lowest text-primary text-sm font-medium rounded shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">table_rows</span>
+                                Table
+                            </button>
+<button class="px-3 py-1.5 text-on-surface-variant hover:text-primary text-sm font-medium rounded flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[18px]">bar_chart</span>
+                                Bar
+                            </button>
+<button class="px-3 py-1.5 text-on-surface-variant hover:text-primary text-sm font-medium rounded flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[18px]">pie_chart</span>
+                                Pie
+                            </button>
+</div>
+</div>
+<!-- Data Grid (The Ledger) -->
+<div class="bg-surface-container-lowest rounded shadow-sm ring-1 ring-outline-variant/15 overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-primary-container text-on-primary-fixed border-b border-outline-variant/20">
+<tr>
+<th class="py-3 px-4 text-xs font-semibold uppercase tracking-wider whitespace-nowrap">Region</th>
+<th class="py-3 px-4 text-xs font-semibold uppercase tracking-wider whitespace-nowrap">Asset Type</th>
+<th class="py-3 px-4 text-xs font-semibold uppercase tracking-wider text-right whitespace-nowrap">Total Area (SQM)</th>
+<th class="py-3 px-4 text-xs font-semibold uppercase tracking-wider text-right whitespace-nowrap">Occupancy Rate</th>
+<th class="py-3 px-4 text-xs font-semibold uppercase tracking-wider text-right whitespace-nowrap">WALE (Yrs)</th>
+</tr>
+</thead>
+<tbody class="text-sm text-on-surface divide-y divide-outline-variant/10">
+<!-- Row Group 1: APAC -->
+<tr class="bg-background hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-medium text-primary">APAC</td>
+<td class="py-3 px-4">Logistics Hub</td>
+<td class="py-3 px-4 text-right font-mono text-[13px]">1,245,000</td>
+<td class="py-3 px-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<span>98.5%</span>
+<div class="w-2 h-2 rounded-full bg-teal-600/80"></div>
+</div>
+</td>
+<td class="py-3 px-4 text-right font-mono text-[13px]">4.2</td>
+</tr>
+<tr class="bg-surface-container-low hover:bg-surface-variant transition-colors">
+<td class="py-3 px-4 font-medium text-primary text-transparent">APAC</td>
+<td class="py-3 px-4">Cold Storage</td>
+<td class="py-3 px-4 text-right font-mono text-[13px]">320,500</td>
+<td class="py-3 px-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<span>100.0%</span>
+<div class="w-2 h-2 rounded-full bg-teal-600/80"></div>
+</div>
+</td>
+<td class="py-3 px-4 text-right font-mono text-[13px]">6.8</td>
+</tr>
+<tr class="bg-background hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-medium text-primary text-transparent">APAC</td>
+<td class="py-3 px-4">Urban Fulfillment</td>
+<td class="py-3 px-4 text-right font-mono text-[13px]">185,200</td>
+<td class="py-3 px-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<span>94.2%</span>
+<div class="w-2 h-2 rounded-full bg-amber-600/80"></div>
+</div>
+</td>
+<td class="py-3 px-4 text-right font-mono text-[13px]">2.9</td>
+</tr>
+<!-- Row Group 2: EMEA -->
+<tr class="bg-surface-container-low hover:bg-surface-variant transition-colors border-t-2 border-outline-variant/20">
+<td class="py-3 px-4 font-medium text-primary">EMEA</td>
+<td class="py-3 px-4">Logistics Hub</td>
+<td class="py-3 px-4 text-right font-mono text-[13px]">2,105,800</td>
+<td class="py-3 px-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<span>96.8%</span>
+<div class="w-2 h-2 rounded-full bg-teal-600/80"></div>
+</div>
+</td>
+<td class="py-3 px-4 text-right font-mono text-[13px]">5.1</td>
+</tr>
+<tr class="bg-background hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-medium text-primary text-transparent">EMEA</td>
+<td class="py-3 px-4">Cold Storage</td>
+<td class="py-3 px-4 text-right font-mono text-[13px]">450,000</td>
+<td class="py-3 px-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<span>99.1%</span>
+<div class="w-2 h-2 rounded-full bg-teal-600/80"></div>
+</div>
+</td>
+<td class="py-3 px-4 text-right font-mono text-[13px]">7.2</td>
+</tr>
+<!-- Row Group 3: Americas -->
+<tr class="bg-surface-container-low hover:bg-surface-variant transition-colors border-t-2 border-outline-variant/20">
+<td class="py-3 px-4 font-medium text-primary">Americas</td>
+<td class="py-3 px-4">Logistics Hub</td>
+<td class="py-3 px-4 text-right font-mono text-[13px]">3,450,000</td>
+<td class="py-3 px-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<span>92.5%</span>
+<div class="w-2 h-2 rounded-full bg-amber-600/80"></div>
+</div>
+</td>
+<td class="py-3 px-4 text-right font-mono text-[13px]">3.8</td>
+</tr>
+</tbody>
+<tfoot class="bg-surface-container text-primary font-semibold border-t-2 border-outline-variant/30">
+<tr>
+<td class="py-4 px-4 text-right uppercase tracking-wider text-xs" colspan="2">Total Portfolio Selected</td>
+<td class="py-4 px-4 text-right font-mono text-[14px]">7,756,500</td>
+<td class="py-4 px-4 text-right font-mono text-[14px]">96.2%</td>
+<td class="py-4 px-4 text-right font-mono text-[14px]">4.8</td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+<!-- Mini Visualization Rail (Asymmetric addition) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+<div class="bg-surface-container-low rounded p-5 ring-1 ring-outline-variant/10 flex flex-col justify-center items-center text-center h-48">
+<span class="material-symbols-outlined text-outline-variant text-[48px] mb-2 font-light">query_stats</span>
+<h4 class="text-sm font-medium text-primary mb-1">Visualization Placeholder</h4>
+<p class="text-xs text-on-surface-variant max-w-[200px]">Bar chart representation of Total Area by Region would render here.</p>
+</div>
+<div class="bg-surface-container-low rounded p-5 ring-1 ring-outline-variant/10 flex flex-col justify-center items-center text-center h-48">
+<span class="material-symbols-outlined text-outline-variant text-[48px] mb-2 font-light">donut_large</span>
+<h4 class="text-sm font-medium text-primary mb-1">Distribution View</h4>
+<p class="text-xs text-on-surface-variant max-w-[200px]">Asset Type composition across selected regions.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

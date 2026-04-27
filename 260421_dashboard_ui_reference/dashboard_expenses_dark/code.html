@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Expense Tracker Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed-dim": "#ccd9bd",
+                      "surface-variant": "#232628",
+                      "on-primary-container": "#223600",
+                      "error": "#ff7351",
+                      "on-error-container": "#ffd2c8",
+                      "secondary-container": "#3f4a36",
+                      "surface-container-highest": "#232628",
+                      "secondary": "#dae7cb",
+                      "on-secondary-container": "#c8d5b9",
+                      "on-secondary": "#4a5540",
+                      "on-secondary-fixed-variant": "#535f49",
+                      "tertiary": "#fffae4",
+                      "on-surface": "#f6f6f7",
+                      "surface-dim": "#0c0e0f",
+                      "primary-dim": "#aaee3d",
+                      "inverse-on-surface": "#545556",
+                      "surface-tint": "#b8fd4b",
+                      "tertiary-fixed": "#fcef58",
+                      "error-container": "#b92902",
+                      "on-secondary-fixed": "#37432f",
+                      "surface-container-lowest": "#000000",
+                      "surface-bright": "#292d2e",
+                      "primary": "#b8fd4b",
+                      "on-tertiary-fixed": "#4b4600",
+                      "outline-variant": "#464849",
+                      "on-tertiary-fixed-variant": "#6a6200",
+                      "surface": "#0c0e0f",
+                      "primary-fixed": "#b8fd4b",
+                      "on-tertiary": "#686100",
+                      "on-primary-fixed": "#304a00",
+                      "inverse-primary": "#456900",
+                      "inverse-surface": "#f9f9fa",
+                      "secondary-dim": "#ccd9bd",
+                      "on-error": "#450900",
+                      "tertiary-fixed-dim": "#eee04b",
+                      "primary-fixed-dim": "#aaee3d",
+                      "primary-container": "#83c300",
+                      "secondary-fixed": "#dae7cb",
+                      "on-background": "#f6f6f7",
+                      "tertiary-container": "#fcef58",
+                      "background": "#0c0e0f",
+                      "tertiary-dim": "#eee04b",
+                      "on-tertiary-container": "#5f5800",
+                      "surface-container-high": "#1d2021",
+                      "on-surface-variant": "#aaabac",
+                      "surface-container-low": "#111415",
+                      "on-primary": "#3d5e00",
+                      "on-primary-fixed-variant": "#456900",
+                      "error-dim": "#d53d18",
+                      "surface-container": "#181a1b",
+                      "outline": "#747577"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "1.5rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Inter", "sans-serif"],
+                      "body": ["Inter", "sans-serif"],
+                      "label": ["Inter", "sans-serif"]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        .fill-icon { font-variation-settings: 'FILL' 1; }
+        /* Custom scrollbar for deep dark theme */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #232628; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #464849; }
+        
+        .mock-donut {
+            background: conic-gradient(
+                #b8fd4b 0% 45%, 
+                #ff7351 45% 70%, 
+                #ccd9bd 70% 85%,
+                #3f4a36 85% 100%
+            );
+            border-radius: 50%;
+            position: relative;
+        }
+        .mock-donut::before {
+            content: "";
+            position: absolute;
+            inset: 20%;
+            background-color: #181a1b; /* surface-container */
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="bg-surface-dim text-on-surface antialiased overflow-x-hidden selection:bg-primary/30 selection:text-primary">
+<!-- SideNavBar -->
+<nav class="bg-zinc-950 h-screen w-72 flex flex-col fixed left-0 top-0 bg-zinc-900/40 backdrop-blur-xl shadow-[24px_0_48px_-12px_rgba(0,0,0,0.45)] z-50">
+<div class="flex flex-col h-full p-6 gap-2 font-['Inter'] text-sm font-medium tracking-tight">
+<!-- Header -->
+<div class="flex items-center gap-4 mb-8 px-2">
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant/15 flex-shrink-0">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="professional portrait of a young woman with soft natural lighting against a dark neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDA4h-ak__ZFHw1wckpFrlzXgSESl1G5RsEdGHz7GNiRXD5PY41a4Ln0wa0wgwzcxplTSa1biBJovalcA1J3iX-JRSA03GSBlrMBdZwP68QYuKYyiAJIfIJLWPZwoFuGj3AO0KOgS8rPN1E1CY_1IAGv0oD8kc4X-GepkWV68C0RdsCx2--zDvaJqBC2m5F--NYi1FU4NKyKHwczkeL6zH_iRbwiwg5LcIB_uALnFviW7JtdoefFzf1vqBhmPMOZMe51EoWQFl6_uk"/>
+</div>
+<div>
+<div class="text-xl font-bold tracking-tighter text-white">Luminescent</div>
+<div class="text-[0.68rem] font-bold uppercase tracking-widest text-zinc-500 mt-0.5">Premium Analytics</div>
+</div>
+</div>
+<!-- Tabs -->
+<div class="flex-1 space-y-1">
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 active:scale-[0.98] transition-transform rounded-xl" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span>Overview</span>
+</a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 active:scale-[0.98] transition-transform rounded-xl" href="#">
+<span class="material-symbols-outlined text-[20px]">monitoring</span>
+<span>Sales</span>
+</a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 active:scale-[0.98] transition-transform rounded-xl" href="#">
+<span class="material-symbols-outlined text-[20px]">payments</span>
+<span>Transactions</span>
+</a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 active:scale-[0.98] transition-transform rounded-xl" href="#">
+<span class="material-symbols-outlined text-[20px]">pie_chart</span>
+<span>Portfolio</span>
+</a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 active:scale-[0.98] transition-transform rounded-xl" href="#">
+<span class="material-symbols-outlined text-[20px]">groups</span>
+<span>CRM</span>
+</a>
+<!-- Active Tab -->
+<a class="bg-[#b8fd4b] text-zinc-950 rounded-full font-bold shadow-[0_0_15px_rgba(184,253,75,0.4)] px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 active:scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined text-[20px] fill-icon">account_balance_wallet</span>
+<span>Expenses</span>
+</a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 active:scale-[0.98] transition-transform rounded-xl" href="#">
+<span class="material-symbols-outlined text-[20px]">query_stats</span>
+<span>SaaS Metrics</span>
+</a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 active:scale-[0.98] transition-transform rounded-xl" href="#">
+<span class="material-symbols-outlined text-[20px]">assignment</span>
+<span>Projects</span>
+</a>
+</div>
+<!-- Footer Tabs -->
+<div class="mt-auto space-y-1 pt-6 border-t-0">
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 active:scale-[0.98] transition-transform rounded-xl" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span>Settings</span>
+</a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 active:scale-[0.98] transition-transform rounded-xl" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span>Support</span>
+</a>
+</div>
+<button class="mt-4 w-full bg-surface-container text-white py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-surface-variant transition-colors border border-outline-variant/15 text-sm font-semibold">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                New Analysis
+            </button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<div class="ml-72 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-zinc-950/80 backdrop-blur-md sticky top-0 z-40 w-full bg-zinc-900/20 flex justify-between items-center h-20 px-8 font-['Inter'] text-xs font-bold uppercase tracking-widest">
+<div class="flex items-center gap-8">
+<div class="text-lg font-black text-white normal-case tracking-tight">Financial Intelligence</div>
+<!-- Search (on_left) -->
+<div class="relative hidden lg:block group focus-within:ring-1 focus-within:ring-[#b8fd4b]/30 rounded-full">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-[#b8fd4b] transition-colors text-[18px]">search</span>
+<input class="bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-full pl-11 pr-6 py-2.5 w-64 focus:outline-none focus:border-outline-variant/40 transition-all placeholder:text-zinc-600 placeholder:normal-case placeholder:font-normal placeholder:tracking-normal font-normal normal-case" placeholder="Search commands..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-zinc-400 hover:text-white transition-colors" href="#">Reports</a>
+<a class="text-[#b8fd4b] border-b-2 border-[#b8fd4b] pb-1" href="#">Analytics</a>
+<a class="text-zinc-400 hover:text-white transition-colors" href="#">Team</a>
+</nav>
+<div class="w-px h-6 bg-surface-variant hidden md:block"></div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 rounded-full hover:bg-zinc-800/40 flex items-center justify-center text-zinc-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="w-10 h-10 rounded-full hover:bg-zinc-800/40 flex items-center justify-center text-zinc-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">calendar_month</span>
+</button>
+<button class="w-10 h-10 rounded-full hover:bg-zinc-800/40 flex items-center justify-center text-zinc-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</button>
+</div>
+<button class="bg-[#b8fd4b] text-on-primary-fixed px-5 py-2.5 rounded-sm hover:shadow-[0_0_15px_rgba(170,238,61,0.4)] transition-all">Generate Report</button>
+</div>
+</header>
+<!-- Dashboard Content -->
+<main class="flex-1 p-8 pt-4 flex flex-col gap-8">
+<!-- Row 1: Hero Metric (The Glass & Gradient Rule) -->
+<section class="bg-surface-variant/20 backdrop-blur-[20px] rounded-xl p-8 relative overflow-hidden group">
+<!-- Subtle Gradient Underlay -->
+<div class="absolute inset-0 bg-gradient-to-br from-primary/15 to-primary-container/5 opacity-50 pointer-events-none"></div>
+<div class="relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
+<div>
+<h2 class="text-[0.68rem] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Monthly Expenditure</h2>
+<div class="flex items-baseline gap-4">
+<span class="text-[3.5rem] font-bold leading-none text-white tracking-tighter">$3,420<span class="text-xl text-zinc-500 font-medium">.50</span></span>
+</div>
+<div class="mt-4 flex items-center gap-3">
+<span class="px-2 py-1 rounded bg-surface-container-highest text-error text-[0.68rem] font-bold uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> 12% vs Last Month
+                            </span>
+<span class="text-sm text-zinc-500">Trajectory implies exceeding limit</span>
+</div>
+</div>
+<!-- Gauge Mockup -->
+<div class="w-full md:w-1/3 max-w-sm flex flex-col gap-3">
+<div class="flex justify-between text-[0.68rem] font-bold uppercase tracking-widest">
+<span class="text-primary">Consumed</span>
+<span class="text-zinc-500">Limit: $5,000</span>
+</div>
+<div class="h-3 w-full bg-surface-container-lowest rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full relative" style="width: 68%;">
+<div class="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white/20 to-transparent"></div>
+</div>
+</div>
+<div class="text-right text-sm text-zinc-400 font-medium tracking-tight">
+                            $1,579.50 Remaining
+                        </div>
+</div>
+</div>
+</section>
+<!-- Row 2: Asymmetric Layout (Charts) -->
+<div class="flex flex-col xl:flex-row gap-8">
+<!-- Left: Daily Spending Line Chart (60% width) -->
+<section class="flex-[3] bg-surface-container rounded-xl p-8 flex flex-col relative overflow-hidden">
+<div class="flex justify-between items-start mb-8 z-10">
+<div>
+<h3 class="text-[1.5rem] font-semibold text-white tracking-tight">Spending Velocity</h3>
+<p class="text-sm text-zinc-500 mt-1">Daily outflows over current period</p>
+</div>
+<button class="w-8 h-8 flex items-center justify-center text-zinc-500 hover:text-white transition-colors rounded-lg hover:bg-surface-variant">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<!-- Mock Chart Area -->
+<div class="flex-1 relative min-h-[250px] flex items-end">
+<!-- Y-Axis labels -->
+<div class="absolute left-0 top-0 bottom-8 flex flex-col justify-between text-[0.68rem] font-bold text-zinc-600">
+<span>$400</span>
+<span>$200</span>
+<span>$0</span>
+</div>
+<!-- Grid lines (subtle tonal shifts, no solid lines) -->
+<div class="absolute inset-0 left-10 bottom-8 flex flex-col justify-between pointer-events-none">
+<div class="w-full h-[1px] bg-white/[0.03]"></div>
+<div class="w-full h-[1px] bg-white/[0.03]"></div>
+<div class="w-full h-[1px] bg-white/[0.03]"></div>
+</div>
+<!-- SVG Mock Line Chart -->
+<div class="absolute inset-0 left-10 bottom-8 overflow-hidden z-0">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 1000 200">
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#b8fd4b" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="#b8fd4b" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,180 C100,160 200,80 300,120 C400,160 500,40 600,90 C700,140 800,20 900,60 L1000,40 L1000,200 L0,200 Z" fill="url(#chartGradient)"></path>
+<path d="M0,180 C100,160 200,80 300,120 C400,160 500,40 600,90 C700,140 800,20 900,60 L1000,40" fill="none" stroke="#b8fd4b" stroke-linecap="round" stroke-width="2"></path>
+<!-- Hover Point Indicator -->
+<circle cx="800" cy="20" fill="#181a1b" r="4" stroke="#b8fd4b" stroke-width="2"></circle>
+</svg>
+</div>
+<!-- X-Axis labels -->
+<div class="absolute left-10 right-0 bottom-0 flex justify-between text-[0.68rem] font-bold text-zinc-600 uppercase">
+<span>01</span>
+<span>05</span>
+<span>10</span>
+<span>15</span>
+<span>20</span>
+<span>25</span>
+<span>30</span>
+</div>
+</div>
+</section>
+<!-- Right: Category Breakdown Pie (40% width) -->
+<section class="flex-[2] bg-surface-container rounded-xl p-8 flex flex-col relative">
+<h3 class="text-[1.5rem] font-semibold text-white tracking-tight mb-8">Allocation</h3>
+<div class="flex-1 flex flex-col items-center justify-center gap-8">
+<!-- CSS Donut Chart -->
+<div class="w-48 h-48 mock-donut shadow-[0_24px_48px_-12px_rgba(0,0,0,0.45)]">
+<div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+<span class="text-[0.68rem] font-bold uppercase tracking-widest text-zinc-500">Total</span>
+<span class="text-xl font-bold text-white">4 Cats</span>
+</div>
+</div>
+<!-- Custom Legend -->
+<div class="w-full space-y-4">
+<div class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span class="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">Housing &amp; Utilities</span>
+</div>
+<span class="text-sm text-zinc-500 font-medium">45%</span>
+</div>
+<div class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-error"></div>
+<span class="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">Food &amp; Dining</span>
+</div>
+<span class="text-sm text-zinc-500 font-medium">25%</span>
+</div>
+<div class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-secondary-dim"></div>
+<span class="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">Transportation</span>
+</div>
+<span class="text-sm text-zinc-500 font-medium">15%</span>
+</div>
+<div class="flex items-center justify-between group cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-secondary-container"></div>
+<span class="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">Entertainment</span>
+</div>
+<span class="text-sm text-zinc-500 font-medium">15%</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Row 3: High-Value Expenses (List without lines) -->
+<section class="bg-surface-container-low rounded-xl p-8 pb-4">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-[1.5rem] font-semibold text-white tracking-tight">High-Value Anomalies</h3>
+<button class="text-sm text-primary font-medium hover:text-primary-dim transition-colors flex items-center gap-1">
+                        View Complete Ledger <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<div class="flex flex-col">
+<!-- Header Row -->
+<div class="flex items-center px-4 py-3 text-[0.68rem] font-bold uppercase tracking-widest text-zinc-600 mb-2">
+<div class="flex-[2]">Merchant</div>
+<div class="flex-1">Category</div>
+<div class="flex-1">Date</div>
+<div class="flex-1 text-right">Amount</div>
+<div class="w-10"></div>
+</div>
+<!-- List Items (Tonal Hover, NO LINES) -->
+<div class="flex flex-col gap-1">
+<div class="flex items-center px-4 py-4 rounded-lg hover:bg-surface-variant/50 transition-colors group cursor-pointer">
+<div class="flex-[2] flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-zinc-400 group-hover:text-primary group-hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">flight</span>
+</div>
+<div>
+<div class="text-sm font-medium text-zinc-200">Delta Airlines</div>
+<div class="text-[0.68rem] text-zinc-500 mt-0.5">Reference: #DA-9982</div>
+</div>
+</div>
+<div class="flex-1 text-sm text-zinc-400">Travel</div>
+<div class="flex-1 text-sm text-zinc-400">Oct 24, 2023</div>
+<div class="flex-1 text-right text-sm font-medium text-white tracking-tight">$845.00</div>
+<div class="w-10 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-zinc-500 hover:text-white"><span class="material-symbols-outlined text-[18px]">open_in_new</span></button>
+</div>
+</div>
+<div class="flex items-center px-4 py-4 rounded-lg hover:bg-surface-variant/50 transition-colors group cursor-pointer">
+<div class="flex-[2] flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-zinc-400 group-hover:text-primary group-hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">computer</span>
+</div>
+<div>
+<div class="text-sm font-medium text-zinc-200">Apple Store</div>
+<div class="text-[0.68rem] text-zinc-500 mt-0.5">Hardware Upgrade</div>
+</div>
+</div>
+<div class="flex-1 text-sm text-zinc-400">Equipment</div>
+<div class="flex-1 text-sm text-zinc-400">Oct 18, 2023</div>
+<div class="flex-1 text-right text-sm font-medium text-white tracking-tight">$1,299.00</div>
+<div class="w-10 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-zinc-500 hover:text-white"><span class="material-symbols-outlined text-[18px]">open_in_new</span></button>
+</div>
+</div>
+<div class="flex items-center px-4 py-4 rounded-lg hover:bg-surface-variant/50 transition-colors group cursor-pointer">
+<div class="flex-[2] flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-zinc-400 group-hover:text-primary group-hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<div>
+<div class="text-sm font-medium text-zinc-200">Le Bernardin</div>
+<div class="text-[0.68rem] text-zinc-500 mt-0.5">Client Dinner</div>
+</div>
+</div>
+<div class="flex-1 text-sm text-zinc-400">Dining</div>
+<div class="flex-1 text-sm text-zinc-400">Oct 12, 2023</div>
+<div class="flex-1 text-right text-sm font-medium text-error tracking-tight">$420.00</div>
+<div class="w-10 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-zinc-500 hover:text-white"><span class="material-symbols-outlined text-[18px]">open_in_new</span></button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+</body></html>

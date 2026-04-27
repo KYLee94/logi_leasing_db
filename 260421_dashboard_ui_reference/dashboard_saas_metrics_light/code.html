@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SaaS Metrics Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#ccd9bd",
+                    "surface-variant": "#232628",
+                    "on-primary-container": "#223600",
+                    "error": "#ff7351",
+                    "on-error-container": "#ffd2c8",
+                    "secondary-container": "#3f4a36",
+                    "surface-container-highest": "#232628",
+                    "secondary": "#dae7cb",
+                    "on-secondary-container": "#c8d5b9",
+                    "on-secondary": "#4a5540",
+                    "on-secondary-fixed-variant": "#535f49",
+                    "tertiary": "#fffae4",
+                    "on-surface": "#f6f6f7",
+                    "surface-dim": "#0c0e0f",
+                    "primary-dim": "#aaee3d",
+                    "inverse-on-surface": "#545556",
+                    "surface-tint": "#b8fd4b",
+                    "tertiary-fixed": "#fcef58",
+                    "error-container": "#b92902",
+                    "on-secondary-fixed": "#37432f",
+                    "surface-container-lowest": "#000000",
+                    "surface-bright": "#292d2e",
+                    "primary": "#b8fd4b",
+                    "on-tertiary-fixed": "#4b4600",
+                    "outline-variant": "#464849",
+                    "on-tertiary-fixed-variant": "#6a6200",
+                    "surface": "#0c0e0f",
+                    "primary-fixed": "#b8fd4b",
+                    "on-tertiary": "#686100",
+                    "on-primary-fixed": "#304a00",
+                    "inverse-primary": "#456900",
+                    "inverse-surface": "#f9f9fa",
+                    "secondary-dim": "#ccd9bd",
+                    "on-error": "#450900",
+                    "tertiary-fixed-dim": "#eee04b",
+                    "primary-fixed-dim": "#aaee3d",
+                    "primary-container": "#83c300",
+                    "secondary-fixed": "#dae7cb",
+                    "on-background": "#f6f6f7",
+                    "tertiary-container": "#fcef58",
+                    "background": "#0c0e0f",
+                    "tertiary-dim": "#eee04b",
+                    "on-tertiary-container": "#5f5800",
+                    "surface-container-high": "#1d2021",
+                    "on-surface-variant": "#aaabac",
+                    "surface-container-low": "#111415",
+                    "on-primary": "#3d5e00",
+                    "on-primary-fixed-variant": "#456900",
+                    "error-dim": "#d53d18",
+                    "surface-container": "#181a1b",
+                    "outline": "#747577"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": [
+                            "Inter"
+                    ],
+                    "body": [
+                            "Inter"
+                    ],
+                    "label": [
+                            "Inter"
+                    ]
+            }
+        },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased flex min-h-screen">
+<!-- SideNavBar (Shared Component) -->
+<nav class="bg-zinc-950 h-screen w-72 flex flex-col fixed left-0 top-0 shadow-[24px_0_48px_-12px_rgba(0,0,0,0.45)] z-50">
+<div class="flex flex-col h-full p-6 gap-2 bg-zinc-900/40 backdrop-blur-xl">
+<!-- Header -->
+<div class="flex items-center gap-3 mb-8">
+<img alt="User Profile Avatar" class="w-10 h-10 rounded-full object-cover" data-alt="close up professional headshot of a man with short dark hair wearing a dark grey shirt against a neutral grey background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtaRcoT2N4fS2H9ASmClYHLpR0X8y7Vxew8WOZ4JFuf7BL-c67DKe7ILgccKMbSYFXltuiOhnJHCOVlWM94W5Ipsnihas3ZrKWimiB1z4OOOo2eoAuCD9_3a9gWRY3Xq2ywzYu3Fk6wI6q1eemptrwyqXtLEdRaARbiSaBx5857aYHULDdrZgoY-3OXMjekZngIarbvQnipt8VxSIEsgd0XtvGoxabpg2-YLOnjx5g_JXlYJKziofuEeLwolJqBgD7O4Quqbkk-54"/>
+<div>
+<div class="text-xl font-bold tracking-tighter text-white">Luminescent</div>
+<div class="text-zinc-500 font-['Inter'] text-xs font-medium tracking-tight">Premium Analytics</div>
+</div>
+</div>
+<!-- Tabs -->
+<div class="flex flex-col gap-1 flex-1">
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 font-['Inter'] text-sm font-medium tracking-tight rounded-xl active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-lg">dashboard</span>
+                    Overview
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 font-['Inter'] text-sm font-medium tracking-tight rounded-xl active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-lg">monitoring</span>
+                    Sales
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 font-['Inter'] text-sm font-medium tracking-tight rounded-xl active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-lg">payments</span>
+                    Transactions
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 font-['Inter'] text-sm font-medium tracking-tight rounded-xl active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-lg">pie_chart</span>
+                    Portfolio
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 font-['Inter'] text-sm font-medium tracking-tight rounded-xl active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-lg">groups</span>
+                    CRM
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 font-['Inter'] text-sm font-medium tracking-tight rounded-xl active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-lg">account_balance_wallet</span>
+                    Expenses
+                </a>
+<!-- Active Tab -->
+<a class="bg-[#b8fd4b] text-zinc-950 rounded-full font-bold shadow-[0_0_15px_rgba(184,253,75,0.4)] px-4 py-3 flex items-center gap-3 font-['Inter'] text-sm tracking-tight active:scale-[0.98] transition-transform" href="#">
+<span class="material-symbols-outlined text-lg">query_stats</span>
+                    SaaS Metrics
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 font-['Inter'] text-sm font-medium tracking-tight rounded-xl active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined text-lg">assignment</span>
+                    Projects
+                </a>
+</div>
+<!-- CTA -->
+<button class="bg-[#b8fd4b] text-zinc-950 rounded-sm font-bold py-3 mt-4 mb-4 hover:bg-zinc-800/50 transition-all duration-300 font-['Inter'] text-sm shadow-[0_0_15px_rgba(184,253,75,0.2)]">New Analysis</button>
+<!-- Footer Tabs -->
+<div class="flex flex-col gap-1 pt-4">
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 font-['Inter'] text-sm font-medium tracking-tight rounded-xl" href="#">
+<span class="material-symbols-outlined text-lg">settings</span>
+                    Settings
+                </a>
+<a class="text-zinc-500 hover:text-zinc-100 px-4 py-3 flex items-center gap-3 hover:bg-zinc-800/50 transition-all duration-300 font-['Inter'] text-sm font-medium tracking-tight rounded-xl" href="#">
+<span class="material-symbols-outlined text-lg">help</span>
+                    Support
+                </a>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 ml-72 flex flex-col min-h-screen bg-background">
+<!-- TopAppBar (Shared Component) -->
+<header class="bg-zinc-950/80 backdrop-blur-md sticky top-0 z-40 w-full flex justify-between items-center h-20 px-8 bg-zinc-900/20">
+<!-- Left: Search & Brand -->
+<div class="flex items-center gap-8">
+<div class="text-lg font-black text-white font-['Inter']">Financial Intelligence</div>
+<div class="relative focus-within:ring-1 focus-within:ring-[#b8fd4b]/30 rounded-lg hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-zinc-500 text-lg">search</span>
+<input class="bg-surface-container-highest text-white rounded-lg pl-10 pr-4 py-2 border border-outline-variant/15 outline-none focus:ring-0 text-sm font-body w-64 focus:border-outline-variant/40 transition-colors" placeholder="Search..." type="text"/>
+</div>
+</div>
+<!-- Center: Navigation -->
+<nav class="hidden lg:flex items-center gap-8 font-['Inter'] text-xs font-bold uppercase tracking-widest">
+<a class="text-zinc-400 hover:text-white transition-colors hover:bg-zinc-800/40 rounded-lg px-3 py-2" href="#">Reports</a>
+<a class="text-[#b8fd4b] border-b-2 border-[#b8fd4b] pb-1 px-3 py-2" href="#">Analytics</a>
+<a class="text-zinc-400 hover:text-white transition-colors hover:bg-zinc-800/40 rounded-lg px-3 py-2" href="#">Team</a>
+</nav>
+<!-- Right: Actions -->
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-zinc-400 hover:text-white hover:bg-zinc-800/40 rounded-lg p-2 cursor-pointer transition-colors text-xl">notifications</span>
+<span class="material-symbols-outlined text-zinc-400 hover:text-white hover:bg-zinc-800/40 rounded-lg p-2 cursor-pointer transition-colors text-xl">calendar_month</span>
+<span class="material-symbols-outlined text-zinc-400 hover:text-white hover:bg-zinc-800/40 rounded-lg p-2 cursor-pointer transition-colors text-xl">tune</span>
+<button class="text-[#b8fd4b] font-['Inter'] text-xs font-bold uppercase tracking-widest hover:bg-zinc-800/40 rounded-lg px-4 py-2 transition-colors ml-2">Generate Report</button>
+<img alt="User profile" class="w-8 h-8 rounded-full ml-4 object-cover border border-outline-variant/15" data-alt="close up professional headshot of a man with short dark hair wearing a dark grey shirt against a neutral grey background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDCrZOqzH3FOsPmlufzx_FN8nTD65jacQ-7ofYpM11eYlpBG4W7e85TE55mERblDGZ3aXe_nPmTsB4EdE7lfiG2bMUEZdr9IxtfKyTVWzuEGYvuxMfIRPT9XIa5hx4sVT61n6r9QB3Lf0PBGpd7cJRoU44BOY-C7wNkiMvtVZlJ5jVo7SVS6lPYIg1EdzrTn94wj_27aliSbE0Q2wo7yDjCtBdvWb6Fegw_qLR0Ngu0CtyfAg4QdgjzVszrBUXELP7GSU_M7Smjf0"/>
+</div>
+</header>
+<!-- Dashboard Canvas -->
+<div class="p-8 flex-1 flex flex-col gap-8 max-w-[1600px] mx-auto w-full">
+<!-- Section Header -->
+<div class="flex justify-between items-end mb-4">
+<div>
+<h1 class="text-3xl font-bold font-headline tracking-tight text-on-surface mb-1">Performance Matrix</h1>
+<p class="text-sm font-body text-on-surface-variant">Real-time subscription and acquisition telemetry.</p>
+</div>
+<div class="bg-surface-container-highest px-4 py-2 rounded-sm border border-outline-variant/15 flex items-center gap-2 text-sm text-on-surface font-medium cursor-pointer hover:border-outline-variant/40 transition-colors shadow-[0_4px_12px_rgba(0,0,0,0.2)]">
+                    Trailing 30 Days <span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+</div>
+<!-- Main KPI Bento Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Hero Metric (MRR) - Asymmetric Dominance -->
+<div class="lg:col-span-2 bg-surface-variant/80 backdrop-blur-[20px] rounded-xl p-8 relative overflow-hidden group shadow-[0_24px_48px_-12px_rgba(0,0,0,0.45)] border border-outline-variant/10">
+<!-- Glass/Gradient Soul -->
+<div class="absolute inset-0 bg-gradient-to-br from-primary/15 to-primary-container/5 opacity-60"></div>
+<div class="relative z-10 flex flex-col justify-between h-full min-h-[240px]">
+<div class="flex justify-between items-start">
+<span class="font-label text-[0.68rem] font-bold uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/20">Monthly Recurring Revenue</span>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">more_horiz</button>
+</div>
+<div class="mt-8">
+<div class="font-headline text-[3.5rem] md:text-[4.5rem] font-bold text-on-surface leading-none tracking-tighter mb-4">$3,104,250</div>
+<div class="flex items-center gap-4">
+<span class="text-surface-dim bg-primary flex items-center text-sm font-bold px-3 py-1.5 rounded-sm shadow-[0_0_15px_rgba(184,253,75,0.3)]"><span class="material-symbols-outlined text-sm mr-1 font-bold">arrow_upward</span> 14.2%</span>
+<span class="text-on-surface-variant text-sm font-body tracking-wide">Projected end of quarter</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary KPIs Vertical Stack -->
+<div class="flex flex-col gap-6 lg:col-span-1">
+<!-- Churn Card -->
+<div class="bg-surface-container-low rounded-xl p-6 flex-1 flex flex-col justify-between border border-outline-variant/15 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.3)] hover:bg-surface-container transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label text-[0.68rem] font-bold uppercase tracking-widest text-error">Net Churn Rate</span>
+<span class="material-symbols-outlined text-error/50 group-hover:text-error transition-colors">person_remove</span>
+</div>
+<div>
+<div class="font-headline text-3xl font-semibold text-on-surface mb-2">1.8%</div>
+<div class="flex items-center gap-2">
+<span class="text-primary flex items-center text-xs font-bold"><span class="material-symbols-outlined text-xs mr-1">arrow_downward</span> 0.4%</span>
+<span class="text-on-surface-variant text-xs">vs last month</span>
+</div>
+</div>
+</div>
+<!-- CAC Card -->
+<div class="bg-surface-container-low rounded-xl p-6 flex-1 flex flex-col justify-between border border-outline-variant/15 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.3)] hover:bg-surface-container transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label text-[0.68rem] font-bold uppercase tracking-widest text-secondary-fixed-dim">Blended CAC</span>
+<span class="material-symbols-outlined text-secondary-fixed-dim/50 group-hover:text-secondary-fixed-dim transition-colors">monetization_on</span>
+</div>
+<div>
+<div class="font-headline text-3xl font-semibold text-on-surface mb-2">$425</div>
+<div class="flex items-center gap-2">
+<span class="text-error flex items-center text-xs font-bold"><span class="material-symbols-outlined text-xs mr-1">arrow_upward</span> $12</span>
+<span class="text-on-surface-variant text-xs">industry avg $380</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Charts & Analytics Row -->
+<div class="grid grid-cols-1 xl:grid-cols-5 gap-6 mt-2">
+<!-- Acquisition Bar Chart (Larger Span) -->
+<div class="xl:col-span-3 bg-surface-container rounded-xl p-8 border border-outline-variant/15 shadow-[0_12px_32px_-12px_rgba(0,0,0,0.4)]">
+<div class="flex justify-between items-center mb-10">
+<div>
+<h3 class="font-headline text-xl font-semibold text-on-surface tracking-tight">New Signups Velocity</h3>
+<p class="text-sm text-on-surface-variant mt-1 font-body">Daily conversion throughput across all tiers.</p>
+</div>
+<button class="bg-transparent border border-outline-variant/20 text-on-surface-variant rounded-sm px-4 py-1.5 text-xs font-bold tracking-wide hover:border-outline-variant/60 hover:text-on-surface transition-all uppercase">Filter</button>
+</div>
+<!-- Faux Bar Chart Rendering -->
+<div class="h-56 flex items-end gap-3 px-2">
+<div class="w-full bg-surface-container-highest rounded-t-sm h-[20%] relative group cursor-pointer hover:bg-surface-variant transition-colors"><div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface-bright text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity text-on-surface shadow-lg z-10">45</div></div>
+<div class="w-full bg-surface-container-highest rounded-t-sm h-[35%] relative group cursor-pointer hover:bg-surface-variant transition-colors"><div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface-bright text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity text-on-surface shadow-lg z-10">82</div></div>
+<div class="w-full bg-surface-container-highest rounded-t-sm h-[45%] relative group cursor-pointer hover:bg-surface-variant transition-colors"><div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface-bright text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity text-on-surface shadow-lg z-10">105</div></div>
+<div class="w-full bg-primary/80 rounded-t-sm h-[90%] relative group cursor-pointer hover:bg-primary transition-colors shadow-[0_0_20px_rgba(184,253,75,0.15)]"><div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-primary text-surface-dim text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity shadow-lg z-10">214</div></div>
+<div class="w-full bg-surface-container-highest rounded-t-sm h-[60%] relative group cursor-pointer hover:bg-surface-variant transition-colors"><div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface-bright text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity text-on-surface shadow-lg z-10">140</div></div>
+<div class="w-full bg-surface-container-highest rounded-t-sm h-[50%] relative group cursor-pointer hover:bg-surface-variant transition-colors"><div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface-bright text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity text-on-surface shadow-lg z-10">118</div></div>
+<div class="w-full bg-surface-container-highest rounded-t-sm h-[70%] relative group cursor-pointer hover:bg-surface-variant transition-colors"><div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface-bright text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity text-on-surface shadow-lg z-10">165</div></div>
+</div>
+<div class="flex justify-between text-[0.68rem] font-bold text-on-surface-variant mt-4 font-label uppercase tracking-widest pt-4 border-t border-outline-variant/10">
+<span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+</div>
+</div>
+<!-- User Activity Heatmap (Smaller Span) -->
+<div class="xl:col-span-2 bg-surface-container rounded-xl p-8 border border-outline-variant/15 shadow-[0_12px_32px_-12px_rgba(0,0,0,0.4)] flex flex-col">
+<div class="flex justify-between items-center mb-8">
+<h3 class="font-headline text-xl font-semibold text-on-surface tracking-tight">Feature Engagement</h3>
+<span class="material-symbols-outlined text-on-surface-variant text-lg cursor-pointer hover:text-on-surface transition-colors bg-surface-container-highest p-1 rounded-md">more_vert</span>
+</div>
+<div class="flex-1 flex flex-col justify-center gap-6">
+<!-- Heatmap Row 1 -->
+<div class="group cursor-pointer">
+<div class="flex justify-between items-end mb-2">
+<span class="text-sm font-medium text-on-surface group-hover:text-primary transition-colors">Data Export API</span>
+<span class="text-sm font-bold text-on-surface">92%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-lowest rounded-none overflow-hidden">
+<div class="h-full bg-primary w-[92%] rounded-none shadow-[0_0_10px_rgba(184,253,75,0.4)]"></div>
+</div>
+</div>
+<!-- Heatmap Row 2 -->
+<div class="group cursor-pointer">
+<div class="flex justify-between items-end mb-2">
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-on-surface transition-colors">Custom Dashboards</span>
+<span class="text-sm font-bold text-on-surface">74%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-lowest rounded-none overflow-hidden">
+<div class="h-full bg-primary/70 w-[74%] rounded-none"></div>
+</div>
+</div>
+<!-- Heatmap Row 3 -->
+<div class="group cursor-pointer">
+<div class="flex justify-between items-end mb-2">
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-on-surface transition-colors">Team Management</span>
+<span class="text-sm font-bold text-on-surface">45%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-lowest rounded-none overflow-hidden">
+<div class="h-full bg-secondary-fixed-dim w-[45%] rounded-none"></div>
+</div>
+</div>
+<!-- Heatmap Row 4 -->
+<div class="group cursor-pointer">
+<div class="flex justify-between items-end mb-2">
+<span class="text-sm font-medium text-on-surface-variant group-hover:text-on-surface transition-colors">SSO Integration</span>
+<span class="text-sm font-bold text-on-surface">18%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-lowest rounded-none overflow-hidden">
+<div class="h-full bg-surface-variant w-[18%] rounded-none"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

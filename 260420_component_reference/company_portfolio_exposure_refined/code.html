@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Portfolio Exposure - Architectural Ledger</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Manrope -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary": "#526074",
+                        "primary": "#545f73",
+                        "primary-container": "#d8e3fb",
+                        "on-secondary-container": "#455367",
+                        "tertiary-dim": "#465467",
+                        "secondary-fixed": "#d5e3fc",
+                        "inverse-surface": "#0b0f10",
+                        "surface-bright": "#f7f9fb",
+                        "on-error-container": "#752121",
+                        "on-tertiary-fixed": "#2e3d4e",
+                        "primary-dim": "#485367",
+                        "surface-container-low": "#f0f4f7",
+                        "on-tertiary-fixed-variant": "#4a596c",
+                        "surface-container-highest": "#d9e4ea",
+                        "on-secondary-fixed": "#324053",
+                        "surface-container": "#e8eff3",
+                        "outline-variant": "#a9b4b9",
+                        "on-tertiary-container": "#414f62",
+                        "inverse-primary": "#dae6fe",
+                        "on-primary-fixed": "#354053",
+                        "secondary-fixed-dim": "#c7d5ed",
+                        "primary-fixed-dim": "#cad5ed",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#cfdce3",
+                        "error-container": "#fe8983",
+                        "on-error": "#fff7f6",
+                        "outline": "#717c82",
+                        "background": "#f7f9fb",
+                        "surface": "#f7f9fb",
+                        "error-dim": "#4e0309",
+                        "surface-variant": "#d9e4ea",
+                        "on-secondary": "#f8f8ff",
+                        "tertiary-container": "#cfdef5",
+                        "surface-tint": "#545f73",
+                        "secondary-container": "#d5e3fc",
+                        "on-primary-container": "#475266",
+                        "on-primary": "#f6f7ff",
+                        "tertiary-fixed": "#cfdef5",
+                        "on-surface": "#2a3439",
+                        "secondary-dim": "#465468",
+                        "surface-container-high": "#e1e9ee",
+                        "primary-fixed": "#d8e3fb",
+                        "on-primary-fixed-variant": "#515c70",
+                        "tertiary": "#526073",
+                        "on-tertiary": "#f7f9ff",
+                        "error": "#9f403d",
+                        "on-background": "#2a3439",
+                        "on-surface-variant": "#566166",
+                        "on-secondary-fixed-variant": "#4e5c71",
+                        "inverse-on-surface": "#9a9d9f",
+                        "tertiary-fixed-dim": "#c1d0e6"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased flex h-screen overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (from JSON) -->
+<nav class="hidden md:flex flex-col h-full py-6 bg-slate-50 dark:bg-slate-900 h-screen w-64 border-r border-slate-100 dark:border-slate-800 shrink-0">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-surface-container-highest flex items-center justify-center shrink-0">
+<img alt="Firm Logo" class="w-6 h-6 object-contain mix-blend-multiply opacity-80" data-alt="minimalist architectural firm logo mark dark gray on light background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8Z9OvAaHVJiyAtu4w7oqRKYXyKkskzUojXafMX0dDszz_byseVvbVTBlB0-1CbdgnTu45ZbkjvkMOTnmZchDoSbNiEqFLj_PeZQ2VDtHbEKW-VZAEb6xiG-MaBtRIOPGobE4ZCAnx4YR7uOzdffqmD66YqqU6pUoIRvrnThHySTyJccxdMtlSu2S-ArZKlhAkVKBQ7FuaMdc8UpgPddJxYZn9IfSQx2SFsCU2UYXoekm9qGxZU5AtKKOOacPQUpwU4_cOCvXxInA"/>
+</div>
+<div>
+<h1 class="font-black text-[#1e293b] dark:text-white text-sm leading-tight">Global Realty Trust</h1>
+<p class="font-manrope font-extrabold text-xs uppercase tracking-wider text-[#545f73] dark:text-slate-300 mt-1 opacity-70">Institutional Grade</p>
+</div>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto mt-4 space-y-1 px-3">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:bg-white dark:hover:bg-slate-950 transition-all duration-150 opacity-100 hover:opacity-80 rounded group" href="#">
+<span class="material-symbols-outlined text-[20px]">domain</span>
+<span class="font-manrope font-extrabold text-xs uppercase tracking-wider">Portfolio</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-white dark:bg-slate-950 text-[#1e293b] dark:text-white border-r-4 border-[#1e293b] dark:border-slate-100 opacity-100 hover:opacity-80 transition-all duration-150 rounded group" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+<span class="font-manrope font-extrabold text-xs uppercase tracking-wider">Asset Ledger</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:bg-white dark:hover:bg-slate-950 transition-all duration-150 opacity-100 hover:opacity-80 rounded group" href="#">
+<span class="material-symbols-outlined text-[20px]">query_stats</span>
+<span class="font-manrope font-extrabold text-xs uppercase tracking-wider">Market Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:bg-white dark:hover:bg-slate-950 transition-all duration-150 opacity-100 hover:opacity-80 rounded group" href="#">
+<span class="material-symbols-outlined text-[20px]">description</span>
+<span class="font-manrope font-extrabold text-xs uppercase tracking-wider">Financial Reports</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:bg-white dark:hover:bg-slate-950 transition-all duration-150 opacity-100 hover:opacity-80 rounded group" href="#">
+<span class="material-symbols-outlined text-[20px]">fact_check</span>
+<span class="font-manrope font-extrabold text-xs uppercase tracking-wider">Compliance</span>
+</a>
+</div>
+<div class="px-3 mt-auto pt-4 border-t border-slate-200/50 dark:border-slate-800/50 mx-4">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:bg-white dark:hover:bg-slate-950 transition-all duration-150 opacity-100 hover:opacity-80 rounded group" href="#">
+<span class="material-symbols-outlined text-[20px]">help_outline</span>
+<span class="font-manrope font-extrabold text-xs uppercase tracking-wider">Support</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col h-full bg-surface-container-low overflow-hidden relative">
+<!-- TopNavBar (from JSON) -->
+<header class="flex justify-between items-center w-full px-8 py-3 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl docked full-width top-0 z-50 border-b border-slate-200/50 dark:border-slate-800/50 shadow-[0_4px_24px_rgba(42,52,57,0.06)] shrink-0">
+<div class="flex items-center gap-6">
+<span class="text-lg font-extrabold text-slate-900 dark:text-white uppercase tracking-widest font-headline">Architectural Ledger</span>
+<!-- Search Bar (on_left) -->
+<div class="relative hidden lg:block w-64 ml-4">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+<input class="w-full bg-surface-container-highest border-none focus:ring-0 focus:border-b focus:border-b-[#1e293b] rounded py-1.5 pl-9 pr-3 text-sm font-manrope font-normal text-slate-700 dark:text-slate-300 placeholder-slate-400 transition-all duration-200" placeholder="Search portfolio..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-200 scale-100 active:scale-95 transition-transform p-1">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-200 scale-100 active:scale-95 transition-transform p-1">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-8 h-8 rounded bg-surface-variant overflow-hidden ml-2 border border-slate-200">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="professional headshot of man in business suit neutral gray background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvzu30Bz4m7ewE5fFmv_uJP1Ttbsv7jcNQ13DX444-mN_WVZowp2jJF2e3go3Rs8ebiccY6ZhVTm4hwaqq8GsAEVKTJsvzS_JDuZnD1cbHQiWZQCzIK9UsIbZti4Ct0eB12orBq_sy1lOwVda9EGLAOAciCdF8gAOciadp6kjBRvjI_dUZW3b83ZJx1Iza5UE6-d1iuuxhq49e4ZnzaMtZsLEjF78HfQVxRM8n_c1SfxherMp-XSFnGb-19PzklYmM15-fqzILGyY"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-8 lg:p-12 xl:px-16 scroll-smooth">
+<div class="max-w-7xl mx-auto space-y-12">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-outline-variant/20 pb-6">
+<div>
+<div class="flex items-center gap-3 mb-2">
+<span class="font-label text-xs uppercase tracking-[0.02em] text-on-surface-variant">Tenant Exposure Analysis</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="font-label text-xs tracking-tight text-on-surface-variant">Q3 2023 Ledger</span>
+</div>
+<h2 class="font-headline font-extrabold text-[2.5rem] leading-none text-on-surface tracking-tight">Portfolio Exposure</h2>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 bg-transparent border border-outline text-on-surface text-sm font-label font-bold rounded flex items-center gap-2 hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                            Export Report
+                        </button>
+<button class="px-4 py-2 bg-primary text-on-primary text-sm font-label font-bold rounded flex items-center gap-2 hover:bg-primary-dim transition-colors shadow-[0_4px_12px_rgba(84,95,115,0.2)]">
+<span class="material-symbols-outlined text-[18px]">edit_document</span>
+                            New Audit
+                        </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Company Profile (Left Column) -->
+<div class="lg:col-span-4 flex flex-col gap-8">
+<div class="bg-surface-container-lowest rounded shadow-[0_4px_24px_rgba(42,52,57,0.06)] p-6 relative overflow-hidden group">
+<!-- Subtle top accent line -->
+<div class="absolute top-0 left-0 w-full h-1 bg-surface-container-high group-hover:bg-[#1e293b] transition-colors duration-300"></div>
+<div class="flex items-start justify-between mb-8">
+<div>
+<h3 class="font-headline font-extrabold text-2xl text-on-surface mb-1">Apex Logistics Inc.</h3>
+<p class="font-label text-xs text-on-surface-variant tracking-[0.02em] uppercase">Global Supply Chain Sector</p>
+</div>
+<div class="w-12 h-12 bg-surface-container flex items-center justify-center rounded">
+<span class="material-symbols-outlined text-primary text-[24px]">local_shipping</span>
+</div>
+</div>
+<div class="space-y-6">
+<div>
+<p class="font-label text-[0.7rem] text-on-surface-variant uppercase tracking-[0.02em] mb-1">Total GLA Occupied</p>
+<p class="font-headline font-extrabold text-3xl text-on-surface">1.24<span class="text-lg text-on-surface-variant ml-1 font-normal">M sqft</span></p>
+</div>
+<div class="w-full h-px bg-outline-variant/15"></div>
+<div>
+<p class="font-label text-[0.7rem] text-on-surface-variant uppercase tracking-[0.02em] mb-1">Annualized Base Rent (ABR)</p>
+<p class="font-headline font-extrabold text-3xl text-on-surface">$28.5<span class="text-lg text-on-surface-variant ml-1 font-normal">M</span></p>
+</div>
+<div class="w-full h-px bg-outline-variant/15"></div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<p class="font-label text-[0.7rem] text-on-surface-variant uppercase tracking-[0.02em] mb-1">Portfolio Concentration</p>
+<p class="font-body text-lg font-bold text-on-surface">4.2%</p>
+</div>
+<div>
+<p class="font-label text-[0.7rem] text-on-surface-variant uppercase tracking-[0.02em] mb-1">Credit Rating</p>
+<div class="flex items-center gap-2 mt-1">
+<span class="w-2 h-2 rounded-full bg-[#1e293b]"></span>
+<p class="font-body text-sm font-bold text-on-surface">A- (S&amp;P)</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Data Quality Flags -->
+<div class="bg-surface-container-lowest rounded shadow-[0_4px_24px_rgba(42,52,57,0.06)] p-6">
+<h4 class="font-headline font-extrabold text-sm uppercase text-on-surface mb-4 border-b border-outline-variant/20 pb-2">Entity Mapping Flags</h4>
+<ul class="space-y-4">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-error text-[18px] mt-0.5">warning</span>
+<div>
+<p class="font-body text-sm font-bold text-on-surface">Mismatch in Legal Entity Name</p>
+<p class="font-label text-xs text-on-surface-variant mt-1">Asset ID: ATX-094 ('Apex Logistics LLC' vs 'Apex Log Inc.')</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-outline text-[18px] mt-0.5">info</span>
+<div>
+<p class="font-body text-sm font-bold text-on-surface">Missing Insurance Cert</p>
+<p class="font-label text-xs text-on-surface-variant mt-1">Asset ID: CHI-221 (Expires in 14 days)</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<!-- Main Data Area (Right Column) -->
+<div class="lg:col-span-8 flex flex-col gap-8">
+<!-- Charts & Timeline Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Exposure Chart Placeholder -->
+<div class="bg-surface-container-lowest rounded shadow-[0_4px_24px_rgba(42,52,57,0.06)] p-6 flex flex-col">
+<h4 class="font-headline font-extrabold text-sm uppercase text-on-surface mb-6 border-b border-outline-variant/20 pb-2">Concentration by Region</h4>
+<div class="flex-1 flex flex-col justify-end gap-3 pb-2">
+<!-- Minimalist Bar Chart -->
+<div class="flex items-end gap-2 h-32 border-b border-outline-variant/20 pb-1">
+<div class="flex-1 bg-primary/20 hover:bg-primary transition-colors h-[80%] relative group">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 font-label text-[0.65rem] font-bold bg-inverse-surface text-surface px-1 py-0.5 rounded transition-opacity">80%</div>
+</div>
+<div class="flex-1 bg-primary/20 hover:bg-primary transition-colors h-[45%] relative group">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 font-label text-[0.65rem] font-bold bg-inverse-surface text-surface px-1 py-0.5 rounded transition-opacity">45%</div>
+</div>
+<div class="flex-1 bg-primary/20 hover:bg-primary transition-colors h-[60%] relative group">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 font-label text-[0.65rem] font-bold bg-inverse-surface text-surface px-1 py-0.5 rounded transition-opacity">60%</div>
+</div>
+<div class="flex-1 bg-[#1e293b] h-[95%] relative group"> <!-- Highlighting a specific bar -->
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 font-label text-[0.65rem] font-bold bg-inverse-surface text-surface px-1 py-0.5 rounded">95%</div>
+</div>
+<div class="flex-1 bg-primary/20 hover:bg-primary transition-colors h-[30%] relative group">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 font-label text-[0.65rem] font-bold bg-inverse-surface text-surface px-1 py-0.5 rounded transition-opacity">30%</div>
+</div>
+</div>
+<div class="flex justify-between px-1">
+<span class="font-label text-[0.65rem] text-on-surface-variant uppercase">NA</span>
+<span class="font-label text-[0.65rem] text-on-surface-variant uppercase">EU</span>
+<span class="font-label text-[0.65rem] text-on-surface-variant uppercase">APAC</span>
+<span class="font-label text-[0.65rem] font-bold text-[#1e293b] uppercase">LATAM</span>
+<span class="font-label text-[0.65rem] text-on-surface-variant uppercase">MEA</span>
+</div>
+</div>
+</div>
+<!-- Contract Renewals Timeline -->
+<div class="bg-surface-container-lowest rounded shadow-[0_4px_24px_rgba(42,52,57,0.06)] p-6">
+<h4 class="font-headline font-extrabold text-sm uppercase text-on-surface mb-6 border-b border-outline-variant/20 pb-2">Upcoming Lease Events</h4>
+<div class="relative pl-4 space-y-6 before:absolute before:inset-y-0 before:left-0 before:w-px before:bg-outline-variant/30">
+<div class="relative">
+<span class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-error ring-4 ring-surface-container-lowest"></span>
+<p class="font-label text-[0.7rem] text-error font-bold uppercase tracking-[0.02em]">Q4 2023</p>
+<p class="font-body text-sm font-bold text-on-surface mt-1">Atlanta Hub Renewal</p>
+<p class="font-label text-xs text-on-surface-variant">250k sqft • Decision pending</p>
+</div>
+<div class="relative">
+<span class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-[#1e293b] ring-4 ring-surface-container-lowest"></span>
+<p class="font-label text-[0.7rem] text-on-surface-variant uppercase tracking-[0.02em]">Q1 2024</p>
+<p class="font-body text-sm font-bold text-on-surface mt-1">Chicago Cold Storage Option</p>
+<p class="font-label text-xs text-on-surface-variant">120k sqft • Expansion clause active</p>
+</div>
+<div class="relative">
+<span class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-outline ring-4 ring-surface-container-lowest"></span>
+<p class="font-label text-[0.7rem] text-on-surface-variant uppercase tracking-[0.02em]">Q3 2024</p>
+<p class="font-body text-sm font-bold text-on-surface mt-1">Dallas Fulfillment Expiration</p>
+<p class="font-label text-xs text-on-surface-variant">400k sqft • Early talks initiated</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Occupied Assets Table -->
+<div class="bg-surface-container-lowest rounded shadow-[0_4px_24px_rgba(42,52,57,0.06)] overflow-hidden">
+<div class="p-6 border-b border-outline-variant/20 flex justify-between items-center bg-surface-container-low/50">
+<h4 class="font-headline font-extrabold text-sm uppercase text-on-surface">Occupied Assets Ledger</h4>
+<span class="font-label text-xs text-on-surface-variant uppercase tracking-tight">12 Properties Found</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr>
+<th class="py-4 px-6 font-label text-[0.7rem] text-on-surface-variant uppercase tracking-[0.02em] font-normal border-b border-outline-variant/20 w-1/3">Asset / Location</th>
+<th class="py-4 px-6 font-label text-[0.7rem] text-on-surface-variant uppercase tracking-[0.02em] font-normal border-b border-outline-variant/20 text-right">GLA (sqft)</th>
+<th class="py-4 px-6 font-label text-[0.7rem] text-on-surface-variant uppercase tracking-[0.02em] font-normal border-b border-outline-variant/20 text-right">Rent / sqft</th>
+<th class="py-4 px-6 font-label text-[0.7rem] text-on-surface-variant uppercase tracking-[0.02em] font-normal border-b border-outline-variant/20 text-center">Lease Health</th>
+<th class="py-4 px-6 font-label text-[0.7rem] text-on-surface-variant uppercase tracking-[0.02em] font-normal border-b border-outline-variant/20 text-right">Expiration</th>
+</tr>
+</thead>
+<tbody class="font-body text-sm">
+<tr class="hover:bg-surface-bright/50 transition-colors">
+<td class="py-4 px-6 border-b border-outline-variant/15">
+<p class="font-bold text-on-surface">ATX-094 Dallas Fulfillment</p>
+<p class="text-xs text-on-surface-variant mt-0.5">Texas, USA</p>
+</td>
+<td class="py-4 px-6 border-b border-outline-variant/15 text-right font-mono text-on-surface">400,000</td>
+<td class="py-4 px-6 border-b border-outline-variant/15 text-right font-mono text-on-surface">$12.50</td>
+<td class="py-4 px-6 border-b border-outline-variant/15 text-center">
+<span class="inline-flex items-center gap-1.5 bg-surface-container px-2 py-1 rounded text-xs font-bold text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Optimal
+                                                </span>
+</td>
+<td class="py-4 px-6 border-b border-outline-variant/15 text-right text-on-surface-variant">Sep 2024</td>
+</tr>
+<tr class="hover:bg-surface-bright/50 transition-colors">
+<td class="py-4 px-6 border-b border-outline-variant/15">
+<p class="font-bold text-on-surface">ATL-102 Atlanta Hub</p>
+<p class="text-xs text-on-surface-variant mt-0.5">Georgia, USA</p>
+</td>
+<td class="py-4 px-6 border-b border-outline-variant/15 text-right font-mono text-on-surface">250,000</td>
+<td class="py-4 px-6 border-b border-outline-variant/15 text-right font-mono text-on-surface">$14.20</td>
+<td class="py-4 px-6 border-b border-outline-variant/15 text-center">
+<span class="inline-flex items-center gap-1.5 bg-surface-container px-2 py-1 rounded text-xs font-bold text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> Risk
+                                                </span>
+</td>
+<td class="py-4 px-6 border-b border-outline-variant/15 text-right text-on-surface-variant font-bold text-error">Dec 2023</td>
+</tr>
+<tr class="hover:bg-surface-bright/50 transition-colors">
+<td class="py-4 px-6 border-b border-outline-variant/15">
+<p class="font-bold text-on-surface">CHI-221 Cold Storage</p>
+<p class="text-xs text-on-surface-variant mt-0.5">Illinois, USA</p>
+</td>
+<td class="py-4 px-6 border-b border-outline-variant/15 text-right font-mono text-on-surface">120,000</td>
+<td class="py-4 px-6 border-b border-outline-variant/15 text-right font-mono text-on-surface">$18.00</td>
+<td class="py-4 px-6 border-b border-outline-variant/15 text-center">
+<span class="inline-flex items-center gap-1.5 bg-surface-container px-2 py-1 rounded text-xs font-bold text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Optimal
+                                                </span>
+</td>
+<td class="py-4 px-6 border-b border-outline-variant/15 text-right text-on-surface-variant">Mar 2024</td>
+</tr>
+<tr class="hover:bg-surface-bright/50 transition-colors">
+<td class="py-4 px-6 border-b border-outline-variant/15">
+<p class="font-bold text-on-surface">LDN-005 Heathrow Dist.</p>
+<p class="text-xs text-on-surface-variant mt-0.5">London, UK</p>
+</td>
+<td class="py-4 px-6 border-b border-outline-variant/15 text-right font-mono text-on-surface">180,000</td>
+<td class="py-4 px-6 border-b border-outline-variant/15 text-right font-mono text-on-surface">£16.50</td>
+<td class="py-4 px-6 border-b border-outline-variant/15 text-center">
+<span class="inline-flex items-center gap-1.5 bg-surface-container px-2 py-1 rounded text-xs font-bold text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span> Stable
+                                                </span>
+</td>
+<td class="py-4 px-6 border-b border-outline-variant/15 text-right text-on-surface-variant">Jun 2026</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 bg-surface-container-low/30 border-t border-outline-variant/20 flex justify-center">
+<button class="text-xs font-label font-bold text-on-surface-variant hover:text-[#1e293b] uppercase tracking-wider transition-colors">View All Assets (8 More)</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<footer class="mt-16 pb-8 border-t border-outline-variant/20 pt-6 flex justify-between items-center text-xs font-label text-on-surface-variant uppercase tracking-wider">
+<p>Architectural Ledger © 2024</p>
+<div class="flex gap-4">
+<a class="hover:text-on-surface transition-colors" href="#">Audit Trail</a>
+<a class="hover:text-on-surface transition-colors" href="#">Data Governance</a>
+</div>
+</footer>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tenant Exposure &amp; Review</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "background": "#f9f9f8",
+                    "on-primary-fixed": "#111c2d",
+                    "inverse-primary": "#bcc7de",
+                    "primary-container": "#1e293b",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "primary-fixed": "#d8e3fb",
+                    "inverse-surface": "#2f3130",
+                    "surface-container-high": "#e8e8e7",
+                    "on-tertiary-container": "#8191a9",
+                    "on-secondary-container": "#fefcff",
+                    "outline-variant": "#c5c6cd",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "on-primary-container": "#8590a6",
+                    "on-secondary-fixed": "#001a42",
+                    "tertiary": "#041528",
+                    "primary-fixed-dim": "#bcc7de",
+                    "primary": "#091426",
+                    "surface-container-low": "#f3f4f3",
+                    "surface-container": "#eeeeed",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface": "#f9f9f8",
+                    "tertiary-fixed": "#d3e4fe",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#004395",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "secondary-container": "#2170e4",
+                    "on-secondary": "#ffffff",
+                    "on-background": "#1a1c1c",
+                    "surface-variant": "#e2e2e2",
+                    "error": "#ba1a1a",
+                    "secondary": "#0058be",
+                    "surface-bright": "#f9f9f8",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-primary-fixed-variant": "#3c475a",
+                    "inverse-on-surface": "#f1f1f0",
+                    "surface-container-highest": "#e2e2e2",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface": "#1a1c1c",
+                    "surface-dim": "#dadad9",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "outline": "#75777d",
+                    "tertiary-container": "#1a2a3e",
+                    "on-surface-variant": "#45474c",
+                    "surface-tint": "#545f73"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased min-h-screen flex">
+<!-- SideNavBar (from JSON) -->
+<nav class="hidden md:flex flex-col h-screen w-64 rounded-none bg-[#f3f4f3] dark:bg-slate-900 border-r-0 p-4 shrink-0 shadow-none relative z-10">
+<div class="mb-8">
+<h1 class="font-manrope font-semibold text-lg text-slate-900 dark:text-white tracking-tight">The Strategic Ledger</h1>
+<p class="font-inter text-sm font-medium tracking-normal text-slate-500">Institutional Grade</p>
+</div>
+<ul class="flex flex-col gap-1 flex-grow">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 hover:translate-x-1 font-inter text-sm font-medium tracking-normal rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+                    Home
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 hover:translate-x-1 font-inter text-sm font-medium tracking-normal rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined text-[20px]">domain</span>
+                    Asset
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 rounded-sm shadow-sm transition-all duration-200 font-inter text-sm font-medium tracking-normal" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">corporate_fare</span>
+                    Company
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 hover:translate-x-1 font-inter text-sm font-medium tracking-normal rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined text-[20px]">analytics</span>
+                    Sector
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 hover:translate-x-1 font-inter text-sm font-medium tracking-normal rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined text-[20px]">insights</span>
+                    Analysis Tools
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 hover:translate-x-1 font-inter text-sm font-medium tracking-normal rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined text-[20px]">database</span>
+                    Data Playground
+                </a>
+</li>
+</ul>
+<div class="mt-auto pt-4 border-t border-slate-200/50 dark:border-slate-800/50">
+<ul class="flex flex-col gap-1">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 font-inter text-sm font-medium tracking-normal rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+                        Support
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all duration-200 font-inter text-sm font-medium tracking-normal rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+                        Sign Out
+                    </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+<!-- TopAppBar (from JSON) -->
+<header class="flex justify-between items-center w-full px-6 py-3 max-w-full bg-[#f9f9f8] dark:bg-slate-950 docked full-width top-0 z-20 border-b-0 shadow-none">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-500 md:hidden">menu</span>
+<span class="text-xl font-bold tracking-tighter text-slate-900 dark:text-white font-manrope">Asset Command</span>
+</div>
+<div class="flex-1 flex justify-center max-w-md mx-8 hidden md:block">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/15 text-on-surface text-sm rounded-DEFAULT py-2 pl-10 pr-4 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all font-body" placeholder="Search companies, assets, sectors..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-300 transition-colors opacity-80 hover:opacity-100">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-300 transition-colors opacity-80 hover:opacity-100">
+<span class="material-symbols-outlined">flag</span>
+</button>
+<button class="text-slate-900 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-300 transition-colors opacity-80 hover:opacity-100">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Separation Logic applied as a pseudo-element or div -->
+<div class="bg-slate-200/50 dark:bg-slate-800/50 h-[1px] w-full shrink-0"></div>
+<!-- Scrollable Content Canvas -->
+<div class="flex-1 overflow-y-auto p-6 lg:p-10 space-y-8 bg-background">
+<!-- Tenant Profile Header -->
+<header class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8">
+<div>
+<div class="flex items-center gap-3 mb-2">
+<span class="font-label text-xs uppercase tracking-[0.05em] text-on-surface-variant font-semibold">Tenant Profile</span>
+<div class="flex items-center gap-1.5 px-2 py-0.5 bg-error-container/20 border border-error/10 rounded-DEFAULT text-error text-[10px] font-semibold uppercase tracking-wider">
+<span class="material-symbols-outlined text-[12px]">warning</span>
+                            Mapping Under Review
+                        </div>
+</div>
+<h2 class="font-headline text-[2.75rem] leading-tight font-semibold tracking-[-0.02em] text-primary">Global Logistics Corp</h2>
+<p class="font-body text-on-surface-variant text-base mt-1">E-commerce Fulfillment &amp; Distribution</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 bg-surface-container-high text-on-surface font-body text-sm font-medium rounded-DEFAULT hover:bg-surface-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                        Export Report
+                    </button>
+<button class="px-4 py-2 bg-gradient-to-b from-primary to-primary-container text-on-primary font-body text-sm font-semibold rounded-DEFAULT hover:opacity-90 transition-opacity flex items-center gap-2 shadow-[0_4px_12px_-4px_rgba(30,41,59,0.2)]">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                        Edit Details
+                    </button>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Main Content Column (Left, wider) -->
+<div class="lg:col-span-8 space-y-6">
+<!-- KPIs -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-DEFAULT border border-outline-variant/15 flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-transparent to-surface-container-low opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<span class="font-label text-[11px] text-on-surface-variant uppercase tracking-widest relative z-10">Total Leased Area</span>
+<div class="relative z-10 flex items-baseline gap-1">
+<span class="font-headline text-3xl font-medium tracking-tight text-primary">4.2M</span>
+<span class="font-body text-sm text-on-surface-variant">sq ft</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-DEFAULT border border-outline-variant/15 flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-transparent to-surface-container-low opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<span class="font-label text-[11px] text-on-surface-variant uppercase tracking-widest relative z-10">Total Monthly Rent</span>
+<div class="relative z-10 flex items-baseline gap-1">
+<span class="font-headline text-3xl font-medium tracking-tight text-primary">$3.8M</span>
+<span class="font-body text-sm text-on-surface-variant">USD</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-DEFAULT border border-outline-variant/15 flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-transparent to-surface-container-low opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<span class="font-label text-[11px] text-on-surface-variant uppercase tracking-widest relative z-10">Leased Assets</span>
+<div class="relative z-10 flex items-baseline gap-1">
+<span class="font-headline text-3xl font-medium tracking-tight text-primary">14</span>
+<span class="font-body text-sm text-on-surface-variant">properties</span>
+</div>
+</div>
+</div>
+<!-- Leased Assets Table Container -->
+<section class="bg-surface-container-lowest rounded-DEFAULT border border-outline-variant/15 overflow-hidden">
+<div class="px-6 py-5 border-b border-outline-variant/15 flex justify-between items-center bg-surface-container-lowest">
+<h3 class="font-headline text-lg font-medium text-primary tracking-tight">Active Asset Exposure</h3>
+<button class="text-secondary text-sm font-medium hover:underline flex items-center gap-1">
+                                View Full Roster <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-primary-container text-on-primary-fixed">
+<th class="py-3 px-6 font-label text-[11px] uppercase tracking-wider text-on-primary font-medium w-2/5">Location / Property</th>
+<th class="py-3 px-6 font-label text-[11px] uppercase tracking-wider text-on-primary font-medium text-right">Leased Area</th>
+<th class="py-3 px-6 font-label text-[11px] uppercase tracking-wider text-on-primary font-medium text-right">Monthly Rent</th>
+<th class="py-3 px-6 font-label text-[11px] uppercase tracking-wider text-on-primary font-medium">Status</th>
+</tr>
+</thead>
+<tbody class="font-body text-sm divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="py-4 px-6">
+<div class="font-medium text-primary mb-0.5">DFW Logistics Center Alpha</div>
+<div class="text-xs text-on-surface-variant">Dallas, TX</div>
+</td>
+<td class="py-4 px-6 text-right tabular-nums">850,000 sf</td>
+<td class="py-4 px-6 text-right tabular-nums">$720k</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-teal-600/80"></span>
+<span class="text-xs text-on-surface-variant font-medium">Stable</span>
+</div>
+</td>
+</tr>
+<tr class="bg-surface-container-low/50 hover:bg-surface-container-low transition-colors group">
+<td class="py-4 px-6">
+<div class="font-medium text-primary mb-0.5">Inland Empire Hub 3</div>
+<div class="text-xs text-on-surface-variant">Riverside, CA</div>
+</td>
+<td class="py-4 px-6 text-right tabular-nums">1,200,000 sf</td>
+<td class="py-4 px-6 text-right tabular-nums">$1.2M</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-teal-600/80"></span>
+<span class="text-xs text-on-surface-variant font-medium">Stable</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="py-4 px-6">
+<div class="font-medium text-primary mb-0.5">Newark Distribution Park</div>
+<div class="text-xs text-on-surface-variant">Newark, NJ</div>
+</td>
+<td class="py-4 px-6 text-right tabular-nums">450,000 sf</td>
+<td class="py-4 px-6 text-right tabular-nums">$580k</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-600/80"></span>
+<span class="text-xs text-on-surface-variant font-medium">Renewal Pending</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- Right Rail (Narrower, analytical/alert focus) -->
+<div class="lg:col-span-4 space-y-6">
+<!-- Mapping Review Panel (Alert) -->
+<section class="bg-surface-container-lowest p-6 rounded-DEFAULT border-l-4 border-l-error border-y border-r border-y-outline-variant/15 border-r-outline-variant/15 relative overflow-hidden">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-error mt-0.5">assignment_late</span>
+<div>
+<h3 class="font-headline text-base font-semibold text-primary tracking-tight mb-2">Mapping Review Required</h3>
+<p class="font-body text-sm text-on-surface-variant leading-relaxed mb-4">
+                                    System detected 2 potential entity mismatches across 14 active leases. Missing updated insurance certificates for <strong>Newark Distribution Park</strong>.
+                                </p>
+<button class="text-secondary text-sm font-medium hover:underline">Review Exceptions</button>
+</div>
+</div>
+</section>
+<!-- Contract Risk Timeline -->
+<section class="bg-surface-container-lowest p-6 rounded-DEFAULT border border-outline-variant/15">
+<h3 class="font-headline text-base font-medium text-primary tracking-tight mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">schedule</span>
+                            Contract Risk Horizon
+                        </h3>
+<div class="relative pl-4 space-y-6 border-l border-outline-variant/30 ml-2">
+<div class="relative">
+<span class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-surface-container-lowest border-2 border-primary"></span>
+<div class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">Q4 2024</div>
+<div class="font-body text-sm text-primary font-medium">Newark Lease Expiry</div>
+<div class="font-body text-xs text-on-surface-variant mt-0.5">450k sf • $580k/mo at risk</div>
+</div>
+<div class="relative">
+<span class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-surface-container-lowest border-2 border-outline-variant"></span>
+<div class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">Q2 2025</div>
+<div class="font-body text-sm text-primary font-medium">Scheduled Rent Escalation</div>
+<div class="font-body text-xs text-on-surface-variant mt-0.5">DFW Alpha (+4.5%)</div>
+</div>
+<div class="relative">
+<span class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-surface-container-lowest border-2 border-outline-variant"></span>
+<div class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest mb-1">Q1 2026</div>
+<div class="font-body text-sm text-primary font-medium">Major Expiry Cohort</div>
+<div class="font-body text-xs text-on-surface-variant mt-0.5">2.1M sf total across 4 assets</div>
+</div>
+</div>
+</section>
+<!-- Credit Risk Profile Placeholder -->
+<section class="bg-surface-container-low p-6 rounded-DEFAULT border border-outline-variant/15 text-center flex flex-col items-center justify-center min-h-[160px]">
+<span class="material-symbols-outlined text-outline mb-3 text-[28px] opacity-50">data_usage</span>
+<h4 class="font-body text-sm font-medium text-on-surface-variant mb-1">Credit Profile Unavailable</h4>
+<p class="font-body text-xs text-outline max-w-[200px] leading-relaxed">
+                            External credit integration (DART) pending configuration.
+                        </p>
+<button class="mt-4 px-3 py-1.5 bg-surface-container-lowest border border-outline-variant/30 text-xs font-medium text-primary rounded-DEFAULT hover:bg-surface-variant transition-colors">
+                            Configure Integration
+                        </button>
+</section>
+</div>
+</div>
+<div class="h-12"></div> <!-- Bottom breathing room -->
+</div>
+</main>
+</body></html>

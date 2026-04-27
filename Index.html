@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title><?= APP_NAME ?></title>
+<meta name="naver-map-client-id" content="<?= NAVER_MAP_CLIENT_ID || '' ?>">
+<meta name="naver-static-map-key-id" content="<?= NAVER_STATIC_MAP_KEY_ID || '' ?>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <?!= include('Stylesheet'); ?>
+  </head>
+  <body id="app-body" data-is-admin="<?= IS_ADMIN ? 'true' : 'false' ?>" data-admin-auth-required="<?= ADMIN_AUTH_REQUIRED ? 'true' : 'false' ?>" data-theme-preference="system" data-theme-resolved="light">
+<script>
+window.APP_FLAGS = {
+isAdmin: <?= IS_ADMIN ? 'true' : 'false' ?>,
+initialPage: <?= JSON.stringify(INITIAL_PAGE) ?>,
+adminSessionToken: <?= JSON.stringify(ADMIN_SESSION_TOKEN || '') ?>,
+adminAuthRequired: <?= ADMIN_AUTH_REQUIRED ? 'true' : 'false' ?>
+};
+window.RUNTIME_CLIENT_CONFIG = <?= RUNTIME_CLIENT_CONFIG ?>;
+</script>
+
+    <? if (ADMIN_AUTH_REQUIRED) { ?>
+    <main class="admin-auth-root" id="admin-auth-root" aria-label="관리자 로그인">
+      <section class="admin-auth-card">
+        <div class="sidebar-brand-mark">SL</div>
+        <p class="page-kicker">Admin Console</p>
+        <h1>관리자 로그인</h1>
+        <p>관리자 기능은 비밀번호 확인 후에만 열립니다. 비밀번호는 URL에 넣지 않습니다.</p>
+        <label class="control-label" for="admin-auth-password">관리자 비밀번호</label>
+        <div class="admin-auth-row">
+          <input id="admin-auth-password" class="control-input" type="password" autocomplete="current-password" placeholder="비밀번호를 입력하세요">
+          <button id="admin-auth-submit" class="primary-button" type="button">로그인</button>
+        </div>
+        <p class="page-note" id="admin-auth-message">인증 전에는 대시보드 데이터와 관리자 콘솔을 불러오지 않습니다.</p>
+      </section>
+    </main>
+    <? } ?>
+
+    <div class="app-shell <?= ADMIN_AUTH_REQUIRED ? 'is-auth-locked' : '' ?>" id="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <div class="sidebar-brand-mark">SL</div>
+          <div class="sidebar-brand-copy">
+            <h1>The Strategic Ledger</h1>
+            <p>IGIS Logistics Leasing</p>
+          </div>
+        </div>
+
+        <button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-label="사이드바 접기">
+          <span class="material-symbols-outlined">left_panel_close</span>
+          <span class="sidebar-toggle-label">사이드바 접기</span>
+        </button>
+
+        <nav class="sidebar-nav" id="user-nav">
+          <button class="nav-item is-active" data-tab="home" type="button">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>Home</span>
+          </button>
+          <button class="nav-item" data-tab="asset" type="button">
+            <span class="material-symbols-outlined">domain</span>
+            <span>Asset</span>
+          </button>
+          <button class="nav-item" data-tab="company" type="button">
+            <span class="material-symbols-outlined">corporate_fare</span>
+            <span>Company</span>
+          </button>
+          <button class="nav-item" data-tab="sector" type="button">
+            <span class="material-symbols-outlined">analytics</span>
+            <span>섹터</span>
+          </button>
+          <button class="nav-item" data-tab="tools" type="button">
+            <span class="material-symbols-outlined">query_stats</span>
+            <span>분석 도구</span>
+          </button>
+          <button class="nav-item" data-tab="playground" type="button">
+            <span class="material-symbols-outlined">database</span>
+            <span>데이터 분석</span>
+          </button>
+          <? if (IS_ADMIN) { ?>
+          <button class="nav-item nav-item-admin" data-tab="admin" type="button">
+            <span class="material-symbols-outlined">shield_person</span>
+            <span>Admin Console</span>
+          </button>
+          <? } ?>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button class="footer-item" id="support-button" type="button">
+            <span class="material-symbols-outlined">help</span>
+            <span>Support</span>
+          </button>
+        </div>
+      </aside>
+
+      <div class="shell-scrim" id="shell-scrim"></div>
+
+      <main class="workspace">
+        <header class="topbar" id="topbar-shell" data-topbar-layout="workspace">
+          <div class="topbar-left" id="topbar-brand-group" data-topbar-region="brand">
+            <button class="mobile-menu-button" id="mobile-menu-button" type="button" aria-label="메뉴 열기">
+              <span class="material-symbols-outlined">menu</span>
+            </button>
+            <div>
+              <div class="topbar-brand">Leasing Dashboard</div>
+              <div class="topbar-caption">Compact enterprise workspace for logistics leasing</div>
+            </div>
+          </div>
+
+          <div class="topbar-search-wrap" id="topbar-search-slot" data-topbar-region="search" data-search-anchor="global-search">
+            <label class="topbar-search" aria-label="탭 빠른 검색">
+              <span class="material-symbols-outlined">search</span>
+              <input id="global-search" data-topbar-search-input="global" placeholder="탭 이름을 입력하고 Enter를 누르세요" type="text">
+            </label>
+            <div class="search-suggestions is-hidden" id="global-search-suggestions" data-search-suggestions="global-search" aria-live="polite" aria-label="검색 제안" role="listbox"></div>
+          </div>
+
+          <div class="topbar-utility" id="topbar-utility" data-topbar-region="utility">
+            <div class="topbar-status-lane">
+              <div class="page-meta" id="topbar-meta-group" data-topbar-meta="status">
+                <span class="meta-chip" id="generated-at-chip" data-meta-chip="generated-at">Loading snapshot</span>
+                <span class="meta-chip meta-chip-soft" id="formula-version-chip" data-meta-chip="formula-version">formula</span>
+                <span class="meta-chip role-chip" id="role-chip" data-meta-chip="role"><?= IS_ADMIN ? 'Admin View' : 'User View' ?></span>
+              </div>
+              <div class="page-meta theme-switch" id="theme-switch" data-theme-toggle-slot="topbar" data-theme-target="app-body" data-theme-preference="system" aria-label="테마 모드" role="group">
+                <button class="meta-chip meta-chip-accent theme-switch-button is-active" data-theme-button="true" data-theme-choice="system" data-theme-option="system" id="theme-system-button" type="button" title="System theme" aria-pressed="true">
+                  <span>System</span>
+                </button>
+                <button class="meta-chip meta-chip-soft theme-switch-button" data-theme-button="true" data-theme-choice="light" data-theme-option="light" id="theme-light-button" type="button" title="Light theme" aria-pressed="false">
+                  <span>Light</span>
+                </button>
+                <button class="meta-chip meta-chip-soft theme-switch-button" data-theme-button="true" data-theme-choice="dark" data-theme-option="dark" id="theme-dark-button" type="button" title="Dark theme" aria-pressed="false">
+                  <span>Dark</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="topbar-action-lane" id="topbar-action-buttons" data-topbar-actions="primary">
+              <button class="icon-button" id="refresh-button" data-topbar-action="refresh" type="button" title="현재 탭 새로고침">
+                <span class="material-symbols-outlined">refresh</span>
+              </button>
+              <button class="icon-button" id="open-ai-button" data-topbar-action="copilot" type="button" title="AI Copilot 열기">
+                <span class="material-symbols-outlined">auto_awesome</span>
+              </button>
+              <button class="icon-button" id="close-surface-button" data-topbar-action="close-surface" type="button" title="열린 패널 닫기">
+                <span class="material-symbols-outlined">dock_to_right</span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <div class="canvas" id="canvas">
+          <div class="page-head" id="page-head" data-page-head-layout="copy-only">
+            <div class="page-head-copy">
+              <p class="page-kicker" id="page-kicker">포트폴리오 모니터</p>
+              <h2 class="page-title" id="page-title">홈</h2>
+              <p class="page-subtitle" id="page-subtitle">포트폴리오 전체 임대 현황과 핵심 숫자를 빠르게 읽는 운영 화면입니다.</p>
+            </div>
+            <div class="page-head-utility">
+              <section class="view-mode-card" aria-label="Current workspace mode">
+                <span class="view-mode-label"><?= IS_ADMIN ? 'Administrator Lens' : 'User Lens' ?></span>
+                <strong class="view-mode-title"><?= IS_ADMIN ? '운영 검토 중심 화면' : '분석 탐색 중심 화면' ?></strong>
+                <p class="view-mode-copy"><?= IS_ADMIN ? '검토 상태, 백로그, 실행 버튼이 먼저 보이며 관리자 전용 패널이 함께 열립니다.' : '핵심 지표와 비교 정보가 먼저 보이도록 정리된 사용자 전용 보기입니다.' ?></p>
+              </section>
+            </div>
+          </div>
+
+          <section class="tab-panel is-active" data-panel="home"><div id="home-view" data-render-root="home" data-map-root="home"></div></section>
+          <section class="tab-panel" data-panel="asset"><div id="asset-view" data-render-root="asset"></div></section>
+          <section class="tab-panel" data-panel="company"><div id="company-view" data-render-root="company"></div></section>
+          <section class="tab-panel tab-panel-under-construction" data-panel="sector">
+            <div class="tab-panel-development-view"><div id="sector-view" data-render-root="sector"></div></div>
+            <div class="tab-panel-development-overlay" role="button" tabindex="0" aria-label="더블클릭하여 섹터 현재 화면 보기">
+              <div class="tab-panel-development-card">
+                <span class="tab-panel-development-badge">In Progress</span>
+                <strong>섹터 화면은 개편 예정입니다</strong>
+                <p>권역, 자산, 임차인 비교 구조를 전면 개편할 예정입니다.</p>
+                <p class="tab-panel-development-hint">현재 구현 화면을 보려면 이 안내를 더블클릭하세요.</p>
+              </div>
+            </div>
+            <button class="tab-panel-development-reset" type="button">개발 중 안내 다시 보기</button>
+          </section>
+          <section class="tab-panel tab-panel-under-construction" data-panel="tools">
+            <div class="tab-panel-development-view"><div id="tools-view" data-render-root="tools"></div></div>
+            <div class="tab-panel-development-overlay" role="button" tabindex="0" aria-label="더블클릭하여 분석 도구 현재 화면 보기">
+              <div class="tab-panel-development-card">
+                <span class="tab-panel-development-badge">In Progress</span>
+                <strong>분석 도구 화면은 개편 예정입니다</strong>
+                <p>비교 선택, 벤치마크, 계약 원장 흐름을 전면 개편할 예정입니다.</p>
+                <p class="tab-panel-development-hint">현재 구현 화면을 보려면 이 안내를 더블클릭하세요.</p>
+              </div>
+            </div>
+            <button class="tab-panel-development-reset" type="button">개발 중 안내 다시 보기</button>
+          </section>
+          <section class="tab-panel tab-panel-under-construction" data-panel="playground">
+            <div class="tab-panel-development-view"><div id="playground-view" data-render-root="playground"></div></div>
+            <div class="tab-panel-development-overlay" role="button" tabindex="0" aria-label="더블클릭하여 데이터 분석 현재 화면 보기">
+              <div class="tab-panel-development-card">
+                <span class="tab-panel-development-badge">In Progress</span>
+                <strong>데이터 분석 화면은 개편 예정입니다</strong>
+                <p>비개발자도 쉽게 쓰는 집계·피벗 분석 화면으로 전면 개편할 예정입니다.</p>
+                <p class="tab-panel-development-hint">현재 구현 화면을 보려면 이 안내를 더블클릭하세요.</p>
+              </div>
+            </div>
+            <button class="tab-panel-development-reset" type="button">개발 중 안내 다시 보기</button>
+          </section>
+          <? if (IS_ADMIN) { ?>
+          <section class="tab-panel" data-panel="admin"><div id="admin-view"></div></section>
+          <? } ?>
+        </div>
+      </main>
+    </div>
+
+    <div class="loading-overlay is-visible" id="loading-overlay" aria-live="polite">
+      <div class="loading-card">
+        <div class="loading-spinner"></div>
+        <div class="loading-copy">
+          <strong id="loading-title">초기 화면을 준비하고 있습니다.</strong>
+          <span id="loading-message">기초 정보와 첫 화면 데이터를 순서대로 불러오고 있습니다.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="surface-layer" id="surface-layer" aria-live="polite">
+      <div class="surface-backdrop" id="surface-backdrop"></div>
+      <section class="modal-host" id="modal-host" aria-hidden="true"></section>
+      <aside class="detail-panel-host" id="detail-panel-host" aria-hidden="true"></aside>
+    </div>
+
+    <button class="ai-fab" id="ai-fab" type="button">
+      <span class="material-symbols-outlined">auto_awesome</span>
+      <span>AI Copilot</span>
+    </button>
+
+    <aside class="ai-panel" id="ai-panel" aria-hidden="true">
+      <div class="ai-panel-header">
+        <div>
+          <p class="page-kicker">AI Copilot</p>
+          <h3 class="ai-panel-title">현재 화면 질의</h3>
+        </div>
+        <button class="icon-button" id="ai-panel-close" type="button" aria-label="AI 패널 닫기">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="ai-panel-body">
+        <section class="summary-item">
+          <h4>화면 기준 요약</h4>
+          <p id="ai-context-summary">현재 탭 정보를 기준으로 AI 컨텍스트를 준비합니다.</p>
+        </section>
+        <section class="summary-item">
+          <h4>추천 질문</h4>
+          <div class="ai-suggestions" id="ai-suggestions"></div>
+        </section>
+        <section class="summary-item">
+          <h4>질문</h4>
+          <textarea class="ai-input" id="ai-question" placeholder="현재 화면 기준으로 확인하고 싶은 내용을 입력해주세요"></textarea>
+          <button class="primary-button" id="ai-submit" type="button">질문 보내기</button>
+        </section>
+        <section class="summary-item">
+          <h4>응답</h4>
+          <div class="empty-state" id="ai-answer">AI 응답을 대기 중입니다.</div>
+        </section>
+      </div>
+    </aside>
+
+    <?!= include('Client'); ?>
+  </body>
+</html>

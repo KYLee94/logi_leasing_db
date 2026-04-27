@@ -1,0 +1,3165 @@
+{
+  "rentTrend": [
+    {
+      "grossFloorAreaPendingAssets": [
+        {
+          "assetName": "스카이박스1, 스카이박스2",
+          "rule": "later_of_first_configured_at_and_approval_date",
+          "effectiveMonth": "2019-04",
+          "assetId": "asset_a112299001"
+        }
+      ],
+      "monthlyRentTotal": 264743800,
+      "grossFloorAreaAppliedAssetCount": 0,
+      "month": "2018-04",
+      "knownLeaseSpaceCount": 1,
+      "mfKnownCount": 0,
+      "activeAssetCount": 1,
+      "leasedAreaSqm": 24706.57,
+      "newlyAddedAssetCount": 1,
+      "grossFloorAreaPendingAssetCount": 1,
+      "newlyAddedAssets": [
+        {
+          "assetName": "스카이박스1, 스카이박스2",
+          "assetId": "asset_a112299001"
+        }
+      ],
+      "rentKnownCount": 1
+    },
+    {
+      "grossFloorAreaPendingAssets": [
+        {
+          "rule": "later_of_first_configured_at_and_approval_date",
+          "assetName": "스카이박스1, 스카이박스2",
+          "effectiveMonth": "2019-04",
+          "assetId": "asset_a112299001"
+        }
+      ],
+      "monthlyRentTotal": 584948800,
+      "monthlyMfTotal": 12809000,
+      "knownLeaseSpaceCount": 3,
+      "mfKnownCount": 2,
+      "leasedAreaSqm": 48031.8,
+      "newlyAddedAssetCount": 1,
+      "grossFloorAreaPendingAssetCount": 1,
+      "activeAssetCount": 2,
+      "grossFloorAreaAppliedAssetCount": 1,
+      "month": "2019-03",
+      "grossFloorAreaSqm": 349722,
+      "newlyAddedAssets": [
+        {
+          "assetName": "아레나스양지물류센터",
+          "assetId": "asset_a112127001"
+        }
+      ],
+      "rentKnownCount": 3
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 655537675,
+      "monthlyMfTotal": 17648000,
+      "knownLeaseSpaceCount": 4,
+      "activeAssetCount": 2,
+      "leasedAreaSqm": 56025.82,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 0,
+      "mfKnownCount": 3,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2019-04",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 4
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 688962675,
+      "monthlyMfTotal": 20125000,
+      "knownLeaseSpaceCount": 5,
+      "mfKnownCount": 4,
+      "leasedAreaSqm": 60118.02,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 0,
+      "activeAssetCount": 2,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2020-01",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 5
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 695668448,
+      "monthlyMfTotal": 20221000,
+      "knownLeaseSpaceCount": 5,
+      "mfKnownCount": 4,
+      "leasedAreaSqm": 60118.02,
+      "grossFloorAreaPendingAssetCount": 0,
+      "newlyAddedAssetCount": 0,
+      "activeAssetCount": 2,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2020-04",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 5
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 729180448,
+      "monthlyMfTotal": 22705000,
+      "knownLeaseSpaceCount": 6,
+      "activeAssetCount": 2,
+      "leasedAreaSqm": 64220.920000000006,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 0,
+      "mfKnownCount": 5,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2020-06",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 6
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 729848448,
+      "monthlyMfTotal": 22754000,
+      "knownLeaseSpaceCount": 6,
+      "mfKnownCount": 5,
+      "leasedAreaSqm": 64220.920000000006,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 0,
+      "activeAssetCount": 2,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2021-01",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 6
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 736688236,
+      "monthlyMfTotal": 22852000,
+      "knownLeaseSpaceCount": 6,
+      "mfKnownCount": 5,
+      "activeAssetCount": 2,
+      "leasedAreaSqm": 64220.920000000006,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 0,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2021-04",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 6
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 737358236,
+      "monthlyMfTotal": 22901000,
+      "knownLeaseSpaceCount": 6,
+      "mfKnownCount": 5,
+      "leasedAreaSqm": 64220.920000000006,
+      "grossFloorAreaPendingAssetCount": 0,
+      "newlyAddedAssetCount": 0,
+      "activeAssetCount": 2,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2021-06",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 6
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 738384982,
+      "monthlyMfTotal": 22901000,
+      "knownLeaseSpaceCount": 7,
+      "mfKnownCount": 5,
+      "activeAssetCount": 2,
+      "grossFloorAreaPendingAssetCount": 0,
+      "newlyAddedAssetCount": 0,
+      "leasedAreaSqm": 71568.5,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2021-07",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 7
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 740049983,
+      "monthlyMfTotal": 22901000,
+      "knownLeaseSpaceCount": 8,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 0,
+      "leasedAreaSqm": 76837.85,
+      "activeAssetCount": 2,
+      "mfKnownCount": 5,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2021-11",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 8
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 740730983,
+      "monthlyMfTotal": 22951000,
+      "knownLeaseSpaceCount": 8,
+      "mfKnownCount": 5,
+      "activeAssetCount": 2,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 0,
+      "leasedAreaSqm": 76837.85,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2022-01",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 8
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 742808787,
+      "monthlyMfTotal": 22951000,
+      "knownLeaseSpaceCount": 9,
+      "grossFloorAreaPendingAssetCount": 0,
+      "newlyAddedAssetCount": 0,
+      "leasedAreaSqm": 84223.94,
+      "activeAssetCount": 2,
+      "mfKnownCount": 5,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2022-02",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 9
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 752413787,
+      "monthlyMfTotal": 23335000,
+      "knownLeaseSpaceCount": 9,
+      "mfKnownCount": 5,
+      "activeAssetCount": 2,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 0,
+      "leasedAreaSqm": 84223.94,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2022-03",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 9
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 759390751,
+      "monthlyMfTotal": 23435000,
+      "knownLeaseSpaceCount": 9,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 0,
+      "leasedAreaSqm": 84223.94,
+      "activeAssetCount": 2,
+      "mfKnownCount": 5,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2022-04",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 9
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 760073751,
+      "monthlyMfTotal": 23485000,
+      "knownLeaseSpaceCount": 9,
+      "leasedAreaSqm": 84223.94,
+      "grossFloorAreaPendingAssetCount": 0,
+      "newlyAddedAssetCount": 0,
+      "activeAssetCount": 2,
+      "mfKnownCount": 5,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2022-06",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 9
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 760094285,
+      "monthlyMfTotal": 23485000,
+      "knownLeaseSpaceCount": 9,
+      "activeAssetCount": 2,
+      "leasedAreaSqm": 84223.94,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 0,
+      "mfKnownCount": 5,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2022-07",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 9
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 629633943,
+      "monthlyMfTotal": 24948319,
+      "knownLeaseSpaceCount": 9,
+      "leasedAreaSqm": 84223.94,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 0,
+      "activeAssetCount": 2,
+      "mfKnownCount": 5,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2023-01",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 9
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 636750512,
+      "monthlyMfTotal": 47471472,
+      "knownLeaseSpaceCount": 9,
+      "mfKnownCount": 6,
+      "activeAssetCount": 2,
+      "leasedAreaSqm": 84223.94,
+      "grossFloorAreaPendingAssetCount": 0,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2023-04",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 9
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 637447055,
+      "monthlyMfTotal": 47522661,
+      "knownLeaseSpaceCount": 9,
+      "leasedAreaSqm": 84223.94,
+      "grossFloorAreaPendingAssetCount": 0,
+      "newlyAddedAssetCount": 0,
+      "activeAssetCount": 2,
+      "mfKnownCount": 6,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2023-06",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 9
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 637468000,
+      "monthlyMfTotal": 47522661,
+      "knownLeaseSpaceCount": 9,
+      "mfKnownCount": 6,
+      "activeAssetCount": 2,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 0,
+      "leasedAreaSqm": 84223.94,
+      "grossFloorAreaAppliedAssetCount": 2,
+      "month": "2023-07",
+      "grossFloorAreaSqm": 435373.19,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 9
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 1234684000,
+      "monthlyMfTotal": 80534661,
+      "knownLeaseSpaceCount": 10,
+      "newlyAddedAssetCount": 1,
+      "grossFloorAreaPendingAssetCount": 0,
+      "leasedAreaSqm": 138790.15,
+      "activeAssetCount": 3,
+      "mfKnownCount": 7,
+      "grossFloorAreaAppliedAssetCount": 3,
+      "month": "2023-12",
+      "grossFloorAreaSqm": 489985.67,
+      "newlyAddedAssets": [
+        {
+          "assetName": "두동 LG전자 통합물류센터",
+          "assetId": "asset_a112755001"
+        }
+      ],
+      "rentKnownCount": 10
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 2396485396,
+      "monthlyMfTotal": 178551512,
+      "knownLeaseSpaceCount": 11,
+      "mfKnownCount": 8,
+      "activeAssetCount": 4,
+      "newlyAddedAssetCount": 1,
+      "grossFloorAreaPendingAssetCount": 0,
+      "leasedAreaSqm": 245799.71,
+      "grossFloorAreaAppliedAssetCount": 4,
+      "month": "2024-01",
+      "grossFloorAreaSqm": 596995.23,
+      "newlyAddedAssets": [
+        {
+          "assetName": "화성 석포리 물류센터",
+          "assetId": "asset_a112642001"
+        }
+      ],
+      "rentKnownCount": 11
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 2423166396,
+      "monthlyMfTotal": 180513512,
+      "knownLeaseSpaceCount": 11,
+      "mfKnownCount": 8,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 0,
+      "leasedAreaSqm": 245799.71,
+      "activeAssetCount": 4,
+      "grossFloorAreaAppliedAssetCount": 4,
+      "month": "2024-02",
+      "grossFloorAreaSqm": 596995.23,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 11
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 2531652759,
+      "monthlyMfTotal": 177097647,
+      "knownLeaseSpaceCount": 11,
+      "mfKnownCount": 8,
+      "activeAssetCount": 4,
+      "grossFloorAreaPendingAssetCount": 0,
+      "newlyAddedAssetCount": 0,
+      "leasedAreaSqm": 245799.71,
+      "grossFloorAreaAppliedAssetCount": 4,
+      "month": "2024-03",
+      "grossFloorAreaSqm": 596995.23,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 11
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 2555683967,
+      "monthlyMfTotal": 178825825,
+      "knownLeaseSpaceCount": 11,
+      "leasedAreaSqm": 245799.71,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 0,
+      "activeAssetCount": 4,
+      "mfKnownCount": 8,
+      "grossFloorAreaAppliedAssetCount": 4,
+      "month": "2024-04",
+      "grossFloorAreaSqm": 596995.23,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 11
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 2555705331,
+      "monthlyMfTotal": 178825825,
+      "knownLeaseSpaceCount": 11,
+      "mfKnownCount": 8,
+      "activeAssetCount": 4,
+      "leasedAreaSqm": 245799.71,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 0,
+      "grossFloorAreaAppliedAssetCount": 4,
+      "month": "2024-07",
+      "grossFloorAreaSqm": 596995.23,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 11
+    },
+    {
+      "grossFloorAreaPendingAssets": [
+        {
+          "assetName": "경산 쿠팡물류센터",
+          "rule": "later_of_first_configured_at_and_approval_date",
+          "effectiveMonth": "2025-06",
+          "assetId": "asset_a120085001"
+        }
+      ],
+      "monthlyRentTotal": 3512775256,
+      "monthlyMfTotal": 253910207,
+      "knownLeaseSpaceCount": 25,
+      "leasedAreaSqm": 319621.39,
+      "grossFloorAreaPendingAssetCount": 1,
+      "newlyAddedAssetCount": 1,
+      "activeAssetCount": 5,
+      "mfKnownCount": 22,
+      "grossFloorAreaAppliedAssetCount": 4,
+      "month": "2024-08",
+      "grossFloorAreaSqm": 596995.23,
+      "newlyAddedAssets": [
+        {
+          "assetName": "경산 쿠팡물류센터",
+          "assetId": "asset_a120085001"
+        }
+      ],
+      "rentKnownCount": 25
+    },
+    {
+      "grossFloorAreaPendingAssets": [
+        {
+          "rule": "later_of_first_configured_at_and_approval_date",
+          "assetName": "경산 쿠팡물류센터",
+          "effectiveMonth": "2025-06",
+          "assetId": "asset_a120085001"
+        }
+      ],
+      "monthlyRentTotal": 3385082772,
+      "monthlyMfTotal": 255906072,
+      "knownLeaseSpaceCount": 25,
+      "mfKnownCount": 22,
+      "activeAssetCount": 5,
+      "leasedAreaSqm": 319621.39,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 1,
+      "grossFloorAreaAppliedAssetCount": 4,
+      "month": "2025-01",
+      "grossFloorAreaSqm": 596995.23,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 25
+    },
+    {
+      "grossFloorAreaPendingAssets": [
+        {
+          "rule": "later_of_first_configured_at_and_approval_date",
+          "assetName": "경산 쿠팡물류센터",
+          "effectiveMonth": "2025-06",
+          "assetId": "asset_a120085001"
+        }
+      ],
+      "monthlyRentTotal": 3412564772,
+      "monthlyMfTotal": 257927072,
+      "knownLeaseSpaceCount": 25,
+      "leasedAreaSqm": 319621.39,
+      "grossFloorAreaPendingAssetCount": 1,
+      "newlyAddedAssetCount": 0,
+      "activeAssetCount": 5,
+      "mfKnownCount": 22,
+      "grossFloorAreaAppliedAssetCount": 4,
+      "month": "2025-02",
+      "grossFloorAreaSqm": 596995.23,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 25
+    },
+    {
+      "grossFloorAreaPendingAssets": [
+        {
+          "rule": "later_of_first_configured_at_and_approval_date",
+          "assetName": "경산 쿠팡물류센터",
+          "effectiveMonth": "2025-06",
+          "assetId": "asset_a120085001"
+        }
+      ],
+      "monthlyRentTotal": 3612664572,
+      "monthlyMfTotal": 267828072,
+      "knownLeaseSpaceCount": 27,
+      "mfKnownCount": 23,
+      "activeAssetCount": 6,
+      "leasedAreaSqm": 337655.06000000006,
+      "grossFloorAreaPendingAssetCount": 1,
+      "newlyAddedAssetCount": 1,
+      "grossFloorAreaAppliedAssetCount": 5,
+      "month": "2025-03",
+      "grossFloorAreaSqm": 713107.02,
+      "newlyAddedAssets": [
+        {
+          "assetName": "안성 성은지구 물류센터",
+          "assetId": "asset_ap00014001"
+        }
+      ],
+      "rentKnownCount": 27
+    },
+    {
+      "grossFloorAreaPendingAssets": [
+        {
+          "assetName": "경산 쿠팡물류센터",
+          "rule": "later_of_first_configured_at_and_approval_date",
+          "effectiveMonth": "2025-06",
+          "assetId": "asset_a120085001"
+        }
+      ],
+      "monthlyRentTotal": 3698208582,
+      "monthlyMfTotal": 275932902,
+      "knownLeaseSpaceCount": 29,
+      "mfKnownCount": 25,
+      "newlyAddedAssetCount": 1,
+      "grossFloorAreaPendingAssetCount": 1,
+      "leasedAreaSqm": 350132.00000000006,
+      "activeAssetCount": 7,
+      "grossFloorAreaAppliedAssetCount": 6,
+      "month": "2025-04",
+      "grossFloorAreaSqm": 743087.04,
+      "newlyAddedAssets": [
+        {
+          "assetName": "에이블로지스물류센터",
+          "assetId": "asset_a112527003"
+        }
+      ],
+      "rentKnownCount": 29
+    },
+    {
+      "grossFloorAreaPendingAssets": [
+        {
+          "rule": "later_of_first_configured_at_and_approval_date",
+          "assetName": "경산 쿠팡물류센터",
+          "effectiveMonth": "2025-06",
+          "assetId": "asset_a120085001"
+        }
+      ],
+      "monthlyRentTotal": 3771494499,
+      "monthlyMfTotal": 282666436,
+      "knownLeaseSpaceCount": 30,
+      "mfKnownCount": 26,
+      "activeAssetCount": 8,
+      "newlyAddedAssetCount": 1,
+      "grossFloorAreaPendingAssetCount": 1,
+      "leasedAreaSqm": 360701.00000000006,
+      "grossFloorAreaAppliedAssetCount": 7,
+      "month": "2025-05",
+      "grossFloorAreaSqm": 795826.7100000001,
+      "newlyAddedAssets": [
+        {
+          "assetName": "양산 유산동 물류센터",
+          "assetId": "asset_s00002001"
+        }
+      ],
+      "rentKnownCount": 30
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 3975610602,
+      "monthlyMfTotal": 300571357,
+      "knownLeaseSpaceCount": 31,
+      "mfKnownCount": 27,
+      "newlyAddedAssetCount": 1,
+      "grossFloorAreaPendingAssetCount": 0,
+      "leasedAreaSqm": 383912.70000000007,
+      "activeAssetCount": 9,
+      "grossFloorAreaAppliedAssetCount": 9,
+      "month": "2025-06",
+      "grossFloorAreaSqm": 1003277.096,
+      "newlyAddedAssets": [
+        {
+          "assetName": "여주 본두리 물류센터",
+          "assetId": "asset_a112606001"
+        }
+      ],
+      "rentKnownCount": 31
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 3975632393,
+      "monthlyMfTotal": 300571357,
+      "knownLeaseSpaceCount": 31,
+      "activeAssetCount": 9,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 0,
+      "leasedAreaSqm": 383912.70000000007,
+      "mfKnownCount": 27,
+      "grossFloorAreaAppliedAssetCount": 9,
+      "month": "2025-07",
+      "grossFloorAreaSqm": 1003277.096,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 31
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 4237415121,
+      "monthlyMfTotal": 322186796,
+      "knownLeaseSpaceCount": 32,
+      "mfKnownCount": 29,
+      "grossFloorAreaPendingAssetCount": 0,
+      "newlyAddedAssetCount": 0,
+      "leasedAreaSqm": 410906.1700000001,
+      "activeAssetCount": 9,
+      "grossFloorAreaAppliedAssetCount": 9,
+      "month": "2025-08",
+      "grossFloorAreaSqm": 1003277.096,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 32
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 4698783721,
+      "monthlyMfTotal": 322275056,
+      "knownLeaseSpaceCount": 34,
+      "mfKnownCount": 30,
+      "grossFloorAreaPendingAssetCount": 0,
+      "newlyAddedAssetCount": 1,
+      "leasedAreaSqm": 471082.84000000014,
+      "activeAssetCount": 10,
+      "grossFloorAreaAppliedAssetCount": 10,
+      "month": "2025-09",
+      "grossFloorAreaSqm": 1042645.8960000001,
+      "newlyAddedAssets": [
+        {
+          "assetName": "평택아디다스물류센터",
+          "assetId": "asset_a112500002"
+        }
+      ],
+      "rentKnownCount": 34
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 4829864721,
+      "monthlyMfTotal": 334563056,
+      "knownLeaseSpaceCount": 35,
+      "activeAssetCount": 10,
+      "grossFloorAreaPendingAssetCount": 0,
+      "newlyAddedAssetCount": 0,
+      "leasedAreaSqm": 484624.42000000016,
+      "mfKnownCount": 31,
+      "grossFloorAreaAppliedAssetCount": 10,
+      "month": "2025-10",
+      "grossFloorAreaSqm": 1042645.8960000001,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 35
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 5622270311,
+      "monthlyMfTotal": 351101366,
+      "knownLeaseSpaceCount": 37,
+      "mfKnownCount": 32,
+      "newlyAddedAssetCount": 1,
+      "grossFloorAreaPendingAssetCount": 0,
+      "leasedAreaSqm": 533902.17,
+      "activeAssetCount": 11,
+      "grossFloorAreaAppliedAssetCount": 11,
+      "month": "2025-12",
+      "grossFloorAreaSqm": 1076022.626,
+      "newlyAddedAssets": [
+        {
+          "assetName": "안성 홈플러스 중부허브 물류센터",
+          "assetId": "asset_a112500003"
+        }
+      ],
+      "rentKnownCount": 37
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 6341388737,
+      "monthlyMfTotal": 387498833,
+      "knownLeaseSpaceCount": 42,
+      "mfKnownCount": 35,
+      "activeAssetCount": 13,
+      "grossFloorAreaPendingAssetCount": 0,
+      "newlyAddedAssetCount": 2,
+      "leasedAreaSqm": 617961.0200000001,
+      "grossFloorAreaAppliedAssetCount": 13,
+      "month": "2026-01",
+      "grossFloorAreaSqm": 1149060.736,
+      "newlyAddedAssets": [
+        {
+          "assetName": "동산물류센터",
+          "assetId": "asset_a112527001"
+        },
+        {
+          "assetName": "부국물류센터",
+          "assetId": "asset_a112527002"
+        }
+      ],
+      "rentKnownCount": 42
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 6538559261,
+      "monthlyMfTotal": 407257608,
+      "knownLeaseSpaceCount": 44,
+      "mfKnownCount": 37,
+      "grossFloorAreaPendingAssetCount": 0,
+      "newlyAddedAssetCount": 1,
+      "leasedAreaSqm": 640544.8700000002,
+      "activeAssetCount": 14,
+      "grossFloorAreaAppliedAssetCount": 14,
+      "month": "2026-02",
+      "grossFloorAreaSqm": 1182762.766,
+      "newlyAddedAssets": [
+        {
+          "assetName": "이천 마장면 물류센터",
+          "assetId": "asset_a112573001"
+        }
+      ],
+      "rentKnownCount": 44
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 9908942208,
+      "monthlyMfTotal": 464289708,
+      "knownLeaseSpaceCount": 48,
+      "mfKnownCount": 40,
+      "activeAssetCount": 15,
+      "leasedAreaSqm": 1001710.0200000001,
+      "grossFloorAreaPendingAssetCount": 0,
+      "newlyAddedAssetCount": 1,
+      "grossFloorAreaAppliedAssetCount": 15,
+      "month": "2026-03",
+      "grossFloorAreaSqm": 1482071.0659999999,
+      "newlyAddedAssets": [
+        {
+          "assetName": "인천석남물류센터",
+          "assetId": "asset_a112721001"
+        }
+      ],
+      "rentKnownCount": 48
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 10069620506,
+      "monthlyMfTotal": 483747339,
+      "knownLeaseSpaceCount": 50,
+      "leasedAreaSqm": 1022058.7100000001,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaPendingAssetCount": 0,
+      "activeAssetCount": 15,
+      "mfKnownCount": 42,
+      "grossFloorAreaAppliedAssetCount": 15,
+      "month": "2026-04",
+      "grossFloorAreaSqm": 1482071.0659999999,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 50
+    },
+    {
+      "grossFloorAreaPendingAssets": [],
+      "monthlyRentTotal": 10300994506,
+      "monthlyMfTotal": 505438339,
+      "knownLeaseSpaceCount": 51,
+      "mfKnownCount": 43,
+      "activeAssetCount": 15,
+      "leasedAreaSqm": 1045961.06,
+      "grossFloorAreaPendingAssetCount": 0,
+      "newlyAddedAssetCount": 0,
+      "grossFloorAreaAppliedAssetCount": 15,
+      "month": "2026-06",
+      "grossFloorAreaSqm": 1482071.0659999999,
+      "newlyAddedAssets": [],
+      "rentKnownCount": 51
+    }
+  ],
+  "tenantSummary": [
+    {
+      "tenantMasterName": "쿠팡(주)",
+      "monthlyRentTotal": 4472975333,
+      "selectorSortMeta": {
+        "tenantMasterName": "쿠팡(주)",
+        "latestExpiry": "2034-06-12",
+        "latestRevenue": 45455513000000,
+        "hasFinancialData": true,
+        "assetCount": 4,
+        "exposureAvailable": true,
+        "monthlyCostTotal": 4596681041
+      },
+      "monthlyMfTotal": 123705708,
+      "leasedAreaSqm": 436904.31,
+      "averageENoc": 34780.25,
+      "monthlyCostTotal": 4596681041,
+      "latestExpiry": "2034-06-12",
+      "leaseSpaceCount": 18,
+      "leasedAssets": [
+        {
+          "period": "2034-06-12 ~ 2034-06-12",
+          "monthlyRentTotal": 2863471002,
+          "latestExpiry": "2034-06-12",
+          "leasedAreaPy": 90522.52,
+          "assetId": "asset_a112721001",
+          "assetName": "인천석남물류센터",
+          "leasedAreaSqm": 299248,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "B1~8"
+          ],
+          "monthlyCostTotal": 2863471002
+        },
+        {
+          "period": "2024-08-01 ~ 2030-05-01",
+          "monthlyRentTotal": 983384975,
+          "latestExpiry": "2030-05-01",
+          "leasedAreaPy": 23061.02,
+          "assetId": "asset_a120085001",
+          "monthlyMfTotal": 77339958,
+          "assetName": "경산 쿠팡물류센터",
+          "leasedAreaSqm": 76234.76999999999,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "12",
+            "11",
+            "10",
+            "9",
+            "8",
+            "7",
+            "6",
+            "5",
+            "4",
+            "3",
+            "2",
+            "1",
+            "B1",
+            "B2"
+          ],
+          "monthlyCostTotal": 1060724933
+        },
+        {
+          "monthlyRentTotal": 315529360,
+          "period": "2025-04-02 ~ 2029-04-01",
+          "latestExpiry": "2029-04-01",
+          "leasedAreaPy": 7639.92,
+          "assetId": "asset_a112299001",
+          "monthlyMfTotal": 24485550,
+          "assetName": "스카이박스1, 스카이박스2",
+          "leasedAreaSqm": 25255.92,
+          "detailAreaLabels": [
+            "스카이박스2"
+          ],
+          "floorLabels": [
+            "1~2",
+            "4"
+          ],
+          "monthlyCostTotal": 340014910
+        },
+        {
+          "latestExpiry": "2028-01-11",
+          "period": "2026-01-12 ~ 2028-01-11",
+          "monthlyRentTotal": 310589996,
+          "leasedAreaPy": 10940.1,
+          "assetId": "asset_a112527001",
+          "monthlyMfTotal": 21880200,
+          "assetName": "동산물류센터",
+          "leasedAreaSqm": 36165.62,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "B1, 2~3"
+          ],
+          "monthlyCostTotal": 332470196
+        }
+      ],
+      "businessRegistrationNo": "120-88-00767",
+      "tenantId": "tenant_brn_1208800767",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "쿠팡(주)",
+        "latestOperatingIncome": 2288356000000,
+        "financialStatementType": "CFS_DOC",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "latestRevenue": 45455513000000,
+        "headquartersAddress": "서울특별시 송파구 송파대로 570 , 18층(신천동)",
+        "latestDebtRatio": 326.49,
+        "latestFinancialYear": "2025",
+        "listedYn": "Y",
+        "dartCorpCode": "01019166",
+        "industryCode": "4791",
+        "matchStatus": "matched",
+        "groupName": "",
+        "latestEmployeeCount": 13212,
+        "businessRegistrationNo": "120-88-00767",
+        "tenantId": "tenant_brn_1208800767",
+        "corpRegistrationNo": "1101115067718",
+        "latestReportName": ""
+      },
+      "assetCount": 4,
+      "rowCount": 20,
+      "sectorCount": 1,
+      "exposureAvailable": true,
+      "goodsTypeCount": 3
+    },
+    {
+      "tenantMasterName": "삼성전자로지텍(주)",
+      "monthlyRentTotal": 1173395886,
+      "selectorSortMeta": {
+        "latestExpiry": "",
+        "tenantMasterName": "삼성전자로지텍(주)",
+        "hasFinancialData": true,
+        "assetCount": 1,
+        "latestRevenue": 1655616000000,
+        "exposureAvailable": false,
+        "monthlyCostTotal": 1272556102
+      },
+      "monthlyMfTotal": 99160216,
+      "leasedAreaSqm": 107009.56,
+      "averageENoc": 39312.35,
+      "monthlyCostTotal": 1272556102,
+      "latestExpiry": "",
+      "leaseSpaceCount": 1,
+      "leasedAssets": [
+        {
+          "latestExpiry": "",
+          "monthlyRentTotal": 1173395886,
+          "period": "2024-01-01",
+          "leasedAreaPy": 32370.39,
+          "assetId": "asset_a112642001",
+          "monthlyMfTotal": 99160216,
+          "assetName": "화성 석포리 물류센터",
+          "leasedAreaSqm": 107009.56,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "B2~3"
+          ],
+          "monthlyCostTotal": 1272556102
+        }
+      ],
+      "businessRegistrationNo": "124-81-55381",
+      "tenantId": "tenant_brn_1248155381",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "삼성전자로지텍(주)",
+        "latestOperatingIncome": 23497125032,
+        "financialStatementType": "OFS_DOC",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "latestRevenue": 1655616000000,
+        "headquartersAddress": "경기도 수원시 영통구 삼성로 290 (원천동, 삼성전자(주)CS아카데미) 2층 삼성전자로지텍(주)",
+        "latestDebtRatio": 216.31,
+        "latestFinancialYear": "2025",
+        "listedYn": "Y",
+        "dartCorpCode": "00366997",
+        "industryCode": "52999",
+        "matchStatus": "matched",
+        "groupName": "",
+        "latestEmployeeCount": 560,
+        "businessRegistrationNo": "124-81-55381",
+        "tenantId": "tenant_brn_1248155381",
+        "corpRegistrationNo": "1301110046797",
+        "latestReportName": ""
+      },
+      "assetCount": 1,
+      "rowCount": 1,
+      "exposureAvailable": false,
+      "sectorCount": 1,
+      "goodsTypeCount": 1
+    },
+    {
+      "tenantMasterName": "아디다스코리아유한책임회사",
+      "monthlyRentTotal": 691860000,
+      "selectorSortMeta": {
+        "tenantMasterName": "아디다스코리아유한책임회사",
+        "latestExpiry": "2028-06-30",
+        "assetCount": 2,
+        "hasFinancialData": false,
+        "exposureAvailable": true,
+        "monthlyCostTotal": 713551000
+      },
+      "monthlyMfTotal": 21691000,
+      "leasedAreaSqm": 77114.57,
+      "averageENoc": 30588.85,
+      "monthlyCostTotal": 713551000,
+      "latestExpiry": "2028-06-30",
+      "leaseSpaceCount": 2,
+      "leasedAssets": [
+        {
+          "latestExpiry": "2027-08-31",
+          "period": "2012-09-01 ~ 2027-08-31",
+          "monthlyRentTotal": 460486000,
+          "leasedAreaPy": 16096.7,
+          "assetId": "asset_a112500002",
+          "assetName": "평택아디다스물류센터",
+          "leasedAreaSqm": 53212.22,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "1~4"
+          ],
+          "monthlyCostTotal": 460486000
+        },
+        {
+          "latestExpiry": "2028-06-30",
+          "period": "2026-02-12 ~ 2028-06-30",
+          "monthlyRentTotal": 231374000,
+          "leasedAreaPy": 7230.46,
+          "assetId": "asset_ap00014001",
+          "monthlyMfTotal": 21691000,
+          "assetName": "안성 성은지구 물류센터",
+          "leasedAreaSqm": 23902.35,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "1"
+          ],
+          "monthlyCostTotal": 253065000
+        }
+      ],
+      "businessRegistrationNo": "214-81-07412",
+      "tenantId": "tenant_brn_2148107412",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "아디다스코리아유한책임회사",
+        "financialStatementType": "",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "headquartersAddress": "서울특별시 서초구 서초대로74길 4 서초동, 삼성생명서초타워 23층",
+        "latestFinancialYear": "",
+        "dartCorpCode": "00148133",
+        "listedYn": "Y",
+        "industryCode": "46420",
+        "matchStatus": "matched",
+        "groupName": "",
+        "businessRegistrationNo": "214-81-07412",
+        "tenantId": "tenant_brn_2148107412",
+        "corpRegistrationNo": "1101110337054",
+        "latestReportName": ""
+      },
+      "assetCount": 2,
+      "rowCount": 2,
+      "exposureAvailable": true,
+      "sectorCount": 1,
+      "goodsTypeCount": 2
+    },
+    {
+      "tenantMasterName": "LG전자(주), ㈜엘엑스판토스",
+      "monthlyRentTotal": 597216000,
+      "selectorSortMeta": {
+        "tenantMasterName": "LG전자(주), ㈜엘엑스판토스",
+        "latestExpiry": "2026-12-15",
+        "latestRevenue": 29554826000000,
+        "assetCount": 1,
+        "hasFinancialData": true,
+        "exposureAvailable": false,
+        "monthlyCostTotal": 630228000
+      },
+      "monthlyMfTotal": 33012000,
+      "leasedAreaSqm": 54566.21,
+      "averageENoc": 38181.11,
+      "monthlyCostTotal": 630228000,
+      "latestExpiry": "2026-12-15",
+      "leaseSpaceCount": 1,
+      "leasedAssets": [
+        {
+          "period": "2023-12-16 ~ 2026-12-15",
+          "monthlyRentTotal": 597216000,
+          "latestExpiry": "2026-12-15",
+          "leasedAreaPy": 16506.28,
+          "assetId": "asset_a112755001",
+          "monthlyMfTotal": 33012000,
+          "assetName": "두동 LG전자 통합물류센터",
+          "leasedAreaSqm": 54566.21,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "1~4"
+          ],
+          "monthlyCostTotal": 630228000
+        }
+      ],
+      "businessRegistrationNo": "107-86-14075 / 116-81-31734",
+      "tenantId": "tenant_brn_10786140751168131734",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "LG전자(주), ㈜엘엑스판토스",
+        "latestOperatingIncome": -787504000000,
+        "financialStatementType": "OFS",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "latestRevenue": 29554826000000,
+        "headquartersAddress": "서울특별시 영등포구 여의대로 128 LG트윈타워",
+        "latestDebtRatio": 178.01,
+        "latestFinancialYear": "2025",
+        "listedYn": "Y",
+        "dartCorpCode": "00401731",
+        "industryCode": "264",
+        "matchStatus": "matched",
+        "groupName": "",
+        "latestEmployeeCount": 68288,
+        "businessRegistrationNo": "107-86-14075 / 116-81-31734",
+        "tenantId": "tenant_brn_10786140751168131734",
+        "corpRegistrationNo": "1101112487050",
+        "latestReportName": ""
+      },
+      "assetCount": 1,
+      "rowCount": 1,
+      "exposureAvailable": false,
+      "sectorCount": 1,
+      "goodsTypeCount": 1
+    },
+    {
+      "tenantMasterName": "홈플러스(주)",
+      "monthlyRentTotal": 629174800,
+      "selectorSortMeta": {
+        "latestExpiry": "2032-12-20",
+        "tenantMasterName": "홈플러스(주)",
+        "latestRevenue": 6991966000000,
+        "assetCount": 1,
+        "hasFinancialData": true,
+        "exposureAvailable": false,
+        "monthlyCostTotal": 629174800
+      },
+      "leasedAreaSqm": 32824.14,
+      "averageENoc": 63365.46,
+      "monthlyCostTotal": 629174800,
+      "latestExpiry": "2032-12-20",
+      "leaseSpaceCount": 1,
+      "leasedAssets": [
+        {
+          "latestExpiry": "2032-12-20",
+          "monthlyRentTotal": 629174800,
+          "period": "2012-12-21 ~ 2032-12-20",
+          "leasedAreaPy": 9929.3,
+          "assetId": "asset_a112500003",
+          "assetName": "안성 홈플러스 중부허브 물류센터",
+          "leasedAreaSqm": 32824.14,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "1~2"
+          ],
+          "monthlyCostTotal": 629174800
+        }
+      ],
+      "businessRegistrationNo": "220-81-60348",
+      "tenantId": "tenant_brn_2208160348",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "홈플러스(주)",
+        "latestOperatingIncome": -314182551437,
+        "financialStatementType": "OFS_DOC",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "latestRevenue": 6991966000000,
+        "headquartersAddress": "서울특별시 강서구 화곡로 398 (등촌동, 홈플러스본사 및 강서점)",
+        "latestDebtRatio": 500.16,
+        "latestFinancialYear": "2025",
+        "listedYn": "Y",
+        "dartCorpCode": "00300061",
+        "industryCode": "471",
+        "matchStatus": "matched",
+        "groupName": "",
+        "latestEmployeeCount": 19583,
+        "businessRegistrationNo": "220-81-60348",
+        "tenantId": "tenant_brn_2208160348",
+        "corpRegistrationNo": "1101111684037",
+        "latestReportName": ""
+      },
+      "assetCount": 1,
+      "rowCount": 1,
+      "sectorCount": 1,
+      "exposureAvailable": false,
+      "goodsTypeCount": 1
+    },
+    {
+      "monthlyRentTotal": 458145593,
+      "tenantMasterName": "한국머스크물류서비스(주)",
+      "selectorSortMeta": {
+        "latestExpiry": "2029-07-31",
+        "tenantMasterName": "한국머스크물류서비스(주)",
+        "hasFinancialData": true,
+        "assetCount": 1,
+        "latestRevenue": 170614000000,
+        "exposureAvailable": false,
+        "monthlyCostTotal": 496872603
+      },
+      "monthlyMfTotal": 38727010,
+      "leasedAreaSqm": 50205.17,
+      "averageENoc": 32716.83,
+      "monthlyCostTotal": 496872603,
+      "latestExpiry": "2029-07-31",
+      "leasedAssets": [
+        {
+          "latestExpiry": "2029-07-31",
+          "period": "2024-06-01 ~ 2029-05-31",
+          "monthlyRentTotal": 458145593,
+          "leasedAreaPy": 15187.060000000001,
+          "assetId": "asset_a112606001",
+          "monthlyMfTotal": 38727010,
+          "assetName": "여주 본두리 물류센터",
+          "leasedAreaSqm": 50205.17,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "B1, 2~3",
+            "1"
+          ],
+          "monthlyCostTotal": 496872603
+        }
+      ],
+      "leaseSpaceCount": 2,
+      "businessRegistrationNo": "101-86-54822",
+      "tenantId": "tenant_brn_1018654822",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "한국머스크물류서비스(주)",
+        "latestOperatingIncome": 2989121937,
+        "financialStatementType": "OFS_DOC",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "latestRevenue": 170614000000,
+        "headquartersAddress": "서울특별시 용산구 한강대로 366 (동자동, 트윈시티남산) 17층",
+        "latestDebtRatio": 236.1,
+        "latestFinancialYear": "2025",
+        "listedYn": "Y",
+        "dartCorpCode": "01672576",
+        "industryCode": "52992",
+        "matchStatus": "matched",
+        "groupName": "",
+        "latestEmployeeCount": 270,
+        "businessRegistrationNo": "101-86-54822",
+        "tenantId": "tenant_brn_1018654822",
+        "corpRegistrationNo": "1101114328880",
+        "latestReportName": ""
+      },
+      "assetCount": 1,
+      "rowCount": 2,
+      "sectorCount": 1,
+      "exposureAvailable": false,
+      "goodsTypeCount": 1
+    },
+    {
+      "monthlyRentTotal": 336776000,
+      "tenantMasterName": "(주)버킷플레이스",
+      "selectorSortMeta": {
+        "tenantMasterName": "(주)버킷플레이스",
+        "latestExpiry": "2030-02-28",
+        "assetCount": 1,
+        "hasFinancialData": true,
+        "latestRevenue": 240208000000,
+        "exposureAvailable": false,
+        "monthlyCostTotal": 372226100
+      },
+      "monthlyMfTotal": 35450100,
+      "leasedAreaSqm": 38300.04,
+      "averageENoc": 32127.89,
+      "monthlyCostTotal": 372226100,
+      "latestExpiry": "2030-02-28",
+      "leasedAssets": [
+        {
+          "latestExpiry": "2030-02-28",
+          "monthlyRentTotal": 336776000,
+          "period": "2024-11-01 ~ 2030-02-28",
+          "leasedAreaPy": 11585.76,
+          "assetId": "asset_a112606001",
+          "monthlyMfTotal": 35450100,
+          "assetName": "여주 본두리 물류센터",
+          "leasedAreaSqm": 38300.04,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "B2~B1"
+          ],
+          "monthlyCostTotal": 372226100
+        }
+      ],
+      "leaseSpaceCount": 1,
+      "businessRegistrationNo": "119-86-91245",
+      "tenantId": "tenant_brn_1198691245",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "(주)버킷플레이스",
+        "latestOperatingIncome": -17468241532,
+        "financialStatementType": "CFS_DOC",
+        "fetchedAt": "2026-04-22",
+        "latestRevenue": 240208000000,
+        "hasFinancialData": false,
+        "latestDebtRatio": -152.51,
+        "headquartersAddress": "서울특별시 서초구 서초대로74길 4 27층 (서초동, 삼성생명서초타워)",
+        "latestFinancialYear": "2023",
+        "dartCorpCode": "01381054",
+        "listedYn": "Y",
+        "industryCode": "47911",
+        "latestEmployeeCount": 653,
+        "matchStatus": "matched",
+        "groupName": "",
+        "businessRegistrationNo": "119-86-91245",
+        "tenantId": "tenant_brn_1198691245",
+        "corpRegistrationNo": "1101115463718",
+        "latestReportName": ""
+      },
+      "rowCount": 1,
+      "assetCount": 1,
+      "sectorCount": 1,
+      "exposureAvailable": false,
+      "goodsTypeCount": 1
+    },
+    {
+      "tenantMasterName": "씨제이대한통운(주)",
+      "monthlyRentTotal": 336887996,
+      "selectorSortMeta": {
+        "latestExpiry": "2034-02-28",
+        "tenantMasterName": "씨제이대한통운(주)",
+        "hasFinancialData": true,
+        "assetCount": 1,
+        "latestRevenue": 8353852873161,
+        "exposureAvailable": false,
+        "monthlyCostTotal": 362578428
+      },
+      "monthlyMfTotal": 25690432,
+      "leasedAreaSqm": 256029.18000000002,
+      "averageENoc": 4681.52,
+      "monthlyCostTotal": 362578428,
+      "latestExpiry": "2034-02-28",
+      "leaseSpaceCount": 5,
+      "leasedAssets": [
+        {
+          "monthlyRentTotal": 336887996,
+          "period": "2019-03-01 ~ 2034-02-28",
+          "latestExpiry": "2034-02-28",
+          "leasedAreaPy": 77448.82,
+          "assetId": "asset_a112127001",
+          "monthlyMfTotal": 25690432,
+          "assetName": "아레나스양지물류센터",
+          "leasedAreaSqm": 256029.18000000002,
+          "detailAreaLabels": [
+            "1~5섹터",
+            "6섹터",
+            "7섹터",
+            "8~10섹터"
+          ],
+          "floorLabels": [
+            "1~10",
+            "B2~B1"
+          ],
+          "monthlyCostTotal": 362578428
+        }
+      ],
+      "businessRegistrationNo": "110-81-05034",
+      "tenantId": "tenant_brn_1108105034",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "씨제이대한통운(주)",
+        "latestOperatingIncome": 353127836029,
+        "financialStatementType": "OFS",
+        "fetchedAt": "2026-04-21",
+        "hasFinancialData": false,
+        "latestRevenue": 8353852873161,
+        "headquartersAddress": "서울특별시 종로구 종로5길 7(청진동) Tower 8",
+        "latestDebtRatio": 106.17,
+        "latestFinancialYear": "2025",
+        "listedYn": "Y",
+        "dartCorpCode": "00113410",
+        "industryCode": "493",
+        "groupName": "",
+        "matchStatus": "matched",
+        "latestEmployeeCount": 6847,
+        "businessRegistrationNo": "110-81-05034",
+        "tenantId": "tenant_brn_1108105034",
+        "corpRegistrationNo": "1101110006167",
+        "latestReportName": ""
+      },
+      "rowCount": 5,
+      "assetCount": 1,
+      "sectorCount": 1,
+      "exposureAvailable": false,
+      "goodsTypeCount": 1
+    },
+    {
+      "tenantMasterName": "아워박스(주)",
+      "monthlyRentTotal": 227321641,
+      "selectorSortMeta": {
+        "latestExpiry": "2028-03-31",
+        "tenantMasterName": "아워박스(주)",
+        "assetCount": 1,
+        "hasFinancialData": true,
+        "latestRevenue": 87724000000,
+        "exposureAvailable": false,
+        "monthlyCostTotal": 245219187
+      },
+      "monthlyMfTotal": 17897546,
+      "leasedAreaSqm": 29980.02,
+      "averageENoc": 27039.41,
+      "monthlyCostTotal": 245219187,
+      "latestExpiry": "2028-03-31",
+      "leaseSpaceCount": 2,
+      "leasedAssets": [
+        {
+          "latestExpiry": "2028-03-31",
+          "monthlyRentTotal": 227321641,
+          "period": "2025-01-01 ~ 2027-12-31",
+          "leasedAreaPy": 9068.96,
+          "assetId": "asset_a112527003",
+          "monthlyMfTotal": 17897546,
+          "assetName": "에이블로지스물류센터",
+          "leasedAreaSqm": 29980.02,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "B4~B3, 2",
+            "B2~B1, 1"
+          ],
+          "monthlyCostTotal": 245219187
+        }
+      ],
+      "businessRegistrationNo": "358-81-00820",
+      "tenantId": "tenant_brn_3588100820",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "아워박스(주)",
+        "latestOperatingIncome": 2126812356,
+        "financialStatementType": "OFS_DOC",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "latestRevenue": 87724000000,
+        "headquartersAddress": "서울특별시 구로구 디지털로 288 9층 908호(구로동, 대륭포스트타워1차)",
+        "latestDebtRatio": 156.04,
+        "latestFinancialYear": "2025",
+        "listedYn": "Y",
+        "dartCorpCode": "01561359",
+        "industryCode": "75994",
+        "groupName": "",
+        "matchStatus": "matched",
+        "latestEmployeeCount": 147,
+        "businessRegistrationNo": "358-81-00820",
+        "tenantId": "tenant_brn_3588100820",
+        "corpRegistrationNo": "1311110484805",
+        "latestReportName": ""
+      },
+      "rowCount": 2,
+      "assetCount": 1,
+      "sectorCount": 1,
+      "exposureAvailable": false,
+      "goodsTypeCount": 1
+    },
+    {
+      "monthlyRentTotal": 198022000,
+      "tenantMasterName": "(주)에이스코리아로지스",
+      "selectorSortMeta": {
+        "latestExpiry": "2027-05-16",
+        "tenantMasterName": "(주)에이스코리아로지스",
+        "hasFinancialData": false,
+        "assetCount": 1,
+        "exposureAvailable": false,
+        "monthlyCostTotal": 207923000
+      },
+      "monthlyMfTotal": 9901000,
+      "leasedAreaSqm": 10910.3,
+      "averageENoc": 62999.98,
+      "monthlyCostTotal": 207923000,
+      "latestExpiry": "2027-05-16",
+      "leasedAssets": [
+        {
+          "period": "2025-03-17 ~ 2027-05-16",
+          "monthlyRentTotal": 198022000,
+          "latestExpiry": "2027-05-16",
+          "leasedAreaPy": 3300.37,
+          "assetId": "asset_ap00014001",
+          "monthlyMfTotal": 9901000,
+          "assetName": "안성 성은지구 물류센터",
+          "leasedAreaSqm": 10910.3,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "B2"
+          ],
+          "monthlyCostTotal": 207923000
+        }
+      ],
+      "leaseSpaceCount": 1,
+      "businessRegistrationNo": "312-86-20956",
+      "tenantId": "tenant_brn_3128620956",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "(주)에이스코리아로지스",
+        "financialStatementType": "",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "headquartersAddress": "",
+        "latestFinancialYear": "",
+        "listedYn": "",
+        "dartCorpCode": "",
+        "industryCode": "",
+        "matchStatus": "unmatched",
+        "groupName": "",
+        "businessRegistrationNo": "312-86-20956",
+        "tenantId": "tenant_brn_3128620956",
+        "corpRegistrationNo": "",
+        "latestReportName": ""
+      },
+      "assetCount": 1,
+      "rowCount": 1,
+      "sectorCount": 1,
+      "exposureAvailable": false,
+      "goodsTypeCount": 1
+    }
+  ],
+  "topTenants": [
+    {
+      "monthlyRentTotal": 4472975333,
+      "tenantMasterName": "쿠팡(주)",
+      "selectorSortMeta": {
+        "tenantMasterName": "쿠팡(주)",
+        "latestExpiry": "2034-06-12",
+        "latestRevenue": 45455513000000,
+        "hasFinancialData": true,
+        "assetCount": 4,
+        "exposureAvailable": true,
+        "monthlyCostTotal": 4596681041
+      },
+      "monthlyMfTotal": 123705708,
+      "leasedAreaSqm": 436904.31,
+      "averageENoc": 34780.25,
+      "monthlyCostTotal": 4596681041,
+      "latestExpiry": "2034-06-12",
+      "leasedAssets": [
+        {
+          "monthlyRentTotal": 2863471002,
+          "period": "2034-06-12 ~ 2034-06-12",
+          "latestExpiry": "2034-06-12",
+          "leasedAreaPy": 90522.52,
+          "assetId": "asset_a112721001",
+          "assetName": "인천석남물류센터",
+          "leasedAreaSqm": 299248,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "B1~8"
+          ],
+          "monthlyCostTotal": 2863471002
+        },
+        {
+          "monthlyRentTotal": 983384975,
+          "period": "2024-08-01 ~ 2030-05-01",
+          "latestExpiry": "2030-05-01",
+          "leasedAreaPy": 23061.02,
+          "assetId": "asset_a120085001",
+          "monthlyMfTotal": 77339958,
+          "assetName": "경산 쿠팡물류센터",
+          "leasedAreaSqm": 76234.76999999999,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "12",
+            "11",
+            "10",
+            "9",
+            "8",
+            "7",
+            "6",
+            "5",
+            "4",
+            "3",
+            "2",
+            "1",
+            "B1",
+            "B2"
+          ],
+          "monthlyCostTotal": 1060724933
+        },
+        {
+          "latestExpiry": "2029-04-01",
+          "monthlyRentTotal": 315529360,
+          "period": "2025-04-02 ~ 2029-04-01",
+          "leasedAreaPy": 7639.92,
+          "assetId": "asset_a112299001",
+          "monthlyMfTotal": 24485550,
+          "assetName": "스카이박스1, 스카이박스2",
+          "leasedAreaSqm": 25255.92,
+          "detailAreaLabels": [
+            "스카이박스2"
+          ],
+          "floorLabels": [
+            "1~2",
+            "4"
+          ],
+          "monthlyCostTotal": 340014910
+        },
+        {
+          "monthlyRentTotal": 310589996,
+          "period": "2026-01-12 ~ 2028-01-11",
+          "latestExpiry": "2028-01-11",
+          "leasedAreaPy": 10940.1,
+          "assetId": "asset_a112527001",
+          "monthlyMfTotal": 21880200,
+          "assetName": "동산물류센터",
+          "leasedAreaSqm": 36165.62,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "B1, 2~3"
+          ],
+          "monthlyCostTotal": 332470196
+        }
+      ],
+      "leaseSpaceCount": 18,
+      "businessRegistrationNo": "120-88-00767",
+      "tenantId": "tenant_brn_1208800767",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "쿠팡(주)",
+        "latestOperatingIncome": 2288356000000,
+        "financialStatementType": "CFS_DOC",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "latestRevenue": 45455513000000,
+        "headquartersAddress": "서울특별시 송파구 송파대로 570 , 18층(신천동)",
+        "latestDebtRatio": 326.49,
+        "latestFinancialYear": "2025",
+        "listedYn": "Y",
+        "dartCorpCode": "01019166",
+        "industryCode": "4791",
+        "groupName": "",
+        "matchStatus": "matched",
+        "latestEmployeeCount": 13212,
+        "businessRegistrationNo": "120-88-00767",
+        "tenantId": "tenant_brn_1208800767",
+        "corpRegistrationNo": "1101115067718",
+        "latestReportName": ""
+      },
+      "assetCount": 4,
+      "rowCount": 20,
+      "exposureAvailable": true,
+      "sectorCount": 1,
+      "goodsTypeCount": 3
+    },
+    {
+      "tenantMasterName": "삼성전자로지텍(주)",
+      "monthlyRentTotal": 1173395886,
+      "selectorSortMeta": {
+        "latestExpiry": "",
+        "tenantMasterName": "삼성전자로지텍(주)",
+        "latestRevenue": 1655616000000,
+        "hasFinancialData": true,
+        "assetCount": 1,
+        "exposureAvailable": false,
+        "monthlyCostTotal": 1272556102
+      },
+      "monthlyMfTotal": 99160216,
+      "leasedAreaSqm": 107009.56,
+      "averageENoc": 39312.35,
+      "monthlyCostTotal": 1272556102,
+      "latestExpiry": "",
+      "leaseSpaceCount": 1,
+      "leasedAssets": [
+        {
+          "latestExpiry": "",
+          "period": "2024-01-01",
+          "monthlyRentTotal": 1173395886,
+          "leasedAreaPy": 32370.39,
+          "assetId": "asset_a112642001",
+          "monthlyMfTotal": 99160216,
+          "assetName": "화성 석포리 물류센터",
+          "leasedAreaSqm": 107009.56,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "B2~3"
+          ],
+          "monthlyCostTotal": 1272556102
+        }
+      ],
+      "businessRegistrationNo": "124-81-55381",
+      "tenantId": "tenant_brn_1248155381",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "삼성전자로지텍(주)",
+        "latestOperatingIncome": 23497125032,
+        "financialStatementType": "OFS_DOC",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "latestRevenue": 1655616000000,
+        "headquartersAddress": "경기도 수원시 영통구 삼성로 290 (원천동, 삼성전자(주)CS아카데미) 2층 삼성전자로지텍(주)",
+        "latestDebtRatio": 216.31,
+        "latestFinancialYear": "2025",
+        "listedYn": "Y",
+        "dartCorpCode": "00366997",
+        "industryCode": "52999",
+        "groupName": "",
+        "matchStatus": "matched",
+        "latestEmployeeCount": 560,
+        "businessRegistrationNo": "124-81-55381",
+        "tenantId": "tenant_brn_1248155381",
+        "corpRegistrationNo": "1301110046797",
+        "latestReportName": ""
+      },
+      "assetCount": 1,
+      "rowCount": 1,
+      "sectorCount": 1,
+      "exposureAvailable": false,
+      "goodsTypeCount": 1
+    },
+    {
+      "tenantMasterName": "아디다스코리아유한책임회사",
+      "monthlyRentTotal": 691860000,
+      "selectorSortMeta": {
+        "latestExpiry": "2028-06-30",
+        "tenantMasterName": "아디다스코리아유한책임회사",
+        "assetCount": 2,
+        "hasFinancialData": false,
+        "exposureAvailable": true,
+        "monthlyCostTotal": 713551000
+      },
+      "monthlyMfTotal": 21691000,
+      "leasedAreaSqm": 77114.57,
+      "averageENoc": 30588.85,
+      "monthlyCostTotal": 713551000,
+      "latestExpiry": "2028-06-30",
+      "leaseSpaceCount": 2,
+      "leasedAssets": [
+        {
+          "monthlyRentTotal": 460486000,
+          "period": "2012-09-01 ~ 2027-08-31",
+          "latestExpiry": "2027-08-31",
+          "leasedAreaPy": 16096.7,
+          "assetId": "asset_a112500002",
+          "assetName": "평택아디다스물류센터",
+          "leasedAreaSqm": 53212.22,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "1~4"
+          ],
+          "monthlyCostTotal": 460486000
+        },
+        {
+          "latestExpiry": "2028-06-30",
+          "period": "2026-02-12 ~ 2028-06-30",
+          "monthlyRentTotal": 231374000,
+          "leasedAreaPy": 7230.46,
+          "assetId": "asset_ap00014001",
+          "monthlyMfTotal": 21691000,
+          "assetName": "안성 성은지구 물류센터",
+          "leasedAreaSqm": 23902.35,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "1"
+          ],
+          "monthlyCostTotal": 253065000
+        }
+      ],
+      "businessRegistrationNo": "214-81-07412",
+      "tenantId": "tenant_brn_2148107412",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "아디다스코리아유한책임회사",
+        "financialStatementType": "",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "headquartersAddress": "서울특별시 서초구 서초대로74길 4 서초동, 삼성생명서초타워 23층",
+        "latestFinancialYear": "",
+        "listedYn": "Y",
+        "dartCorpCode": "00148133",
+        "industryCode": "46420",
+        "groupName": "",
+        "matchStatus": "matched",
+        "businessRegistrationNo": "214-81-07412",
+        "tenantId": "tenant_brn_2148107412",
+        "corpRegistrationNo": "1101110337054",
+        "latestReportName": ""
+      },
+      "rowCount": 2,
+      "assetCount": 2,
+      "sectorCount": 1,
+      "exposureAvailable": true,
+      "goodsTypeCount": 2
+    },
+    {
+      "tenantMasterName": "LG전자(주), ㈜엘엑스판토스",
+      "monthlyRentTotal": 597216000,
+      "selectorSortMeta": {
+        "tenantMasterName": "LG전자(주), ㈜엘엑스판토스",
+        "latestExpiry": "2026-12-15",
+        "hasFinancialData": true,
+        "assetCount": 1,
+        "latestRevenue": 29554826000000,
+        "exposureAvailable": false,
+        "monthlyCostTotal": 630228000
+      },
+      "monthlyMfTotal": 33012000,
+      "leasedAreaSqm": 54566.21,
+      "averageENoc": 38181.11,
+      "monthlyCostTotal": 630228000,
+      "latestExpiry": "2026-12-15",
+      "leaseSpaceCount": 1,
+      "leasedAssets": [
+        {
+          "latestExpiry": "2026-12-15",
+          "period": "2023-12-16 ~ 2026-12-15",
+          "monthlyRentTotal": 597216000,
+          "leasedAreaPy": 16506.28,
+          "assetId": "asset_a112755001",
+          "monthlyMfTotal": 33012000,
+          "assetName": "두동 LG전자 통합물류센터",
+          "leasedAreaSqm": 54566.21,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "1~4"
+          ],
+          "monthlyCostTotal": 630228000
+        }
+      ],
+      "businessRegistrationNo": "107-86-14075 / 116-81-31734",
+      "tenantId": "tenant_brn_10786140751168131734",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "LG전자(주), ㈜엘엑스판토스",
+        "latestOperatingIncome": -787504000000,
+        "financialStatementType": "OFS",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "latestRevenue": 29554826000000,
+        "headquartersAddress": "서울특별시 영등포구 여의대로 128 LG트윈타워",
+        "latestDebtRatio": 178.01,
+        "latestFinancialYear": "2025",
+        "listedYn": "Y",
+        "dartCorpCode": "00401731",
+        "industryCode": "264",
+        "matchStatus": "matched",
+        "groupName": "",
+        "latestEmployeeCount": 68288,
+        "businessRegistrationNo": "107-86-14075 / 116-81-31734",
+        "tenantId": "tenant_brn_10786140751168131734",
+        "corpRegistrationNo": "1101112487050",
+        "latestReportName": ""
+      },
+      "rowCount": 1,
+      "assetCount": 1,
+      "exposureAvailable": false,
+      "sectorCount": 1,
+      "goodsTypeCount": 1
+    },
+    {
+      "monthlyRentTotal": 629174800,
+      "tenantMasterName": "홈플러스(주)",
+      "selectorSortMeta": {
+        "tenantMasterName": "홈플러스(주)",
+        "latestExpiry": "2032-12-20",
+        "assetCount": 1,
+        "hasFinancialData": true,
+        "latestRevenue": 6991966000000,
+        "exposureAvailable": false,
+        "monthlyCostTotal": 629174800
+      },
+      "leasedAreaSqm": 32824.14,
+      "averageENoc": 63365.46,
+      "monthlyCostTotal": 629174800,
+      "latestExpiry": "2032-12-20",
+      "leasedAssets": [
+        {
+          "latestExpiry": "2032-12-20",
+          "period": "2012-12-21 ~ 2032-12-20",
+          "monthlyRentTotal": 629174800,
+          "leasedAreaPy": 9929.3,
+          "assetId": "asset_a112500003",
+          "assetName": "안성 홈플러스 중부허브 물류센터",
+          "leasedAreaSqm": 32824.14,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "1~2"
+          ],
+          "monthlyCostTotal": 629174800
+        }
+      ],
+      "leaseSpaceCount": 1,
+      "businessRegistrationNo": "220-81-60348",
+      "tenantId": "tenant_brn_2208160348",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "홈플러스(주)",
+        "latestOperatingIncome": -314182551437,
+        "financialStatementType": "OFS_DOC",
+        "fetchedAt": "2026-04-22",
+        "latestRevenue": 6991966000000,
+        "hasFinancialData": false,
+        "latestDebtRatio": 500.16,
+        "headquartersAddress": "서울특별시 강서구 화곡로 398 (등촌동, 홈플러스본사 및 강서점)",
+        "latestFinancialYear": "2025",
+        "dartCorpCode": "00300061",
+        "listedYn": "Y",
+        "industryCode": "471",
+        "latestEmployeeCount": 19583,
+        "matchStatus": "matched",
+        "groupName": "",
+        "businessRegistrationNo": "220-81-60348",
+        "tenantId": "tenant_brn_2208160348",
+        "corpRegistrationNo": "1101111684037",
+        "latestReportName": ""
+      },
+      "rowCount": 1,
+      "assetCount": 1,
+      "exposureAvailable": false,
+      "sectorCount": 1,
+      "goodsTypeCount": 1
+    },
+    {
+      "tenantMasterName": "한국머스크물류서비스(주)",
+      "monthlyRentTotal": 458145593,
+      "selectorSortMeta": {
+        "latestExpiry": "2029-07-31",
+        "tenantMasterName": "한국머스크물류서비스(주)",
+        "latestRevenue": 170614000000,
+        "assetCount": 1,
+        "hasFinancialData": true,
+        "exposureAvailable": false,
+        "monthlyCostTotal": 496872603
+      },
+      "monthlyMfTotal": 38727010,
+      "leasedAreaSqm": 50205.17,
+      "averageENoc": 32716.83,
+      "monthlyCostTotal": 496872603,
+      "latestExpiry": "2029-07-31",
+      "leaseSpaceCount": 2,
+      "leasedAssets": [
+        {
+          "monthlyRentTotal": 458145593,
+          "period": "2024-06-01 ~ 2029-05-31",
+          "latestExpiry": "2029-07-31",
+          "leasedAreaPy": 15187.060000000001,
+          "assetId": "asset_a112606001",
+          "monthlyMfTotal": 38727010,
+          "assetName": "여주 본두리 물류센터",
+          "leasedAreaSqm": 50205.17,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "B1, 2~3",
+            "1"
+          ],
+          "monthlyCostTotal": 496872603
+        }
+      ],
+      "businessRegistrationNo": "101-86-54822",
+      "tenantId": "tenant_brn_1018654822",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "한국머스크물류서비스(주)",
+        "latestOperatingIncome": 2989121937,
+        "financialStatementType": "OFS_DOC",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "latestRevenue": 170614000000,
+        "headquartersAddress": "서울특별시 용산구 한강대로 366 (동자동, 트윈시티남산) 17층",
+        "latestDebtRatio": 236.1,
+        "latestFinancialYear": "2025",
+        "listedYn": "Y",
+        "dartCorpCode": "01672576",
+        "industryCode": "52992",
+        "matchStatus": "matched",
+        "groupName": "",
+        "latestEmployeeCount": 270,
+        "businessRegistrationNo": "101-86-54822",
+        "tenantId": "tenant_brn_1018654822",
+        "corpRegistrationNo": "1101114328880",
+        "latestReportName": ""
+      },
+      "rowCount": 2,
+      "assetCount": 1,
+      "exposureAvailable": false,
+      "sectorCount": 1,
+      "goodsTypeCount": 1
+    },
+    {
+      "tenantMasterName": "(주)버킷플레이스",
+      "monthlyRentTotal": 336776000,
+      "selectorSortMeta": {
+        "tenantMasterName": "(주)버킷플레이스",
+        "latestExpiry": "2030-02-28",
+        "latestRevenue": 240208000000,
+        "assetCount": 1,
+        "hasFinancialData": true,
+        "exposureAvailable": false,
+        "monthlyCostTotal": 372226100
+      },
+      "monthlyMfTotal": 35450100,
+      "leasedAreaSqm": 38300.04,
+      "averageENoc": 32127.89,
+      "monthlyCostTotal": 372226100,
+      "latestExpiry": "2030-02-28",
+      "leaseSpaceCount": 1,
+      "leasedAssets": [
+        {
+          "period": "2024-11-01 ~ 2030-02-28",
+          "monthlyRentTotal": 336776000,
+          "latestExpiry": "2030-02-28",
+          "leasedAreaPy": 11585.76,
+          "assetId": "asset_a112606001",
+          "monthlyMfTotal": 35450100,
+          "assetName": "여주 본두리 물류센터",
+          "leasedAreaSqm": 38300.04,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "B2~B1"
+          ],
+          "monthlyCostTotal": 372226100
+        }
+      ],
+      "businessRegistrationNo": "119-86-91245",
+      "tenantId": "tenant_brn_1198691245",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "(주)버킷플레이스",
+        "latestOperatingIncome": -17468241532,
+        "financialStatementType": "CFS_DOC",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "latestRevenue": 240208000000,
+        "headquartersAddress": "서울특별시 서초구 서초대로74길 4 27층 (서초동, 삼성생명서초타워)",
+        "latestDebtRatio": -152.51,
+        "latestFinancialYear": "2023",
+        "listedYn": "Y",
+        "dartCorpCode": "01381054",
+        "industryCode": "47911",
+        "matchStatus": "matched",
+        "groupName": "",
+        "latestEmployeeCount": 653,
+        "businessRegistrationNo": "119-86-91245",
+        "tenantId": "tenant_brn_1198691245",
+        "corpRegistrationNo": "1101115463718",
+        "latestReportName": ""
+      },
+      "rowCount": 1,
+      "assetCount": 1,
+      "sectorCount": 1,
+      "exposureAvailable": false,
+      "goodsTypeCount": 1
+    },
+    {
+      "monthlyRentTotal": 336887996,
+      "tenantMasterName": "씨제이대한통운(주)",
+      "selectorSortMeta": {
+        "tenantMasterName": "씨제이대한통운(주)",
+        "latestExpiry": "2034-02-28",
+        "assetCount": 1,
+        "hasFinancialData": true,
+        "latestRevenue": 8353852873161,
+        "exposureAvailable": false,
+        "monthlyCostTotal": 362578428
+      },
+      "monthlyMfTotal": 25690432,
+      "leasedAreaSqm": 256029.18000000002,
+      "averageENoc": 4681.52,
+      "monthlyCostTotal": 362578428,
+      "latestExpiry": "2034-02-28",
+      "leasedAssets": [
+        {
+          "period": "2019-03-01 ~ 2034-02-28",
+          "monthlyRentTotal": 336887996,
+          "latestExpiry": "2034-02-28",
+          "leasedAreaPy": 77448.82,
+          "assetId": "asset_a112127001",
+          "monthlyMfTotal": 25690432,
+          "assetName": "아레나스양지물류센터",
+          "leasedAreaSqm": 256029.18000000002,
+          "detailAreaLabels": [
+            "1~5섹터",
+            "6섹터",
+            "7섹터",
+            "8~10섹터"
+          ],
+          "floorLabels": [
+            "1~10",
+            "B2~B1"
+          ],
+          "monthlyCostTotal": 362578428
+        }
+      ],
+      "leaseSpaceCount": 5,
+      "businessRegistrationNo": "110-81-05034",
+      "tenantId": "tenant_brn_1108105034",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "씨제이대한통운(주)",
+        "latestOperatingIncome": 353127836029,
+        "financialStatementType": "OFS",
+        "fetchedAt": "2026-04-21",
+        "hasFinancialData": false,
+        "latestRevenue": 8353852873161,
+        "headquartersAddress": "서울특별시 종로구 종로5길 7(청진동) Tower 8",
+        "latestDebtRatio": 106.17,
+        "latestFinancialYear": "2025",
+        "listedYn": "Y",
+        "dartCorpCode": "00113410",
+        "industryCode": "493",
+        "matchStatus": "matched",
+        "groupName": "",
+        "latestEmployeeCount": 6847,
+        "businessRegistrationNo": "110-81-05034",
+        "tenantId": "tenant_brn_1108105034",
+        "corpRegistrationNo": "1101110006167",
+        "latestReportName": ""
+      },
+      "assetCount": 1,
+      "rowCount": 5,
+      "sectorCount": 1,
+      "exposureAvailable": false,
+      "goodsTypeCount": 1
+    },
+    {
+      "tenantMasterName": "아워박스(주)",
+      "monthlyRentTotal": 227321641,
+      "selectorSortMeta": {
+        "tenantMasterName": "아워박스(주)",
+        "latestExpiry": "2028-03-31",
+        "hasFinancialData": true,
+        "assetCount": 1,
+        "latestRevenue": 87724000000,
+        "exposureAvailable": false,
+        "monthlyCostTotal": 245219187
+      },
+      "monthlyMfTotal": 17897546,
+      "leasedAreaSqm": 29980.02,
+      "averageENoc": 27039.41,
+      "monthlyCostTotal": 245219187,
+      "latestExpiry": "2028-03-31",
+      "leaseSpaceCount": 2,
+      "leasedAssets": [
+        {
+          "latestExpiry": "2028-03-31",
+          "period": "2025-01-01 ~ 2027-12-31",
+          "monthlyRentTotal": 227321641,
+          "leasedAreaPy": 9068.96,
+          "assetId": "asset_a112527003",
+          "monthlyMfTotal": 17897546,
+          "assetName": "에이블로지스물류센터",
+          "leasedAreaSqm": 29980.02,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "B4~B3, 2",
+            "B2~B1, 1"
+          ],
+          "monthlyCostTotal": 245219187
+        }
+      ],
+      "businessRegistrationNo": "358-81-00820",
+      "tenantId": "tenant_brn_3588100820",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "아워박스(주)",
+        "latestOperatingIncome": 2126812356,
+        "financialStatementType": "OFS_DOC",
+        "fetchedAt": "2026-04-22",
+        "latestRevenue": 87724000000,
+        "hasFinancialData": false,
+        "latestDebtRatio": 156.04,
+        "headquartersAddress": "서울특별시 구로구 디지털로 288 9층 908호(구로동, 대륭포스트타워1차)",
+        "latestFinancialYear": "2025",
+        "dartCorpCode": "01561359",
+        "listedYn": "Y",
+        "industryCode": "75994",
+        "latestEmployeeCount": 147,
+        "groupName": "",
+        "matchStatus": "matched",
+        "businessRegistrationNo": "358-81-00820",
+        "tenantId": "tenant_brn_3588100820",
+        "corpRegistrationNo": "1311110484805",
+        "latestReportName": ""
+      },
+      "assetCount": 1,
+      "rowCount": 2,
+      "sectorCount": 1,
+      "exposureAvailable": false,
+      "goodsTypeCount": 1
+    },
+    {
+      "tenantMasterName": "(주)에이스코리아로지스",
+      "monthlyRentTotal": 198022000,
+      "selectorSortMeta": {
+        "tenantMasterName": "(주)에이스코리아로지스",
+        "latestExpiry": "2027-05-16",
+        "assetCount": 1,
+        "hasFinancialData": false,
+        "exposureAvailable": false,
+        "monthlyCostTotal": 207923000
+      },
+      "monthlyMfTotal": 9901000,
+      "leasedAreaSqm": 10910.3,
+      "averageENoc": 62999.98,
+      "monthlyCostTotal": 207923000,
+      "latestExpiry": "2027-05-16",
+      "leaseSpaceCount": 1,
+      "leasedAssets": [
+        {
+          "period": "2025-03-17 ~ 2027-05-16",
+          "monthlyRentTotal": 198022000,
+          "latestExpiry": "2027-05-16",
+          "leasedAreaPy": 3300.37,
+          "assetId": "asset_ap00014001",
+          "monthlyMfTotal": 9901000,
+          "assetName": "안성 성은지구 물류센터",
+          "leasedAreaSqm": 10910.3,
+          "detailAreaLabels": [],
+          "floorLabels": [
+            "B2"
+          ],
+          "monthlyCostTotal": 207923000
+        }
+      ],
+      "businessRegistrationNo": "312-86-20956",
+      "tenantId": "tenant_brn_3128620956",
+      "company": {
+        "latestReceiptNo": "",
+        "tenantMasterName": "(주)에이스코리아로지스",
+        "financialStatementType": "",
+        "fetchedAt": "2026-04-22",
+        "hasFinancialData": false,
+        "headquartersAddress": "",
+        "latestFinancialYear": "",
+        "dartCorpCode": "",
+        "listedYn": "",
+        "industryCode": "",
+        "groupName": "",
+        "matchStatus": "unmatched",
+        "businessRegistrationNo": "312-86-20956",
+        "tenantId": "tenant_brn_3128620956",
+        "corpRegistrationNo": "",
+        "latestReportName": ""
+      },
+      "assetCount": 1,
+      "rowCount": 1,
+      "exposureAvailable": false,
+      "sectorCount": 1,
+      "goodsTypeCount": 1
+    }
+  ],
+  "topContracts": [
+    {
+      "monthlyTotal": 4596681041,
+      "assetNames": [
+        "스카이박스1, 스카이박스2",
+        "경산 쿠팡물류센터",
+        "인천석남물류센터",
+        "동산물류센터"
+      ],
+      "tenantMasterName": "쿠팡(주)",
+      "monthlyRentTotal": 4472975333,
+      "monthlyMfTotal": 123705708,
+      "tenantId": "tenant_brn_1208800767",
+      "currentEndDate": "2028-01-11",
+      "leasedAreaSqm": 436904.31
+    },
+    {
+      "monthlyTotal": 1272556102,
+      "assetNames": [
+        "화성 석포리 물류센터"
+      ],
+      "tenantMasterName": "삼성전자로지텍(주)",
+      "monthlyRentTotal": 1173395886,
+      "monthlyMfTotal": 99160216,
+      "currentEndDate": "",
+      "tenantId": "tenant_brn_1248155381",
+      "leasedAreaSqm": 107009.56
+    },
+    {
+      "monthlyTotal": 713551000,
+      "assetNames": [
+        "평택아디다스물류센터",
+        "안성 성은지구 물류센터"
+      ],
+      "tenantMasterName": "아디다스코리아유한책임회사",
+      "monthlyRentTotal": 691860000,
+      "monthlyMfTotal": 21691000,
+      "tenantId": "tenant_brn_2148107412",
+      "currentEndDate": "2027-08-31",
+      "leasedAreaSqm": 77114.57
+    },
+    {
+      "monthlyTotal": 630228000,
+      "assetNames": [
+        "두동 LG전자 통합물류센터"
+      ],
+      "monthlyRentTotal": 597216000,
+      "tenantMasterName": "LG전자(주), ㈜엘엑스판토스",
+      "monthlyMfTotal": 33012000,
+      "tenantId": "tenant_brn_10786140751168131734",
+      "currentEndDate": "2026-12-15",
+      "leasedAreaSqm": 54566.21
+    },
+    {
+      "monthlyTotal": 629174800,
+      "assetNames": [
+        "안성 홈플러스 중부허브 물류센터"
+      ],
+      "tenantMasterName": "홈플러스(주)",
+      "monthlyRentTotal": 629174800,
+      "currentEndDate": "2032-12-20",
+      "tenantId": "tenant_brn_2208160348",
+      "leasedAreaSqm": 32824.14
+    },
+    {
+      "monthlyTotal": 496872603,
+      "assetNames": [
+        "여주 본두리 물류센터"
+      ],
+      "tenantMasterName": "한국머스크물류서비스(주)",
+      "monthlyRentTotal": 458145593,
+      "monthlyMfTotal": 38727010,
+      "currentEndDate": "2029-05-31",
+      "tenantId": "tenant_brn_1018654822",
+      "leasedAreaSqm": 50205.17
+    },
+    {
+      "monthlyTotal": 372226100,
+      "assetNames": [
+        "여주 본두리 물류센터"
+      ],
+      "monthlyRentTotal": 336776000,
+      "tenantMasterName": "(주)버킷플레이스",
+      "monthlyMfTotal": 35450100,
+      "currentEndDate": "2030-02-28",
+      "tenantId": "tenant_brn_1198691245",
+      "leasedAreaSqm": 38300.04
+    },
+    {
+      "monthlyTotal": 362578428,
+      "assetNames": [
+        "아레나스양지물류센터"
+      ],
+      "monthlyRentTotal": 336887996,
+      "tenantMasterName": "씨제이대한통운(주)",
+      "monthlyMfTotal": 25690432,
+      "currentEndDate": "2028-01-08",
+      "tenantId": "tenant_brn_1108105034",
+      "leasedAreaSqm": 256029.18000000002
+    },
+    {
+      "monthlyTotal": 245219187,
+      "assetNames": [
+        "에이블로지스물류센터"
+      ],
+      "tenantMasterName": "아워박스(주)",
+      "monthlyRentTotal": 227321641,
+      "monthlyMfTotal": 17897546,
+      "tenantId": "tenant_brn_3588100820",
+      "currentEndDate": "2027-12-31",
+      "leasedAreaSqm": 29980.02
+    },
+    {
+      "monthlyTotal": 207923000,
+      "assetNames": [
+        "안성 성은지구 물류센터"
+      ],
+      "monthlyRentTotal": 198022000,
+      "tenantMasterName": "(주)에이스코리아로지스",
+      "monthlyMfTotal": 9901000,
+      "tenantId": "tenant_brn_3128620956",
+      "currentEndDate": "2027-05-16",
+      "leasedAreaSqm": 10910.3
+    }
+  ],
+  "vacancySummary": [
+    {
+      "assetName": "아레나스안성",
+      "grossFloorAreaSqm": 124498.93,
+      "assetId": "asset_a112505001",
+      "vacancyAreaSqm": 93109.93,
+      "vacancyRate": 0.7478773512350668
+    },
+    {
+      "assetName": "양산 유산동 물류센터",
+      "grossFloorAreaSqm": 52739.67,
+      "assetId": "asset_s00002001",
+      "vacancyAreaSqm": 19286.67,
+      "vacancyRate": 0.3656956897910055
+    },
+    {
+      "assetName": "스카이박스1, 스카이박스2",
+      "grossFloorAreaSqm": 85651.19,
+      "assetId": "asset_a112299001",
+      "vacancyAreaSqm": 26304.430000000008,
+      "vacancyRate": 0.3071110862557777
+    },
+    {
+      "assetName": "안성 성은지구 물류센터",
+      "grossFloorAreaSqm": 116111.79,
+      "assetId": "asset_ap00014001",
+      "vacancyRate": 0.3013357213767869,
+      "vacancyAreaSqm": 34988.62999999999
+    },
+    {
+      "assetName": "경산 쿠팡물류센터",
+      "grossFloorAreaSqm": 98673.64,
+      "assetId": "asset_a120085001",
+      "vacancyAreaSqm": 22438.87000000001,
+      "vacancyRate": 0.22740490773422375
+    },
+    {
+      "assetName": "아레나스양지물류센터",
+      "grossFloorAreaSqm": 349722,
+      "assetId": "asset_a112127001",
+      "vacancyRate": 0.22161516861964634,
+      "vacancyAreaSqm": 77503.69999999995
+    },
+    {
+      "assetName": "여주 본두리 물류센터",
+      "grossFloorAreaSqm": 108776.746,
+      "assetId": "asset_a112606001",
+      "vacancyRate": 0.035098733326698266,
+      "vacancyAreaSqm": 3817.925999999992
+    },
+    {
+      "assetName": "이천 마장면 물류센터",
+      "grossFloorAreaSqm": 33702.03,
+      "assetId": "asset_a112573001",
+      "vacancyAreaSqm": 1026.5599999999977,
+      "vacancyRate": 0.030459886244241004
+    },
+    {
+      "assetName": "부산송정물류센터",
+      "grossFloorAreaSqm": 24387.915,
+      "assetId": "asset_a112109001",
+      "vacancyRate": 0.027004153491596173,
+      "vacancyAreaSqm": 658.5750000000007
+    },
+    {
+      "assetName": "안성 홈플러스 중부허브 물류센터",
+      "grossFloorAreaSqm": 33376.73,
+      "assetId": "asset_a112500003",
+      "vacancyRate": 0.016556145554103226,
+      "vacancyAreaSqm": 552.5900000000038
+    }
+  ],
+  "occupancy": {
+    "leasedAreaSqm": 1340655.4600000002,
+    "grossFloorAreaSqm": 1630957.9110000003,
+    "vacancyAreaSqm": 280416.53099999996,
+    "vacancyRate": 0.17193364041385117
+  },
+  "rentTrendSummary": {
+    "latestMonth": "2026-06",
+    "latestNewlyAddedAssets": [],
+    "latestGrossFloorAreaAppliedAssetCount": 15,
+    "latestGrossFloorAreaPendingAssetCount": 0,
+    "latestGrossFloorAreaSqm": 1482071.0659999999,
+    "latestActiveAssetCount": 15,
+    "monthCount": 44,
+    "latestLeasedAreaSqm": 1045961.06
+  },
+  "basis": {
+    "rowScope": "active_contract_rows",
+    "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
+    "rentMf": "latest linked history row with monetary values per lease_space_id",
+    "rowUnit": "lease_space_id",
+    "page": "home",
+    "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
+    "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
+  },
+  "rentTrendBasis": {
+    "assetRows": [
+      {
+        "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+        "approvalDate": "2024-08-23",
+        "assetId": "asset_a120085001",
+        "effectiveAt": "2025-06-26",
+        "assetName": "경산 쿠팡물류센터",
+        "rule": "later_of_first_configured_at_and_approval_date",
+        "grossFloorAreaSqm": 98673.64,
+        "effectiveMonth": "2025-06",
+        "firstConfiguredAt": "2025-06-26"
+      },
+      {
+        "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+        "approvalDate": "2017-09-27",
+        "assetId": "asset_a112527001",
+        "effectiveAt": "2021-03-05",
+        "rule": "later_of_first_configured_at_and_approval_date",
+        "assetName": "동산물류센터",
+        "grossFloorAreaSqm": 54331.93,
+        "firstConfiguredAt": "2021-03-05",
+        "effectiveMonth": "2021-03"
+      },
+      {
+        "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+        "approvalDate": "2019-11-25",
+        "assetId": "asset_a112755001",
+        "effectiveAt": "2023-02-22",
+        "assetName": "두동 LG전자 통합물류센터",
+        "rule": "later_of_first_configured_at_and_approval_date",
+        "grossFloorAreaSqm": 54612.48,
+        "effectiveMonth": "2023-02",
+        "firstConfiguredAt": "2023-02-22"
+      },
+      {
+        "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+        "approvalDate": "2016-06-03",
+        "assetId": "asset_a112527002",
+        "effectiveAt": "2021-03-05",
+        "rule": "later_of_first_configured_at_and_approval_date",
+        "assetName": "부국물류센터",
+        "grossFloorAreaSqm": 18706.18,
+        "effectiveMonth": "2021-03",
+        "firstConfiguredAt": "2021-03-05"
+      },
+      {
+        "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+        "approvalDate": "2015-11-16",
+        "assetId": "asset_a112109001",
+        "effectiveAt": "2017-02-09",
+        "rule": "later_of_first_configured_at_and_approval_date",
+        "assetName": "부산송정물류센터",
+        "grossFloorAreaSqm": 24387.915,
+        "effectiveMonth": "2017-02",
+        "firstConfiguredAt": "2017-02-09"
+      },
+      {
+        "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+        "approvalDate": "2017-04-26",
+        "assetId": "asset_a112299001",
+        "effectiveAt": "2019-04-22",
+        "rule": "later_of_first_configured_at_and_approval_date",
+        "assetName": "스카이박스1, 스카이박스2",
+        "grossFloorAreaSqm": 85651.19,
+        "effectiveMonth": "2019-04",
+        "firstConfiguredAt": "2019-04-22"
+      },
+      {
+        "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+        "approvalDate": "2024-05-29",
+        "assetId": "asset_a112505001",
+        "effectiveAt": "2024-05-29",
+        "assetName": "아레나스안성",
+        "rule": "later_of_first_configured_at_and_approval_date",
+        "grossFloorAreaSqm": 124498.93,
+        "effectiveMonth": "2024-05",
+        "firstConfiguredAt": "2020-12-08"
+      },
+      {
+        "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+        "approvalDate": "2019-01-31",
+        "assetId": "asset_a112127001",
+        "effectiveAt": "2019-01-31",
+        "assetName": "아레나스양지물류센터",
+        "rule": "later_of_first_configured_at_and_approval_date",
+        "grossFloorAreaSqm": 349722,
+        "effectiveMonth": "2019-01",
+        "firstConfiguredAt": "2017-05-25"
+      },
+      {
+        "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+        "approvalDate": "2024-12-12",
+        "assetId": "asset_ap00014001",
+        "effectiveAt": "2024-12-12",
+        "rule": "later_of_first_configured_at_and_approval_date",
+        "assetName": "안성 성은지구 물류센터",
+        "grossFloorAreaSqm": 116111.79,
+        "firstConfiguredAt": "2021-03-04",
+        "effectiveMonth": "2024-12"
+      },
+      {
+        "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+        "approvalDate": "2012-10-05",
+        "assetId": "asset_a112500003",
+        "effectiveAt": "2022-08-11",
+        "assetName": "안성 홈플러스 중부허브 물류센터",
+        "rule": "later_of_first_configured_at_and_approval_date",
+        "grossFloorAreaSqm": 33376.73,
+        "effectiveMonth": "2022-08",
+        "firstConfiguredAt": "2022-08-11"
+      },
+      {
+        "note": "사용승인일 기준으로 총 연면적 시계열에 반영합니다.",
+        "approvalDate": "2024-07-23",
+        "assetId": "asset_s00002001",
+        "effectiveAt": "2024-07-23",
+        "assetName": "양산 유산동 물류센터",
+        "rule": "approval_date",
+        "grossFloorAreaSqm": 52739.67,
+        "effectiveMonth": "2024-07",
+        "firstConfiguredAt": ""
+      },
+      {
+        "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+        "approvalDate": "2016-11-04",
+        "assetId": "asset_a112527003",
+        "effectiveAt": "2021-03-05",
+        "rule": "later_of_first_configured_at_and_approval_date",
+        "assetName": "에이블로지스물류센터",
+        "grossFloorAreaSqm": 29980.02,
+        "firstConfiguredAt": "2021-03-05",
+        "effectiveMonth": "2021-03"
+      },
+      {
+        "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+        "approvalDate": "2023-11-09",
+        "assetId": "asset_a112606001",
+        "effectiveAt": "2023-11-09",
+        "assetName": "여주 본두리 물류센터",
+        "rule": "later_of_first_configured_at_and_approval_date",
+        "grossFloorAreaSqm": 108776.746,
+        "firstConfiguredAt": "2021-12-16",
+        "effectiveMonth": "2023-11"
+      },
+      {
+        "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+        "approvalDate": "2021-07-06",
+        "assetId": "asset_a112573001",
+        "effectiveAt": "2021-07-16",
+        "assetName": "이천 마장면 물류센터",
+        "rule": "later_of_first_configured_at_and_approval_date",
+        "grossFloorAreaSqm": 33702.03,
+        "effectiveMonth": "2021-07",
+        "firstConfiguredAt": "2021-07-16"
+      },
+      {
+        "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+        "approvalDate": "2025-04-15",
+        "assetId": "asset_a112721001",
+        "effectiveAt": "2025-04-15",
+        "assetName": "인천석남물류센터",
+        "rule": "later_of_first_configured_at_and_approval_date",
+        "grossFloorAreaSqm": 299308.3,
+        "firstConfiguredAt": "2023-01-18",
+        "effectiveMonth": "2025-04"
+      },
+      {
+        "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+        "approvalDate": "2012-05-23",
+        "assetId": "asset_a112500002",
+        "effectiveAt": "2021-10-29",
+        "rule": "later_of_first_configured_at_and_approval_date",
+        "assetName": "평택아디다스물류센터",
+        "grossFloorAreaSqm": 39368.8,
+        "effectiveMonth": "2021-10",
+        "firstConfiguredAt": "2021-10-29"
+      },
+      {
+        "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+        "approvalDate": "2023-11-14",
+        "assetId": "asset_a112642001",
+        "effectiveAt": "2023-11-14",
+        "rule": "later_of_first_configured_at_and_approval_date",
+        "assetName": "화성 석포리 물류센터",
+        "grossFloorAreaSqm": 107009.56,
+        "firstConfiguredAt": "2022-02-14",
+        "effectiveMonth": "2023-11"
+      }
+    ],
+    "grossFloorAreaRule": "later_of_first_configured_at_and_approval_date_when_available",
+    "assetCount": 17
+  },
+  "contractSummary": {
+    "byBucket": [
+      {
+        "count": 1,
+        "label": "0-3 months"
+      },
+      {
+        "count": 1,
+        "label": "0-6 months"
+      },
+      {
+        "count": 7,
+        "label": "0-12 months"
+      }
+    ],
+    "tenantCount": 30,
+    "upcoming": [
+      {
+        "currentEndDate": "2026-06-30",
+        "leaseSpaceId": "asset_a112299001|tenant_brn_1248159766|20210701|20260630|1|스카이박스1",
+        "assetName": "스카이박스1, 스카이박스2",
+        "tenantMasterName": "(주)하나로티앤에스",
+        "monthsToExpiry": 2
+      },
+      {
+        "currentEndDate": "2026-12-15",
+        "leaseSpaceId": "asset_a112755001|tenant_brn_10786140751168131734|20231216|20261215|1~4|na",
+        "assetName": "두동 LG전자 통합물류센터",
+        "tenantMasterName": "LG전자(주), ㈜엘엑스판토스",
+        "monthsToExpiry": 8
+      },
+      {
+        "currentEndDate": "2026-12-31",
+        "leaseSpaceId": "asset_a112527002|tenant_brn_1308116025|20260101|20261231|1~3|na",
+        "assetName": "부국물류센터",
+        "tenantMasterName": "(주)한익스프레스",
+        "monthsToExpiry": 8
+      },
+      {
+        "currentEndDate": "2027-02-28",
+        "leaseSpaceId": "asset_a112299001|tenant_brn_1078198143|20220201|20270228|2|스카이박스1",
+        "assetName": "스카이박스1, 스카이박스2",
+        "tenantMasterName": "(주)LG생활건강",
+        "monthsToExpiry": 10
+      },
+      {
+        "currentEndDate": "2027-03-31",
+        "leaseSpaceId": "asset_a112127001|tenant_brn_2118640630|20240101|20270331|b2|11섹터",
+        "assetName": "아레나스양지물류센터",
+        "tenantMasterName": "용마로지스(주)",
+        "monthsToExpiry": 11
+      },
+      {
+        "currentEndDate": "2027-03-31",
+        "leaseSpaceId": "asset_a112127001|tenant_brn_2118640630|20240401|20270331|b2|12섹터",
+        "assetName": "아레나스양지물류센터",
+        "tenantMasterName": "용마로지스(주)",
+        "monthsToExpiry": 11
+      },
+      {
+        "currentEndDate": "2027-03-31",
+        "leaseSpaceId": "asset_a112127001|tenant_brn_2118640630|20240401|20270331|b2|13~14섹터",
+        "assetName": "아레나스양지물류센터",
+        "tenantMasterName": "용마로지스(주)",
+        "monthsToExpiry": 11
+      },
+      {
+        "currentEndDate": "2027-05-16",
+        "leaseSpaceId": "asset_ap00014001|tenant_brn_3128620956|20250317|20270516|b2|na",
+        "assetName": "안성 성은지구 물류센터",
+        "tenantMasterName": "(주)에이스코리아로지스",
+        "monthsToExpiry": 13
+      },
+      {
+        "currentEndDate": "2027-08-31",
+        "assetName": "평택아디다스물류센터",
+        "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+        "tenantMasterName": "아디다스코리아유한책임회사",
+        "monthsToExpiry": 16
+      }
+    ]
+  },
+  "composition": {
+    "coldStorage": [
+      {
+        "value": 941235.3499999999,
+        "recordCount": 46,
+        "label": "N"
+      },
+      {
+        "value": 299248,
+        "recordCount": 1,
+        "label": "복합"
+      },
+      {
+        "value": 91406.41,
+        "recordCount": 8,
+        "label": "Y"
+      },
+      {
+        "value": 8765.7,
+        "recordCount": 7,
+        "label": "사무실"
+      }
+    ],
+    "sector": [
+      {
+        "value": 11134228842,
+        "recordCount": 53,
+        "label": "물류센터"
+      }
+    ],
+    "goodsType": [
+      {
+        "value": 299248,
+        "recordCount": 1,
+        "label": "전체 상품 취급(풀필먼트)"
+      },
+      {
+        "value": 264224.28,
+        "recordCount": 7,
+        "label": "하중물"
+      },
+      {
+        "value": 161575.77,
+        "recordCount": 2,
+        "label": "가전제품"
+      },
+      {
+        "value": 102396.04999999999,
+        "recordCount": 7,
+        "label": "공산품"
+      },
+      {
+        "value": 76234.76999999999,
+        "recordCount": 16,
+        "label": "Unclassified"
+      },
+      {
+        "value": 64401.17,
+        "recordCount": 3,
+        "label": "의류"
+      },
+      {
+        "value": 53212.22,
+        "recordCount": 1,
+        "label": "어패럴"
+      },
+      {
+        "value": 52382.31,
+        "recordCount": 6,
+        "label": "생필품"
+      },
+      {
+        "value": 38300.04,
+        "recordCount": 1,
+        "label": "가구"
+      },
+      {
+        "value": 32824.14,
+        "recordCount": 1,
+        "label": "신선식품"
+      },
+      {
+        "value": 32768.93,
+        "recordCount": 1,
+        "label": "가구,대형가전(고하중)"
+      },
+      {
+        "value": 23902.35,
+        "recordCount": 1,
+        "label": "의류(중하중)"
+      },
+      {
+        "value": 18817,
+        "recordCount": 4,
+        "label": "생활 잡화, 식품"
+      },
+      {
+        "value": 16453.61,
+        "recordCount": 1,
+        "label": "식음료"
+      },
+      {
+        "value": 13541.58,
+        "recordCount": 1,
+        "label": "반도체(고가 화물)"
+      },
+      {
+        "value": 12572,
+        "recordCount": 1,
+        "label": "화장품"
+      },
+      {
+        "value": 11660.69,
+        "recordCount": 1,
+        "label": "유제품 등"
+      },
+      {
+        "value": 11593.67,
+        "recordCount": 1,
+        "label": "가전제품 등"
+      },
+      {
+        "value": 10910.3,
+        "recordCount": 1,
+        "label": "식품(온도)"
+      },
+      {
+        "value": 10569,
+        "recordCount": 1,
+        "label": "라이프스타일 용품"
+      },
+      {
+        "value": 9421.11,
+        "recordCount": 1,
+        "label": "화장품 등"
+      },
+      {
+        "value": 8688,
+        "recordCount": 1,
+        "label": "유제품"
+      },
+      {
+        "value": 7994.02,
+        "recordCount": 1,
+        "label": "하중물, 의약품"
+      },
+      {
+        "value": 6964.45,
+        "recordCount": 1,
+        "label": "전자기기(컴퓨터 등)"
+      }
+    ]
+  },
+  "meta": {
+    "selection": {
+      "activeOnly": true,
+      "scope": "portfolio"
+    },
+    "timing": {
+      "fetchedAt": "",
+      "refreshedAt": "2026-04-23T10:08:09",
+      "derivedAt": "",
+      "fetchedAts": []
+    },
+    "generatedAt": "2026-04-23T10:08:09",
+    "basisDisplay": {
+      "derivedAt": "",
+      "asOf": "2026-06",
+      "generatedAt": "2026-04-23T10:08:09",
+      "refreshedAt": "2026-04-23T10:08:09",
+      "fetchedAt": "",
+      "source": "DB_GENERAL + DB_HISTORY + DB_ASSET",
+      "page": "home",
+      "fetchedAts": []
+    },
+    "page": "home",
+    "rowCount": 62,
+    "formulaVersion": "E.NOC_v1",
+    "basis": {
+      "rowScope": "active_contract_rows",
+      "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
+      "rentMf": "latest linked history row with monetary values per lease_space_id",
+      "page": "home",
+      "rowUnit": "lease_space_id",
+      "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
+      "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
+    }
+  },
+  "generatedAt": "2026-04-23T10:08:09",
+  "basisDisplay": {
+    "derivedAt": "",
+    "asOf": "2026-06",
+    "generatedAt": "2026-04-23T10:08:09",
+    "fetchedAt": "",
+    "refreshedAt": "2026-04-23T10:08:09",
+    "page": "home",
+    "source": "DB_GENERAL + DB_HISTORY + DB_ASSET",
+    "fetchedAts": []
+  },
+  "kpis": [
+    {
+      "label": "운영 자산 수",
+      "value": 17,
+      "key": "asset_count",
+      "valueType": "number",
+      "status": "ok"
+    },
+    {
+      "label": "운영 자산 수",
+      "value": 17,
+      "key": "operating_asset_count",
+      "valueType": "number",
+      "status": "ok"
+    },
+    {
+      "label": "총 임대면적",
+      "value": 1340655.4600000002,
+      "key": "leased_area_total",
+      "valueType": "area",
+      "status": "ok"
+    },
+    {
+      "label": "총 공실면적",
+      "value": 280416.53099999996,
+      "key": "vacancy_area_total",
+      "valueType": "area",
+      "status": "ok"
+    },
+    {
+      "label": "Vacancy Rate",
+      "value": 0.17193364041385117,
+      "key": "vacancy_rate",
+      "valueType": "percent",
+      "status": "ok"
+    },
+    {
+      "label": "월 임대료 총액",
+      "value": 10613355289,
+      "key": "monthly_rent_total",
+      "valueType": "currency",
+      "status": "review_required"
+    },
+    {
+      "label": "월 임관리비 총액",
+      "value": 11134228842,
+      "key": "monthly_total_cost",
+      "valueType": "currency",
+      "status": "ok"
+    }
+  ],
+  "mapPoints": [
+    {
+      "assetName": "경산 쿠팡물류센터",
+      "address": "경상북도 경산시 진량읍 공단12로 213-18",
+      "issueCount": 3,
+      "assetId": "asset_a120085001",
+      "latitude": 35.874052,
+      "longitude": 128.8413233
+    },
+    {
+      "assetName": "동산물류센터",
+      "address": "경기도 이천시 호법면 덕평로 257-21",
+      "issueCount": 3,
+      "assetId": "asset_a112527001",
+      "latitude": 37.1896213,
+      "longitude": 127.3750501
+    },
+    {
+      "assetName": "두동 LG전자 통합물류센터",
+      "address": "경상남도 창원시 진해구 두동로 32",
+      "issueCount": 2,
+      "assetId": "asset_a112755001",
+      "latitude": 35.1201511,
+      "longitude": 128.8020959
+    },
+    {
+      "assetName": "부국물류센터",
+      "address": "경기도 이천시 대월면 대월로 627-61",
+      "issueCount": 1,
+      "assetId": "asset_a112527002",
+      "latitude": 37.2101065,
+      "longitude": 127.4938952
+    },
+    {
+      "assetName": "부산송정물류센터",
+      "address": "부산광역시 강서구 녹산산단232로 38-17",
+      "issueCount": 0,
+      "assetId": "asset_a112109001",
+      "latitude": 35.0850649,
+      "longitude": 128.8409153
+    },
+    {
+      "assetName": "스카이박스1, 스카이박스2",
+      "address": "인천광역시 서구 갑문1로 20, 인천광역시 서구 갑문3로 34",
+      "issueCount": 5,
+      "assetId": "asset_a112299001",
+      "latitude": 37.5637998,
+      "longitude": 126.6028299
+    },
+    {
+      "assetName": "아레나스안성",
+      "address": "경기도 안성시 양성면 양성로 301",
+      "issueCount": 3,
+      "assetId": "asset_a112505001",
+      "latitude": 37.0803652,
+      "longitude": 127.2055776
+    },
+    {
+      "assetName": "아레나스양지물류센터",
+      "address": "경기도 용인시 처인구 양지면 남평로 111-73",
+      "issueCount": 3,
+      "assetId": "asset_a112127001",
+      "latitude": 37.2300579,
+      "longitude": 127.2950305
+    },
+    {
+      "assetName": "안성 성은지구 물류센터",
+      "address": "경기도 안성시 원곡면 지문로 459-14",
+      "issueCount": 2,
+      "assetId": "asset_ap00014001",
+      "latitude": 37.0741638,
+      "longitude": 127.1526821
+    },
+    {
+      "assetName": "안성 홈플러스 중부허브 물류센터",
+      "address": "경기도 안성시 원곡면 원곡물류단지1로 103",
+      "issueCount": 2,
+      "assetId": "asset_a112500003",
+      "latitude": 37.048749,
+      "longitude": 127.1675276
+    },
+    {
+      "assetName": "양산 유산동 물류센터",
+      "address": "경상남도 양산시 유산공단4길 28-170",
+      "issueCount": 0,
+      "assetId": "asset_s00002001",
+      "latitude": 35.3629266,
+      "longitude": 129.0262261
+    },
+    {
+      "assetName": "에이블로지스물류센터",
+      "address": "경기도 용인시 처인구 백암면 죽양대로 956-8",
+      "issueCount": 1,
+      "assetId": "asset_a112527003",
+      "latitude": 37.1511389,
+      "longitude": 127.3889424
+    },
+    {
+      "assetName": "여주 본두리 물류센터",
+      "address": "경기도 여주시 가남읍 여주남로 536",
+      "issueCount": 1,
+      "assetId": "asset_a112606001",
+      "latitude": 37.2498281,
+      "longitude": 127.5900088
+    },
+    {
+      "assetName": "이천 마장면 물류센터",
+      "address": "경기도 이천시 마장면 억만리로 140-18",
+      "issueCount": 2,
+      "assetId": "asset_a112573001",
+      "latitude": 37.2609774,
+      "longitude": 127.3710436
+    },
+    {
+      "assetName": "인천석남물류센터",
+      "address": "인천광역시 서구 봉수대로 370",
+      "issueCount": 1,
+      "assetId": "asset_a112721001",
+      "latitude": 37.5080776,
+      "longitude": 126.6633807
+    },
+    {
+      "assetName": "평택아디다스물류센터",
+      "address": "경기도 평택시 도일유통길 64",
+      "issueCount": 2,
+      "assetId": "asset_a112500002",
+      "latitude": 37.0384465,
+      "longitude": 127.105842
+    },
+    {
+      "assetName": "화성 석포리 물류센터",
+      "address": "경기도 화성시 장안면 북부마을길 42",
+      "issueCount": 2,
+      "assetId": "asset_a112642001",
+      "latitude": 37.1220878,
+      "longitude": 126.8350908
+    }
+  ]
+}

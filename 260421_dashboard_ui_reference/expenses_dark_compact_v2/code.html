@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Precision Ledger - Expenses</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#5e376b",
+                        "secondary-fixed-dim": "#aed278",
+                        "on-primary-container": "#416400",
+                        "tertiary-fixed-dim": "#e7b6f3",
+                        "tertiary-container": "#f3c1ff",
+                        "on-background": "#191c1d",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-variant": "#e1e3e4",
+                        "surface-container-low": "#f3f4f5",
+                        "inverse-surface": "#2e3132",
+                        "on-error-container": "#93000a",
+                        "primary": "#446900",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#2f093d",
+                        "inverse-on-surface": "#f0f1f2",
+                        "primary-container": "#a3e635",
+                        "secondary": "#496719",
+                        "surface": "#f8f9fa",
+                        "on-secondary-container": "#4d6c1d",
+                        "primary-fixed": "#b2f746",
+                        "on-secondary-fixed-variant": "#334f00",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#d9dadb",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "outline": "#727a64",
+                        "secondary-container": "#c7ec8e",
+                        "tertiary": "#784f85",
+                        "on-secondary-fixed": "#121f00",
+                        "surface-container-high": "#e7e8e9",
+                        "on-primary-fixed": "#121f00",
+                        "background": "#f8f9fa",
+                        "on-surface-variant": "#424936",
+                        "on-tertiary-container": "#734b80",
+                        "surface-tint": "#446900",
+                        "secondary-fixed": "#caef91",
+                        "surface-container": "#edeeef",
+                        "on-primary-fixed-variant": "#334f00",
+                        "inverse-primary": "#98da27",
+                        "outline-variant": "#c2cab0",
+                        "on-surface": "#191c1d",
+                        "primary-fixed-dim": "#98da27",
+                        "tertiary-fixed": "#fad7ff",
+                        "surface-bright": "#f8f9fa"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            /* Forcing dark mode variables to mimic standard dark styling since tailwind config above defines light mode named colors. 
+               Normally dark mode config would be provided. Doing a basic manual override for the requested dark aesthetic. */
+            --bg-color: #0f1115;
+            --surface-color: #1a1d21;
+            --surface-hover: #23272c;
+            --text-main: #f8f9fa;
+            --text-muted: #8b949e;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-green: #a3e635;
+            --accent-green-dim: rgba(163, 230, 53, 0.15);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+        .dark-surface {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+        }
+        .dark-surface-hover:hover {
+            background-color: var(--surface-hover);
+        }
+        .text-muted {
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body class="font-body antialiased text-[11px]">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 right-0 h-10 bg-[#0f1115]/80 backdrop-blur-md border-b border-[rgba(255,255,255,0.08)] flex justify-between items-center w-full px-3 z-40">
+<div class="flex items-center gap-2">
+<span class="text-sm font-black tracking-tighter text-slate-100">PRECISION_LEDGER</span>
+</div>
+<div class="flex-1 flex justify-center hidden md:flex">
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-2 top-1.5 text-[14px] text-muted">search</span>
+<input class="w-full h-7 bg-[#1a1d21] border border-[rgba(255,255,255,0.08)] rounded pl-7 pr-2 text-[11px] text-slate-100 focus:outline-none focus:border-[#a3e635] focus:ring-1 focus:ring-[#a3e635]/20 placeholder:text-slate-600 transition-all" placeholder="Search Ledgers..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="text-slate-400 hover:text-slate-100 transition-colors flex items-center">
+<span class="material-symbols-outlined text-[16px]">notifications</span>
+</button>
+<button class="text-slate-400 hover:text-slate-100 transition-colors flex items-center">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+</button>
+<img alt="User avatar" class="w-6 h-6 rounded-full object-cover border border-slate-700" data-alt="Close up professional portrait of woman with neutral expression, high contrast studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBr9GWXKkXFv6u407IebZkAmsPQsQ62G0k-YZhwvL1wf2WKq6LaABiCzYvINKdDHPW6gjBT63Vx82gPTvzW9dLV5uhQgttJiI4OwTftZJzOyC7_RhCqClO_oNv_inn9Dp0ddO5bz_tHg4PxFTkb2XrRlLXdBOkgr_i692Ysb5Of-XXJ7vxkPhpowFrxeJA92UBpJq0YO2wKpN9_Yh5SyW3pWp8_59e0E8Sdp18JwebMC0vMSrkzGd3Gr6iy6oh1iNDuMQnhKBbKP-s"/>
+</div>
+</header>
+<!-- SideNavBar & Main Content Wrapper -->
+<div class="flex h-screen pt-10">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col items-center py-4 gap-y-6 w-16 md:w-20 bg-[#0f1115] border-r border-[rgba(255,255,255,0.08)] h-full fixed left-0">
+<div class="flex flex-col items-center mb-4">
+<div class="w-8 h-8 rounded bg-[#1a1d21] border border-[rgba(255,255,255,0.08)] flex items-center justify-center mb-1">
+<span class="text-[10px] font-bold text-[#a3e635]">OP</span>
+</div>
+<span class="text-[10px] font-medium text-slate-300">OP_01</span>
+</div>
+<div class="flex flex-col gap-2 w-full">
+<!-- Overview -->
+<a class="flex flex-col items-center justify-center py-2 text-slate-500 hover:text-slate-100 hover:bg-[#1a1d21] transition-all duration-200 ease-in-out w-full border-r-2 border-transparent" href="#">
+<span class="material-symbols-outlined text-[18px] mb-1">grid_view</span>
+<span class="font-['Inter'] text-[10px] font-medium tracking-wide">Overview</span>
+</a>
+<!-- Analytics -->
+<a class="flex flex-col items-center justify-center py-2 text-slate-500 hover:text-slate-100 hover:bg-[#1a1d21] transition-all duration-200 ease-in-out w-full border-r-2 border-transparent" href="#">
+<span class="material-symbols-outlined text-[18px] mb-1">monitoring</span>
+<span class="font-['Inter'] text-[10px] font-medium tracking-wide">Analytics</span>
+</a>
+<!-- Ledger (Active) -->
+<a class="flex flex-col items-center justify-center py-2 text-[#a3e635] bg-[#a3e635]/5 border-r-2 border-[#a3e635] transition-all duration-200 ease-in-out w-full opacity-80" href="#">
+<span class="material-symbols-outlined text-[18px] mb-1" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<span class="font-['Inter'] text-[10px] font-medium tracking-wide">Ledger</span>
+</a>
+<!-- Assets -->
+<a class="flex flex-col items-center justify-center py-2 text-slate-500 hover:text-slate-100 hover:bg-[#1a1d21] transition-all duration-200 ease-in-out w-full border-r-2 border-transparent" href="#">
+<span class="material-symbols-outlined text-[18px] mb-1">account_balance_wallet</span>
+<span class="font-['Inter'] text-[10px] font-medium tracking-wide">Assets</span>
+</a>
+<!-- Nodes -->
+<a class="flex flex-col items-center justify-center py-2 text-slate-500 hover:text-slate-100 hover:bg-[#1a1d21] transition-all duration-200 ease-in-out w-full border-r-2 border-transparent" href="#">
+<span class="material-symbols-outlined text-[18px] mb-1">hub</span>
+<span class="font-['Inter'] text-[10px] font-medium tracking-wide">Nodes</span>
+</a>
+<!-- System -->
+<a class="flex flex-col items-center justify-center py-2 text-slate-500 hover:text-slate-100 hover:bg-[#1a1d21] transition-all duration-200 ease-in-out w-full border-r-2 border-transparent mt-auto" href="#">
+<span class="material-symbols-outlined text-[18px] mb-1">settings</span>
+<span class="font-['Inter'] text-[10px] font-medium tracking-wide">System</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 ml-0 md:ml-20 p-4 md:p-6 overflow-y-auto">
+<div class="max-w-6xl mx-auto space-y-4">
+<!-- Header Section -->
+<div class="flex justify-between items-end pb-2 border-b border-[rgba(255,255,255,0.08)]">
+<div>
+<h1 class="text-xl md:text-2xl font-bold tracking-tight text-slate-100">Expenditure Logs</h1>
+<p class="text-muted text-[11px] mt-1">Fiscal Cycle: Q3 2024</p>
+</div>
+<div class="flex gap-2">
+<button class="h-7 px-3 bg-[#1a1d21] border border-[rgba(255,255,255,0.08)] rounded text-[10px] font-medium hover:bg-[#23272c] transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">download</span> Export
+                        </button>
+<button class="h-7 px-3 bg-[#a3e635] text-[#1a1d21] rounded text-[10px] font-bold hover:bg-[#b2f746] transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">add</span> New Entry
+                        </button>
+</div>
+</div>
+<!-- Top Row: Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Monthly Expenditure -->
+<div class="dark-surface rounded-lg p-4 flex flex-col justify-between col-span-1">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-bold tracking-widest text-muted uppercase">Gross Outflow</span>
+<span class="material-symbols-outlined text-[14px] text-muted">account_balance</span>
+</div>
+<div>
+<div class="text-3xl font-bold tracking-tight text-slate-100 mb-1">$42,891.00</div>
+<div class="flex items-center gap-1 text-[10px]">
+<span class="text-red-400 flex items-center"><span class="material-symbols-outlined text-[12px]">trending_up</span> +4.2%</span>
+<span class="text-muted">vs previous cycle</span>
+</div>
+</div>
+</div>
+<!-- Consumption Limit Bar -->
+<div class="dark-surface rounded-lg p-4 col-span-1 md:col-span-2 flex flex-col justify-center">
+<div class="flex justify-between items-end mb-2">
+<span class="text-[10px] font-bold tracking-widest text-muted uppercase">Operational Ceiling</span>
+<span class="text-[11px] font-medium text-slate-300">68% Utilized</span>
+</div>
+<div class="w-full h-2 bg-[#1a1d21] rounded-full overflow-hidden border border-[rgba(255,255,255,0.05)]">
+<div class="h-full bg-gradient-to-r from-[#446900] to-[#a3e635]" style="width: 68%"></div>
+</div>
+<div class="flex justify-between mt-2 text-[10px] text-muted">
+<span>$0</span>
+<span>Limit: $63,000.00</span>
+</div>
+</div>
+</div>
+<!-- Middle Row -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+<!-- Spending Velocity Chart (Simulated) -->
+<div class="dark-surface rounded-lg p-4 col-span-1 lg:col-span-2">
+<div class="flex justify-between items-center mb-4">
+<h2 class="text-[11px] font-bold tracking-wide text-slate-200">Velocity Over Time</h2>
+<select class="bg-[#1a1d21] border border-[rgba(255,255,255,0.08)] rounded px-2 py-1 text-[10px] text-slate-300 focus:outline-none">
+<option>Last 30 Days</option>
+<option>Quarter to Date</option>
+</select>
+</div>
+<!-- Abstract Chart Representation -->
+<div class="h-40 w-full relative flex items-end gap-1">
+<!-- Y-axis labels -->
+<div class="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-[9px] text-muted pb-4">
+<span>$5k</span>
+<span>$2.5k</span>
+<span>$0</span>
+</div>
+<!-- Bars -->
+<div class="flex-1 flex items-end gap-[2px] pl-6 h-full pb-4">
+<div class="w-full bg-[#23272c] hover:bg-[#a3e635]/40 transition-colors h-[30%] rounded-t-sm"></div>
+<div class="w-full bg-[#23272c] hover:bg-[#a3e635]/40 transition-colors h-[45%] rounded-t-sm"></div>
+<div class="w-full bg-[#23272c] hover:bg-[#a3e635]/40 transition-colors h-[25%] rounded-t-sm"></div>
+<div class="w-full bg-[#23272c] hover:bg-[#a3e635]/40 transition-colors h-[60%] rounded-t-sm"></div>
+<div class="w-full bg-[#a3e635] opacity-80 h-[85%] rounded-t-sm"></div>
+<div class="w-full bg-[#23272c] hover:bg-[#a3e635]/40 transition-colors h-[50%] rounded-t-sm"></div>
+<div class="w-full bg-[#23272c] hover:bg-[#a3e635]/40 transition-colors h-[40%] rounded-t-sm"></div>
+<div class="w-full bg-[#23272c] hover:bg-[#a3e635]/40 transition-colors h-[70%] rounded-t-sm"></div>
+<div class="w-full bg-[#23272c] hover:bg-[#a3e635]/40 transition-colors h-[35%] rounded-t-sm"></div>
+<div class="w-full bg-[#23272c] hover:bg-[#a3e635]/40 transition-colors h-[20%] rounded-t-sm"></div>
+</div>
+<!-- X-axis line -->
+<div class="absolute bottom-4 left-6 right-0 h-[1px] bg-[rgba(255,255,255,0.08)]"></div>
+</div>
+</div>
+<!-- Allocation Donut (Simulated) -->
+<div class="dark-surface rounded-lg p-4 col-span-1">
+<h2 class="text-[11px] font-bold tracking-wide text-slate-200 mb-4">Capital Allocation</h2>
+<div class="flex flex-col items-center justify-center h-40 relative">
+<!-- Donut graphic -->
+<div class="w-24 h-24 rounded-full border-[8px] border-[#1a1d21] relative">
+<div class="absolute inset-[-8px] rounded-full border-[8px] border-transparent border-t-[#a3e635] border-r-[#a3e635] transform rotate-45"></div>
+<div class="absolute inset-[-8px] rounded-full border-[8px] border-transparent border-l-[#446900] border-b-[#446900] transform -rotate-12"></div>
+<div class="absolute inset-[-8px] rounded-full border-[8px] border-transparent border-t-slate-600 transform -rotate-45"></div>
+<!-- Center text -->
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-[9px] text-muted">Top</span>
+<span class="text-[11px] font-bold text-slate-200">Infra</span>
+</div>
+</div>
+</div>
+<div class="space-y-2 mt-2">
+<div class="flex justify-between items-center text-[10px]">
+<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-[#a3e635]"></div><span class="text-slate-300">Infrastructure</span></div>
+<span class="font-medium">45%</span>
+</div>
+<div class="flex justify-between items-center text-[10px]">
+<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-[#446900]"></div><span class="text-slate-300">Software</span></div>
+<span class="font-medium">35%</span>
+</div>
+<div class="flex justify-between items-center text-[10px]">
+<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-slate-600"></div><span class="text-slate-300">Operational</span></div>
+<span class="font-medium">20%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Row: High-Value Anomalies -->
+<div class="dark-surface rounded-lg p-0 overflow-hidden">
+<div class="p-3 border-b border-[rgba(255,255,255,0.08)] flex justify-between items-center bg-[#15171a]">
+<h2 class="text-[11px] font-bold tracking-wide text-slate-200">High-Value Anomalies</h2>
+<button class="text-[10px] text-[#a3e635] hover:underline">View All</button>
+</div>
+<div class="flex flex-col">
+<!-- List Item 1 -->
+<div class="flex items-center justify-between p-3 border-b border-[rgba(255,255,255,0.04)] dark-surface-hover transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#1a1d21] border border-[rgba(255,255,255,0.08)] flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined text-[14px]">dns</span>
+</div>
+<div>
+<div class="text-[11px] font-semibold text-slate-200">AWS Cloud Compute</div>
+<div class="text-[9px] text-muted">ID: TXN-8921 • US-East</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-[11px] font-bold text-slate-100">$12,450.00</div>
+<div class="text-[9px] text-red-400 flex items-center justify-end gap-1">
+<span class="material-symbols-outlined text-[10px]">warning</span> +15% avg
+                                </div>
+</div>
+</div>
+<!-- List Item 2 -->
+<div class="flex items-center justify-between p-3 border-b border-[rgba(255,255,255,0.04)] dark-surface-hover transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#1a1d21] border border-[rgba(255,255,255,0.08)] flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined text-[14px]">integration_instructions</span>
+</div>
+<div>
+<div class="text-[11px] font-semibold text-slate-200">Databricks Analytics</div>
+<div class="text-[9px] text-muted">ID: TXN-8910 • Core Data</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-[11px] font-bold text-slate-100">$8,200.50</div>
+<div class="text-[9px] text-red-400 flex items-center justify-end gap-1">
+<span class="material-symbols-outlined text-[10px]">warning</span> +8% avg
+                                </div>
+</div>
+</div>
+<!-- List Item 3 -->
+<div class="flex items-center justify-between p-3 dark-surface-hover transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#1a1d21] border border-[rgba(255,255,255,0.08)] flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined text-[14px]">security</span>
+</div>
+<div>
+<div class="text-[11px] font-semibold text-slate-200">CrowdStrike Node Auth</div>
+<div class="text-[9px] text-muted">ID: TXN-8894 • Global</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-[11px] font-bold text-slate-100">$5,120.00</div>
+<div class="text-[9px] text-slate-400 flex items-center justify-end gap-1">
+                                    Standard deviation
+                                </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Precision Ledger - Overview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#5e376b",
+                    "secondary-fixed-dim": "#aed278",
+                    "on-primary-container": "#416400",
+                    "tertiary-fixed-dim": "#e7b6f3",
+                    "tertiary-container": "#f3c1ff",
+                    "on-background": "#191c1d",
+                    "surface-container-highest": "#e1e3e4",
+                    "surface-variant": "#e1e3e4",
+                    "surface-container-low": "#f3f4f5",
+                    "inverse-surface": "#2e3132",
+                    "on-error-container": "#93000a",
+                    "primary": "#446900",
+                    "error": "#ba1a1a",
+                    "surface-container-lowest": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#2f093d",
+                    "inverse-on-surface": "#f0f1f2",
+                    "primary-container": "#a3e635",
+                    "secondary": "#496719",
+                    "surface": "#f8f9fa",
+                    "on-secondary-container": "#4d6c1d",
+                    "primary-fixed": "#b2f746",
+                    "on-secondary-fixed-variant": "#334f00",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "surface-dim": "#d9dadb",
+                    "on-secondary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "outline": "#727a64",
+                    "secondary-container": "#c7ec8e",
+                    "tertiary": "#784f85",
+                    "on-secondary-fixed": "#121f00",
+                    "surface-container-high": "#e7e8e9",
+                    "on-primary-fixed": "#121f00",
+                    "background": "#f8f9fa",
+                    "on-surface-variant": "#424936",
+                    "on-tertiary-container": "#734b80",
+                    "surface-tint": "#446900",
+                    "secondary-fixed": "#caef91",
+                    "surface-container": "#edeeef",
+                    "on-primary-fixed-variant": "#334f00",
+                    "inverse-primary": "#98da27",
+                    "outline-variant": "#c2cab0",
+                    "on-surface": "#191c1d",
+                    "primary-fixed-dim": "#98da27",
+                    "tertiary-fixed": "#fad7ff",
+                    "surface-bright": "#f8f9fa"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": [
+                            "Inter"
+                    ],
+                    "body": [
+                            "Inter"
+                    ],
+                    "label": [
+                            "Inter"
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col md:flex-row overflow-x-hidden">
+<!-- TopAppBar (Mobile Only) -->
+<header class="md:hidden flex justify-between items-center w-full px-3 z-40 bg-slate-50/80 backdrop-blur-md text-lime-400 font-['Inter'] text-[12px] tracking-tight border-b border-slate-200/20 top-0 h-10 sticky">
+<div class="flex items-center gap-2">
+<span class="text-sm font-black tracking-tighter text-slate-900">PRECISION_LEDGER</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-500 hover:bg-slate-100 transition-colors text-[18px]" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-slate-500 hover:bg-slate-100 transition-colors text-[18px]" data-icon="tune">tune</span>
+<img alt="User avatar" class="w-5 h-5 rounded-full" data-alt="Small circular avatar placeholder with green background and white initial" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0KfGSdqsRvpS-xX5I3l96YS6jzcPfPktJy_Yfocq_DwDUgq-fyS8ijdkMD7mWhLYzdiuQpjbADXjlw3Wa67isyRZ9w0Jtv0rrsOP6dbdLQxELIBi14sKTnEmYIpMT44Mo_2BDLObSVAeaGLhjr8Vb0nPxOQ_MUTdr4chvV31pYwEA9E8WQOxz-w_JlrRy335lTxfUaf2OW4mWvS4fhpDo3wx6e9LmNVcLFp1YYyhr8kbbMYBHeDBL9eOIP8xNvP9591CoL_BELaY"/>
+</div>
+</header>
+<!-- SideNavBar (Web Only) -->
+<nav class="hidden md:flex flex-col items-center py-4 gap-y-6 bg-slate-50 text-lime-500 font-['Inter'] text-[11px] font-medium tracking-wide border-r border-slate-200/15 h-screen w-16 md:w-20 sticky top-0 transition-all duration-200 ease-in-out shrink-0 z-50">
+<div class="flex flex-col items-center gap-1 mb-4">
+<img alt="System Operator" class="w-8 h-8 rounded-full" data-alt="Circular avatar for system operator with green background and white OP text" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzFWHPjZ6COKrRUftcpvkdwvnzwkwCjkkZhbK5AJyONCpdwsOyjBCTVZ-QBi29v6VzAvQPcaUFQnljdAwNUvZhAlBaS8UgK1VtwKc-ldiagr0aR9bfUkf0qRNcT3RbMq3PYAJCWipin2kIr9N2OODKNxaMMqUjFFc9csr_pa33J-I8FrAy5ymsois0KIsC0kkycHdwzqKQ52Ipf_l88UZd_M0efAUIGiXOkpsasBBXYfYlI8kuPKlIXgqjInI5ORMHG9FEHAQYwz0"/>
+<span class="text-xs font-bold uppercase text-slate-400 mt-2">OP_01</span>
+<span class="text-[9px] text-slate-400">Verified</span>
+</div>
+<div class="flex flex-col w-full gap-y-1">
+<a class="flex flex-col items-center gap-1 py-3 text-lime-500 border-r-2 border-lime-500 bg-lime-500/5 transition-all duration-200 ease-in-out w-full" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="grid_view" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+<span>Overview</span>
+</a>
+<a class="flex flex-col items-center gap-1 py-3 text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 ease-in-out w-full" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="monitoring">monitoring</span>
+<span>Analytics</span>
+</a>
+<a class="flex flex-col items-center gap-1 py-3 text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 ease-in-out w-full" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="receipt_long">receipt_long</span>
+<span>Ledger</span>
+</a>
+<a class="flex flex-col items-center gap-1 py-3 text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 ease-in-out w-full" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span>Assets</span>
+</a>
+<a class="flex flex-col items-center gap-1 py-3 text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 ease-in-out w-full" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="hub">hub</span>
+<span>Nodes</span>
+</a>
+<a class="flex flex-col items-center gap-1 py-3 text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200 ease-in-out w-full" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+<span>System</span>
+</a>
+</div>
+</nav>
+<!-- Main Canvas -->
+<main class="flex-1 flex flex-col p-4 md:p-6 lg:p-8 gap-6 max-w-[1400px] mx-auto w-full">
+<!-- Header -->
+<header class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-2">
+<div>
+<h1 class="font-['Inter'] text-[2.5rem] font-bold tracking-tight text-on-surface leading-none mb-1">Overview</h1>
+<p class="text-[11px] font-medium text-on-surface-variant uppercase tracking-wider">System Status: Nominal | Sync: 100%</p>
+</div>
+<div class="flex items-center gap-2">
+<button class="h-7 px-3 bg-surface-container-lowest border border-outline-variant/20 rounded text-[11px] font-medium text-on-surface hover:bg-surface-container-low transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                    Last 30 Days
+                </button>
+<button class="h-7 px-4 bg-gradient-to-tr from-primary to-primary-container text-on-primary-container rounded text-[11px] font-bold hover:opacity-90 transition-opacity">
+                    Generate Report
+                </button>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-4 auto-rows-min">
+<!-- Total Balance Card (Large Anchor) -->
+<div class="md:col-span-8 bg-surface-container-lowest rounded-lg border border-outline-variant/20 p-5 flex flex-col justify-between relative overflow-hidden group">
+<!-- Decorative Blur -->
+<div class="absolute -right-20 -top-20 w-64 h-64 bg-primary-container/10 rounded-full blur-3xl opacity-50 group-hover:opacity-70 transition-opacity duration-500"></div>
+<div class="relative z-10 flex justify-between items-start mb-8">
+<div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1 mb-1">
+<span class="material-symbols-outlined text-[12px] text-primary">account_balance</span>
+                            Total Liquidity
+                        </span>
+<div class="flex items-baseline gap-2">
+<h2 class="font-['Inter'] text-[3.5rem] font-bold tracking-tighter text-on-surface leading-none">$1,245,892.00</h2>
+<span class="text-[12px] text-primary-container font-medium flex items-center bg-primary/10 px-1.5 py-0.5 rounded">
+<span class="material-symbols-outlined text-[12px]">arrow_upward</span>
+                                14.2%
+                            </span>
+</div>
+</div>
+<button class="h-7 w-7 flex items-center justify-center rounded bg-surface-container-low hover:bg-surface-container-high transition-colors text-on-surface-variant border border-outline-variant/10">
+<span class="material-symbols-outlined text-[16px]">more_vert</span>
+</button>
+</div>
+<div class="relative z-10 grid grid-cols-3 gap-4 border-t border-outline-variant/10 pt-4 mt-auto">
+<div>
+<span class="text-[10px] font-medium text-on-surface-variant uppercase tracking-widest block mb-0.5">Available Cash</span>
+<span class="text-[14px] font-semibold text-on-surface">$420,500.00</span>
+</div>
+<div>
+<span class="text-[10px] font-medium text-on-surface-variant uppercase tracking-widest block mb-0.5">Invested Assets</span>
+<span class="text-[14px] font-semibold text-on-surface">$825,392.00</span>
+</div>
+<div>
+<span class="text-[10px] font-medium text-on-surface-variant uppercase tracking-widest block mb-0.5">Pending Settlement</span>
+<span class="text-[14px] font-semibold text-on-surface-variant border-b border-dashed border-outline-variant/30">$12,450.00</span>
+</div>
+</div>
+</div>
+<!-- Savings Goal (Compact) -->
+<div class="md:col-span-4 bg-surface-container-lowest rounded-lg border border-outline-variant/20 p-4 flex flex-col relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-primary">target</span>
+                        Q3 Acquisition Goal
+                    </span>
+<span class="text-[11px] font-medium text-primary">68%</span>
+</div>
+<div class="flex-1 flex flex-col justify-center">
+<div class="flex items-end justify-between mb-2">
+<span class="text-[1.5rem] font-bold text-on-surface leading-none">$1.7M</span>
+<span class="text-[11px] text-on-surface-variant">of $2.5M target</span>
+</div>
+<!-- Progress Bar -->
+<div class="w-full h-1.5 bg-surface-container-low rounded-full overflow-hidden mt-2">
+<div class="h-full bg-gradient-to-r from-primary to-primary-container rounded-full w-[68%]"></div>
+</div>
+<div class="flex justify-between mt-2 text-[9px] text-on-surface-variant font-medium">
+<span>Started Jan 1</span>
+<span>Est. Completion: Nov 15</span>
+</div>
+</div>
+</div>
+<!-- Cash Flow Chart -->
+<div class="md:col-span-7 bg-surface-container-lowest rounded-lg border border-outline-variant/20 p-4 flex flex-col h-[280px]">
+<div class="flex justify-between items-center mb-4">
+<span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-primary">bar_chart</span>
+                        Cash Flow Analysis
+                    </span>
+<div class="flex gap-2">
+<div class="flex items-center gap-1 text-[9px] text-on-surface-variant font-medium">
+<div class="w-2 h-2 rounded bg-primary-container"></div> Inflow
+                        </div>
+<div class="flex items-center gap-1 text-[9px] text-on-surface-variant font-medium">
+<div class="w-2 h-2 rounded bg-surface-container-high border border-outline-variant/30"></div> Outflow
+                        </div>
+</div>
+</div>
+<!-- Abstract Bar Chart Representation -->
+<div class="flex-1 flex items-end justify-between gap-1 mt-2 relative">
+<!-- Grid Lines -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none">
+<div class="border-b border-outline-variant/5 w-full h-0"></div>
+<div class="border-b border-outline-variant/5 w-full h-0"></div>
+<div class="border-b border-outline-variant/5 w-full h-0"></div>
+<div class="border-b border-outline-variant/5 w-full h-0"></div>
+</div>
+<!-- Bars -->
+<div class="w-full flex justify-between items-end gap-1 h-full z-10 pb-4">
+<!-- Jan -->
+<div class="w-full max-w-[24px] flex flex-col gap-0.5 justify-end h-full relative group">
+<div class="w-full bg-primary-container/80 rounded-t h-[60%] group-hover:bg-primary-container transition-colors"></div>
+<div class="w-full bg-surface-container-high border border-outline-variant/20 rounded-b h-[40%] group-hover:bg-surface-container-highest transition-colors"></div>
+<span class="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[9px] text-on-surface-variant">Jan</span>
+</div>
+<!-- Feb -->
+<div class="w-full max-w-[24px] flex flex-col gap-0.5 justify-end h-full relative group">
+<div class="w-full bg-primary-container/80 rounded-t h-[45%] group-hover:bg-primary-container transition-colors"></div>
+<div class="w-full bg-surface-container-high border border-outline-variant/20 rounded-b h-[35%] group-hover:bg-surface-container-highest transition-colors"></div>
+<span class="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[9px] text-on-surface-variant">Feb</span>
+</div>
+<!-- Mar -->
+<div class="w-full max-w-[24px] flex flex-col gap-0.5 justify-end h-full relative group">
+<div class="w-full bg-primary-container/80 rounded-t h-[75%] group-hover:bg-primary-container transition-colors"></div>
+<div class="w-full bg-surface-container-high border border-outline-variant/20 rounded-b h-[50%] group-hover:bg-surface-container-highest transition-colors"></div>
+<span class="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[9px] text-on-surface-variant">Mar</span>
+</div>
+<!-- Apr -->
+<div class="w-full max-w-[24px] flex flex-col gap-0.5 justify-end h-full relative group">
+<div class="w-full bg-primary-container/80 rounded-t h-[65%] group-hover:bg-primary-container transition-colors"></div>
+<div class="w-full bg-surface-container-high border border-outline-variant/20 rounded-b h-[40%] group-hover:bg-surface-container-highest transition-colors"></div>
+<span class="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[9px] text-on-surface-variant">Apr</span>
+</div>
+<!-- May -->
+<div class="w-full max-w-[24px] flex flex-col gap-0.5 justify-end h-full relative group">
+<div class="w-full bg-primary-container/80 rounded-t h-[85%] group-hover:bg-primary-container transition-colors"></div>
+<div class="w-full bg-surface-container-high border border-outline-variant/20 rounded-b h-[60%] group-hover:bg-surface-container-highest transition-colors"></div>
+<span class="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[9px] text-on-surface-variant">May</span>
+</div>
+<!-- Jun -->
+<div class="w-full max-w-[24px] flex flex-col gap-0.5 justify-end h-full relative group">
+<div class="w-full bg-primary-container/80 rounded-t h-[55%] group-hover:bg-primary-container transition-colors"></div>
+<div class="w-full bg-surface-container-high border border-outline-variant/20 rounded-b h-[30%] group-hover:bg-surface-container-highest transition-colors"></div>
+<span class="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[9px] text-on-surface-variant">Jun</span>
+</div>
+<!-- Jul -->
+<div class="w-full max-w-[24px] flex flex-col gap-0.5 justify-end h-full relative group">
+<div class="w-full bg-primary-container/80 rounded-t h-[90%] group-hover:bg-primary-container transition-colors"></div>
+<div class="w-full bg-surface-container-high border border-outline-variant/20 rounded-b h-[45%] group-hover:bg-surface-container-highest transition-colors"></div>
+<span class="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[9px] text-on-surface-variant">Jul</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Activity List -->
+<div class="md:col-span-5 bg-surface-container-lowest rounded-lg border border-outline-variant/20 p-4 flex flex-col h-[280px]">
+<div class="flex justify-between items-center mb-3">
+<span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-primary">history</span>
+                        Recent Ledger Entries
+                    </span>
+<button class="text-[10px] font-medium text-primary hover:underline">View All</button>
+</div>
+<div class="flex flex-col gap-1 overflow-y-auto pr-1 flex-1">
+<!-- Item 1 -->
+<div class="flex items-center justify-between p-2 rounded hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface border border-outline-variant/10">
+<span class="material-symbols-outlined text-[12px]">payments</span>
+</div>
+<div>
+<p class="text-[11px] font-semibold text-on-surface">Stripe Payout</p>
+<p class="text-[9px] text-on-surface-variant">Today, 09:41 AM</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-[11px] font-bold text-primary-container bg-primary/10 px-1 rounded inline-block">+$12,450.00</p>
+<p class="text-[9px] text-on-surface-variant mt-0.5">Completed</p>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center justify-between p-2 rounded hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface border border-outline-variant/10">
+<span class="material-symbols-outlined text-[12px]">cloud</span>
+</div>
+<div>
+<p class="text-[11px] font-semibold text-on-surface">AWS Cloud Services</p>
+<p class="text-[9px] text-on-surface-variant">Yesterday, 14:22 PM</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-[11px] font-semibold text-on-surface">-$2,140.50</p>
+<p class="text-[9px] text-on-surface-variant mt-0.5">Completed</p>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex items-center justify-between p-2 rounded hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface border border-outline-variant/10">
+<span class="material-symbols-outlined text-[12px]">work</span>
+</div>
+<div>
+<p class="text-[11px] font-semibold text-on-surface">Consulting Retainer</p>
+<p class="text-[9px] text-on-surface-variant">Oct 24, 11:00 AM</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-[11px] font-bold text-primary-container bg-primary/10 px-1 rounded inline-block">+$5,000.00</p>
+<p class="text-[9px] text-on-surface-variant mt-0.5">Pending</p>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="flex items-center justify-between p-2 rounded hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface border border-outline-variant/10">
+<span class="material-symbols-outlined text-[12px]">account_balance</span>
+</div>
+<div>
+<p class="text-[11px] font-semibold text-on-surface">Quarterly Taxes</p>
+<p class="text-[9px] text-on-surface-variant">Oct 15, 08:30 AM</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-[11px] font-semibold text-on-surface">-$45,200.00</p>
+<p class="text-[9px] text-on-surface-variant mt-0.5">Cleared</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
