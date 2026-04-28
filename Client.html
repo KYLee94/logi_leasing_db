@@ -41,8 +41,19 @@ function getPublicSnapshotBaseUrl_() {
   return normalizeFlagString_(RUNTIME_CLIENT_CONFIG.publicSnapshotBaseUrl || "");
 }
 
+function getPublicSnapshotBaseUrls_() {
+  const configured = getPublicSnapshotBaseUrl_();
+  const urls = [
+    configured,
+    "https://raw.githubusercontent.com/KYLee94/logi_leasing_db/main/docs/data",
+    "https://cdn.jsdelivr.net/gh/KYLee94/logi_leasing_db@main/docs/data",
+  ].map((url) => normalizeFlagString_(url).replace(/\/+$/, ""))
+    .filter(Boolean);
+  return Array.from(new Set(urls));
+}
+
 function canUsePublicSnapshots_() {
-  return !IS_ADMIN && !!getPublicSnapshotBaseUrl_();
+  return !IS_ADMIN && getPublicSnapshotBaseUrls_().length > 0;
 }
 
 const IS_ADMIN = APP_FLAGS.isAdmin;
@@ -580,26 +591,38 @@ function setThemePreference_(preference) {
 }
 
 function buildPublicSnapshotUrl_(name) {
-  const base = getPublicSnapshotBaseUrl_().replace(/\/+$/, "");
+  const base = getPublicSnapshotBaseUrls_()[0] || "";
   return base ? `${base}/${name}` : "";
 }
 
 function fetchPublicSnapshotJson_(name, timeoutMs) {
-  const url = buildPublicSnapshotUrl_(name);
-  if (!url) return Promise.reject(new Error("PUBLIC_SNAPSHOT_BASE_URL is not configured"));
-  const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
-  const timer = controller ? window.setTimeout(() => controller.abort(), timeoutMs || 15000) : null;
-  return fetch(url, {
-    method: "GET",
-    headers: { "Accept": "application/json" },
-    cache: "no-store",
-    signal: controller ? controller.signal : undefined,
-  }).then((response) => {
-    if (!response.ok) throw new Error(`Public snapshot fetch failed: ${response.status}`);
-    return response.json();
-  }).finally(() => {
-    if (timer) window.clearTimeout(timer);
-  });
+  const bases = getPublicSnapshotBaseUrls_();
+  if (!bases.length) return Promise.reject(new Error("PUBLIC_SNAPSHOT_BASE_URL is not configured"));
+  let lastError = null;
+  return bases.reduce((chain, base) => {
+    return chain.catch(() => {
+      const url = `${base}/${name}`;
+      const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+      const timer = controller ? window.setTimeout(() => controller.abort(), timeoutMs || 15000) : null;
+      return fetch(url, {
+        method: "GET",
+        headers: { "Accept": "application/json" },
+        cache: "no-store",
+        signal: controller ? controller.signal : undefined,
+      }).then((response) => {
+        if (!response.ok) throw new Error(`Public snapshot fetch failed: ${response.status}`);
+        return response.json();
+      }).catch((error) => {
+        lastError = error;
+        throw error;
+      }).finally(() => {
+        if (timer) window.clearTimeout(timer);
+      });
+    });
+  }, Promise.reject(new Error("Trying public snapshot fallbacks")))
+    .catch(() => {
+      throw lastError || new Error("Public snapshot fetch failed");
+    });
 }
 
 function requestBootstrapData_() {
