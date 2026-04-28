@@ -919,6 +919,11 @@ function refreshDashboardCaches_() {
   if (typeof buildAdminReviewCache_ === 'function') {
     persistJsonScriptProperty_('ADMIN_REVIEW_CACHE_JSON', buildAdminReviewCache_(model, homePayload), { allowChunking: true });
   }
+  if (typeof buildAdminSummaryPayload_ === 'function') {
+    persistJsonScriptProperty_('ADMIN_SUMMARY_JSON', buildAdminSummaryPayload_(model, homePayload, bootstrap, {
+      errorCount: 0,
+    }), { allowChunking: true });
+  }
   refreshStaticPayloadSnapshotsFromModel_(model, {
     assetOptions: assetOptions,
     companyOptions: companyOptions,
@@ -1082,6 +1087,94 @@ function installOrUpdateTriggers(request) {
   ScriptApp.newTrigger('handleSpreadsheetChange').forSpreadsheet(config.spreadsheetId).onChange().create();
 }
 
+function hasProjectTriggerByHandler_(handlerName) {
+  try {
+    return ScriptApp.getProjectTriggers().some(function (trigger) {
+      return trigger.getHandlerFunction() === handlerName;
+    });
+  } catch (error) {
+    return false;
+  }
+}
+
+function clearProjectTriggersByHandler_(handlerName) {
+  try {
+    ScriptApp.getProjectTriggers().forEach(function (trigger) {
+      if (trigger.getHandlerFunction() === handlerName) {
+        ScriptApp.deleteTrigger(trigger);
+      }
+    });
+  } catch (error) {
+    // no-op
+  }
+}
+
+function queueAdminOneShotJob_(handlerName, queueKey, delayMs) {
+  const props = PropertiesService.getScriptProperties();
+  const normalizedDelayMs = Math.max(1000, Number(delayMs || 5000));
+  if (!hasProjectTriggerByHandler_(handlerName)) {
+    ScriptApp.newTrigger(handlerName).timeBased().after(normalizedDelayMs).create();
+  }
+  props.setProperty(`ADMIN_JOB_${queueKey}_STATUS`, 'queued');
+  props.setProperty(`ADMIN_JOB_${queueKey}_QUEUED_AT`, String(Date.now()));
+  return {
+    status: 'queued',
+    handler: handlerName,
+    queueKey: queueKey,
+    queuedAt: new Date().toISOString(),
+  };
+}
+
+function finalizeAdminOneShotJob_(handlerName, queueKey, status, message) {
+  const props = PropertiesService.getScriptProperties();
+  props.setProperty(`ADMIN_JOB_${queueKey}_STATUS`, safeString_(status || 'done'));
+  props.setProperty(`ADMIN_JOB_${queueKey}_FINISHED_AT`, String(Date.now()));
+  props.setProperty(`ADMIN_JOB_${queueKey}_MESSAGE`, safeString_(message || ''));
+  clearProjectTriggersByHandler_(handlerName);
+}
+
+function runQueuedAdminRefreshCalculation() {
+  try {
+    refreshDerivedArtifacts_({ force: true, reason: 'queued_admin_refresh' });
+    finalizeAdminOneShotJob_('runQueuedAdminRefreshCalculation', 'REFRESH', 'success', '계산 갱신 완료');
+  } catch (error) {
+    finalizeAdminOneShotJob_('runQueuedAdminRefreshCalculation', 'REFRESH', 'failure', safeString_(error && error.message) || '계산 갱신 실패');
+    throw error;
+  }
+}
+
+function runQueuedAdminRefreshSnapshot() {
+  try {
+    refreshDerivedArtifacts_({ force: true, reason: 'queued_admin_snapshot' });
+    finalizeAdminOneShotJob_('runQueuedAdminRefreshSnapshot', 'SNAPSHOT', 'success', '정적 스냅샷 갱신 완료');
+  } catch (error) {
+    finalizeAdminOneShotJob_('runQueuedAdminRefreshSnapshot', 'SNAPSHOT', 'failure', safeString_(error && error.message) || '정적 스냅샷 갱신 실패');
+    throw error;
+  }
+}
+
+function runQueuedAdminSyncOpenDart() {
+  try {
+    syncOpenDartData();
+    refreshDerivedArtifacts_({ force: true, reason: 'queued_admin_sync_open_dart' });
+    finalizeAdminOneShotJob_('runQueuedAdminSyncOpenDart', 'OPEN_DART', 'success', 'OpenDART 동기화 완료');
+  } catch (error) {
+    finalizeAdminOneShotJob_('runQueuedAdminSyncOpenDart', 'OPEN_DART', 'failure', safeString_(error && error.message) || 'OpenDART 동기화 실패');
+    throw error;
+  }
+}
+
+function runQueuedAdminSyncBuildingRegister() {
+  try {
+    syncBuildingRegisterData();
+    refreshDerivedArtifacts_({ force: true, reason: 'queued_admin_sync_building' });
+    finalizeAdminOneShotJob_('runQueuedAdminSyncBuildingRegister', 'BUILDING', 'success', '건축물대장 동기화 완료');
+  } catch (error) {
+    finalizeAdminOneShotJob_('runQueuedAdminSyncBuildingRegister', 'BUILDING', 'failure', safeString_(error && error.message) || '건축물대장 동기화 실패');
+    throw error;
+  }
+}
+
 function refreshDerivedArtifacts_(options) {
   const normalized = options || {};
   if (!normalized.force && !isDataDirty_() && getCachedJson_(buildKeyedPayloadKey_('bootstrap'))) {
@@ -1151,21 +1244,17 @@ function refreshCalculationSheetIfStale_() {
 
 function adminRefreshCalculationSheet(request) {
   assertAdmin_(request);
-  return refreshDerivedArtifacts_({ force: true, reason: 'admin_refresh' });
+  return queueAdminOneShotJob_('runQueuedAdminRefreshCalculation', 'REFRESH', 5000);
 }
 
 function adminSyncOpenDartData(request) {
   assertAdmin_(request);
-  const result = syncOpenDartData();
-  refreshDerivedArtifacts_({ force: true, reason: 'admin_sync_open_dart' });
-  return result;
+  return queueAdminOneShotJob_('runQueuedAdminSyncOpenDart', 'OPEN_DART', 5000);
 }
 
 function adminSyncBuildingRegisterData(request) {
   assertAdmin_(request);
-  const result = syncBuildingRegisterData();
-  refreshDerivedArtifacts_({ force: true, reason: 'admin_sync_building' });
-  return result;
+  return queueAdminOneShotJob_('runQueuedAdminSyncBuildingRegister', 'BUILDING', 5000);
 }
 
 function adminRunDataAudit(request) {

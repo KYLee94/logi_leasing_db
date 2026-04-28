@@ -7737,6 +7737,7 @@ function renderAdmin(admin) {
   const triggerRows = safeAdmin.triggers || [];
   const snapshotState = safeAdmin.staticSnapshotState || {};
   const reconciliation = safeGet_(safeAdmin, ["uiDataReconciliation"]) || {};
+  const jobStates = safeGet_(safeAdmin, ["jobStates"]) || {};
   const reviewMetrics = safeAdmin.reviewMetrics || [];
   const loadErrors = safeAdmin.loadErrors || [];
   const hasSnapshotTrigger = triggerRows.some((row) => row.handler === "scheduledRefreshDashboardSnapshot");
@@ -7828,6 +7829,10 @@ function renderAdmin(admin) {
             ["스냅샷 오류", formatNumber_(snapshotState.errorCount)],
             ["스냅샷 트리거", hasSnapshotTrigger ? "설치됨" : "미설치"],
             ["설정된 스냅샷 시각", `${formatNumber_(snapshotState.refreshHour || 9)}시`],
+            ["계산 갱신 작업", [safeGet_(jobStates, ["refresh", "status"]) || "-", safeGet_(jobStates, ["refresh", "message"]) || "-"].join(" / ")],
+            ["스냅샷 작업", [safeGet_(jobStates, ["snapshot", "status"]) || "-", safeGet_(jobStates, ["snapshot", "message"]) || "-"].join(" / ")],
+            ["OpenDART 작업", [safeGet_(jobStates, ["openDart", "status"]) || "-", safeGet_(jobStates, ["openDart", "message"]) || "-"].join(" / ")],
+            ["건축물대장 작업", [safeGet_(jobStates, ["building", "status"]) || "-", safeGet_(jobStates, ["building", "message"]) || "-"].join(" / ")],
           ])}
         </section>
 
