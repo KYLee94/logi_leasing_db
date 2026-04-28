@@ -1019,6 +1019,77 @@ function getAdminBacklogDetail(request) {
   return { kind: kind, rows: [] };
 }
 
+function adminGetQualityIssueCell(request) {
+  assertAdmin_(request);
+  const sheetName = safeString_(request && request.sheetName);
+  const rowNumber = Number(request && request.rowNumber);
+  const fieldName = safeString_(request && request.fieldName);
+  if (!sheetName || !rowNumber || rowNumber < 2 || !fieldName) {
+    throw new Error('시트명, 행번호, 필드명이 있는 오류만 수정할 수 있습니다.');
+  }
+  const sheet = getSpreadsheet_().getSheetByName(sheetName);
+  if (!sheet) throw new Error('시트를 찾지 못했습니다: ' + sheetName);
+  if (rowNumber > sheet.getLastRow()) throw new Error('행번호가 시트 범위를 벗어났습니다: ' + rowNumber);
+  const column = resolveQualitySheetColumn_(sheet, fieldName);
+  const cell = sheet.getRange(rowNumber, column.columnIndex);
+  return {
+    sheetName: sheetName,
+    rowNumber: rowNumber,
+    fieldName: fieldName,
+    resolvedHeader: column.header,
+    columnIndex: column.columnIndex,
+    currentValue: cell.getDisplayValue(),
+  };
+}
+
+function adminUpdateQualityIssueCell(request) {
+  assertAdmin_(request);
+  const sheetName = safeString_(request && request.sheetName);
+  const rowNumber = Number(request && request.rowNumber);
+  const fieldName = safeString_(request && request.fieldName);
+  const newValue = request && Object.prototype.hasOwnProperty.call(request, 'newValue') ? request.newValue : '';
+  const reason = safeString_(request && request.reason);
+  if (!sheetName || !rowNumber || rowNumber < 2 || !fieldName) {
+    throw new Error('시트명, 행번호, 필드명이 있는 오류만 수정할 수 있습니다.');
+  }
+  if (!reason) {
+    throw new Error('수정 사유를 입력해야 저장할 수 있습니다.');
+  }
+  const sheet = getSpreadsheet_().getSheetByName(sheetName);
+  if (!sheet) throw new Error('시트를 찾지 못했습니다: ' + sheetName);
+  if (rowNumber > sheet.getLastRow()) throw new Error('행번호가 시트 범위를 벗어났습니다: ' + rowNumber);
+  const column = resolveQualitySheetColumn_(sheet, fieldName);
+  const cell = sheet.getRange(rowNumber, column.columnIndex);
+  const oldValue = cell.getDisplayValue();
+  cell.setValue(newValue);
+  writeAuditLog_({
+    userEmail: safeString_(Session.getActiveUser().getEmail()),
+    actionType: 'UPDATE',
+    entityType: 'data_quality_issue',
+    entityId: sheetName + '!' + rowNumber + ':' + column.header,
+    sheetName: sheetName,
+    rowNumber: rowNumber,
+    fieldName: column.header,
+    oldValue: oldValue,
+    newValue: newValue,
+    reason: reason,
+    sourceFunction: 'adminUpdateQualityIssueCell',
+    sourceType: 'admin',
+    cacheInvalidated: true,
+  });
+  markDataDirty_('admin_quality_issue_update');
+  invalidateDashboardCaches_('admin_quality_issue_update');
+  return {
+    status: 'ok',
+    sheetName: sheetName,
+    rowNumber: rowNumber,
+    fieldName: fieldName,
+    resolvedHeader: column.header,
+    oldValue: oldValue,
+    newValue: newValue,
+  };
+}
+
 function getAdminModelForDetail_() {
   const cached = getAdminCachedModelFast_();
   if (cached) return cached;
@@ -1139,6 +1210,7 @@ function buildAdminReviewDetails_(homePayload, model) {
 
 function buildAdminGeneralDetailRow_(row) {
   return {
+    rowNumber: row.rowNumber || row._rowNumber || '',
     assetName: row.assetName || '',
     tenantMasterName: row.tenantMasterName || '',
     leaseSpaceId: row.leaseSpaceId || '',
@@ -1298,6 +1370,7 @@ function readAdminGeneralSheetProjection_() {
     reviewNote: ['calculated_review_notes', 'calculatedReviewNotes', 'review_note', 'reviewNote'],
   }).map(function (row) {
     return {
+      rowNumber: row._rowNumber || '',
       assetName: row.assetName || '',
       tenantMasterName: row.tenantMasterName || '',
       leaseSpaceId: row.leaseSpaceId || '',
@@ -1410,6 +1483,7 @@ function readSheetProjection_(sheet, fieldMap) {
   var output = new Array(rowCount);
   for (var rowIndex = 0; rowIndex < rowCount; rowIndex += 1) {
     var item = {};
+    item._rowNumber = rowIndex + 2;
     fieldNames.forEach(function (fieldName) {
       item[fieldName] = columnValues[fieldName][rowIndex];
     });
@@ -1424,6 +1498,63 @@ function findSheetColumnIndex_(headers, candidates) {
     if (found > -1) return found;
   }
   return -1;
+}
+
+function normalizeQualityFieldKey_(value) {
+  return safeString_(value).toLowerCase().replace(/\s+/g, '').replace(/[._/-]/g, '');
+}
+
+function getQualityFieldAliases_(fieldName) {
+  const text = safeString_(fieldName);
+  const key = normalizeQualityFieldKey_(text);
+  const aliases = {
+    '현재계약개시일': ['현재 계약개시일', 'current_start_date', 'currentStartDate'],
+    'currentstartdate': ['현재 계약개시일', 'current_start_date', 'currentStartDate'],
+    '현재계약만기일': ['현재 계약만기일', 'current_end_date', 'currentEndDate'],
+    'currentenddate': ['현재 계약만기일', 'current_end_date', 'currentEndDate'],
+    '임대면적': ['임대면적', 'leased_area_sqm', 'leasedAreaSqm'],
+    'leasedareasqm': ['임대면적', 'leased_area_sqm', 'leasedAreaSqm'],
+    '임대료': ['월임대료', '월 임대료', 'current_monthly_rent_total', 'currentMonthlyRentTotal', '평당 월임대료', 'rent_per_py', 'rentPerPy'],
+    '월임대료': ['월임대료', '월 임대료', 'current_monthly_rent_total', 'currentMonthlyRentTotal', '평당 월임대료', 'rent_per_py', 'rentPerPy'],
+    '평당월임대료': ['평당 월임대료', 'rent_per_py', 'rentPerPy'],
+    '평당월관리비': ['평당 월관리비', 'mf_per_py', 'mfPerPy'],
+    '보증금': ['보증금', 'deposit_amount', 'depositAmount'],
+    '계약상태': ['계약 상태', 'contract_status', 'contractStatus', 'status'],
+    'rf/fo': ['RF/FO', 'rf_months', 'fo_months', 'rfMonths', 'foMonths'],
+    'rf': ['RF', 'rf_months', 'rfMonths'],
+    'fo': ['FO', 'fo_months', 'foMonths'],
+    'source_doc_ref': ['source_doc_ref', 'sourceDocRef', '계약서 링크'],
+    'leasedocref': ['source_doc_ref', 'sourceDocRef', '계약서 링크'],
+    'leaseid': ['lease_id', 'leaseId'],
+    '건축물대장': ['query_key', 'sigunguCd', 'bjdongCd', 'bun', 'ji', 'review_note'],
+    'opendart': ['dart_corp_code', 'dartCorpCode', 'review_note'],
+    'e.noc': ['E.NOC', 'e_noc', 'e_noc_v2', 'eNoc'],
+    'enoc': ['E.NOC', 'e_noc', 'e_noc_v2', 'eNoc'],
+  };
+  const base = [text, text.replace(/\s+/g, ''), text.replace(/\s+/g, '_')].filter(Boolean);
+  return uniqueValues_(base.concat(aliases[key] || []));
+}
+
+function resolveQualitySheetColumn_(sheet, fieldName) {
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getDisplayValues()[0].map(function (value) {
+    return safeString_(value);
+  });
+  const aliases = getQualityFieldAliases_(fieldName);
+  let index = findSheetColumnIndex_(headers, aliases);
+  if (index < 0) {
+    const normalizedAliases = aliases.map(normalizeQualityFieldKey_);
+    index = headers.findIndex(function (header) {
+      return normalizedAliases.indexOf(normalizeQualityFieldKey_(header)) > -1;
+    });
+  }
+  if (index < 0) {
+    throw new Error('수정할 컬럼을 찾지 못했습니다: ' + fieldName);
+  }
+  return {
+    columnIndex: index + 1,
+    header: headers[index],
+    headers: headers,
+  };
 }
 
 function readAdminNumberField_(row, candidates) {

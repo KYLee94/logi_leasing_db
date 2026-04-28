@@ -5980,6 +5980,118 @@ function openQualityIssueDetailModal_(issue) {
   ]), renderBasisLine_("현재 검증 시점", issue.sheetName || "원천 시트", "오류", "validateDashboardData"));
 }
 
+function openQualityIssueDetailModal_(issue) {
+  const canEdit = IS_ADMIN && issue.sheetName && Number(issue.rowNumber) >= 2 && issue.fieldName;
+  const issuePayload = {
+    sheetName: issue.sheetName || "",
+    rowNumber: issue.rowNumber || "",
+    fieldName: issue.fieldName || "",
+  };
+  const detailHtml = `
+    ${renderKeyValueGrid_([
+      ["Severity", renderQualitySeverityChip_(issue.severity)],
+      ["시트", escapeHtml_(issue.sheetName || "-")],
+      ["문제 행", issue.rowNumber ? `${escapeHtml_(issue.rowNumber)}행` : "-"],
+      ["필드", escapeHtml_(issue.fieldName || "-")],
+      ["의심 오류", escapeHtml_(issue.issue || "-")],
+      ["권장 조치", escapeHtml_(issue.suggestedFix || "-")],
+      ["세부 내용", escapeHtml_(formatQualityDetails_(issue.details || issue.note || "-"))],
+    ])}
+    ${canEdit ? `
+      <div class="workspace-panel" style="margin-top:16px;">
+        <div class="section-header">
+          <div class="section-heading-copy">
+            <h3 class="section-title">원천 시트 바로 수정</h3>
+            <p class="section-description">저장하면 해당 셀만 수정되고 AuditLog에 이전값, 변경값, 사유가 기록됩니다.</p>
+          </div>
+        </div>
+        <div id="quality-edit-status" class="page-note">현재값을 불러오는 중입니다.</div>
+        <div class="key-value-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
+          <label class="key-value-item">
+            <span>현재값</span>
+            <strong id="quality-edit-current">-</strong>
+          </label>
+          <label class="key-value-item">
+            <span>수정 대상 컬럼</span>
+            <strong id="quality-edit-header">${escapeHtml_(issue.fieldName || "-")}</strong>
+          </label>
+        </div>
+        <div class="form-stack" style="margin-top:12px;">
+          <label class="control-label" for="quality-edit-new-value">새 값</label>
+          <input id="quality-edit-new-value" class="control-input" type="text" autocomplete="off">
+          <label class="control-label" for="quality-edit-reason">수정 사유</label>
+          <textarea id="quality-edit-reason" class="control-input" rows="3" placeholder="예: 원계약서 기준으로 누락된 만기일 입력"></textarea>
+          <div class="action-row">
+            <button id="quality-edit-save" class="primary-button" type="button" disabled>수정 저장</button>
+            <button class="secondary-button" type="button" data-close-surface="true">취소</button>
+          </div>
+        </div>
+      </div>
+    ` : `
+      <div class="state-shell" style="margin-top:16px;">
+        <strong>바로 수정할 수 없는 항목입니다.</strong>
+        <p>시트명, 행번호, 필드명이 모두 있는 오류만 이 화면에서 직접 수정할 수 있습니다.</p>
+      </div>
+    `}
+  `;
+  openMetricModal_("데이터 품질 상세", detailHtml, renderBasisLine_("현재 검증 시점", issue.sheetName || "원천 시트", "오류", "validateDashboardData"));
+  if (canEdit) bindQualityIssueEditForm_(issuePayload);
+}
+
+function formatQualityDetails_(details) {
+  if (details == null || details === "") return "-";
+  if (typeof details === "string") return details;
+  try {
+    return JSON.stringify(details);
+  } catch (error) {
+    return String(details);
+  }
+}
+
+function bindQualityIssueEditForm_(issuePayload) {
+  const statusNode = document.getElementById("quality-edit-status");
+  const currentNode = document.getElementById("quality-edit-current");
+  const headerNode = document.getElementById("quality-edit-header");
+  const newValueInput = document.getElementById("quality-edit-new-value");
+  const reasonInput = document.getElementById("quality-edit-reason");
+  const saveButton = document.getElementById("quality-edit-save");
+  callServer_("adminGetQualityIssueCell", Object.assign(buildAdminRequest_(), issuePayload), { timeoutMs: 30000 })
+    .then((cell) => {
+      if (currentNode) currentNode.textContent = cell.currentValue || "";
+      if (headerNode) headerNode.textContent = cell.resolvedHeader || issuePayload.fieldName || "-";
+      if (newValueInput) newValueInput.value = cell.currentValue || "";
+      if (statusNode) statusNode.textContent = `${cell.sheetName} ${cell.rowNumber}행 ${cell.resolvedHeader} 컬럼을 수정합니다.`;
+      if (saveButton) saveButton.disabled = false;
+    })
+    .catch((error) => {
+      if (statusNode) statusNode.textContent = (error && error.message) || "현재값을 불러오지 못했습니다.";
+    });
+  if (saveButton) {
+    saveButton.addEventListener("click", () => {
+      const reason = reasonInput ? reasonInput.value.trim() : "";
+      if (!reason) {
+        if (statusNode) statusNode.textContent = "수정 사유를 입력해야 저장할 수 있습니다.";
+        return;
+      }
+      saveButton.disabled = true;
+      if (statusNode) statusNode.textContent = "원천 시트를 수정하고 AuditLog를 기록하는 중입니다.";
+      callServer_("adminUpdateQualityIssueCell", Object.assign(buildAdminRequest_(), issuePayload, {
+        newValue: newValueInput ? newValueInput.value : "",
+        reason: reason,
+      }), { timeoutMs: 45000 })
+        .then((result) => {
+          if (statusNode) statusNode.textContent = `저장 완료: ${result.sheetName} ${result.rowNumber}행 ${result.resolvedHeader}`;
+          clearAllClientCaches_();
+          window.setTimeout(() => refreshActiveTab({ force: true }), 600);
+        })
+        .catch((error) => {
+          if (statusNode) statusNode.textContent = (error && error.message) || "수정 저장에 실패했습니다.";
+          saveButton.disabled = false;
+        });
+    });
+  }
+}
+
 function openAiPanel() {
   document.getElementById("ai-panel")?.classList.add("is-open");
   document.getElementById("ai-panel")?.setAttribute("aria-hidden", "false");
