@@ -215,14 +215,16 @@ function getRuntimeClientConfig_(deploymentContext) {
     deploymentChannel: normalizeReleaseChannel_(deployment.channel),
     webappAccess: safeString_(deployment.webappAccess),
     qaRoutingStatus: resolveQaRoutingStatus_(config),
+    debugMode: config.debugMode === true,
   };
 }
 
 function getBootstrapData() {
+  const startedAt = Date.now();
   const cacheKey = buildKeyedPayloadKey_('bootstrap');
   const viewer = getViewerContext_();
   const cached = getCachedJson_(cacheKey);
-  if (isBootstrapPayloadFresh_(cached)) return sanitizePayloadForViewer_(enrichBootstrapPayload_(cached), viewer);
+  if (isBootstrapPayloadFresh_(cached)) return returnDashboardPerf_('getBootstrapData', 'total:cache', startedAt, sanitizePayloadForViewer_(enrichBootstrapPayload_(cached), viewer));
   const shell = enrichBootstrapPayload_(buildBootstrapShell_());
   if (shell) {
     const dataDirty = isDataDirty_();
@@ -230,19 +232,25 @@ function getBootstrapData() {
       queueBootstrapBackgroundRefresh_(dataDirty ? 'bootstrap_data_dirty' : 'bootstrap_stale');
     }
     putCachedJson_(cacheKey, shell, getConfig_().payloadCacheTtlSeconds);
-    return sanitizePayloadForViewer_(shell, viewer);
+    return returnDashboardPerf_('getBootstrapData', 'total:shell', startedAt, sanitizePayloadForViewer_(shell, viewer));
   }
   const fallback = buildBootstrapShellFallback_();
   queueBootstrapBackgroundRefresh_('bootstrap_missing_shell');
-  return sanitizePayloadForViewer_(putCachedJson_(cacheKey, enrichBootstrapPayload_(fallback), getConfig_().payloadCacheTtlSeconds), viewer);
+  return returnDashboardPerf_('getBootstrapData', 'total:fallback', startedAt, sanitizePayloadForViewer_(putCachedJson_(cacheKey, enrichBootstrapPayload_(fallback), getConfig_().payloadCacheTtlSeconds), viewer));
 }
 
 function getInitialDashboardData(request) {
   const viewer = getViewerContextFromRequest_(request);
   const startedAt = Date.now();
-  const bootstrap = getBootstrapData(request);
-  const assetOptions = getAssetOptions();
-  const companyOptions = getCompanyOptions();
+  const bootstrap = measureDashboardStage_('getInitialDashboardData', 'bootstrap', function () {
+    return getBootstrapData(request);
+  });
+  const assetOptions = measureDashboardStage_('getInitialDashboardData', 'asset_options', function () {
+    return getAssetOptions();
+  });
+  const companyOptions = measureDashboardStage_('getInitialDashboardData', 'company_options', function () {
+    return getCompanyOptions();
+  });
   const defaults = bootstrap.defaults || {};
   const defaultAssetId = safeString_(defaults.assetId) || safeString_(safeGet_(assetOptions, [0, 'assetId']));
   const defaultTenantId = safeString_(defaults.tenantId) || safeString_(safeGet_(companyOptions, [0, 'tenantId']));
@@ -255,31 +263,45 @@ function getInitialDashboardData(request) {
   if (defaultAssetId) snapshotItems.push({ page: 'asset', id: defaultAssetId });
   if (defaultTenantId) snapshotItems.push({ page: 'company', id: defaultTenantId });
 
-  const snapshots = typeof readStaticPayloadSnapshotMap_ === 'function'
-    ? readStaticPayloadSnapshotMap_(snapshotItems)
-    : {};
+  const snapshots = measureDashboardStage_('getInitialDashboardData', 'snapshot_batch_read', function () {
+    return typeof readStaticPayloadSnapshotMap_ === 'function'
+      ? readStaticPayloadSnapshotMap_(snapshotItems)
+      : {};
+  }, { snapshotCount: snapshotItems.length });
 
   function getSnapshot(page, id) {
     return snapshots[buildStaticPayloadPropertyKey_(page, id || 'default')] || null;
   }
 
-  const homePayload = getSnapshot('home', 'default') || getHomeData(request);
+  const homePayload = measureDashboardStage_('getInitialDashboardData', 'home_payload', function () {
+    return getSnapshot('home', 'default') || getHomeData(request);
+  });
   const assetPayload = defaultAssetId
-    ? (getSnapshot('asset', defaultAssetId) || getAssetData(Object.assign({}, request || {}, { assetId: defaultAssetId })))
+    ? measureDashboardStage_('getInitialDashboardData', 'asset_payload', function () {
+      return getSnapshot('asset', defaultAssetId) || getAssetData(Object.assign({}, request || {}, { assetId: defaultAssetId }));
+    }, { assetId: defaultAssetId })
     : null;
   const companyPayload = defaultTenantId
-    ? (getSnapshot('company', defaultTenantId) || getCompanyData(Object.assign({}, request || {}, { tenantId: defaultTenantId })))
+    ? measureDashboardStage_('getInitialDashboardData', 'company_payload', function () {
+      return getSnapshot('company', defaultTenantId) || getCompanyData(Object.assign({}, request || {}, { tenantId: defaultTenantId }));
+    }, { tenantId: defaultTenantId })
     : null;
-  const sectorPayload = getSnapshot('sector', 'default') || getSectorData(request);
-  const toolsPayload = getSnapshot('tools', 'default') || getToolsData(Object.assign({}, request || {}, { assetIds: [], companyIds: [] }));
-  const playgroundPayload = getSnapshot('playground', 'default') || getPlaygroundData(Object.assign({}, request || {}, {
-    rowDimension: 'assetName',
-    columnDimension: 'none',
-    filterDimension: '',
-    filterValue: '',
-    valueMetric: 'leasedAreaSqm',
-    topN: 25,
-  }));
+  const sectorPayload = measureDashboardStage_('getInitialDashboardData', 'sector_payload', function () {
+    return getSnapshot('sector', 'default') || getSectorData(request);
+  });
+  const toolsPayload = measureDashboardStage_('getInitialDashboardData', 'tools_payload', function () {
+    return getSnapshot('tools', 'default') || getToolsData(Object.assign({}, request || {}, { assetIds: [], companyIds: [] }));
+  });
+  const playgroundPayload = measureDashboardStage_('getInitialDashboardData', 'playground_payload', function () {
+    return getSnapshot('playground', 'default') || getPlaygroundData(Object.assign({}, request || {}, {
+      rowDimension: 'assetName',
+      columnDimension: 'none',
+      filterDimension: '',
+      filterValue: '',
+      valueMetric: 'leasedAreaSqm',
+      topN: 25,
+    }));
+  });
 
   const enrichedBootstrap = Object.assign({}, bootstrap, {
     assetOptions: assetOptions,
@@ -290,7 +312,7 @@ function getInitialDashboardData(request) {
     }),
   });
 
-  return {
+  return returnDashboardPerf_('getInitialDashboardData', 'total', startedAt, {
     bootstrap: sanitizePayloadForViewer_(enrichedBootstrap, viewer),
     assetOptions: assetOptions,
     companyOptions: companyOptions,
@@ -312,7 +334,7 @@ function getInitialDashboardData(request) {
       durationMs: Date.now() - startedAt,
       source: 'initial_dashboard_batch',
     },
-  };
+  });
 }
 
 function enrichBootstrapPayload_(payload) {
@@ -356,17 +378,18 @@ function getViewerContextFromRequest_(request) {
 }
 
 function getHomeData(request) {
+  const startedAt = Date.now();
   const cacheKey = buildKeyedPayloadKey_('home');
   const viewer = getViewerContextFromRequest_(request);
   const viewerCached = getCachedPayloadForViewer_(cacheKey, viewer);
-  if (viewerCached) return viewerCached;
+  if (viewerCached) return returnDashboardPerf_('getHomeData', 'total:viewer_cache', startedAt, viewerCached);
   const cached = getCachedJson_(cacheKey);
-  if (isHomePayloadFresh_(cached)) return returnPayloadForViewer_(cached, viewer, cacheKey);
+  if (isHomePayloadFresh_(cached)) return returnDashboardPerf_('getHomeData', 'total:cache', startedAt, returnPayloadForViewer_(cached, viewer, cacheKey));
   const staticHome = readStaticPayloadSnapshot_('home', 'default');
   if (isHomePayloadFresh_(staticHome)) {
     putCachedJson_(cacheKey, staticHome, getConfig_().payloadCacheTtlSeconds);
     if (isDataDirty_()) queueBootstrapBackgroundRefresh_('home_static_snapshot_dirty');
-    return returnPayloadForViewer_(staticHome, viewer, cacheKey);
+    return returnDashboardPerf_('getHomeData', 'total:static_snapshot', startedAt, returnPayloadForViewer_(staticHome, viewer, cacheKey));
   }
   const persistedHome = readPersistedJsonProperty_('HOME_PAYLOAD_JSON');
   if (isHomePayloadFresh_(persistedHome)) {
@@ -380,12 +403,14 @@ function getHomeData(request) {
     return returnPayloadForViewer_(shell.home, viewer, cacheKey);
   }
   queueBootstrapBackgroundRefresh_('home_payload_stale');
-  const payload = buildHomePayload_(getModelOrRefreshCache_());
+  const payload = measureDashboardStage_('getHomeData', 'build_payload', function () {
+    return buildHomePayload_(getModelOrRefreshCache_());
+  });
   putCachedJson_(cacheKey, payload, getConfig_().payloadCacheTtlSeconds);
   if (typeof persistJsonScriptProperty_ === 'function') {
     persistJsonScriptProperty_('HOME_PAYLOAD_JSON', payload, { allowChunking: true });
   }
-  return returnPayloadForViewer_(payload, viewer, cacheKey);
+  return returnDashboardPerf_('getHomeData', 'total:build', startedAt, returnPayloadForViewer_(payload, viewer, cacheKey));
 }
 
 function resolveDefaultAssetId_() {
@@ -425,20 +450,21 @@ function normalizeEntityDataRequest_(input, idKey) {
 }
 
 function getAssetData(input) {
+  const startedAt = Date.now();
   const request = normalizeEntityDataRequest_(input, 'assetId');
   const viewer = getViewerContextFromRequest_(request);
   const defaultAssetId = resolveDefaultAssetId_();
   const selectedAssetId = request.id || defaultAssetId;
   const cacheKey = buildKeyedPayloadKey_('asset', selectedAssetId);
   const viewerCached = getCachedPayloadForViewer_(cacheKey, viewer);
-  if (viewerCached) return viewerCached;
+  if (viewerCached) return returnDashboardPerf_('getAssetData', 'total:viewer_cache', startedAt, viewerCached, { assetId: selectedAssetId });
   const cached = getCachedJson_(cacheKey);
-  if (cached) return returnPayloadForViewer_(cached, viewer, cacheKey);
+  if (cached) return returnDashboardPerf_('getAssetData', 'total:cache', startedAt, returnPayloadForViewer_(cached, viewer, cacheKey), { assetId: selectedAssetId });
   const staticPayload = readStaticPayloadSnapshot_('asset', selectedAssetId);
   if (staticPayload) {
     putCachedJson_(cacheKey, staticPayload, getConfig_().payloadCacheTtlSeconds);
     if (isDataDirty_()) queueBootstrapBackgroundRefresh_('asset_static_snapshot_dirty');
-    return returnPayloadForViewer_(staticPayload, viewer, cacheKey);
+    return returnDashboardPerf_('getAssetData', 'total:static_snapshot', startedAt, returnPayloadForViewer_(staticPayload, viewer, cacheKey), { assetId: selectedAssetId });
   }
   if (selectedAssetId && selectedAssetId === defaultAssetId) {
     const persisted = readPersistedJsonProperty_('DEFAULT_ASSET_PAYLOAD_JSON');
@@ -447,29 +473,32 @@ function getAssetData(input) {
       return returnPayloadForViewer_(persisted, viewer, cacheKey);
     }
   }
-  const payload = buildAssetPayload_(getModelOrRefreshCache_(), selectedAssetId);
+  const payload = measureDashboardStage_('getAssetData', 'build_payload', function () {
+    return buildAssetPayload_(getModelOrRefreshCache_(), selectedAssetId);
+  }, { assetId: selectedAssetId });
   putCachedJson_(cacheKey, payload, getConfig_().payloadCacheTtlSeconds);
   if (selectedAssetId && selectedAssetId === defaultAssetId && typeof persistJsonScriptProperty_ === 'function') {
     persistJsonScriptProperty_('DEFAULT_ASSET_PAYLOAD_JSON', payload, { allowChunking: true });
   }
-  return returnPayloadForViewer_(payload, viewer, cacheKey);
+  return returnDashboardPerf_('getAssetData', 'total:build', startedAt, returnPayloadForViewer_(payload, viewer, cacheKey), { assetId: selectedAssetId });
 }
 
 function getCompanyData(input) {
+  const startedAt = Date.now();
   const request = normalizeEntityDataRequest_(input, 'tenantId');
   const viewer = getViewerContextFromRequest_(request);
   const defaultTenantId = resolveDefaultTenantId_();
   const selectedTenantId = request.id || defaultTenantId;
   const cacheKey = buildKeyedPayloadKey_('company', selectedTenantId);
   const viewerCached = getCachedPayloadForViewer_(cacheKey, viewer);
-  if (viewerCached) return viewerCached;
+  if (viewerCached) return returnDashboardPerf_('getCompanyData', 'total:viewer_cache', startedAt, viewerCached, { tenantId: selectedTenantId });
   const cached = getCachedJson_(cacheKey);
-  if (cached) return returnPayloadForViewer_(cached, viewer, cacheKey);
+  if (cached) return returnDashboardPerf_('getCompanyData', 'total:cache', startedAt, returnPayloadForViewer_(cached, viewer, cacheKey), { tenantId: selectedTenantId });
   const staticPayload = readStaticPayloadSnapshot_('company', selectedTenantId);
   if (staticPayload) {
     putCachedJson_(cacheKey, staticPayload, getConfig_().payloadCacheTtlSeconds);
     if (isDataDirty_()) queueBootstrapBackgroundRefresh_('company_static_snapshot_dirty');
-    return returnPayloadForViewer_(staticPayload, viewer, cacheKey);
+    return returnDashboardPerf_('getCompanyData', 'total:static_snapshot', startedAt, returnPayloadForViewer_(staticPayload, viewer, cacheKey), { tenantId: selectedTenantId });
   }
   if (selectedTenantId && selectedTenantId === defaultTenantId) {
     const persisted = readPersistedJsonProperty_('DEFAULT_COMPANY_PAYLOAD_JSON');
@@ -478,57 +507,71 @@ function getCompanyData(input) {
       return returnPayloadForViewer_(persisted, viewer, cacheKey);
     }
   }
-  const payload = buildCompanyPayload_(getModelOrRefreshCache_(), selectedTenantId);
+  const payload = measureDashboardStage_('getCompanyData', 'build_payload', function () {
+    return buildCompanyPayload_(getModelOrRefreshCache_(), selectedTenantId);
+  }, { tenantId: selectedTenantId });
   putCachedJson_(cacheKey, payload, getConfig_().payloadCacheTtlSeconds);
   if (selectedTenantId && selectedTenantId === defaultTenantId && typeof persistJsonScriptProperty_ === 'function') {
     persistJsonScriptProperty_('DEFAULT_COMPANY_PAYLOAD_JSON', payload, { allowChunking: true });
   }
-  return returnPayloadForViewer_(payload, viewer, cacheKey);
+  return returnDashboardPerf_('getCompanyData', 'total:build', startedAt, returnPayloadForViewer_(payload, viewer, cacheKey), { tenantId: selectedTenantId });
 }
 
 function getSectorData(request) {
+  const startedAt = Date.now();
   const viewer = getViewerContextFromRequest_(request);
   const cacheKey = buildKeyedPayloadKey_('sector');
   const cached = getCachedJson_(cacheKey);
-  if (cached) return sanitizePayloadForViewer_(cached, viewer);
+  if (cached) return returnDashboardPerf_('getSectorData', 'total:cache', startedAt, sanitizePayloadForViewer_(cached, viewer));
   const staticPayload = readStaticPayloadSnapshot_('sector', 'default');
   if (staticPayload) {
     putCachedJson_(cacheKey, staticPayload, getConfig_().payloadCacheTtlSeconds);
-    return sanitizePayloadForViewer_(staticPayload, viewer);
+    return returnDashboardPerf_('getSectorData', 'total:static_snapshot', startedAt, sanitizePayloadForViewer_(staticPayload, viewer));
   }
-  return sanitizePayloadForViewer_(putCachedJson_(cacheKey, buildSectorPayload_(getModelOrRefreshCache_()), getConfig_().payloadCacheTtlSeconds), viewer);
+  const payload = measureDashboardStage_('getSectorData', 'build_payload', function () {
+    return buildSectorPayload_(getModelOrRefreshCache_());
+  });
+  return returnDashboardPerf_('getSectorData', 'total:build', startedAt, sanitizePayloadForViewer_(putCachedJson_(cacheKey, payload, getConfig_().payloadCacheTtlSeconds), viewer));
 }
 
 function getToolsData(request) {
+  const startedAt = Date.now();
   const viewer = getViewerContextFromRequest_(request);
   const normalized = normalizeToolsRequest_(request);
   const cacheKey = buildKeyedPayloadKey_('tools', normalized);
   const cached = getCachedJson_(cacheKey);
-  if (cached) return sanitizePayloadForViewer_(cached, viewer);
+  if (cached) return returnDashboardPerf_('getToolsData', 'total:cache', startedAt, sanitizePayloadForViewer_(cached, viewer));
   if (isDefaultToolsRequest_(normalized)) {
     const staticPayload = readStaticPayloadSnapshot_('tools', 'default');
     if (staticPayload) {
       putCachedJson_(cacheKey, staticPayload, getConfig_().payloadCacheTtlSeconds);
-      return sanitizePayloadForViewer_(staticPayload, viewer);
+      return returnDashboardPerf_('getToolsData', 'total:static_snapshot', startedAt, sanitizePayloadForViewer_(staticPayload, viewer));
     }
   }
-  return sanitizePayloadForViewer_(putCachedJson_(cacheKey, buildToolsPayload_(getModelOrRefreshCache_(), normalized), getConfig_().payloadCacheTtlSeconds), viewer);
+  const payload = measureDashboardStage_('getToolsData', 'build_payload', function () {
+    return buildToolsPayload_(getModelOrRefreshCache_(), normalized);
+  });
+  return returnDashboardPerf_('getToolsData', 'total:build', startedAt, sanitizePayloadForViewer_(putCachedJson_(cacheKey, payload, getConfig_().payloadCacheTtlSeconds), viewer));
 }
 
 function getPlaygroundData(request) {
+  const startedAt = Date.now();
   const viewer = getViewerContextFromRequest_(request);
   const normalized = normalizePlaygroundRequest_(request);
   const cacheKey = buildKeyedPayloadKey_('playground', normalized);
   const cached = getCachedJson_(cacheKey);
-  if (cached) return sanitizePayloadForViewer_(cached, viewer);
+  if (cached) return returnDashboardPerf_('getPlaygroundData', 'total:cache', startedAt, sanitizePayloadForViewer_(cached, viewer));
   if (isDefaultPlaygroundRequest_(normalized)) {
     const staticPayload = readStaticPayloadSnapshot_('playground', 'default');
     if (staticPayload) {
       putCachedJson_(cacheKey, staticPayload, getConfig_().payloadCacheTtlSeconds);
-      return sanitizePayloadForViewer_(staticPayload, viewer);
+      return returnDashboardPerf_('getPlaygroundData', 'total:static_snapshot', startedAt, sanitizePayloadForViewer_(staticPayload, viewer));
     }
   }
-  return sanitizePayloadForViewer_(putCachedJson_(cacheKey, buildPlaygroundPayload_(getModelOrRefreshCache_(), normalized), getConfig_().payloadCacheTtlSeconds), viewer);
+  const payload = measureDashboardStage_('getPlaygroundData', 'build_payload', function () {
+    return buildPlaygroundPayload_(getModelOrRefreshCache_(), normalized);
+  });
+  return returnDashboardPerf_('getPlaygroundData', 'total:build', startedAt, sanitizePayloadForViewer_(putCachedJson_(cacheKey, payload, getConfig_().payloadCacheTtlSeconds), viewer));
 }
 
 function getReviewBacklog() {

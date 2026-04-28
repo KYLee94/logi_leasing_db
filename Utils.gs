@@ -180,11 +180,13 @@ function rowsToObjects_(rows) {
 }
 
 function loadObjectsFromSheet_(spreadsheet, sheetName) {
-  const sheet = spreadsheet.getSheetByName(sheetName);
-  if (!sheet) {
-    return [];
-  }
-  return rowsToObjects_(sheet.getDataRange().getDisplayValues());
+  return measureDashboardStage_('SpreadsheetApp', `read:${sheetName}`, function () {
+    const sheet = spreadsheet.getSheetByName(sheetName);
+    if (!sheet) {
+      return [];
+    }
+    return rowsToObjects_(sheet.getDataRange().getDisplayValues());
+  }, { sheetName: sheetName });
 }
 
 function pickField_(row, candidates) {

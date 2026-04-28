@@ -11,6 +11,7 @@ const DEFAULT_SECRETS = Object.freeze({
 const DASHBOARD_CACHE_TTL_SECONDS = 600;
 const DASHBOARD_MODEL_CACHE_TTL_SECONDS = 900;
 const DASHBOARD_PAYLOAD_CACHE_TTL_SECONDS = 1800;
+const DEBUG_MODE = false;
 
 const DEFAULT_CONFIG = Object.freeze({
   spreadsheetId: '1powCa2TV7Pkqi3Un3mz3clJPwJ9xw7lMr1bZ0eLMqVA',
@@ -35,6 +36,7 @@ const DEFAULT_CONFIG = Object.freeze({
   mainWebappUrl: '',
   qaWebappUrl: '',
   publicSnapshotBaseUrl: 'https://kylee94.github.io/logi_leasing_db/data',
+  debugMode: DEBUG_MODE,
   qaScriptId: '',
   reviewStatuses: ['ok', 'missing', 'suspected_error', 'review_required'],
   calculationStatuses: ['ok', 'missing', 'suspected_error', 'review_required'],
@@ -178,6 +180,7 @@ function getConfig_() {
     mainWebappUrl: safeString_(props.getProperty('MAIN_WEBAPP_URL') || DEFAULT_CONFIG.mainWebappUrl),
     qaWebappUrl: safeString_(props.getProperty('QA_WEBAPP_URL') || DEFAULT_CONFIG.qaWebappUrl),
     publicSnapshotBaseUrl: safeString_(props.getProperty('PUBLIC_SNAPSHOT_BASE_URL') || DEFAULT_CONFIG.publicSnapshotBaseUrl),
+    debugMode: String(props.getProperty('DEBUG_MODE') || DEFAULT_CONFIG.debugMode).toLowerCase() === 'true',
     qaScriptId: safeString_(props.getProperty('QA_SCRIPT_ID') || DEFAULT_CONFIG.qaScriptId),
     adminEmails: (props.getProperty('ADMIN_EMAILS') || DEFAULT_CONFIG.adminEmails.join(',')).split(',').map(function (value) { return safeString_(value).toLowerCase(); }).filter(Boolean),
     adminRouteKeyHash: safeString_(props.getProperty('ADMIN_ROUTE_KEY_HASH') || DEFAULT_CONFIG.adminRouteKeyHash),

@@ -6,6 +6,43 @@ const PAYLOAD_SNAPSHOT_CHUNK_SIZE_ = 45000;
 const DASHBOARD_CACHE_LOG_KEY_ = 'dashboard:cache:last-event';
 const DASHBOARD_CACHE_LOG_TTL_SECONDS_ = 21600;
 
+function isDashboardDebugMode_() {
+  return getConfig_().debugMode === true;
+}
+
+function logDashboardPerfEvent_(functionName, stageName, durationMs, details) {
+  if (!isDashboardDebugMode_()) return;
+  const payload = {
+    scope: 'dashboard_perf',
+    functionName: safeString_(functionName),
+    stage: safeString_(stageName),
+    durationMs: Math.round(Number(durationMs || 0)),
+    at: Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd'T'HH:mm:ss"),
+    details: details || {},
+  };
+  console.log(JSON.stringify(payload));
+}
+
+function measureDashboardStage_(functionName, stageName, callback, details) {
+  const startedAt = Date.now();
+  try {
+    const result = callback();
+    logDashboardPerfEvent_(functionName, stageName, Date.now() - startedAt, details);
+    return result;
+  } catch (error) {
+    logDashboardPerfEvent_(functionName, `${stageName}:error`, Date.now() - startedAt, {
+      message: safeString_(error && error.message),
+      details: details || {},
+    });
+    throw error;
+  }
+}
+
+function returnDashboardPerf_(functionName, stageName, startedAt, payload, details) {
+  logDashboardPerfEvent_(functionName, stageName, Date.now() - startedAt, details);
+  return payload;
+}
+
 function logDashboardCacheEvent_(eventName, key, details) {
   const payload = {
     event: safeString_(eventName),
@@ -19,7 +56,9 @@ function logDashboardCacheEvent_(eventName, key, details) {
   } catch (error) {
     // Cache diagnostics must never block dashboard rendering.
   }
-  console.log(JSON.stringify(Object.assign({ scope: 'dashboard_cache' }, payload)));
+  if (isDashboardDebugMode_() || eventName === 'clear' || eventName === 'sheet_read') {
+    console.log(JSON.stringify(Object.assign({ scope: 'dashboard_cache' }, payload)));
+  }
 }
 
 function getCacheNamespace_() {

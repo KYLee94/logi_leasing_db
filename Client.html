@@ -58,6 +58,7 @@ function canUsePublicSnapshots_() {
 }
 
 const IS_ADMIN = APP_FLAGS.isAdmin;
+const CLIENT_DEBUG_MODE = RUNTIME_CLIENT_CONFIG.debugMode === true || String(localStorage.getItem("dashboard.debugMode") || "").toLowerCase() === "true";
 const TAB_ORDER = ["home", "asset", "company", "sector", "tools", "playground"].concat(IS_ADMIN ? ["admin"] : []);
 const PAGE_META = {
   home: {
@@ -1147,13 +1148,21 @@ function renderTabSkeleton(tab, options) {
 }
 
 function renderPayloadForTab_(tab, payload) {
-  if (tab === "home") return renderHome(payload);
-  if (tab === "asset") return renderAsset(payload);
-  if (tab === "company") return renderCompany(payload);
-  if (tab === "sector") return renderSector(payload);
-  if (tab === "tools") return renderTools(payload);
-  if (tab === "playground") return renderPlayground(payload);
-  if (tab === "admin") return renderAdmin(payload);
+  const startedAt = performance.now();
+  try {
+    if (tab === "home") return renderHome(payload);
+    if (tab === "asset") return renderAsset(payload);
+    if (tab === "company") return renderCompany(payload);
+    if (tab === "sector") return renderSector(payload);
+    if (tab === "tools") return renderTools(payload);
+    if (tab === "playground") return renderPlayground(payload);
+    if (tab === "admin") return renderAdmin(payload);
+  } catch (error) {
+    logPerf_(`render:${tab}`, performance.now() - startedAt, { status: "error", message: (error && error.message) || String(error) });
+    throw error;
+  } finally {
+    logPerf_(`render:${tab}`, performance.now() - startedAt, { status: "complete" });
+  }
 }
 
 function renderHomeLite_(kpis) {
@@ -5813,7 +5822,11 @@ function getTabRoot_(tab) {
 }
 
 function logPerf_(name, duration, extra) {
-  state.performance.push(Object.assign({ name: name, duration: Math.round(duration), at: new Date().toISOString() }, extra || {}));
+  const entry = Object.assign({ name: name, duration: Math.round(duration), at: new Date().toISOString() }, extra || {});
+  state.performance.push(entry);
+  if (CLIENT_DEBUG_MODE) {
+    console.log("[dashboard_perf]", entry);
+  }
 }
 
 function collectCheckedValues_(selector) {

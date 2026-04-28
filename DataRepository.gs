@@ -590,67 +590,86 @@ function loadOperationalModel_(options) {
   const config = getConfig_();
   const runtimeMeta = resolveModelRuntimeMeta_(normalizedOptions);
 
-  const rawCompanies = loadObjectsFromSheet_(spreadsheet, config.sheetNames.company);
-  const rawAssets = loadObjectsFromSheet_(spreadsheet, config.sheetNames.asset);
-  const rawManagers = loadObjectsFromSheet_(spreadsheet, config.sheetNames.manager);
-  const rawIssues = loadObjectsFromSheet_(spreadsheet, config.sheetNames.issue);
-  const rawTenantNormalization = loadObjectsFromSheet_(spreadsheet, config.sheetNames.sysTenantNormalize);
-  const rawAssetLookup = loadObjectsFromSheet_(spreadsheet, config.sheetNames.sysAssetLookup);
-  const rawGeneral = loadObjectsFromSheet_(spreadsheet, config.sheetNames.general);
-  const rawHistory = loadObjectsFromSheet_(spreadsheet, config.sheetNames.history);
+  const rawData = measureDashboardStage_('loadOperationalModel_', 'sheet_reads', function () {
+    return {
+      rawCompanies: loadObjectsFromSheet_(spreadsheet, config.sheetNames.company),
+      rawAssets: loadObjectsFromSheet_(spreadsheet, config.sheetNames.asset),
+      rawManagers: loadObjectsFromSheet_(spreadsheet, config.sheetNames.manager),
+      rawIssues: loadObjectsFromSheet_(spreadsheet, config.sheetNames.issue),
+      rawTenantNormalization: loadObjectsFromSheet_(spreadsheet, config.sheetNames.sysTenantNormalize),
+      rawAssetLookup: loadObjectsFromSheet_(spreadsheet, config.sheetNames.sysAssetLookup),
+      rawGeneral: loadObjectsFromSheet_(spreadsheet, config.sheetNames.general),
+      rawHistory: loadObjectsFromSheet_(spreadsheet, config.sheetNames.history),
+    };
+  });
 
-  const tenantNormalizationMap = buildTenantNormalizationMap_(rawCompanies, rawTenantNormalization);
-  const assetLookupMap = buildAssetLookupMapV2_(rawAssets, rawAssetLookup);
+  const normalizedData = measureDashboardStage_('loadOperationalModel_', 'normalize_rows', function () {
+    const tenantNormalizationMap = buildTenantNormalizationMap_(rawData.rawCompanies, rawData.rawTenantNormalization);
+    const assetLookupMap = buildAssetLookupMapV2_(rawData.rawAssets, rawData.rawAssetLookup);
+    return {
+      companyRows: rawData.rawCompanies
+        .map(normalizeCompanyRow_)
+        .filter(function (row) {
+          return row && row.tenantMasterName;
+        }),
+      assetRows: rawData.rawAssets
+        .map(function (row) {
+          return normalizeAssetRowV2_(row, assetLookupMap);
+        })
+        .filter(function (row) {
+          return row && row.assetName;
+        }),
+      managerRows: rawData.rawManagers
+        .map(normalizeManagerRow_)
+        .filter(function (row) {
+          return row && row.assetCode;
+        }),
+      issueRows: rawData.rawIssues
+        .map(normalizeIssueRow_)
+        .filter(function (row) {
+          return row && row.issueId;
+        }),
+      generalRows: rawData.rawGeneral
+        .map(function (row) {
+          return normalizeGeneralRow_(row, tenantNormalizationMap, config);
+        })
+        .filter(function (row) {
+          return row && row.assetName;
+        }),
+      historyRows: rawData.rawHistory
+        .map(function (row) {
+          return normalizeHistoryRow_(row, tenantNormalizationMap);
+        })
+        .filter(function (row) {
+          return row && row.assetName;
+        }),
+    };
+  });
 
-  const companyRows = rawCompanies
-    .map(normalizeCompanyRow_)
-    .filter(function (row) {
-      return row && row.tenantMasterName;
-    });
+  const companyRows = normalizedData.companyRows;
+  const assetRows = normalizedData.assetRows;
+  const managerRows = normalizedData.managerRows;
+  const issueRows = normalizedData.issueRows;
+  const generalRows = normalizedData.generalRows;
+  const historyRows = normalizedData.historyRows;
 
-  const assetRows = rawAssets
-    .map(function (row) {
-      return normalizeAssetRowV2_(row, assetLookupMap);
-    })
-    .filter(function (row) {
-      return row && row.assetName;
-    });
+  measureDashboardStage_('loadOperationalModel_', 'link_and_attach_context', function () {
+    linkHistoryRowsV2_(generalRows, historyRows);
+    attachCompanyAndAssetContext_(generalRows, companyRows, assetRows, managerRows);
+    attachIssueContext_(generalRows, assetRows, issueRows);
+    return true;
+  }, { generalRows: generalRows.length, historyRows: historyRows.length });
 
-  const managerRows = rawManagers
-    .map(normalizeManagerRow_)
-    .filter(function (row) {
-      return row && row.assetCode;
-    });
-
-  const issueRows = rawIssues
-    .map(normalizeIssueRow_)
-    .filter(function (row) {
-      return row && row.issueId;
-    });
-
-  const generalRows = rawGeneral
-    .map(function (row) {
-      return normalizeGeneralRow_(row, tenantNormalizationMap, config);
-    })
-    .filter(function (row) {
-      return row && row.assetName;
-    });
-
-  const historyRows = rawHistory
-    .map(function (row) {
-      return normalizeHistoryRow_(row, tenantNormalizationMap);
-    })
-    .filter(function (row) {
-      return row && row.assetName;
-    });
-
-  linkHistoryRowsV2_(generalRows, historyRows);
-  attachCompanyAndAssetContext_(generalRows, companyRows, assetRows, managerRows);
-  attachIssueContext_(generalRows, assetRows, issueRows);
-
-  const assetSummaryById = buildAssetSummaryByIdV2_(generalRows, assetRows, managerRows, issueRows);
-  const companySummaryById = buildCompanySummaryByIdV2_(generalRows, companyRows);
-  const reviewSummary = buildReviewSummary_(generalRows, historyRows, issueRows);
+  const summaries = measureDashboardStage_('loadOperationalModel_', 'build_summaries', function () {
+    return {
+      assetSummaryById: buildAssetSummaryByIdV2_(generalRows, assetRows, managerRows, issueRows),
+      companySummaryById: buildCompanySummaryByIdV2_(generalRows, companyRows),
+      reviewSummary: buildReviewSummary_(generalRows, historyRows, issueRows),
+    };
+  });
+  const assetSummaryById = summaries.assetSummaryById;
+  const companySummaryById = summaries.companySummaryById;
+  const reviewSummary = summaries.reviewSummary;
   const historyMonths = uniqueValues_(
     historyRows
       .map(function (row) { return row.baseMonth; })
