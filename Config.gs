@@ -8,13 +8,17 @@ const DEFAULT_SECRETS = Object.freeze({
   naverMapsClientSecret: '',
 });
 
+const DASHBOARD_CACHE_TTL_SECONDS = 600;
+const DASHBOARD_MODEL_CACHE_TTL_SECONDS = 900;
+const DASHBOARD_PAYLOAD_CACHE_TTL_SECONDS = 1800;
+
 const DEFAULT_CONFIG = Object.freeze({
   spreadsheetId: '1powCa2TV7Pkqi3Un3mz3clJPwJ9xw7lMr1bZ0eLMqVA',
   formulaVersion: 'E.NOC_v2',
   areaSqmPerPy: 3.305785,
-  cacheTtlSeconds: 600,
-  modelCacheTtlSeconds: 900,
-  payloadCacheTtlSeconds: 21600,
+  cacheTtlSeconds: DASHBOARD_CACHE_TTL_SECONDS,
+  modelCacheTtlSeconds: DASHBOARD_MODEL_CACHE_TTL_SECONDS,
+  payloadCacheTtlSeconds: DASHBOARD_PAYLOAD_CACHE_TTL_SECONDS,
   dailySnapshotRefreshHour: 9,
   staticSnapshotMaxAssets: 200,
   staticSnapshotMaxCompanies: 300,

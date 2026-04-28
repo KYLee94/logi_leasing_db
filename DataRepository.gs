@@ -570,6 +570,9 @@ function loadOperationalModel_(options) {
   const normalizedOptions = options || {};
   const now = Date.now();
   if (!normalizedOptions.forceRefresh && MODEL_RUNTIME_CACHE && (now - MODEL_RUNTIME_CACHE_AT) < 5000) {
+    if (typeof logDashboardCacheEvent_ === 'function') {
+      logDashboardCacheEvent_('hit', 'model:runtime', { storage: 'server_memory', ttlMs: 5000 });
+    }
     return MODEL_RUNTIME_CACHE;
   }
 
@@ -580,6 +583,9 @@ function loadOperationalModel_(options) {
     return cachedModel;
   }
 
+  if (typeof logDashboardCacheEvent_ === 'function') {
+    logDashboardCacheEvent_('sheet_read', 'model:full', { forceRefresh: normalizedOptions.forceRefresh === true });
+  }
   const spreadsheet = getSpreadsheet_();
   const config = getConfig_();
   const runtimeMeta = resolveModelRuntimeMeta_(normalizedOptions);

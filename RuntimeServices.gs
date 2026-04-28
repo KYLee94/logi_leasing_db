@@ -3,6 +3,24 @@ const SCRIPT_PROPERTY_JSON_MAX_LENGTH_ = 8500;
 const SCRIPT_PROPERTY_JSON_CHUNK_SIZE_ = 8000;
 const PAYLOAD_SNAPSHOT_SHEET_NAME_ = 'SYS_PAYLOAD_SNAPSHOT';
 const PAYLOAD_SNAPSHOT_CHUNK_SIZE_ = 45000;
+const DASHBOARD_CACHE_LOG_KEY_ = 'dashboard:cache:last-event';
+const DASHBOARD_CACHE_LOG_TTL_SECONDS_ = 21600;
+
+function logDashboardCacheEvent_(eventName, key, details) {
+  const payload = {
+    event: safeString_(eventName),
+    key: safeString_(key),
+    cacheVersion: safeString_(PropertiesService.getScriptProperties().getProperty('CACHE_VERSION') || '1'),
+    at: Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd'T'HH:mm:ss"),
+    details: details || {},
+  };
+  try {
+    CacheService.getScriptCache().put(DASHBOARD_CACHE_LOG_KEY_, JSON.stringify(payload), DASHBOARD_CACHE_LOG_TTL_SECONDS_);
+  } catch (error) {
+    // Cache diagnostics must never block dashboard rendering.
+  }
+  console.log(JSON.stringify(Object.assign({ scope: 'dashboard_cache' }, payload)));
+}
 
 function getCacheNamespace_() {
   const props = PropertiesService.getScriptProperties();
@@ -22,10 +40,14 @@ function getCachedJson_(key) {
   const cache = CacheService.getScriptCache();
   const namespacedKey = buildCacheKey_(key);
   const raw = cache.get(namespacedKey);
-  if (!raw) return null;
+  if (!raw) {
+    logDashboardCacheEvent_('miss', key, { storage: 'CacheService' });
+    return null;
+  }
 
   const manifest = JSON.parse(raw);
   if (!manifest || !manifest.__chunked) {
+    logDashboardCacheEvent_('hit', key, { storage: 'CacheService', chunked: false });
     return manifest;
   }
 
@@ -37,9 +59,13 @@ function getCachedJson_(key) {
   const chunkMap = cache.getAll(chunkKeys);
   for (let index = 0; index < chunkKeys.length; index += 1) {
     const chunk = chunkMap[chunkKeys[index]];
-    if (chunk == null) return null;
+    if (chunk == null) {
+      logDashboardCacheEvent_('miss_chunk', key, { storage: 'CacheService', chunkIndex: index, chunkCount: manifest.count });
+      return null;
+    }
     chunks.push(chunk);
   }
+  logDashboardCacheEvent_('hit', key, { storage: 'CacheService', chunked: true, chunkCount: manifest.count });
   return JSON.parse(chunks.join(''));
 }
 
@@ -51,6 +77,7 @@ function putCachedJson_(key, value, ttlSeconds) {
 
   if (raw.length < 90000) {
     cache.put(namespacedKey, raw, ttl);
+    logDashboardCacheEvent_('put', key, { storage: 'CacheService', ttlSeconds: ttl, size: raw.length, chunked: false });
     return value;
   }
 
@@ -62,6 +89,7 @@ function putCachedJson_(key, value, ttlSeconds) {
   }
   cache.putAll(chunkValues, ttl);
   cache.put(namespacedKey, JSON.stringify({ __chunked: true, count: chunkCount }), ttl);
+  logDashboardCacheEvent_('put', key, { storage: 'CacheService', ttlSeconds: ttl, size: raw.length, chunked: true, chunkCount: chunkCount });
   return value;
 }
 
@@ -348,10 +376,64 @@ function isDefaultPlaygroundRequest_(request) {
     && Number(normalized.topN) === 25;
 }
 
-function invalidateDashboardCaches_() {
+function bumpDashboardCacheNamespace_(reason) {
   const props = PropertiesService.getScriptProperties();
   const current = Number(props.getProperty('CACHE_VERSION') || 1);
-  props.setProperty('CACHE_VERSION', String(current + 1));
+  const next = current + 1;
+  props.setProperty('CACHE_VERSION', String(next));
+  props.setProperty('LAST_CACHE_CLEAR_TS', String(Date.now()));
+  props.setProperty('LAST_CACHE_CLEAR_REASON', safeString_(reason || 'manual'));
+  try {
+    if (typeof MODEL_RUNTIME_CACHE !== 'undefined') {
+      MODEL_RUNTIME_CACHE = null;
+      MODEL_RUNTIME_CACHE_AT = 0;
+    }
+  } catch (error) {
+    // Ignore runtime cache cleanup failure in older script contexts.
+  }
+  logDashboardCacheEvent_('clear', 'namespace', { previousVersion: current, nextVersion: next, reason: safeString_(reason || 'manual') });
+  return next;
+}
+
+function clearDashboardCache(reason) {
+  const nextVersion = bumpDashboardCacheNamespace_(reason || 'manual_clear');
+  queueBootstrapBackgroundRefresh_('cache_cleared');
+  return getDashboardCacheStatus_({ cacheVersion: nextVersion });
+}
+
+function getDashboardCacheStatus() {
+  return getDashboardCacheStatus_();
+}
+
+function invalidateDashboardCaches_(reason) {
+  return clearDashboardCache(reason || 'data_changed');
+}
+
+function getDashboardCacheStatus_(overrides) {
+  const props = PropertiesService.getScriptProperties();
+  let lastEvent = null;
+  try {
+    const raw = CacheService.getScriptCache().get(DASHBOARD_CACHE_LOG_KEY_);
+    lastEvent = raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    lastEvent = null;
+  }
+  return {
+    cacheVersion: safeString_((overrides && overrides.cacheVersion) || props.getProperty('CACHE_VERSION') || '1'),
+    schemaVersion: CACHE_SCHEMA_VERSION_,
+    ttlSeconds: {
+      default: getConfig_().cacheTtlSeconds,
+      model: getConfig_().modelCacheTtlSeconds,
+      payload: getConfig_().payloadCacheTtlSeconds,
+    },
+    dataDirty: isDataDirty_(),
+    dataDirtyReason: safeString_(props.getProperty('DATA_DIRTY_REASON')),
+    lastCacheClearAt: props.getProperty('LAST_CACHE_CLEAR_TS')
+      ? Utilities.formatDate(new Date(Number(props.getProperty('LAST_CACHE_CLEAR_TS'))), Session.getScriptTimeZone(), "yyyy-MM-dd'T'HH:mm:ss")
+      : '',
+    lastCacheClearReason: safeString_(props.getProperty('LAST_CACHE_CLEAR_REASON')),
+    lastCacheEvent: lastEvent,
+  };
 }
 
 function markDataDirty_(reason) {
@@ -1307,6 +1389,7 @@ function handleSpreadsheetChange(e) {
 
 function handleSpreadsheetMutation_(e, reason) {
   markDataDirty_(reason);
+  invalidateDashboardCaches_(`spreadsheet_${reason}`);
   const props = PropertiesService.getScriptProperties();
   const lastRun = Number(props.getProperty('LAST_DERIVED_REFRESH_TS') || 0);
   const cooldownMs = getConfig_().autoRefreshCooldownMinutes * 60 * 1000;
