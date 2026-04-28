@@ -3705,19 +3705,91 @@ function validateDashboardData() {
   });
 }
 
-function getDataQualityData() {
-  const startedAt = Date.now();
-  const issues = validateDashboardData();
+function summarizeDataQualityIssues_(issues) {
   const summary = issues.reduce(function (accumulator, issue) {
     accumulator.total += 1;
     accumulator[issue.severity] = (accumulator[issue.severity] || 0) + 1;
     return accumulator;
   }, { total: 0, Critical: 0, Warning: 0, Info: 0 });
+  return summary;
+}
+
+function buildDataQualityResponse_(issues, startedAt, source) {
+  const summary = summarizeDataQualityIssues_(issues || []);
   return returnDashboardPerf_('getDataQualityData', 'total', startedAt, {
     generatedAt: Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd'T'HH:mm:ss"),
     summary: summary,
-    issues: issues,
+    issues: issues || [],
+    source: source || 'validateDashboardData',
   });
+}
+
+function buildDataQualityIssuesFromAdminReviewCache_(reviewCache) {
+  const issues = [];
+  const details = safeGet_(reviewCache, ['reviewDetails']) || {};
+  const generalSheet = getConfig_().sheetNames.general;
+  const historySheet = getConfig_().sheetNames.history;
+  const companySheet = getConfig_().sheetNames.company;
+  const assetSheet = getConfig_().sheetNames.asset;
+
+  function addRows(rows, severity, sheetName, fieldName, issue, suggestedFix) {
+    (rows || []).forEach(function (row) {
+      issues.push(makeDashboardValidationIssue_(severity, sheetName, row.rowNumber || row.rowRef || '', fieldName, issue, suggestedFix, {
+        assetName: row.assetName || '',
+        tenantMasterName: row.tenantMasterName || '',
+        leaseSpaceId: row.leaseSpaceId || '',
+        floorLabel: row.floorLabel || '',
+        detailAreaLabel: row.detailAreaLabel || '',
+        currentEndDate: row.currentEndDate || '',
+        currentMonthlyRentTotal: row.currentMonthlyRentTotal,
+        currentMonthlyMfTotal: row.currentMonthlyMfTotal,
+        eNoc: row.eNoc,
+        reviewStatus: row.reviewStatus || row.status || '',
+        reviewNote: row.reviewNote || row.message || '',
+      }));
+    });
+  }
+
+  addRows(details.historyUnmatched, 'Warning', generalSheet, 'history_linked', 'DB_일반 계약 행과 DB_히스토리 누적 최신 금액 행이 연결되지 않았습니다.', 'lease_space_id와 히스토리 기준일/임차인/자산 매칭 값을 확인하세요.');
+  addRows(details.rentMissing, 'Critical', historySheet, '평당 월임대료', '최신 히스토리 행의 평당 월임대료가 비어 있어 임대료/E.NOC 계산이 불안정합니다.', 'DB_히스토리 누적 시트의 최신 계약 기준 평당 월임대료를 입력하세요.');
+  addRows(details.mfMissing, 'Critical', historySheet, '평당 월관리비', '최신 히스토리 행의 평당 월관리비가 비어 있어 관리비/E.NOC 계산이 불안정합니다.', 'DB_히스토리 누적 시트의 최신 계약 기준 평당 월관리비를 입력하세요.');
+  addRows(details.eNocMissing, 'Critical', generalSheet, 'E.NOC', 'E.NOC_v2 계산 입력값이 부족하거나 계산값이 비어 있습니다.', '현재 계약기간, RF, FO, 전용률, 전용면적, TI, 최신 평당 임대료/관리비를 확인하세요.');
+  addRows(details.suspectedError, 'Critical', generalSheet, 'review_status', '계산 결과가 정상 범위를 벗어난 의심 오류입니다.', 'review_note의 원인과 원천 입력값을 함께 확인하세요.');
+  addRows(details.reviewRequired, 'Warning', generalSheet, 'review_status', '관리자 검토가 필요한 계약 행입니다.', 'review_note를 확인하고 원천값을 보정하세요.');
+
+  (details.issueBacklog || []).forEach(function (row) {
+    issues.push(makeDashboardValidationIssue_(row.severity || 'Warning', row.sheetName || generalSheet, row.rowRef || '', row.ruleName || 'AUDIT', row.message || 'AUDIT 데이터 이상 항목입니다.', 'AUDIT_데이터이상 기준으로 원천 행을 확인하세요.', row));
+  });
+
+  (reviewCache.openDartBacklog || []).forEach(function (row) {
+    issues.push(makeDashboardValidationIssue_('Warning', companySheet, '', 'OpenDART', 'OpenDART 연결 또는 공식 공시 확인이 필요한 기업입니다.', '사업자번호, 법인명, DART corp code, review_note를 확인하세요.', row));
+  });
+
+  (reviewCache.buildingBacklog || []).forEach(function (row) {
+    issues.push(makeDashboardValidationIssue_('Warning', assetSheet, '', '건축물대장', '건축물대장 조회키 또는 공식 API 확인이 필요한 자산입니다.', 'query_key, sigunguCd, bjdongCd, bun/ji, review_note를 확인하세요.', row));
+  });
+
+  return issues.slice(0, 500);
+}
+
+function getDataQualityData() {
+  const startedAt = Date.now();
+  const cacheKey = 'data-quality:admin-review-cache:v1';
+  const cached = getCachedJson_(cacheKey);
+  if (cached) return returnDashboardPerf_('getDataQualityData', 'total:cache', startedAt, cached);
+
+  const reviewCache = readPersistedJsonProperty_('ADMIN_REVIEW_CACHE_JSON') || {};
+  const cachedIssues = buildDataQualityIssuesFromAdminReviewCache_(reviewCache);
+  if (cachedIssues.length) {
+    return putCachedJson_(cacheKey, buildDataQualityResponse_(cachedIssues, startedAt, 'ADMIN_REVIEW_CACHE_JSON'), getConfig_().payloadCacheTtlSeconds);
+  }
+
+  try {
+    return putCachedJson_(cacheKey, buildDataQualityResponse_(validateDashboardData(), startedAt, 'validateDashboardData'), getConfig_().payloadCacheTtlSeconds);
+  } catch (error) {
+    const fallbackIssue = makeDashboardValidationIssue_('Warning', 'System', '', 'validateDashboardData', '데이터 품질 전체 검증을 제한 시간 안에 완료하지 못했습니다.', safeString_(error && error.message) || 'Admin 스냅샷 갱신 후 다시 실행하세요.');
+    return buildDataQualityResponse_([fallbackIssue], startedAt, 'fallback_error');
+  }
 }
 
 function readAuditLogRows_(limit) {

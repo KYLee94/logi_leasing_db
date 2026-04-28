@@ -5804,6 +5804,7 @@ function renderDataQuality(data) {
   const criticalRows = issues.filter((item) => item.severity === "Critical");
   const warningRows = issues.filter((item) => item.severity === "Warning");
   const infoRows = issues.filter((item) => item.severity === "Info");
+  const qualitySource = data.source || "validateDashboardData";
   const sheetGroups = groupQualityIssuesBy_(issues, (item) => item.sheetName || "시트 미상");
   const fieldGroups = groupQualityIssuesBy_(issues, (item) => item.fieldName || "필드 미상").slice(0, 12);
   const detailRows = issues.map((item, index) => [
@@ -5828,7 +5829,7 @@ function renderDataQuality(data) {
           <div class="section-heading-copy">
             <h3 class="section-title">데이터 품질 점검</h3>
             <p class="section-description">원천 시트에서 계산 오류로 이어질 수 있는 필수값, 날짜, 금액, 면적, 계약 상태 문제를 분류했습니다.</p>
-            ${renderBasisLine_(formatDateTime_(data.generatedAt), "DB_일반 + DB_히스토리 누적 + DB_자산", "오류 건", "validateDashboardData")}
+            ${renderBasisLine_(formatDateTime_(data.generatedAt), "DB_일반 + DB_히스토리 누적 + DB_자산", "오류 건", qualitySource)}
           </div>
           <button class="secondary-button" type="button" data-action="quality-refresh">수동 재검증</button>
         </div>
