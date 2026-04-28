@@ -1148,7 +1148,7 @@ function buildPlaygroundPayload_(model, request) {
     if (valueMetric === 'count') {
       value = bucket.length;
     } else if (valueMetric === 'eNoc') {
-      value = averageBy_(bucket.filter(function (row) { return row.eNoc != null; }), 'eNoc');
+      value = computeAverageENocForRows_(bucket);
     } else if (valueMetric === 'monthlyCostTotal') {
       value = sumKnownMetric_(bucket, 'currentMonthlyCostTotal');
     } else {

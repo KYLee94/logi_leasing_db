@@ -77,18 +77,24 @@ function countUniqueRowValues_(rows, selector) {
   })).length;
 }
 
-function computeEffectiveENocFromTotals_(rows) {
-  const leasedAreaSqm = sumKnownRowMetric_(rows || [], 'leasedAreaSqm');
-  const monthlyCostTotal = sumKnownRowMetric_(rows || [], function (row) {
-    if (row.currentMonthlyCostTotal != null) return row.currentMonthlyCostTotal;
-    if (row.currentMonthlyRentTotal == null && row.currentMonthlyMfTotal == null) return null;
-    return Number(row.currentMonthlyRentTotal || 0) + Number(row.currentMonthlyMfTotal || 0);
+function computeAverageENocForRows_(rows) {
+  let weightedSum = 0;
+  let totalWeight = 0;
+  (rows || []).forEach(function (row) {
+    if (row.eNoc == null || row.eNoc === '') return;
+    const leasedAreaPy = row.leasedAreaSqm != null
+      ? safeDivide_(Number(row.leasedAreaSqm), getConfig_().areaSqmPerPy)
+      : null;
+    const weight = leasedAreaPy && leasedAreaPy > 0 ? leasedAreaPy : 1;
+    weightedSum += Number(row.eNoc) * weight;
+    totalWeight += weight;
   });
-  const leasedAreaPy = leasedAreaSqm != null ? safeDivide_(leasedAreaSqm, getConfig_().areaSqmPerPy) : null;
-  if (monthlyCostTotal != null && leasedAreaPy != null && leasedAreaPy > 0) {
-    return roundNumber_(monthlyCostTotal / leasedAreaPy, 2);
-  }
-  return averageBy_((rows || []).filter(function (row) { return row.eNoc != null; }), 'eNoc');
+  if (!totalWeight) return null;
+  return roundNumber_(weightedSum / totalWeight, 2);
+}
+
+function computeEffectiveENocFromTotals_(rows) {
+  return computeAverageENocForRows_(rows);
 }
 
 function buildTenantRollupRows_(rows) {

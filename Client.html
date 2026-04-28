@@ -5714,7 +5714,7 @@ function renderPlayground(playground) {
   });
 }
 
-function renderDataQuality(data) {
+function renderDataQualityLegacy_(data) {
   const view = getTabRoot_("quality");
   if (!view) return;
   if (!data || data.error) {
@@ -5790,6 +5790,193 @@ function openQualityIssueModal_(title, rows) {
     escapeHtml_(item.issue || "-"),
     escapeHtml_(item.suggestedFix || "-"),
   ]), { wrapperClass: "table-wrap-report", tight: true }));
+}
+
+function renderDataQuality(data) {
+  const view = getTabRoot_("quality");
+  if (!view) return;
+  if (!data || data.error) {
+    view.innerHTML = renderStateShell_("데이터 품질 점검 결과를 불러오지 못했습니다.", (data && data.error) || "검증 함수를 다시 실행해 주세요.");
+    return;
+  }
+  const summary = data.summary || {};
+  const issues = data.issues || [];
+  const criticalRows = issues.filter((item) => item.severity === "Critical");
+  const warningRows = issues.filter((item) => item.severity === "Warning");
+  const infoRows = issues.filter((item) => item.severity === "Info");
+  const sheetGroups = groupQualityIssuesBy_(issues, (item) => item.sheetName || "시트 미상");
+  const fieldGroups = groupQualityIssuesBy_(issues, (item) => item.fieldName || "필드 미상").slice(0, 12);
+  const detailRows = issues.map((item, index) => [
+    `<button class="link-button" type="button" data-quality-index="${index}">상세</button>`,
+    renderQualitySeverityChip_(item.severity),
+    escapeHtml_(item.sheetName || "-"),
+    escapeHtml_(item.rowNumber || "-"),
+    escapeHtml_(item.fieldName || "-"),
+    escapeHtml_(item.issue || "-"),
+    escapeHtml_(item.suggestedFix || "-"),
+  ]);
+  view.innerHTML = `
+    <div class="page-stack">
+      <section class="dense-strip">
+        ${renderMetricTile_({ label: "Critical", valueHtml: formatNumber_(summary.Critical || 0), metaHtml: "즉시 수정 필요", clickable: true, action: "quality-critical" })}
+        ${renderMetricTile_({ label: "Warning", valueHtml: formatNumber_(summary.Warning || 0), metaHtml: "검토 필요", clickable: true, action: "quality-warning" })}
+        ${renderMetricTile_({ label: "Info", valueHtml: formatNumber_(summary.Info || 0), metaHtml: "참고 항목", clickable: true, action: "quality-info" })}
+        ${renderMetricTile_({ label: "영향 시트", valueHtml: formatNumber_(sheetGroups.length), metaHtml: `총 ${formatNumber_(summary.total || issues.length)}건`, clickable: true, action: "quality-sheets" })}
+      </section>
+      <section class="workspace-panel">
+        <div class="section-header">
+          <div class="section-heading-copy">
+            <h3 class="section-title">데이터 품질 점검</h3>
+            <p class="section-description">원천 시트에서 계산 오류로 이어질 수 있는 필수값, 날짜, 금액, 면적, 계약 상태 문제를 분류했습니다.</p>
+            ${renderBasisLine_(formatDateTime_(data.generatedAt), "DB_일반 + DB_히스토리 누적 + DB_자산", "오류 건", "validateDashboardData")}
+          </div>
+          <button class="secondary-button" type="button" data-action="quality-refresh">수동 재검증</button>
+        </div>
+        ${criticalRows.length ? `
+          <div class="state-shell state-shell-critical">
+            <strong>Critical 오류 ${formatNumber_(criticalRows.length)}건이 있습니다.</strong>
+            <p>계약 시작/종료일, 면적, 금액, Active 상태처럼 화면 계산에 직접 영향을 주는 항목입니다.</p>
+          </div>
+        ` : renderStateShell_("Critical 오류가 없습니다.", "현재 기준으로 즉시 수정해야 할 치명 오류는 감지되지 않았습니다.")}
+      </section>
+      <section class="two-column-grid two-column-grid-compact">
+        <article class="workspace-panel">
+          <div class="section-header">
+            <div class="section-heading-copy">
+              <h3 class="section-title">시트별 오류 요약</h3>
+              <p class="section-description">어떤 원천 시트에서 문제가 반복되는지 먼저 확인합니다.</p>
+            </div>
+          </div>
+          ${renderTable_(["시트", "Critical", "Warning", "Info", "합계"], sheetGroups.map((group) => [
+            `<button class="link-button" type="button" data-quality-sheet="${escapeHtml_(group.key)}">${escapeHtml_(group.key)}</button>`,
+            formatNumber_(group.Critical),
+            formatNumber_(group.Warning),
+            formatNumber_(group.Info),
+            formatNumber_(group.total),
+          ]), { wrapperClass: "table-wrap-report", tight: true })}
+        </article>
+        <article class="workspace-panel">
+          <div class="section-header">
+            <div class="section-heading-copy">
+              <h3 class="section-title">필드별 반복 오류</h3>
+              <p class="section-description">반복적으로 비는 컬럼이나 형식이 흔들리는 컬럼을 확인합니다.</p>
+            </div>
+          </div>
+          ${renderTable_(["필드", "Critical", "Warning", "Info", "합계"], fieldGroups.map((group) => [
+            `<button class="link-button" type="button" data-quality-field="${escapeHtml_(group.key)}">${escapeHtml_(group.key)}</button>`,
+            formatNumber_(group.Critical),
+            formatNumber_(group.Warning),
+            formatNumber_(group.Info),
+            formatNumber_(group.total),
+          ]), { wrapperClass: "table-wrap-report", tight: true })}
+        </article>
+      </section>
+      <section class="workspace-panel">
+        <div class="section-header">
+          <div class="section-heading-copy">
+            <h3 class="section-title">Critical 우선 조치</h3>
+            <p class="section-description">먼저 고쳐야 하는 항목만 모았습니다. 보기 버튼을 누르면 원인과 권장 조치를 크게 확인할 수 있습니다.</p>
+          </div>
+        </div>
+        ${renderTable_(["상세", "Severity", "Sheet", "Row", "Field", "Issue", "Suggested Fix"], (criticalRows.length ? criticalRows : issues).slice(0, 30).map((item) => {
+          const index = issues.indexOf(item);
+          return [
+            `<button class="link-button" type="button" data-quality-index="${index}">보기</button>`,
+            renderQualitySeverityChip_(item.severity),
+            escapeHtml_(item.sheetName || "-"),
+            escapeHtml_(item.rowNumber || "-"),
+            escapeHtml_(item.fieldName || "-"),
+            escapeHtml_(item.issue || "-"),
+            escapeHtml_(item.suggestedFix || "-"),
+          ];
+        }), { wrapperClass: "table-wrap-report", tight: true })}
+      </section>
+      <section class="workspace-panel">
+        <div class="section-header">
+          <div class="section-heading-copy">
+            <h3 class="section-title">전체 검증 결과</h3>
+            <p class="section-description">sheetName, rowNumber, fieldName 기준으로 원천 시트를 바로 확인할 수 있게 정리했습니다.</p>
+          </div>
+        </div>
+        ${renderTable_(["상세", "Severity", "Sheet", "Row", "Field", "Issue", "Suggested Fix"], detailRows, { wrapperClass: "table-wrap-report", tight: true })}
+      </section>
+    </div>
+  `;
+  bindActionButtons_({
+    "quality-refresh": () => refreshActiveTab(),
+    "quality-critical": () => openQualityIssueModal_("Critical 오류", criticalRows),
+    "quality-warning": () => openQualityIssueModal_("Warning 항목", warningRows),
+    "quality-info": () => openQualityIssueModal_("Info 항목", infoRows),
+    "quality-sheets": () => openQualityGroupModal_("시트별 오류 요약", sheetGroups),
+  });
+  document.querySelectorAll("[data-quality-index]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const issue = issues[Number(button.getAttribute("data-quality-index"))];
+      if (issue) openQualityIssueDetailModal_(issue);
+    });
+  });
+  document.querySelectorAll("[data-quality-sheet]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const key = button.getAttribute("data-quality-sheet");
+      openQualityIssueModal_(`${key} 오류`, issues.filter((item) => (item.sheetName || "시트 미상") === key));
+    });
+  });
+  document.querySelectorAll("[data-quality-field]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const key = button.getAttribute("data-quality-field");
+      openQualityIssueModal_(`${key} 오류`, issues.filter((item) => (item.fieldName || "필드 미상") === key));
+    });
+  });
+}
+
+function groupQualityIssuesBy_(issues, resolver) {
+  const groups = {};
+  (issues || []).forEach((item) => {
+    const key = typeof resolver === "function" ? resolver(item) : item[resolver];
+    const normalizedKey = key || "미분류";
+    groups[normalizedKey] = groups[normalizedKey] || { key: normalizedKey, Critical: 0, Warning: 0, Info: 0, total: 0 };
+    const severity = item.severity === "Critical" || item.severity === "Warning" ? item.severity : "Info";
+    groups[normalizedKey][severity] += 1;
+    groups[normalizedKey].total += 1;
+  });
+  return Object.keys(groups).map((key) => groups[key]).sort((left, right) => {
+    if (right.Critical !== left.Critical) return right.Critical - left.Critical;
+    if (right.Warning !== left.Warning) return right.Warning - left.Warning;
+    return right.total - left.total;
+  });
+}
+
+function openQualityIssueModal_(title, rows) {
+  openMetricModal_(title, renderTable_(["Severity", "Sheet", "Row", "Field", "Issue", "Suggested Fix"], (rows || []).map((item) => [
+    renderQualitySeverityChip_(item.severity),
+    escapeHtml_(item.sheetName || "-"),
+    escapeHtml_(item.rowNumber || "-"),
+    escapeHtml_(item.fieldName || "-"),
+    escapeHtml_(item.issue || "-"),
+    escapeHtml_(item.suggestedFix || "-"),
+  ]), { wrapperClass: "table-wrap-report", tight: true }));
+}
+
+function openQualityGroupModal_(title, groups) {
+  openMetricModal_(title, renderTable_(["구분", "Critical", "Warning", "Info", "합계"], (groups || []).map((group) => [
+    escapeHtml_(group.key || "-"),
+    formatNumber_(group.Critical || 0),
+    formatNumber_(group.Warning || 0),
+    formatNumber_(group.Info || 0),
+    formatNumber_(group.total || 0),
+  ]), { wrapperClass: "table-wrap-report", tight: true }));
+}
+
+function openQualityIssueDetailModal_(issue) {
+  openMetricModal_("데이터 품질 상세", renderKeyValueGrid_([
+    ["Severity", renderQualitySeverityChip_(issue.severity)],
+    ["시트", escapeHtml_(issue.sheetName || "-")],
+    ["행 번호", escapeHtml_(issue.rowNumber || "-")],
+    ["필드", escapeHtml_(issue.fieldName || "-")],
+    ["의심 오류", escapeHtml_(issue.issue || "-")],
+    ["권장 조치", escapeHtml_(issue.suggestedFix || "-")],
+    ["세부 내용", escapeHtml_(issue.details || issue.note || "-")],
+  ]), renderBasisLine_("현재 검증 시점", issue.sheetName || "원천 시트", "오류", "validateDashboardData"));
 }
 
 function openAiPanel() {
