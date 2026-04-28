@@ -1,0 +1,842 @@
+{
+  "query": {
+    "filterValue": "",
+    "metric": "leasedAreaSqm",
+    "valueMetric": "leasedAreaSqm",
+    "filterDimension": "",
+    "columnDimension": "none",
+    "rowDimension": "assetName",
+    "dimension": "assetName",
+    "topN": 25
+  },
+  "columnOptions": [
+    {
+      "key": "none",
+      "label": "사용 안 함"
+    },
+    {
+      "key": "assetName",
+      "label": "자산"
+    },
+    {
+      "key": "fundName",
+      "label": "펀드"
+    },
+    {
+      "key": "tenantMasterName",
+      "label": "임차인"
+    },
+    {
+      "key": "sector",
+      "label": "섹터"
+    },
+    {
+      "key": "goodsType",
+      "label": "물류 유형"
+    },
+    {
+      "key": "coldStorageType",
+      "label": "저온 유형"
+    },
+    {
+      "key": "calculatedReviewStatus",
+      "label": "검토 상태"
+    }
+  ],
+  "basis": {
+    "rowScope": "playground_query_rows",
+    "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
+    "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
+    "rowUnit": "lease_space_id",
+    "page": "playground",
+    "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
+    "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
+  },
+  "rows": [
+    {
+      "value": 299248,
+      "dimension": "인천석남물류센터",
+      "columns": {},
+      "recordCount": 1
+    },
+    {
+      "value": 272218.30000000005,
+      "dimension": "아레나스양지물류센터",
+      "columns": {},
+      "recordCount": 8
+    },
+    {
+      "value": 107009.56,
+      "dimension": "화성 석포리 물류센터",
+      "columns": {},
+      "recordCount": 1
+    },
+    {
+      "value": 104958.82,
+      "dimension": "여주 본두리 물류센터",
+      "columns": {},
+      "recordCount": 4
+    },
+    {
+      "value": 81123.16,
+      "dimension": "안성 성은지구 물류센터",
+      "columns": {},
+      "recordCount": 4
+    },
+    {
+      "value": 76234.76999999999,
+      "dimension": "경산 쿠팡물류센터",
+      "columns": {},
+      "recordCount": 16
+    },
+    {
+      "dimension": "스카이박스1, 스카이박스2",
+      "value": 59346.759999999995,
+      "columns": {},
+      "recordCount": 7
+    },
+    {
+      "value": 54566.21,
+      "dimension": "두동 LG전자 통합물류센터",
+      "columns": {},
+      "recordCount": 1
+    },
+    {
+      "value": 53709.850000000006,
+      "dimension": "동산물류센터",
+      "columns": {},
+      "recordCount": 4
+    },
+    {
+      "value": 53212.22,
+      "dimension": "평택아디다스물류센터",
+      "columns": {},
+      "recordCount": 1
+    },
+    {
+      "value": 33453,
+      "dimension": "양산 유산동 물류센터",
+      "columns": {},
+      "recordCount": 3
+    },
+    {
+      "dimension": "안성 홈플러스 중부허브 물류센터",
+      "value": 32824.14,
+      "columns": {},
+      "recordCount": 1
+    },
+    {
+      "value": 32675.47,
+      "dimension": "이천 마장면 물류센터",
+      "columns": {},
+      "recordCount": 3
+    },
+    {
+      "value": 31389,
+      "dimension": "아레나스안성",
+      "columns": {},
+      "recordCount": 5
+    },
+    {
+      "dimension": "에이블로지스물류센터",
+      "value": 29980.02,
+      "columns": {},
+      "recordCount": 2
+    },
+    {
+      "value": 23729.34,
+      "dimension": "부산송정물류센터",
+      "columns": {},
+      "recordCount": 1
+    },
+    {
+      "dimension": "부국물류센터",
+      "value": 18706.18,
+      "columns": {},
+      "recordCount": 1
+    }
+  ],
+  "summaryCards": [
+    {
+      "value": 63,
+      "valueType": "number",
+      "label": "원천 행"
+    },
+    {
+      "value": 63,
+      "valueType": "number",
+      "label": "필터 후 행"
+    },
+    {
+      "value": 17,
+      "valueType": "number",
+      "label": "결과 그룹"
+    },
+    {
+      "value": 1,
+      "valueType": "number",
+      "label": "컬럼 수"
+    }
+  ],
+  "meta": {
+    "selection": {
+      "cacheKey": "playground:row=assetName|column=none|value=leasedAreaSqm|filter=:|topN=25",
+      "filterValue": "",
+      "metric": "leasedAreaSqm",
+      "valueMetric": "leasedAreaSqm",
+      "filterDimension": "",
+      "columnDimension": "none",
+      "rowDimension": "assetName",
+      "dimension": "assetName",
+      "topN": 25
+    },
+    "timing": {
+      "refreshedAt": "2026-04-27T18:27:46",
+      "fetchedAt": "",
+      "derivedAt": "",
+      "fetchedAts": []
+    },
+    "generatedAt": "2026-04-27T18:27:46",
+    "basisDisplay": {
+      "derivedAt": "",
+      "asOf": "2026-04-27T18:27:46",
+      "generatedAt": "2026-04-27T18:27:46",
+      "fetchedAt": "",
+      "refreshedAt": "2026-04-27T18:27:46",
+      "page": "playground",
+      "source": "",
+      "fetchedAts": []
+    },
+    "page": "playground",
+    "formulaVersion": "E.NOC_v2",
+    "rowCount": 63,
+    "basis": {
+      "rowScope": "playground_query_rows",
+      "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
+      "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
+      "page": "playground",
+      "rowUnit": "lease_space_id",
+      "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
+      "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
+    }
+  },
+  "generatedAt": "2026-04-27T18:27:46",
+  "activeColumns": [],
+  "basisDisplay": {
+    "derivedAt": "",
+    "asOf": "2026-04-27T18:27:46",
+    "generatedAt": "2026-04-27T18:27:46",
+    "refreshedAt": "2026-04-27T18:27:46",
+    "fetchedAt": "",
+    "source": "",
+    "page": "playground",
+    "fetchedAts": []
+  },
+  "savedViews": [
+    {
+      "metric": "currentMonthlyRentTotal",
+      "valueMetric": "currentMonthlyRentTotal",
+      "columnDimension": "none",
+      "rowDimension": "assetName",
+      "label": "자산별 월 임대료",
+      "dimension": "assetName",
+      "key": "asset_rent",
+      "topN": 20
+    },
+    {
+      "metric": "leasedAreaSqm",
+      "valueMetric": "leasedAreaSqm",
+      "columnDimension": "none",
+      "rowDimension": "tenantMasterName",
+      "label": "임차인별 임대면적",
+      "dimension": "tenantMasterName",
+      "key": "tenant_area",
+      "topN": 20
+    },
+    {
+      "metric": "monthlyCostTotal",
+      "valueMetric": "monthlyCostTotal",
+      "columnDimension": "goodsType",
+      "rowDimension": "sector",
+      "label": "섹터별 월 임관리비",
+      "dimension": "sector",
+      "key": "sector_cost",
+      "topN": 15
+    }
+  ],
+  "metrics": [
+    {
+      "key": "leasedAreaSqm",
+      "label": "임대면적"
+    },
+    {
+      "key": "currentMonthlyRentTotal",
+      "label": "월 임대료"
+    },
+    {
+      "key": "currentMonthlyMfTotal",
+      "label": "월 관리비"
+    },
+    {
+      "key": "monthlyCostTotal",
+      "label": "월 임관리비"
+    },
+    {
+      "key": "eNoc",
+      "label": "평균 E.NOC"
+    },
+    {
+      "key": "count",
+      "label": "건수"
+    }
+  ],
+  "filterOptions": [
+    {
+      "key": "assetName",
+      "values": [
+        {
+          "count": 16,
+          "value": "경산 쿠팡물류센터",
+          "label": "경산 쿠팡물류센터"
+        },
+        {
+          "count": 8,
+          "value": "아레나스양지물류센터",
+          "label": "아레나스양지물류센터"
+        },
+        {
+          "count": 7,
+          "value": "스카이박스1, 스카이박스2",
+          "label": "스카이박스1, 스카이박스2"
+        },
+        {
+          "count": 5,
+          "value": "아레나스안성",
+          "label": "아레나스안성"
+        },
+        {
+          "count": 4,
+          "value": "여주 본두리 물류센터",
+          "label": "여주 본두리 물류센터"
+        },
+        {
+          "count": 4,
+          "value": "동산물류센터",
+          "label": "동산물류센터"
+        },
+        {
+          "count": 4,
+          "value": "안성 성은지구 물류센터",
+          "label": "안성 성은지구 물류센터"
+        },
+        {
+          "count": 3,
+          "value": "이천 마장면 물류센터",
+          "label": "이천 마장면 물류센터"
+        },
+        {
+          "count": 3,
+          "value": "양산 유산동 물류센터",
+          "label": "양산 유산동 물류센터"
+        },
+        {
+          "count": 2,
+          "value": "에이블로지스물류센터",
+          "label": "에이블로지스물류센터"
+        },
+        {
+          "count": 1,
+          "value": "평택아디다스물류센터",
+          "label": "평택아디다스물류센터"
+        },
+        {
+          "count": 1,
+          "value": "인천석남물류센터",
+          "label": "인천석남물류센터"
+        },
+        {
+          "count": 1,
+          "value": "안성 홈플러스 중부허브 물류센터",
+          "label": "안성 홈플러스 중부허브 물류센터"
+        },
+        {
+          "count": 1,
+          "value": "화성 석포리 물류센터",
+          "label": "화성 석포리 물류센터"
+        },
+        {
+          "count": 1,
+          "value": "부산송정물류센터",
+          "label": "부산송정물류센터"
+        },
+        {
+          "count": 1,
+          "value": "두동 LG전자 통합물류센터",
+          "label": "두동 LG전자 통합물류센터"
+        },
+        {
+          "count": 1,
+          "value": "부국물류센터",
+          "label": "부국물류센터"
+        }
+      ],
+      "label": "자산"
+    },
+    {
+      "key": "fundName",
+      "values": [
+        {
+          "count": 16,
+          "value": "이지스경산로지스제1호일반사모부동산투자회사(운용)",
+          "label": "이지스경산로지스제1호일반사모부동산투자회사(운용)"
+        },
+        {
+          "count": 8,
+          "value": "이지스일반사모부동산모투자신탁116호",
+          "label": "이지스일반사모부동산모투자신탁116호"
+        },
+        {
+          "count": 7,
+          "value": "이지스아레나스전문투자형사모부동산투자신탁4호",
+          "label": "이지스아레나스전문투자형사모부동산투자신탁4호"
+        },
+        {
+          "count": 7,
+          "value": "이지스전문투자형사모부동산투자신탁제404호",
+          "label": "이지스전문투자형사모부동산투자신탁제404호"
+        },
+        {
+          "count": 5,
+          "value": "이지스아레나스케이엘아이피1의2사모부동산모투자회사",
+          "label": "이지스아레나스케이엘아이피1의2사모부동산모투자회사"
+        },
+        {
+          "count": 4,
+          "value": "이지스제440호부동산일반사모투자회사",
+          "label": "이지스제440호부동산일반사모투자회사"
+        },
+        {
+          "count": 4,
+          "value": "안성성은물류피에프브이 주식회사",
+          "label": "안성성은물류피에프브이 주식회사"
+        },
+        {
+          "count": 3,
+          "value": "이지스일반사모부동산투자신탁제426호(운용)",
+          "label": "이지스일반사모부동산투자신탁제426호(운용)"
+        },
+        {
+          "count": 3,
+          "value": "주식회사 석암물류(SPC)",
+          "label": "주식회사 석암물류(SPC)"
+        },
+        {
+          "count": 1,
+          "value": "이지스인컴앤그로스일반사모부동산자투자신탁제2-2호",
+          "label": "이지스인컴앤그로스일반사모부동산자투자신탁제2-2호"
+        },
+        {
+          "count": 1,
+          "value": "이지스인컴앤그로스제2의4호일반사모부동산모투자회사",
+          "label": "이지스인컴앤그로스제2의4호일반사모부동산모투자회사"
+        },
+        {
+          "count": 1,
+          "value": "이지스인컴앤그로스제2의3호일반사모부동산모투자회사",
+          "label": "이지스인컴앤그로스제2의3호일반사모부동산모투자회사"
+        },
+        {
+          "count": 1,
+          "value": "이지스일반사모부동산투자신탁제451호(운용)",
+          "label": "이지스일반사모부동산투자신탁제451호(운용)"
+        },
+        {
+          "count": 1,
+          "value": "이지스제114호전문투자형사모부동산투자유한회사",
+          "label": "이지스제114호전문투자형사모부동산투자유한회사"
+        },
+        {
+          "count": 1,
+          "value": "이지스제505호부동산일반사모투자회사",
+          "label": "이지스제505호부동산일반사모투자회사"
+        }
+      ],
+      "label": "펀드"
+    },
+    {
+      "key": "tenantMasterName",
+      "values": [
+        {
+          "count": 20,
+          "value": "쿠팡(주)",
+          "label": "쿠팡(주)"
+        },
+        {
+          "count": 5,
+          "value": "씨제이대한통운(주)",
+          "label": "씨제이대한통운(주)"
+        },
+        {
+          "count": 3,
+          "value": "용마로지스(주)",
+          "label": "용마로지스(주)"
+        },
+        {
+          "count": 2,
+          "value": "아디다스코리아유한책임회사",
+          "label": "아디다스코리아유한책임회사"
+        },
+        {
+          "count": 2,
+          "value": "한국머스크물류서비스(주)",
+          "label": "한국머스크물류서비스(주)"
+        },
+        {
+          "count": 2,
+          "value": "아워박스(주)",
+          "label": "아워박스(주)"
+        },
+        {
+          "count": 2,
+          "value": "(주)한진",
+          "label": "(주)한진"
+        },
+        {
+          "count": 2,
+          "value": "한국로지스풀(주)",
+          "label": "한국로지스풀(주)"
+        },
+        {
+          "count": 2,
+          "value": "INPNP",
+          "label": "INPNP"
+        },
+        {
+          "count": 2,
+          "value": "JM 로지스",
+          "label": "JM 로지스"
+        },
+        {
+          "count": 1,
+          "value": "(주)하나로티앤에스",
+          "label": "(주)하나로티앤에스"
+        },
+        {
+          "count": 1,
+          "value": "(주)LG생활건강",
+          "label": "(주)LG생활건강"
+        },
+        {
+          "count": 1,
+          "value": "아이씨비로지스(주)",
+          "label": "아이씨비로지스(주)"
+        },
+        {
+          "count": 1,
+          "value": "봄날창고",
+          "label": "봄날창고"
+        },
+        {
+          "count": 1,
+          "value": "㈜싸이버로지텍",
+          "label": "㈜싸이버로지텍"
+        },
+        {
+          "count": 1,
+          "value": "홈플러스(주)",
+          "label": "홈플러스(주)"
+        },
+        {
+          "count": 1,
+          "value": "삼성전자로지텍(주)",
+          "label": "삼성전자로지텍(주)"
+        },
+        {
+          "count": 1,
+          "value": "-",
+          "label": "-"
+        },
+        {
+          "count": 1,
+          "value": "(주)버킷플레이스",
+          "label": "(주)버킷플레이스"
+        },
+        {
+          "count": 1,
+          "value": "굿앤파트너스(주)",
+          "label": "굿앤파트너스(주)"
+        },
+        {
+          "count": 1,
+          "value": "LG전자(주), ㈜엘엑스판토스",
+          "label": "LG전자(주), ㈜엘엑스판토스"
+        },
+        {
+          "count": 1,
+          "value": "송림물류(주)",
+          "label": "송림물류(주)"
+        },
+        {
+          "count": 1,
+          "value": "(주)우진글로벌",
+          "label": "(주)우진글로벌"
+        },
+        {
+          "count": 1,
+          "value": "뉴성진에이원(주)",
+          "label": "뉴성진에이원(주)"
+        },
+        {
+          "count": 1,
+          "value": "(주)한익스프레스",
+          "label": "(주)한익스프레스"
+        },
+        {
+          "count": 1,
+          "value": "(주)에이스코리아로지스",
+          "label": "(주)에이스코리아로지스"
+        },
+        {
+          "count": 1,
+          "value": "한국일본통운(주)",
+          "label": "한국일본통운(주)"
+        },
+        {
+          "count": 1,
+          "value": "롯데글로벌로지스(주)",
+          "label": "롯데글로벌로지스(주)"
+        },
+        {
+          "count": 1,
+          "value": "(주)휠라선",
+          "label": "(주)휠라선"
+        },
+        {
+          "count": 1,
+          "value": "(주)소셜빈",
+          "label": "(주)소셜빈"
+        },
+        {
+          "count": 1,
+          "value": "(주)파크랜드",
+          "label": "(주)파크랜드"
+        }
+      ],
+      "label": "임차인"
+    },
+    {
+      "key": "sector",
+      "values": [
+        {
+          "count": 63,
+          "value": "물류센터",
+          "label": "물류센터"
+        }
+      ],
+      "label": "섹터"
+    },
+    {
+      "key": "goodsType",
+      "values": [
+        {
+          "count": 16,
+          "value": "Unclassified",
+          "label": "Unclassified"
+        },
+        {
+          "count": 7,
+          "value": "하중물",
+          "label": "하중물"
+        },
+        {
+          "count": 7,
+          "value": "공산품",
+          "label": "공산품"
+        },
+        {
+          "count": 6,
+          "value": "생필품",
+          "label": "생필품"
+        },
+        {
+          "count": 4,
+          "value": "생활 잡화, 식품",
+          "label": "생활 잡화, 식품"
+        },
+        {
+          "count": 3,
+          "value": "의류",
+          "label": "의류"
+        },
+        {
+          "count": 2,
+          "value": "가전제품",
+          "label": "가전제품"
+        },
+        {
+          "count": 1,
+          "value": "하중물, 의약품",
+          "label": "하중물, 의약품"
+        },
+        {
+          "count": 1,
+          "value": "전자기기(컴퓨터 등)",
+          "label": "전자기기(컴퓨터 등)"
+        },
+        {
+          "count": 1,
+          "value": "어패럴",
+          "label": "어패럴"
+        },
+        {
+          "count": 1,
+          "value": "전체 상품 취급(풀필먼트)",
+          "label": "전체 상품 취급(풀필먼트)"
+        },
+        {
+          "count": 1,
+          "value": "신선식품",
+          "label": "신선식품"
+        },
+        {
+          "count": 1,
+          "value": "-",
+          "label": "-"
+        },
+        {
+          "count": 1,
+          "value": "가구",
+          "label": "가구"
+        },
+        {
+          "count": 1,
+          "value": "식음료",
+          "label": "식음료"
+        },
+        {
+          "count": 1,
+          "value": "식품(온도)",
+          "label": "식품(온도)"
+        },
+        {
+          "count": 1,
+          "value": "의류(중하중)",
+          "label": "의류(중하중)"
+        },
+        {
+          "count": 1,
+          "value": "반도체(고가 화물)",
+          "label": "반도체(고가 화물)"
+        },
+        {
+          "count": 1,
+          "value": "가구,대형가전(고하중)",
+          "label": "가구,대형가전(고하중)"
+        },
+        {
+          "count": 1,
+          "value": "유제품 등",
+          "label": "유제품 등"
+        },
+        {
+          "count": 1,
+          "value": "가전제품 등",
+          "label": "가전제품 등"
+        },
+        {
+          "count": 1,
+          "value": "화장품 등",
+          "label": "화장품 등"
+        },
+        {
+          "count": 1,
+          "value": "화장품",
+          "label": "화장품"
+        },
+        {
+          "count": 1,
+          "value": "라이프스타일 용품",
+          "label": "라이프스타일 용품"
+        },
+        {
+          "count": 1,
+          "value": "유제품",
+          "label": "유제품"
+        }
+      ],
+      "label": "물류 유형"
+    },
+    {
+      "key": "coldStorageType",
+      "values": [
+        {
+          "count": 46,
+          "value": "N",
+          "label": "N"
+        },
+        {
+          "count": 9,
+          "value": "Y",
+          "label": "Y"
+        },
+        {
+          "count": 7,
+          "value": "사무실",
+          "label": "사무실"
+        },
+        {
+          "count": 1,
+          "value": "복합",
+          "label": "복합"
+        }
+      ],
+      "label": "저온 유형"
+    },
+    {
+      "key": "calculatedReviewStatus",
+      "values": [
+        {
+          "count": 56,
+          "value": "suspected_error",
+          "label": "suspected_error"
+        },
+        {
+          "count": 7,
+          "value": "missing",
+          "label": "missing"
+        }
+      ],
+      "label": "검토 상태"
+    }
+  ],
+  "dimensions": [
+    {
+      "key": "assetName",
+      "label": "자산"
+    },
+    {
+      "key": "fundName",
+      "label": "펀드"
+    },
+    {
+      "key": "tenantMasterName",
+      "label": "임차인"
+    },
+    {
+      "key": "sector",
+      "label": "섹터"
+    },
+    {
+      "key": "goodsType",
+      "label": "물류 유형"
+    },
+    {
+      "key": "coldStorageType",
+      "label": "저온 유형"
+    },
+    {
+      "key": "calculatedReviewStatus",
+      "label": "검토 상태"
+    }
+  ]
+}

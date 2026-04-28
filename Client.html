@@ -134,6 +134,7 @@ const state = {
   performance: [],
   pendingRequests: {},
   warmedDefaults: false,
+  initialDataLoaded: false,
 };
 
 window.__dashboardPerf = state.performance;
@@ -634,12 +635,25 @@ function requestBootstrapData_() {
     .catch(() => callServer_("getBootstrapData", undefined, { timeoutMs: 45000 }));
 }
 
+function requestInitialDashboardData_() {
+  if (IS_ADMIN) {
+    return requestBootstrapData_().then((bootstrap) => ({ bootstrap: bootstrap }));
+  }
+  if (canUsePublicSnapshots_()) {
+    return fetchPublicSnapshotJson_("initial.json", 5000)
+      .catch(() => callServer_("getInitialDashboardData", undefined, { timeoutMs: 60000 }));
+  }
+  return callServer_("getInitialDashboardData", undefined, { timeoutMs: 60000 });
+}
+
 function bootstrapApp_() {
   const start = performance.now();
-  requestBootstrapData_()
-    .then((bootstrap) => {
+  requestInitialDashboardData_()
+    .then((initialData) => {
       logPerf_("bootstrap", performance.now() - start, { status: "ok" });
+      const bootstrap = safeGet_(initialData || {}, ["bootstrap"]) || initialData;
       applyBootstrap_(bootstrap || buildFallbackBootstrap_());
+      applyInitialDashboardData_(initialData || {});
       updateTopbar(state.bootstrap);
       const activeKey = buildClientCacheKey_(state.activeTab);
       const cachedPayload = loadSessionPayload_(activeKey);
@@ -667,9 +681,8 @@ function bootstrapApp_() {
       }
       showLoading(false);
       window.setTimeout(() => {
-        loadTabData_(state.activeTab, { force: true, overlay: false }).catch((error) => handleError_(error, state.activeTab));
+        loadTabData_(state.activeTab, { force: false, overlay: false }).catch((error) => handleError_(error, state.activeTab));
       }, 0);
-      warmCommonTabs_();
       ensureSearchCatalogLoaded_();
     })
     .catch((error) => {
@@ -704,6 +717,38 @@ function applyBootstrap_(bootstrap) {
   }
 }
 
+function applyInitialDashboardData_(initialData) {
+  if (!initialData || !initialData.tabPayloads) return;
+  if (Array.isArray(initialData.assetOptions)) {
+    state.bootstrap.assetOptions = initialData.assetOptions;
+    state.searchCatalog.assets = initialData.assetOptions;
+  }
+  if (Array.isArray(initialData.companyOptions)) {
+    state.bootstrap.companyOptions = initialData.companyOptions;
+    state.searchCatalog.companies = initialData.companyOptions;
+  }
+  if ((initialData.assetOptions || []).length || (initialData.companyOptions || []).length) {
+    state.searchCatalog.loaded = true;
+    hydrateDefaultSelectionsFromCatalog_();
+  }
+  const payloads = initialData.tabPayloads || {};
+  if (payloads.home) {
+    cachePayload_("home", buildClientCacheKey_("home"), payloads.home);
+  }
+  if (payloads.asset && payloads.asset.payload) {
+    const assetId = payloads.asset.id || safeGet_(payloads.asset.payload, ["overview", "assetId"]) || state.selections.assetId;
+    cachePayload_("asset", buildEntityCacheKey_("asset", assetId), payloads.asset.payload);
+  }
+  if (payloads.company && payloads.company.payload) {
+    const tenantId = payloads.company.id || safeGet_(payloads.company.payload, ["profile", "tenantId"]) || state.selections.tenantId;
+    cachePayload_("company", buildEntityCacheKey_("company", tenantId), payloads.company.payload);
+  }
+  ["sector", "tools", "playground"].forEach((tab) => {
+    if (payloads[tab]) cachePayload_(tab, buildClientCacheKey_(tab), payloads[tab]);
+  });
+  state.initialDataLoaded = true;
+}
+
 function warmCommonTabs_() {
   if (state.warmedDefaults) return;
   if (state.activeTab !== "home") return;
@@ -722,7 +767,19 @@ function warmCommonTabs_() {
 }
 
 function prefetchEntityPayloads_(entityType, ids) {
-  return;
+  if (!canUsePublicSnapshots_()) return;
+  const type = entityType === "company" ? "company" : "asset";
+  const tab = type === "company" ? "company" : "asset";
+  const uniqueIds = Array.from(new Set((ids || []).map((id) => String(id || "").trim()).filter(Boolean))).slice(0, 40);
+  uniqueIds.forEach((id, index) => {
+    const cacheKey = buildEntityCacheKey_(tab, id);
+    if (getCachedPayload_(cacheKey) || loadSessionPayload_(cacheKey)) return;
+    window.setTimeout(() => {
+      fetchPublicSnapshotJson_(`${type}/${encodeURIComponent(id)}.json`, 5000)
+        .then((payload) => cachePayload_(tab, cacheKey, payload))
+        .catch(() => {});
+    }, 150 + (index * 80));
+  });
 }
 
 function resolveInitialTab_(value) {
@@ -952,9 +1009,30 @@ function requestPayloadForTab_(tab) {
     if (canUsePublicSnapshots_() && tenantId) return fetchPublicSnapshotJson_(`company/${encodeURIComponent(tenantId)}.json`, 3000).catch(() => callServer_("getCompanyData", tenantId, { timeoutMs: 60000 }));
     return callServer_("getCompanyData", adminAwareEntityRequest_("tenantId", tenantId), { timeoutMs: 60000 });
   }
-  if (tab === "sector") return callServer_("getSectorData", adminAwareRequest_(), { timeoutMs: 45000 });
-  if (tab === "tools") return callServer_("getToolsData", adminAwareRequest_({ assetIds: state.selections.toolAssetIds || [], companyIds: state.selections.toolCompanyIds || [] }), { timeoutMs: 45000 });
+  if (tab === "sector") {
+    if (canUsePublicSnapshots_()) return fetchPublicSnapshotJson_("sector.json", 3000).catch(() => callServer_("getSectorData", adminAwareRequest_(), { timeoutMs: 45000 }));
+    return callServer_("getSectorData", adminAwareRequest_(), { timeoutMs: 45000 });
+  }
+  if (tab === "tools") {
+    const isDefaultTools = !(state.selections.toolAssetIds || []).length && !(state.selections.toolCompanyIds || []).length;
+    if (canUsePublicSnapshots_() && isDefaultTools) return fetchPublicSnapshotJson_("tools.json", 3000).catch(() => callServer_("getToolsData", adminAwareRequest_({ assetIds: [], companyIds: [] }), { timeoutMs: 45000 }));
+    return callServer_("getToolsData", adminAwareRequest_({ assetIds: state.selections.toolAssetIds || [], companyIds: state.selections.toolCompanyIds || [] }), { timeoutMs: 45000 });
+  }
   if (tab === "playground") {
+    const isDefaultPlayground = state.selections.playgroundDimension === "assetName"
+      && state.selections.playgroundColumnDimension === "none"
+      && !state.selections.playgroundFilterDimension
+      && !state.selections.playgroundFilterValue
+      && state.selections.playgroundMetric === "leasedAreaSqm"
+      && Number(state.selections.playgroundTopN) === 25;
+    if (canUsePublicSnapshots_() && isDefaultPlayground) return fetchPublicSnapshotJson_("playground.json", 3000).catch(() => callServer_("getPlaygroundData", adminAwareRequest_({
+      rowDimension: "assetName",
+      columnDimension: "none",
+      filterDimension: "",
+      filterValue: "",
+      valueMetric: "leasedAreaSqm",
+      topN: 25,
+    }), { timeoutMs: 45000 }));
     return callServer_("getPlaygroundData", adminAwareRequest_({
       rowDimension: state.selections.playgroundDimension,
       columnDimension: state.selections.playgroundColumnDimension,

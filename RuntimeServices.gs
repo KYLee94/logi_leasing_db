@@ -252,6 +252,87 @@ function readPayloadSnapshotFromSheet_(key) {
   }
 }
 
+function readPayloadSnapshotsFromSheetByKeys_(keys) {
+  const requestedKeys = uniqueValues_((keys || []).map(function (key) {
+    return safeString_(key);
+  }).filter(Boolean));
+  const result = {};
+  const missingKeys = [];
+
+  requestedKeys.forEach(function (key) {
+    const cached = getCachedJson_(`snapshot-sheet:${key}`);
+    if (cached) {
+      result[key] = cached;
+    } else {
+      missingKeys.push(key);
+    }
+  });
+
+  if (!missingKeys.length) return result;
+
+  const sheet = getSpreadsheet_().getSheetByName(PAYLOAD_SNAPSHOT_SHEET_NAME_);
+  if (!sheet || sheet.getLastRow() < 2) return result;
+
+  const missingSet = {};
+  missingKeys.forEach(function (key) { missingSet[key] = true; });
+  const values = sheet.getDataRange().getValues();
+  const groupedChunks = {};
+
+  for (let rowIndex = 1; rowIndex < values.length; rowIndex += 1) {
+    const row = values[rowIndex];
+    const key = safeString_(row[0]);
+    if (!missingSet[key]) continue;
+    if (!groupedChunks[key]) groupedChunks[key] = [];
+    groupedChunks[key][Number(row[1] || 0)] = safeString_(row[3]);
+  }
+
+  Object.keys(groupedChunks).forEach(function (key) {
+    try {
+      const parsed = JSON.parse(groupedChunks[key].join(''));
+      result[key] = putCachedJson_(`snapshot-sheet:${key}`, parsed, getConfig_().payloadCacheTtlSeconds);
+    } catch (error) {
+      // Ignore a malformed snapshot row and let caller use its fallback path.
+    }
+  });
+
+  return result;
+}
+
+function readStaticPayloadSnapshotMap_(items) {
+  const requests = (items || []).map(function (item) {
+    return {
+      page: safeString_(item && item.page),
+      id: safeString_(item && item.id) || 'default',
+      key: buildStaticPayloadPropertyKey_(item && item.page, item && item.id),
+    };
+  }).filter(function (item) {
+    return item.page && item.key;
+  });
+  const result = {};
+  const keysForSheet = [];
+
+  requests.forEach(function (item) {
+    const cached = getCachedJson_(`static:${item.key}`);
+    if (cached) {
+      result[item.key] = cached;
+      return;
+    }
+    const propertyPayload = readJsonScriptProperty_(item.key);
+    if (propertyPayload) {
+      result[item.key] = putCachedJson_(`static:${item.key}`, propertyPayload, getConfig_().payloadCacheTtlSeconds);
+      return;
+    }
+    keysForSheet.push(item.key);
+  });
+
+  const sheetPayloads = readPayloadSnapshotsFromSheetByKeys_(keysForSheet);
+  Object.keys(sheetPayloads || {}).forEach(function (key) {
+    result[key] = putCachedJson_(`static:${key}`, sheetPayloads[key], getConfig_().payloadCacheTtlSeconds);
+  });
+
+  return result;
+}
+
 function isDefaultToolsRequest_(request) {
   const normalized = normalizeToolsRequest_(request || {});
   return !normalized.assetIds.length && !normalized.companyIds.length;

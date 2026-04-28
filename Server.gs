@@ -40,12 +40,16 @@ function maybeHandleApiGet_(e) {
 }
 
 function getPublicSnapshotPayload_(name, id) {
+  if (name === 'initial') return getInitialDashboardData();
   if (name === 'bootstrap') return getBootstrapData();
   if (name === 'home') return getHomeData();
   if (name === 'asset-options') return getAssetOptions();
   if (name === 'company-options') return getCompanyOptions();
   if (name === 'asset') return getAssetData(id);
   if (name === 'company') return getCompanyData(id);
+  if (name === 'sector') return getSectorData();
+  if (name === 'tools') return getToolsData({});
+  if (name === 'playground') return getPlaygroundData({});
   throw new Error('Unknown public snapshot name: ' + name);
 }
 
@@ -231,6 +235,84 @@ function getBootstrapData() {
   const fallback = buildBootstrapShellFallback_();
   queueBootstrapBackgroundRefresh_('bootstrap_missing_shell');
   return sanitizePayloadForViewer_(putCachedJson_(cacheKey, enrichBootstrapPayload_(fallback), getConfig_().payloadCacheTtlSeconds), viewer);
+}
+
+function getInitialDashboardData(request) {
+  const viewer = getViewerContextFromRequest_(request);
+  const startedAt = Date.now();
+  const bootstrap = getBootstrapData(request);
+  const assetOptions = getAssetOptions();
+  const companyOptions = getCompanyOptions();
+  const defaults = bootstrap.defaults || {};
+  const defaultAssetId = safeString_(defaults.assetId) || safeString_(safeGet_(assetOptions, [0, 'assetId']));
+  const defaultTenantId = safeString_(defaults.tenantId) || safeString_(safeGet_(companyOptions, [0, 'tenantId']));
+  const snapshotItems = [
+    { page: 'home', id: 'default' },
+    { page: 'sector', id: 'default' },
+    { page: 'tools', id: 'default' },
+    { page: 'playground', id: 'default' },
+  ];
+  if (defaultAssetId) snapshotItems.push({ page: 'asset', id: defaultAssetId });
+  if (defaultTenantId) snapshotItems.push({ page: 'company', id: defaultTenantId });
+
+  const snapshots = typeof readStaticPayloadSnapshotMap_ === 'function'
+    ? readStaticPayloadSnapshotMap_(snapshotItems)
+    : {};
+
+  function getSnapshot(page, id) {
+    return snapshots[buildStaticPayloadPropertyKey_(page, id || 'default')] || null;
+  }
+
+  const homePayload = getSnapshot('home', 'default') || getHomeData(request);
+  const assetPayload = defaultAssetId
+    ? (getSnapshot('asset', defaultAssetId) || getAssetData(Object.assign({}, request || {}, { assetId: defaultAssetId })))
+    : null;
+  const companyPayload = defaultTenantId
+    ? (getSnapshot('company', defaultTenantId) || getCompanyData(Object.assign({}, request || {}, { tenantId: defaultTenantId })))
+    : null;
+  const sectorPayload = getSnapshot('sector', 'default') || getSectorData(request);
+  const toolsPayload = getSnapshot('tools', 'default') || getToolsData(Object.assign({}, request || {}, { assetIds: [], companyIds: [] }));
+  const playgroundPayload = getSnapshot('playground', 'default') || getPlaygroundData(Object.assign({}, request || {}, {
+    rowDimension: 'assetName',
+    columnDimension: 'none',
+    filterDimension: '',
+    filterValue: '',
+    valueMetric: 'leasedAreaSqm',
+    topN: 25,
+  }));
+
+  const enrichedBootstrap = Object.assign({}, bootstrap, {
+    assetOptions: assetOptions,
+    companyOptions: companyOptions,
+    defaults: Object.assign({}, defaults, {
+      assetId: defaultAssetId,
+      tenantId: defaultTenantId,
+    }),
+  });
+
+  return {
+    bootstrap: sanitizePayloadForViewer_(enrichedBootstrap, viewer),
+    assetOptions: assetOptions,
+    companyOptions: companyOptions,
+    tabPayloads: {
+      home: sanitizePayloadForViewer_(homePayload, viewer),
+      asset: assetPayload ? {
+        id: defaultAssetId,
+        payload: sanitizePayloadForViewer_(assetPayload, viewer),
+      } : null,
+      company: companyPayload ? {
+        id: defaultTenantId,
+        payload: sanitizePayloadForViewer_(companyPayload, viewer),
+      } : null,
+      sector: sanitizePayloadForViewer_(sectorPayload, viewer),
+      tools: sanitizePayloadForViewer_(toolsPayload, viewer),
+      playground: sanitizePayloadForViewer_(playgroundPayload, viewer),
+    },
+    timing: {
+      durationMs: Date.now() - startedAt,
+      source: 'initial_dashboard_batch',
+    },
+  };
 }
 
 function enrichBootstrapPayload_(payload) {

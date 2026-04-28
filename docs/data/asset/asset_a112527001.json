@@ -1,17 +1,10 @@
 {
   "analytics": {
-    "goodsTypeMix": [
-      {
-        "value": 53709.86,
-        "recordCount": 6,
-        "label": "공산품"
-      }
-    ],
     "coreTenants": [
       {
-        "tenantMasterName": "쿠팡(주)",
         "earliestExpiry": "2028-01-11",
         "monthlyRentTotal": 310589996,
+        "tenantMasterName": "쿠팡(주)",
         "areaShare": 0.6734,
         "monthlyMfTotal": 21880200,
         "costShare": 0.764,
@@ -25,9 +18,9 @@
         "assetCount": 1
       },
       {
+        "tenantMasterName": "송림물류(주)",
         "monthlyRentTotal": 53160536,
         "earliestExpiry": "2029-01-11",
-        "tenantMasterName": "송림물류(주)",
         "areaShare": 0.1098,
         "costShare": 0.1222,
         "leasedAreaSqm": 5898.23,
@@ -40,9 +33,9 @@
         "assetCount": 1
       },
       {
-        "tenantMasterName": "뉴성진에이원(주)",
         "earliestExpiry": "2028-01-14",
         "monthlyRentTotal": 46368725,
+        "tenantMasterName": "뉴성진에이원(주)",
         "areaShare": 0.0975,
         "monthlyMfTotal": 3168020,
         "costShare": 0.1138,
@@ -56,8 +49,8 @@
         "assetCount": 1
       },
       {
-        "tenantMasterName": "(주)우진글로벌",
         "earliestExpiry": "2029-01-11",
+        "tenantMasterName": "(주)우진글로벌",
         "latestExpiry": "2029-01-11",
         "areaShare": 0.1193,
         "leaseSpaceCount": 1,
@@ -68,12 +61,19 @@
         "assetCount": 1
       }
     ],
+    "goodsTypeMix": [
+      {
+        "value": 53709.86,
+        "recordCount": 6,
+        "label": "공산품"
+      }
+    ],
     "rentVsMf": [
       {
         "monthlyTotal": 110823398.67,
         "mfPerPy": 2000,
-        "tenantMasterName": "쿠팡(주)",
         "monthlyRentTotal": 103529998.67,
+        "tenantMasterName": "쿠팡(주)",
         "leasedAreaPy": 3646.7,
         "monthlyMfTotal": 7293400,
         "leaseSpaceId": "asset_a112527001|tenant_brn_1208800767|20260112|20280111|b12~3|na",
@@ -102,8 +102,8 @@
       {
         "monthlyTotal": 53160536,
         "leaseSpaceId": "asset_a112527001|tenant_brn_1268193358|20260112|20290111|b1|na",
-        "monthlyRentTotal": 53160536,
         "tenantMasterName": "송림물류(주)",
+        "monthlyRentTotal": 53160536,
         "rentPerPy": 29795,
         "leasedAreaPy": 1784.21
       },
@@ -115,8 +115,8 @@
       {
         "monthlyTotal": 49536745,
         "mfPerPy": 2000,
-        "tenantMasterName": "뉴성진에이원(주)",
         "monthlyRentTotal": 46368725,
+        "tenantMasterName": "뉴성진에이원(주)",
         "leasedAreaPy": 1584.01,
         "monthlyMfTotal": 3168020,
         "leaseSpaceId": "asset_a112527001|tenant_brn_5298800926|20240901|20280114|4|na",
@@ -144,15 +144,15 @@
       ],
       "entries": [
         {
-          "earliestExpiry": "2028-01-11",
           "tenantMasterName": "쿠팡(주)",
+          "earliestExpiry": "2028-01-11",
           "leasedAreaSqm": 12055.21,
           "monthsToExpiry": 21,
           "monthlyCostTotal": 110823398.67,
           "spaceLabel": "B1",
           "latestExpiry": "2028-01-11",
-          "floorLabel": "B1",
           "monthlyCombinedTotal": 110823398.67,
+          "floorLabel": "B1",
           "currentEndDate": "2028-01-11",
           "tenantId": "tenant_brn_1208800767",
           "leaseSpaceId": "asset_a112527001|tenant_brn_1208800767|20260112|20280111|b12~3|na",
@@ -166,23 +166,23 @@
           "monthlyCostTotal": 110823398.67,
           "spaceLabel": "2",
           "latestExpiry": "2028-01-11",
-          "monthlyCombinedTotal": 110823398.67,
           "floorLabel": "2",
+          "monthlyCombinedTotal": 110823398.67,
           "tenantId": "tenant_brn_1208800767",
           "currentEndDate": "2028-01-11",
           "leaseSpaceId": "asset_a112527001|tenant_brn_1208800767|20260112|20280111|b12~3|na",
           "detailAreaLabel": ""
         },
         {
-          "tenantMasterName": "쿠팡(주)",
           "earliestExpiry": "2028-01-11",
+          "tenantMasterName": "쿠팡(주)",
           "leasedAreaSqm": 12055.21,
           "monthsToExpiry": 21,
           "monthlyCostTotal": 110823398.67,
           "spaceLabel": "3",
           "latestExpiry": "2028-01-11",
-          "monthlyCombinedTotal": 110823398.67,
           "floorLabel": "3",
+          "monthlyCombinedTotal": 110823398.67,
           "currentEndDate": "2028-01-11",
           "tenantId": "tenant_brn_1208800767",
           "leaseSpaceId": "asset_a112527001|tenant_brn_1208800767|20260112|20280111|b12~3|na",
@@ -196,16 +196,16 @@
           "monthlyCostTotal": 49536745,
           "spaceLabel": "4",
           "latestExpiry": "2028-01-14",
-          "monthlyCombinedTotal": 49536745,
           "floorLabel": "4",
-          "currentEndDate": "2028-01-14",
+          "monthlyCombinedTotal": 49536745,
           "tenantId": "tenant_brn_5298800926",
+          "currentEndDate": "2028-01-14",
           "leaseSpaceId": "asset_a112527001|tenant_brn_5298800926|20240901|20280114|4|na",
           "detailAreaLabel": ""
         },
         {
-          "tenantMasterName": "송림물류(주)",
           "earliestExpiry": "2029-01-11",
+          "tenantMasterName": "송림물류(주)",
           "leasedAreaSqm": 5898.23,
           "monthsToExpiry": 33,
           "monthlyCostTotal": 53160536,
@@ -220,8 +220,8 @@
         },
         {
           "spaceLabel": "4",
-          "earliestExpiry": "2029-01-11",
           "tenantMasterName": "(주)우진글로벌",
+          "earliestExpiry": "2029-01-11",
           "latestExpiry": "2029-01-11",
           "floorLabel": "4",
           "tenantId": "tenant_name_주우진글로벌",
@@ -235,13 +235,13 @@
     },
     "uniqueTenants": [
       {
+        "monthlyRentTotal": 310589996,
+        "earliestExpiry": "2028-01-11",
         "latestExpiry": "2028-01-11",
         "tenantMasterName": "쿠팡(주)",
-        "earliestExpiry": "2028-01-11",
-        "monthlyRentTotal": 310589996,
         "leaseSpaceCount": 1,
-        "businessRegistrationNo": "120-88-00767",
         "monthlyMfTotal": 21880200,
+        "businessRegistrationNo": "120-88-00767",
         "tenantId": "tenant_brn_1208800767",
         "leasedAreaSqm": 36165.62,
         "assetCount": 1,
@@ -249,8 +249,8 @@
         "monthlyCostTotal": 332470196
       },
       {
-        "tenantMasterName": "송림물류(주)",
         "latestExpiry": "2029-01-11",
+        "tenantMasterName": "송림물류(주)",
         "monthlyRentTotal": 53160536,
         "earliestExpiry": "2029-01-11",
         "leaseSpaceCount": 1,
@@ -286,62 +286,6 @@
         "assetCount": 1
       }
     ],
-    "contractExpiry": [
-      {
-        "spaceLabel": "B1",
-        "tenantMasterName": "쿠팡(주)",
-        "floorLabel": "B1",
-        "currentEndDate": "2028-01-11",
-        "leaseSpaceId": "asset_a112527001|tenant_brn_1208800767|20260112|20280111|b12~3|na",
-        "detailAreaLabel": "",
-        "monthsToExpiry": 21
-      },
-      {
-        "spaceLabel": "2",
-        "tenantMasterName": "쿠팡(주)",
-        "floorLabel": "2",
-        "currentEndDate": "2028-01-11",
-        "leaseSpaceId": "asset_a112527001|tenant_brn_1208800767|20260112|20280111|b12~3|na",
-        "detailAreaLabel": "",
-        "monthsToExpiry": 21
-      },
-      {
-        "spaceLabel": "3",
-        "tenantMasterName": "쿠팡(주)",
-        "floorLabel": "3",
-        "currentEndDate": "2028-01-11",
-        "leaseSpaceId": "asset_a112527001|tenant_brn_1208800767|20260112|20280111|b12~3|na",
-        "detailAreaLabel": "",
-        "monthsToExpiry": 21
-      },
-      {
-        "spaceLabel": "B1",
-        "tenantMasterName": "송림물류(주)",
-        "floorLabel": "B1",
-        "currentEndDate": "2029-01-11",
-        "leaseSpaceId": "asset_a112527001|tenant_brn_1268193358|20260112|20290111|b1|na",
-        "monthsToExpiry": 33,
-        "detailAreaLabel": ""
-      },
-      {
-        "spaceLabel": "4",
-        "tenantMasterName": "(주)우진글로벌",
-        "floorLabel": "4",
-        "currentEndDate": "2029-01-11",
-        "leaseSpaceId": "asset_a112527001|tenant_name_주우진글로벌|20260112|20290111|4|na",
-        "detailAreaLabel": "",
-        "monthsToExpiry": 33
-      },
-      {
-        "spaceLabel": "4",
-        "tenantMasterName": "뉴성진에이원(주)",
-        "floorLabel": "4",
-        "currentEndDate": "2028-01-14",
-        "leaseSpaceId": "asset_a112527001|tenant_brn_5298800926|20240901|20280114|4|na",
-        "detailAreaLabel": "",
-        "monthsToExpiry": 21
-      }
-    ],
     "eNocAudit": {
       "summary": {
         "rowCount": 6,
@@ -358,6 +302,24 @@
           "storedENoc": 30288.47,
           "currentMoneyAsOf": "2026-01-12",
           "leasedAreaSqm": 12055.21,
+          "currentPeriodYears": 5,
+          "rentPerPy": 28390,
+          "rfMonths": 1,
+          "variance": 0,
+          "currentMoneyBasis": "latest_linked_history",
+          "tenantId": "tenant_brn_1208800767",
+          "leaseSpaceId": "asset_a112527001|tenant_brn_1208800767|20260112|20280111|b12~3|na",
+          "calculationStatus": "ok",
+          "exclusiveAreaSqm": 11907.33
+        },
+        {
+          "mfPerPy": 2000,
+          "recomputedENoc": 30288.47,
+          "tenantMasterName": "쿠팡(주)",
+          "exclusiveRatio": 0.98773,
+          "storedENoc": 30288.47,
+          "currentMoneyAsOf": "2026-01-12",
+          "leasedAreaSqm": 12055.21,
           "rentPerPy": 28390,
           "currentPeriodYears": 5,
           "rfMonths": 1,
@@ -384,24 +346,6 @@
           "tenantId": "tenant_brn_1208800767",
           "leaseSpaceId": "asset_a112527001|tenant_brn_1208800767|20260112|20280111|b12~3|na",
           "calculationStatus": "ok",
-          "exclusiveAreaSqm": 11907.33
-        },
-        {
-          "mfPerPy": 2000,
-          "tenantMasterName": "쿠팡(주)",
-          "recomputedENoc": 30288.47,
-          "exclusiveRatio": 0.98773,
-          "storedENoc": 30288.47,
-          "currentMoneyAsOf": "2026-01-12",
-          "leasedAreaSqm": 12055.21,
-          "rentPerPy": 28390,
-          "currentPeriodYears": 5,
-          "rfMonths": 1,
-          "variance": 0,
-          "currentMoneyBasis": "latest_linked_history",
-          "tenantId": "tenant_brn_1208800767",
-          "calculationStatus": "ok",
-          "leaseSpaceId": "asset_a112527001|tenant_brn_1208800767|20260112|20280111|b12~3|na",
           "exclusiveAreaSqm": 11907.33
         },
         {
@@ -409,13 +353,13 @@
           "exclusiveRatio": 1,
           "currentMoneyAsOf": "2026-01-12",
           "leasedAreaSqm": 5898.23,
-          "currentPeriodYears": 5,
           "rentPerPy": 29795,
+          "currentPeriodYears": 5,
           "rfMonths": 1.2,
           "currentMoneyBasis": "latest_linked_history",
           "tenantId": "tenant_brn_1268193358",
-          "leaseSpaceId": "asset_a112527001|tenant_brn_1268193358|20260112|20290111|b1|na",
           "calculationStatus": "review_required",
+          "leaseSpaceId": "asset_a112527001|tenant_brn_1268193358|20260112|20290111|b1|na",
           "exclusiveAreaSqm": 5898.23
         },
         {
@@ -427,8 +371,8 @@
           "rfMonths": 1,
           "currentMoneyBasis": "unresolved",
           "tenantId": "tenant_name_주우진글로벌",
-          "calculationStatus": "review_required",
           "leaseSpaceId": "asset_a112527001|tenant_name_주우진글로벌|20260112|20290111|4|na",
+          "calculationStatus": "review_required",
           "exclusiveAreaSqm": 6409.61
         },
         {
@@ -439,19 +383,75 @@
           "storedENoc": 29909.8,
           "currentMoneyAsOf": "2026-01-12",
           "leasedAreaSqm": 5236.39,
-          "currentPeriodYears": 3.4,
           "rentPerPy": 29273,
+          "currentPeriodYears": 3.4,
           "rfMonths": 1.9,
           "variance": 0,
           "currentMoneyBasis": "latest_linked_history",
           "tenantId": "tenant_brn_5298800926",
-          "leaseSpaceId": "asset_a112527001|tenant_brn_5298800926|20240901|20280114|4|na",
           "calculationStatus": "ok",
+          "leaseSpaceId": "asset_a112527001|tenant_brn_5298800926|20240901|20280114|4|na",
           "exclusiveAreaSqm": 5236.39
         }
       ],
       "formula": "((rentPerPy * ((periodYears*12 - rfMonths - foMonths)/(periodYears*12)) + mfPerPy) / exclusiveRatio) - (tiAmount / (exclusiveAreaSqm*0.3025) / (periodYears*12))"
     },
+    "contractExpiry": [
+      {
+        "spaceLabel": "B1",
+        "tenantMasterName": "쿠팡(주)",
+        "floorLabel": "B1",
+        "currentEndDate": "2028-01-11",
+        "leaseSpaceId": "asset_a112527001|tenant_brn_1208800767|20260112|20280111|b12~3|na",
+        "monthsToExpiry": 21,
+        "detailAreaLabel": ""
+      },
+      {
+        "spaceLabel": "2",
+        "tenantMasterName": "쿠팡(주)",
+        "floorLabel": "2",
+        "currentEndDate": "2028-01-11",
+        "leaseSpaceId": "asset_a112527001|tenant_brn_1208800767|20260112|20280111|b12~3|na",
+        "monthsToExpiry": 21,
+        "detailAreaLabel": ""
+      },
+      {
+        "spaceLabel": "3",
+        "tenantMasterName": "쿠팡(주)",
+        "floorLabel": "3",
+        "currentEndDate": "2028-01-11",
+        "leaseSpaceId": "asset_a112527001|tenant_brn_1208800767|20260112|20280111|b12~3|na",
+        "monthsToExpiry": 21,
+        "detailAreaLabel": ""
+      },
+      {
+        "spaceLabel": "B1",
+        "tenantMasterName": "송림물류(주)",
+        "floorLabel": "B1",
+        "currentEndDate": "2029-01-11",
+        "leaseSpaceId": "asset_a112527001|tenant_brn_1268193358|20260112|20290111|b1|na",
+        "monthsToExpiry": 33,
+        "detailAreaLabel": ""
+      },
+      {
+        "spaceLabel": "4",
+        "tenantMasterName": "(주)우진글로벌",
+        "floorLabel": "4",
+        "currentEndDate": "2029-01-11",
+        "leaseSpaceId": "asset_a112527001|tenant_name_주우진글로벌|20260112|20290111|4|na",
+        "monthsToExpiry": 33,
+        "detailAreaLabel": ""
+      },
+      {
+        "spaceLabel": "4",
+        "tenantMasterName": "뉴성진에이원(주)",
+        "floorLabel": "4",
+        "currentEndDate": "2028-01-14",
+        "leaseSpaceId": "asset_a112527001|tenant_brn_5298800926|20240901|20280114|4|na",
+        "detailAreaLabel": "",
+        "monthsToExpiry": 21
+      }
+    ],
     "monthlyCostByTenant": [
       {
         "tenantMasterName": "쿠팡(주)",
@@ -464,8 +464,8 @@
       },
       {
         "tenantId": "tenant_brn_1268193358",
-        "monthlyRentTotal": 53160536,
         "tenantMasterName": "송림물류(주)",
+        "monthlyRentTotal": 53160536,
         "leasedAreaSqm": 5898.23,
         "leaseSpaceCount": 1,
         "monthlyCostTotal": 53160536
@@ -502,6 +502,7 @@
     },
     "issueCount": 3,
     "vacancyRate": 0.011449620876710885,
+    "areaTableStatus": "unknown",
     "floors": [
       {
         "tenants": [
@@ -515,8 +516,8 @@
           {
             "tenantId": "tenant_brn_1268193358",
             "tenantMasterName": "송림물류(주)",
-            "leasedAreaSqm": 5898.23,
             "share": 0.3285,
+            "leasedAreaSqm": 5898.23,
             "detailAreaLabel": ""
           }
         ],
@@ -561,8 +562,8 @@
           {
             "tenantId": "tenant_brn_1208800767",
             "tenantMasterName": "쿠팡(주)",
-            "leasedAreaSqm": 12055.21,
             "share": 1,
+            "leasedAreaSqm": 12055.21,
             "detailAreaLabel": ""
           }
         ],
@@ -570,7 +571,6 @@
         "totalFloorAreaSqm": 12055.21
       }
     ],
-    "areaTableStatus": "unknown",
     "assetId": "asset_a112527001",
     "standardizedAddress": "경기도 이천시 호법면 덕평로 257-21",
     "uniqueTenantCount": 4,
@@ -578,15 +578,16 @@
     "sector": "물류센터",
     "tenantCount": 4,
     "longitude": 127.3750501,
+    "assetCode": "A112527001",
     "topTenants": [
       {
-        "earliestExpiry": "2028-01-11",
-        "monthlyRentTotal": 310589996,
-        "tenantMasterName": "쿠팡(주)",
         "latestExpiry": "2028-01-11",
+        "tenantMasterName": "쿠팡(주)",
+        "monthlyRentTotal": 310589996,
+        "earliestExpiry": "2028-01-11",
         "leaseSpaceCount": 1,
-        "monthlyMfTotal": 21880200,
         "businessRegistrationNo": "120-88-00767",
+        "monthlyMfTotal": 21880200,
         "tenantId": "tenant_brn_1208800767",
         "leasedAreaSqm": 36165.62,
         "assetCount": 1,
@@ -594,10 +595,10 @@
         "monthlyCostTotal": 332470196
       },
       {
-        "monthlyRentTotal": 53160536,
-        "earliestExpiry": "2029-01-11",
         "latestExpiry": "2029-01-11",
         "tenantMasterName": "송림물류(주)",
+        "earliestExpiry": "2029-01-11",
+        "monthlyRentTotal": 53160536,
         "leaseSpaceCount": 1,
         "businessRegistrationNo": "126-81-93358",
         "tenantId": "tenant_brn_1268193358",
@@ -607,10 +608,10 @@
         "monthlyCostTotal": 53160536
       },
       {
-        "earliestExpiry": "2028-01-14",
-        "monthlyRentTotal": 46368725,
-        "latestExpiry": "2028-01-14",
         "tenantMasterName": "뉴성진에이원(주)",
+        "latestExpiry": "2028-01-14",
+        "monthlyRentTotal": 46368725,
+        "earliestExpiry": "2028-01-14",
         "leaseSpaceCount": 1,
         "businessRegistrationNo": "529-88-00926",
         "monthlyMfTotal": 3168020,
@@ -621,9 +622,9 @@
         "monthlyCostTotal": 49536745
       },
       {
-        "earliestExpiry": "2029-01-11",
-        "latestExpiry": "2029-01-11",
         "tenantMasterName": "(주)우진글로벌",
+        "latestExpiry": "2029-01-11",
+        "earliestExpiry": "2029-01-11",
         "leaseSpaceCount": 1,
         "businessRegistrationNo": "",
         "tenantId": "tenant_name_주우진글로벌",
@@ -631,7 +632,6 @@
         "assetCount": 1
       }
     ],
-    "assetCode": "A112527001",
     "manager": {
       "teamName": "로지스틱스매니지먼트",
       "assetCode": "A112527001",
@@ -642,14 +642,14 @@
       "email": "jhlee@igisam.com"
     },
     "grossFloorAreaTimelineRule": "later_of_first_configured_at_and_approval_date",
-    "monthlyMfTotal": 25048220,
     "floorCount": "4F / B1",
-    "leasedAreaSqm": 53709.850000000006,
+    "monthlyMfTotal": 25048220,
     "fetchedAt": "2026-04-22",
+    "leasedAreaSqm": 53709.850000000006,
     "firstConfiguredAt": "2021-03-05",
     "averageENoc": 26784.1,
-    "vacancyAreaSqm": 622.0799999999945,
     "monthlyCostTotal": 435167477,
+    "vacancyAreaSqm": 622.0799999999945,
     "landAreaSqm": 54990,
     "leaseSpaceCount": 4,
     "grossFloorAreaEffectiveMonth": "2021-03",
@@ -658,13 +658,13 @@
   },
   "topTenants": [
     {
-      "earliestExpiry": "2028-01-11",
-      "monthlyRentTotal": 310589996,
       "tenantMasterName": "쿠팡(주)",
       "latestExpiry": "2028-01-11",
+      "monthlyRentTotal": 310589996,
+      "earliestExpiry": "2028-01-11",
       "leaseSpaceCount": 1,
-      "monthlyMfTotal": 21880200,
       "businessRegistrationNo": "120-88-00767",
+      "monthlyMfTotal": 21880200,
       "tenantId": "tenant_brn_1208800767",
       "leasedAreaSqm": 36165.62,
       "assetCount": 1,
@@ -674,8 +674,8 @@
     {
       "monthlyRentTotal": 53160536,
       "earliestExpiry": "2029-01-11",
-      "latestExpiry": "2029-01-11",
       "tenantMasterName": "송림물류(주)",
+      "latestExpiry": "2029-01-11",
       "leaseSpaceCount": 1,
       "businessRegistrationNo": "126-81-93358",
       "tenantId": "tenant_brn_1268193358",
@@ -685,10 +685,10 @@
       "monthlyCostTotal": 53160536
     },
     {
-      "latestExpiry": "2028-01-14",
       "tenantMasterName": "뉴성진에이원(주)",
-      "earliestExpiry": "2028-01-14",
+      "latestExpiry": "2028-01-14",
       "monthlyRentTotal": 46368725,
+      "earliestExpiry": "2028-01-14",
       "leaseSpaceCount": 1,
       "businessRegistrationNo": "529-88-00926",
       "monthlyMfTotal": 3168020,
@@ -699,9 +699,9 @@
       "monthlyCostTotal": 49536745
     },
     {
-      "latestExpiry": "2029-01-11",
-      "tenantMasterName": "(주)우진글로벌",
       "earliestExpiry": "2029-01-11",
+      "tenantMasterName": "(주)우진글로벌",
+      "latestExpiry": "2029-01-11",
       "leaseSpaceCount": 1,
       "businessRegistrationNo": "",
       "tenantId": "tenant_name_주우진글로벌",
@@ -715,35 +715,35 @@
       "assetId": "asset_a112527001"
     },
     "timing": {
-      "refreshedAt": "2026-04-27T16:07:14",
+      "refreshedAt": "2026-04-27T18:27:46",
       "fetchedAt": "2026-04-22",
       "derivedAt": "",
       "fetchedAts": [
         "2026-04-22"
       ]
     },
-    "generatedAt": "2026-04-27T16:07:14",
+    "generatedAt": "2026-04-27T18:27:46",
     "basisDisplay": {
       "derivedAt": "",
       "asOf": "2026-01-12",
-      "generatedAt": "2026-04-27T16:07:14",
-      "refreshedAt": "2026-04-27T16:07:14",
+      "generatedAt": "2026-04-27T18:27:46",
       "fetchedAt": "2026-04-22",
-      "source": "DB_GENERAL + DB_HISTORY + DB_ASSET",
+      "refreshedAt": "2026-04-27T18:27:46",
       "page": "asset",
+      "source": "DB_GENERAL + DB_HISTORY + DB_ASSET",
       "fetchedAts": [
         "2026-04-22"
       ]
     },
-    "page": "asset",
-    "rowCount": 4,
     "formulaVersion": "E.NOC_v2",
+    "rowCount": 4,
+    "page": "asset",
     "basis": {
       "rowScope": "selected_asset_rows",
       "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
       "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
-      "page": "asset",
       "rowUnit": "lease_space_id",
+      "page": "asset",
       "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
       "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
     }
@@ -774,8 +774,8 @@
         {
           "tenantId": "tenant_name_주우진글로벌",
           "tenantMasterName": "(주)우진글로벌",
-          "share": 0.5504,
           "leasedAreaSqm": 6409.61,
+          "share": 0.5504,
           "detailAreaLabel": ""
         },
         {
@@ -794,8 +794,8 @@
         {
           "tenantId": "tenant_brn_1208800767",
           "tenantMasterName": "쿠팡(주)",
-          "share": 1,
           "leasedAreaSqm": 12055.21,
+          "share": 1,
           "detailAreaLabel": ""
         }
       ],
@@ -807,8 +807,8 @@
         {
           "tenantId": "tenant_brn_1208800767",
           "tenantMasterName": "쿠팡(주)",
-          "share": 1,
           "leasedAreaSqm": 12055.21,
+          "share": 1,
           "detailAreaLabel": ""
         }
       ],
@@ -816,12 +816,12 @@
       "totalFloorAreaSqm": 12055.21
     }
   ],
-  "generatedAt": "2026-04-27T16:07:14",
+  "generatedAt": "2026-04-27T18:27:46",
   "basisDisplay": {
     "derivedAt": "",
     "asOf": "2026-01-12",
-    "generatedAt": "2026-04-27T16:07:14",
-    "refreshedAt": "2026-04-27T16:07:14",
+    "generatedAt": "2026-04-27T18:27:46",
+    "refreshedAt": "2026-04-27T18:27:46",
     "fetchedAt": "2026-04-22",
     "source": "DB_GENERAL + DB_HISTORY + DB_ASSET",
     "page": "asset",
@@ -838,8 +838,8 @@
         "uniqueTenantCount": 1,
         "fetchedAt": "2026-04-22",
         "averageENoc": 45996.45,
-        "vacancyRate": 0.22740490773422375,
-        "monthlyCostTotal": 1060724933
+        "monthlyCostTotal": 1060724933,
+        "vacancyRate": 0.22740490773422375
       },
       {
         "assetId": "asset_a112527001",
@@ -862,16 +862,16 @@
       {
         "assetId": "asset_a112527002",
         "assetName": "부국물류센터",
-        "uniqueTenantCount": 1,
         "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 1,
         "averageENoc": 27449.95,
         "vacancyRate": 0,
         "monthlyCostTotal": 155328845
       },
       {
         "assetName": "부산송정물류센터",
-        "uniqueTenantCount": 1,
         "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 1,
         "assetId": "asset_a112109001",
         "vacancyRate": 0.027004153491596173
       },
@@ -881,13 +881,13 @@
         "uniqueTenantCount": 6,
         "fetchedAt": "2026-04-22",
         "averageENoc": 37283.28,
-        "vacancyRate": 0.3071110862557777,
-        "monthlyCostTotal": 669324200
+        "monthlyCostTotal": 669324200,
+        "vacancyRate": 0.3071110862557777
       },
       {
         "assetName": "아레나스안성",
-        "uniqueTenantCount": 3,
         "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 3,
         "assetId": "asset_a112505001",
         "vacancyRate": 0.7478773512350668
       },
@@ -906,8 +906,8 @@
         "fetchedAt": "2026-04-22",
         "uniqueTenantCount": 4,
         "averageENoc": 24627.67,
-        "vacancyRate": 0.3013357213767869,
-        "monthlyCostTotal": 604357000
+        "monthlyCostTotal": 604357000,
+        "vacancyRate": 0.3013357213767869
       },
       {
         "assetId": "asset_a112500003",
@@ -930,11 +930,11 @@
       {
         "assetId": "asset_a112527003",
         "assetName": "에이블로지스물류센터",
-        "uniqueTenantCount": 1,
         "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 1,
         "averageENoc": 27039.41,
-        "vacancyRate": 0,
-        "monthlyCostTotal": 245219187
+        "monthlyCostTotal": 245219187,
+        "vacancyRate": 0
       },
       {
         "assetId": "asset_a112606001",
@@ -942,8 +942,8 @@
         "uniqueTenantCount": 3,
         "fetchedAt": "2026-04-22",
         "averageENoc": 32389.54,
-        "vacancyRate": 0.035098733326698266,
-        "monthlyCostTotal": 1028369423
+        "monthlyCostTotal": 1028369423,
+        "vacancyRate": 0.035098733326698266
       },
       {
         "assetId": "asset_a112573001",
@@ -951,8 +951,8 @@
         "uniqueTenantCount": 2,
         "fetchedAt": "2026-04-22",
         "averageENoc": 27884.74,
-        "vacancyRate": 0.030459886244241004,
-        "monthlyCostTotal": 275622000
+        "monthlyCostTotal": 275622000,
+        "vacancyRate": 0.030459886244241004
       },
       {
         "assetId": "asset_a112721001",
@@ -966,11 +966,11 @@
       {
         "assetId": "asset_a112500002",
         "assetName": "평택아디다스물류센터",
-        "uniqueTenantCount": 1,
         "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 1,
         "averageENoc": 28607.48,
-        "monthlyCostTotal": 460486000,
-        "vacancyRate": 0
+        "vacancyRate": 0,
+        "monthlyCostTotal": 460486000
       },
       {
         "assetId": "asset_a112642001",
@@ -1004,6 +1004,32 @@
       "defaultSort": "asset_name_asc"
     }
   },
+  "basis": {
+    "rowScope": "selected_asset_rows",
+    "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
+    "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
+    "rowUnit": "lease_space_id",
+    "page": "asset",
+    "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
+    "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
+  },
+  "areaBreakdown": {
+    "exclusiveRatio": 0.9917400641148572,
+    "otherExclusiveAreaSqm": 247.53000000000003,
+    "warehouseAreaSqm": 52130.45999999999,
+    "otherCommonAreaSqm": 443.64,
+    "leasedAreaSqm": 53709.86,
+    "vacancyAreaSqm": 622.0799999999945,
+    "parkingAreaSqm": null,
+    "coreAreaSqm": null,
+    "dockAreaSqm": null,
+    "officeAreaSqm": 1331.87,
+    "grossFloorAreaSqm": 54331.93,
+    "corridorAreaSqm": null,
+    "mechanicalAreaSqm": null,
+    "rampAreaSqm": null,
+    "exclusiveAreaSqm": 53266.22
+  },
   "rows": [
     {
       "insuranceSpecialClause": "없음",
@@ -1017,16 +1043,16 @@
       "isDelinquent": false,
       "leaseId": "asset_a112527001|tenant_brn_1208800767|20260112|20280111",
       "historyCandidateCount": 1,
-      "recentContractDate": "2026-01-12",
       "fundCode": "112527",
+      "recentContractDate": "2026-01-12",
       "currentMoneyBasis": "latest_linked_history",
       "coldStorageType": "N",
       "currentEndDate": "2028-01-11",
       "historyCandidates": [
         {
           "matchConfidence": "lease_space_id",
-          "mfPerPy": 2000,
           "reason": "재계약",
+          "mfPerPy": 2000,
           "monthlyRentTotal": 310589996,
           "tenantMasterName": "쿠팡(주)",
           "baseDate": "2026-01-12",
@@ -1035,13 +1061,13 @@
           "baseMonth": "2026-01",
           "isLatest": true,
           "fundCode": "112527",
+          "coldStorageType": "N",
           "businessRegistrationNo": "120-88-00767",
           "isSelectedForMoney": true,
           "rawTenantName": "쿠팡(주)",
-          "coldStorageType": "N",
           "rowNumber": 149,
-          "detailAreaLabel": "",
           "sector": "물류센터",
+          "detailAreaLabel": "",
           "exclusiveAreaSqm": 35722,
           "assetCode": "A112527001",
           "monthlyMfTotal": 21880200,
@@ -1053,14 +1079,14 @@
         }
       ],
       "rowNumber": 43,
-      "detailAreaLabel": "",
       "sector": "물류센터",
+      "detailAreaLabel": "",
       "exclusiveAreaSqm": 11907.33,
       "depositAmount": 1046813137,
       "assetCode": "A112527001",
       "warehouseAreaSqm": 11686.63,
-      "currentMonthlyCostTotal": 110823398.67,
       "currentMoneyAsOf": "2026-01-12",
+      "currentMonthlyCostTotal": 110823398.67,
       "extensionCount": 1,
       "exclusiveRatioRaw": 98.773,
       "firstEndDate": "2026-01-11",
@@ -1076,9 +1102,9 @@
       "historyLinked": true,
       "historyLatestDate": "2026-01-12",
       "currentMonthlyRentTotal": 103529998.67,
-      "assetId": "asset_a112527001",
       "isContractActive": true,
       "firstContractDate": "2023-01-12",
+      "assetId": "asset_a112527001",
       "businessRegistrationNo": "120-88-00767",
       "rawTenantName": "쿠팡(주)",
       "currentStartDate": "2026-01-12",
@@ -1091,15 +1117,15 @@
         "fetchedAt": "2026-04-22",
         "latestRevenue": 45455513000000,
         "hasFinancialData": false,
-        "headquartersAddress": "서울특별시 송파구 송파대로 570 , 18층(신천동)",
         "latestDebtRatio": 326.49,
+        "headquartersAddress": "서울특별시 송파구 송파대로 570 , 18층(신천동)",
         "latestFinancialYear": "2025",
         "listedYn": "Y",
         "dartCorpCode": "01019166",
         "industryCode": "4791",
-        "groupName": "",
-        "matchStatus": "matched",
         "latestEmployeeCount": 13212,
+        "matchStatus": "matched",
+        "groupName": "",
         "businessRegistrationNo": "120-88-00767",
         "tenantId": "tenant_brn_1208800767",
         "corpRegistrationNo": "1101115067718",
@@ -1115,22 +1141,20 @@
         "assetCode": "A112527001",
         "fundCode": "112527",
         "assetName": "동산물류센터",
-        "fundName": "이지스전문투자형사모부동산투자신탁제404호",
         "managerName": "이정훈B",
+        "fundName": "이지스전문투자형사모부동산투자신탁제404호",
         "email": "jhlee@igisam.com"
       },
       "currentMonthlyMfTotal": 7293400,
       "leasedAreaSqm": 12055.21,
       "floorSplitCount": 3,
-      "rfMonths": 1,
       "currentMoneyStatus": "ok",
+      "rfMonths": 1,
       "fundId": "fund_112527",
       "isPreLeased": false,
       "tenantId": "tenant_brn_1208800767",
       "officeAreaSqm": 286.07,
       "is3pl": false,
-      "assetName": "동산물류센터",
-      "calculationStatus": "ok",
       "linkedIssues": [
         {
           "owner": "",
@@ -1142,9 +1166,9 @@
           "content": "우진글로벌 임차인명 정확히 확인 필요",
           "relatedSheet": "전체",
           "conclusion": "",
-          "recordedAt": "2026-04-14",
-          "managerQuestion": "",
           "assetId": "asset_a112527001",
+          "managerQuestion": "",
+          "recordedAt": "2026-04-14",
           "rawId": "7",
           "category": "자산별 담당자 확인 필요 사항",
           "resolved": false
@@ -1159,8 +1183,8 @@
           "content": "임대면적, 전용면적 계산 로직 확인 필요 (세부면적 합산과 안 맞음)",
           "conclusion": "",
           "relatedSheet": "전체",
-          "recordedAt": "2026-04-16",
           "assetId": "asset_a112527001",
+          "recordedAt": "2026-04-16",
           "managerQuestion": "",
           "rawId": "19",
           "category": "자산별 담당자 확인 필요 사항",
@@ -1174,41 +1198,43 @@
           "relatedAssetLabel": "동산물류센터",
           "priority": "미정",
           "content": "공용부 세부면적 없는 이유 확인 필요",
-          "conclusion": "",
           "relatedSheet": "전체",
-          "managerQuestion": "",
+          "conclusion": "",
           "assetId": "asset_a112527001",
           "recordedAt": "2026-04-16",
+          "managerQuestion": "",
           "rawId": "20",
           "category": "자산별 담당자 확인 필요 사항",
           "resolved": false
         }
       ],
-      "currentRentPerPy": 28390,
+      "calculationStatus": "ok",
+      "assetName": "동산물류센터",
       "asset": {
         "queryKey": "41500|33025|0|0977|0005",
         "assetCode": "A112527001",
         "approvalDate": "2017-09-27",
         "platGbCd": "0",
-        "floorCount": "4F / B1",
         "latitude": 37.1896213,
+        "floorCount": "4F / B1",
         "buildingHubStatus": "ok",
         "fetchedAt": "2026-04-22",
         "firstConfiguredAt": "2021-03-05",
-        "buildingName": "동산물류센터",
-        "landAreaSqm": 54990,
         "bjdongCd": "33025",
+        "landAreaSqm": 54990,
+        "buildingName": "동산물류센터",
         "areaTableStatus": "unknown",
         "assetId": "asset_a112527001",
         "geocodeStatus": "ok_naver_geocode",
-        "assetName": "동산물류센터",
         "sigunguCd": "41500",
-        "grossFloorAreaSqm": 54331.93,
-        "standardizedAddress": "경기도 이천시 호법면 덕평로 257-21",
+        "assetName": "동산물류센터",
         "bun": "977",
+        "standardizedAddress": "경기도 이천시 호법면 덕평로 257-21",
+        "grossFloorAreaSqm": 54331.93,
         "longitude": 127.3750501,
         "ji": "5"
-      }
+      },
+      "currentRentPerPy": 28390
     },
     {
       "insuranceSpecialClause": "없음",
@@ -1232,18 +1258,18 @@
           "matchConfidence": "lease_space_id",
           "mfPerPy": 2000,
           "reason": "재계약",
-          "tenantMasterName": "쿠팡(주)",
           "monthlyRentTotal": 310589996,
+          "tenantMasterName": "쿠팡(주)",
           "baseDate": "2026-01-12",
           "rentPerPy": 28390,
           "historyEventId": "asset_a112527001|tenant_brn_1208800767|20260112|20280111|b12~3|na|2026-01-12|149",
           "baseMonth": "2026-01",
           "isLatest": true,
           "fundCode": "112527",
-          "isSelectedForMoney": true,
-          "businessRegistrationNo": "120-88-00767",
-          "coldStorageType": "N",
           "rawTenantName": "쿠팡(주)",
+          "coldStorageType": "N",
+          "businessRegistrationNo": "120-88-00767",
+          "isSelectedForMoney": true,
           "rowNumber": 149,
           "detailAreaLabel": "",
           "sector": "물류센터",
@@ -1269,8 +1295,8 @@
       "extensionCount": 1,
       "exclusiveRatioRaw": 98.773,
       "firstEndDate": "2026-01-11",
-      "sourceRowHash": "A112527001|1208800767|B1, 2~3||20260112|20280111|36165.62|35721.99",
       "goodsType": "공산품",
+      "sourceRowHash": "A112527001|1208800767|B1, 2~3||20260112|20280111|36165.62|35721.99",
       "eNoc": 30288.47,
       "floorLabel": "2",
       "historyLinkStatus": "lease_space_id",
@@ -1284,8 +1310,8 @@
       "assetId": "asset_a112527001",
       "firstContractDate": "2023-01-12",
       "isContractActive": true,
-      "businessRegistrationNo": "120-88-00767",
       "rawTenantName": "쿠팡(주)",
+      "businessRegistrationNo": "120-88-00767",
       "currentStartDate": "2026-01-12",
       "leaseSpaceId": "asset_a112527001|tenant_brn_1208800767|20260112|20280111|b12~3|na",
       "company": {
@@ -1294,13 +1320,13 @@
         "latestOperatingIncome": 2288356000000,
         "financialStatementType": "CFS_DOC",
         "fetchedAt": "2026-04-22",
-        "hasFinancialData": false,
         "latestRevenue": 45455513000000,
-        "headquartersAddress": "서울특별시 송파구 송파대로 570 , 18층(신천동)",
+        "hasFinancialData": false,
         "latestDebtRatio": 326.49,
+        "headquartersAddress": "서울특별시 송파구 송파대로 570 , 18층(신천동)",
         "latestFinancialYear": "2025",
-        "dartCorpCode": "01019166",
         "listedYn": "Y",
+        "dartCorpCode": "01019166",
         "industryCode": "4791",
         "latestEmployeeCount": 13212,
         "matchStatus": "matched",
@@ -1331,11 +1357,8 @@
       "currentMoneyStatus": "ok",
       "fundId": "fund_112527",
       "isPreLeased": false,
-      "tenantId": "tenant_brn_1208800767",
       "officeAreaSqm": 286.07,
-      "is3pl": false,
-      "calculationStatus": "ok",
-      "assetName": "동산물류센터",
+      "tenantId": "tenant_brn_1208800767",
       "linkedIssues": [
         {
           "owner": "",
@@ -1348,8 +1371,8 @@
           "conclusion": "",
           "relatedSheet": "전체",
           "recordedAt": "2026-04-14",
-          "assetId": "asset_a112527001",
           "managerQuestion": "",
+          "assetId": "asset_a112527001",
           "rawId": "7",
           "category": "자산별 담당자 확인 필요 사항",
           "resolved": false
@@ -1362,11 +1385,11 @@
           "relatedAssetLabel": "동산물류센터",
           "priority": "미정",
           "content": "임대면적, 전용면적 계산 로직 확인 필요 (세부면적 합산과 안 맞음)",
-          "relatedSheet": "전체",
           "conclusion": "",
+          "relatedSheet": "전체",
+          "assetId": "asset_a112527001",
           "recordedAt": "2026-04-16",
           "managerQuestion": "",
-          "assetId": "asset_a112527001",
           "rawId": "19",
           "category": "자산별 담당자 확인 필요 사항",
           "resolved": false
@@ -1381,15 +1404,17 @@
           "content": "공용부 세부면적 없는 이유 확인 필요",
           "conclusion": "",
           "relatedSheet": "전체",
-          "assetId": "asset_a112527001",
           "managerQuestion": "",
           "recordedAt": "2026-04-16",
+          "assetId": "asset_a112527001",
           "rawId": "20",
           "category": "자산별 담당자 확인 필요 사항",
           "resolved": false
         }
       ],
-      "currentRentPerPy": 28390,
+      "calculationStatus": "ok",
+      "assetName": "동산물류센터",
+      "is3pl": false,
       "asset": {
         "queryKey": "41500|33025|0|0977|0005",
         "approvalDate": "2017-09-27",
@@ -1400,20 +1425,21 @@
         "buildingHubStatus": "ok",
         "fetchedAt": "2026-04-22",
         "firstConfiguredAt": "2021-03-05",
-        "bjdongCd": "33025",
         "buildingName": "동산물류센터",
+        "bjdongCd": "33025",
         "landAreaSqm": 54990,
         "areaTableStatus": "unknown",
         "assetId": "asset_a112527001",
         "geocodeStatus": "ok_naver_geocode",
         "sigunguCd": "41500",
         "assetName": "동산물류센터",
-        "standardizedAddress": "경기도 이천시 호법면 덕평로 257-21",
         "bun": "977",
         "grossFloorAreaSqm": 54331.93,
-        "ji": "5",
-        "longitude": 127.3750501
-      }
+        "standardizedAddress": "경기도 이천시 호법면 덕평로 257-21",
+        "longitude": 127.3750501,
+        "ji": "5"
+      },
+      "currentRentPerPy": 28390
     },
     {
       "insuranceSpecialClause": "없음",
@@ -1445,13 +1471,13 @@
           "baseMonth": "2026-01",
           "isLatest": true,
           "fundCode": "112527",
-          "isSelectedForMoney": true,
           "businessRegistrationNo": "120-88-00767",
+          "isSelectedForMoney": true,
           "coldStorageType": "N",
           "rawTenantName": "쿠팡(주)",
           "rowNumber": 149,
-          "detailAreaLabel": "",
           "sector": "물류센터",
+          "detailAreaLabel": "",
           "exclusiveAreaSqm": 35722,
           "assetCode": "A112527001",
           "monthlyMfTotal": 21880200,
@@ -1474,8 +1500,8 @@
       "extensionCount": 1,
       "exclusiveRatioRaw": 98.773,
       "firstEndDate": "2026-01-11",
-      "goodsType": "공산품",
       "sourceRowHash": "A112527001|1208800767|B1, 2~3||20260112|20280111|36165.62|35721.99",
+      "goodsType": "공산품",
       "eNoc": 30288.47,
       "floorLabel": "3",
       "historyLinkStatus": "lease_space_id",
@@ -1486,11 +1512,11 @@
       "historyLinked": true,
       "historyLatestDate": "2026-01-12",
       "currentMonthlyRentTotal": 103529998.67,
-      "firstContractDate": "2023-01-12",
       "isContractActive": true,
+      "firstContractDate": "2023-01-12",
       "assetId": "asset_a112527001",
-      "rawTenantName": "쿠팡(주)",
       "businessRegistrationNo": "120-88-00767",
+      "rawTenantName": "쿠팡(주)",
       "currentStartDate": "2026-01-12",
       "leaseSpaceId": "asset_a112527001|tenant_brn_1208800767|20260112|20280111|b12~3|na",
       "company": {
@@ -1499,17 +1525,17 @@
         "latestOperatingIncome": 2288356000000,
         "financialStatementType": "CFS_DOC",
         "fetchedAt": "2026-04-22",
-        "latestRevenue": 45455513000000,
         "hasFinancialData": false,
+        "latestRevenue": 45455513000000,
         "headquartersAddress": "서울특별시 송파구 송파대로 570 , 18층(신천동)",
         "latestDebtRatio": 326.49,
         "latestFinancialYear": "2025",
         "dartCorpCode": "01019166",
         "listedYn": "Y",
         "industryCode": "4791",
-        "latestEmployeeCount": 13212,
         "groupName": "",
         "matchStatus": "matched",
+        "latestEmployeeCount": 13212,
         "businessRegistrationNo": "120-88-00767",
         "tenantId": "tenant_brn_1208800767",
         "corpRegistrationNo": "1101115067718",
@@ -1525,8 +1551,8 @@
         "assetCode": "A112527001",
         "fundCode": "112527",
         "assetName": "동산물류센터",
-        "fundName": "이지스전문투자형사모부동산투자신탁제404호",
         "managerName": "이정훈B",
+        "fundName": "이지스전문투자형사모부동산투자신탁제404호",
         "email": "jhlee@igisam.com"
       },
       "currentMonthlyMfTotal": 7293400,
@@ -1536,8 +1562,9 @@
       "rfMonths": 1,
       "fundId": "fund_112527",
       "isPreLeased": false,
-      "officeAreaSqm": 286.07,
       "tenantId": "tenant_brn_1208800767",
+      "officeAreaSqm": 286.07,
+      "is3pl": false,
       "linkedIssues": [
         {
           "owner": "",
@@ -1549,9 +1576,9 @@
           "content": "우진글로벌 임차인명 정확히 확인 필요",
           "relatedSheet": "전체",
           "conclusion": "",
-          "assetId": "asset_a112527001",
-          "managerQuestion": "",
           "recordedAt": "2026-04-14",
+          "managerQuestion": "",
+          "assetId": "asset_a112527001",
           "rawId": "7",
           "category": "자산별 담당자 확인 필요 사항",
           "resolved": false
@@ -1564,11 +1591,11 @@
           "relatedAssetLabel": "동산물류센터",
           "priority": "미정",
           "content": "임대면적, 전용면적 계산 로직 확인 필요 (세부면적 합산과 안 맞음)",
-          "conclusion": "",
           "relatedSheet": "전체",
+          "conclusion": "",
+          "managerQuestion": "",
           "recordedAt": "2026-04-16",
           "assetId": "asset_a112527001",
-          "managerQuestion": "",
           "rawId": "19",
           "category": "자산별 담당자 확인 필요 사항",
           "resolved": false
@@ -1584,16 +1611,15 @@
           "relatedSheet": "전체",
           "conclusion": "",
           "assetId": "asset_a112527001",
-          "managerQuestion": "",
           "recordedAt": "2026-04-16",
+          "managerQuestion": "",
           "rawId": "20",
           "category": "자산별 담당자 확인 필요 사항",
           "resolved": false
         }
       ],
-      "calculationStatus": "ok",
       "assetName": "동산물류센터",
-      "is3pl": false,
+      "calculationStatus": "ok",
       "asset": {
         "queryKey": "41500|33025|0|0977|0005",
         "approvalDate": "2017-09-27",
@@ -1604,19 +1630,19 @@
         "buildingHubStatus": "ok",
         "fetchedAt": "2026-04-22",
         "firstConfiguredAt": "2021-03-05",
+        "landAreaSqm": 54990,
         "bjdongCd": "33025",
         "buildingName": "동산물류센터",
-        "landAreaSqm": 54990,
         "areaTableStatus": "unknown",
         "assetId": "asset_a112527001",
         "geocodeStatus": "ok_naver_geocode",
         "sigunguCd": "41500",
         "assetName": "동산물류센터",
         "bun": "977",
-        "standardizedAddress": "경기도 이천시 호법면 덕평로 257-21",
         "grossFloorAreaSqm": 54331.93,
-        "ji": "5",
-        "longitude": 127.3750501
+        "standardizedAddress": "경기도 이천시 호법면 덕평로 257-21",
+        "longitude": 127.3750501,
+        "ji": "5"
       },
       "currentRentPerPy": 28390
     },
@@ -1652,15 +1678,15 @@
           "isLatest": true,
           "fundCode": "112527",
           "floorLabel": "B1",
-          "isSelectedForMoney": true,
           "businessRegistrationNo": "126-81-93358",
+          "isSelectedForMoney": true,
           "coldStorageType": "N",
           "rawTenantName": "송림물류(주)",
           "assetName": "동산물류센터",
           "rowNumber": 150,
           "fundName": "이지스전문투자형사모부동산투자신탁제404호",
-          "detailAreaLabel": "",
           "sector": "물류센터",
+          "detailAreaLabel": "",
           "exclusiveAreaSqm": 5898
         }
       ],
@@ -1676,8 +1702,8 @@
       "extensionCount": 1,
       "exclusiveRatioRaw": 100,
       "firstEndDate": "2026-01-11",
-      "goodsType": "공산품",
       "sourceRowHash": "A112527001|1268193358|B1||20260112|20290111|5898.23|5898.23",
+      "goodsType": "공산품",
       "floorLabel": "B1",
       "historyLinkStatus": "lease_space_id",
       "fundName": "이지스전문투자형사모부동산투자신탁제404호",
@@ -1686,11 +1712,11 @@
       "historyLinked": true,
       "historyLatestDate": "2026-01-12",
       "currentMonthlyRentTotal": 53160536,
-      "firstContractDate": "2023-11-30",
       "isContractActive": true,
+      "firstContractDate": "2023-11-30",
       "assetId": "asset_a112527001",
-      "rawTenantName": "송림물류(주)",
       "businessRegistrationNo": "126-81-93358",
+      "rawTenantName": "송림물류(주)",
       "currentStartDate": "2026-01-12",
       "leaseSpaceId": "asset_a112527001|tenant_brn_1268193358|20260112|20290111|b1|na",
       "company": {
@@ -1704,12 +1730,12 @@
         "headquartersAddress": "경기도 이천시 호법면 덕평로 189-20 (매곡리)",
         "latestDebtRatio": 60.4,
         "latestFinancialYear": "2025",
-        "dartCorpCode": "01299780",
         "listedYn": "Y",
+        "dartCorpCode": "01299780",
         "industryCode": "52992",
         "latestEmployeeCount": 45,
-        "groupName": "",
         "matchStatus": "matched",
+        "groupName": "",
         "businessRegistrationNo": "126-81-93358",
         "tenantId": "tenant_brn_1268193358",
         "corpRegistrationNo": "1342110077689",
@@ -1735,6 +1761,9 @@
       "fundId": "fund_112527",
       "isPreLeased": false,
       "tenantId": "tenant_brn_1268193358",
+      "is3pl": true,
+      "assetName": "동산물류센터",
+      "calculationStatus": "review_required",
       "linkedIssues": [
         {
           "owner": "",
@@ -1746,9 +1775,9 @@
           "content": "우진글로벌 임차인명 정확히 확인 필요",
           "conclusion": "",
           "relatedSheet": "전체",
+          "managerQuestion": "",
           "recordedAt": "2026-04-14",
           "assetId": "asset_a112527001",
-          "managerQuestion": "",
           "rawId": "7",
           "category": "자산별 담당자 확인 필요 사항",
           "resolved": false
@@ -1761,11 +1790,11 @@
           "relatedAssetLabel": "동산물류센터",
           "priority": "미정",
           "content": "임대면적, 전용면적 계산 로직 확인 필요 (세부면적 합산과 안 맞음)",
-          "relatedSheet": "전체",
           "conclusion": "",
-          "recordedAt": "2026-04-16",
-          "managerQuestion": "",
+          "relatedSheet": "전체",
           "assetId": "asset_a112527001",
+          "managerQuestion": "",
+          "recordedAt": "2026-04-16",
           "rawId": "19",
           "category": "자산별 담당자 확인 필요 사항",
           "resolved": false
@@ -1778,32 +1807,30 @@
           "relatedAssetLabel": "동산물류센터",
           "priority": "미정",
           "content": "공용부 세부면적 없는 이유 확인 필요",
-          "relatedSheet": "전체",
           "conclusion": "",
+          "relatedSheet": "전체",
           "assetId": "asset_a112527001",
-          "managerQuestion": "",
           "recordedAt": "2026-04-16",
+          "managerQuestion": "",
           "rawId": "20",
           "category": "자산별 담당자 확인 필요 사항",
           "resolved": false
         }
       ],
-      "calculationStatus": "review_required",
-      "assetName": "동산물류센터",
-      "is3pl": true,
+      "currentRentPerPy": 29795,
       "asset": {
         "queryKey": "41500|33025|0|0977|0005",
-        "assetCode": "A112527001",
         "approvalDate": "2017-09-27",
+        "assetCode": "A112527001",
         "platGbCd": "0",
         "floorCount": "4F / B1",
         "latitude": 37.1896213,
         "buildingHubStatus": "ok",
         "fetchedAt": "2026-04-22",
         "firstConfiguredAt": "2021-03-05",
+        "bjdongCd": "33025",
         "landAreaSqm": 54990,
         "buildingName": "동산물류센터",
-        "bjdongCd": "33025",
         "areaTableStatus": "unknown",
         "assetId": "asset_a112527001",
         "geocodeStatus": "ok_naver_geocode",
@@ -1812,10 +1839,9 @@
         "grossFloorAreaSqm": 54331.93,
         "standardizedAddress": "경기도 이천시 호법면 덕평로 257-21",
         "bun": "977",
-        "longitude": 127.3750501,
-        "ji": "5"
-      },
-      "currentRentPerPy": 29795
+        "ji": "5",
+        "longitude": 127.3750501
+      }
     },
     {
       "insuranceSpecialClause": "없음",
@@ -1828,14 +1854,14 @@
       "isDelinquent": false,
       "leaseId": "asset_a112527001|tenant_name_주우진글로벌|20260112|20290111",
       "historyCandidateCount": 0,
-      "fundCode": "112527",
       "recentContractDate": "2025-10-17",
+      "fundCode": "112527",
       "coldStorageType": "N",
       "currentMoneyBasis": "unresolved",
       "currentEndDate": "2029-01-11",
       "rowNumber": 45,
-      "sector": "물류센터",
       "detailAreaLabel": "",
+      "sector": "물류센터",
       "exclusiveAreaSqm": 6409.61,
       "depositAmount": 179049498,
       "assetCode": "A112527001",
@@ -1853,9 +1879,9 @@
       "otherSpecialClause": "없음",
       "historyLinked": false,
       "historyLatestDate": "",
+      "assetId": "asset_a112527001",
       "firstContractDate": "2023-01-11",
       "isContractActive": true,
-      "assetId": "asset_a112527001",
       "rawTenantName": "(주)우진글로벌",
       "businessRegistrationNo": "",
       "currentStartDate": "2026-01-12",
@@ -1875,8 +1901,8 @@
       },
       "leasedAreaSqm": 6409.61,
       "floorSplitCount": 1,
-      "currentMoneyStatus": "history_unmatched",
       "rfMonths": 1,
+      "currentMoneyStatus": "history_unmatched",
       "fundId": "fund_112527",
       "isPreLeased": false,
       "officeAreaSqm": 236.83,
@@ -1892,9 +1918,9 @@
           "content": "우진글로벌 임차인명 정확히 확인 필요",
           "relatedSheet": "전체",
           "conclusion": "",
-          "recordedAt": "2026-04-14",
-          "managerQuestion": "",
           "assetId": "asset_a112527001",
+          "managerQuestion": "",
+          "recordedAt": "2026-04-14",
           "rawId": "7",
           "category": "자산별 담당자 확인 필요 사항",
           "resolved": false
@@ -1907,11 +1933,11 @@
           "relatedAssetLabel": "동산물류센터",
           "priority": "미정",
           "content": "임대면적, 전용면적 계산 로직 확인 필요 (세부면적 합산과 안 맞음)",
-          "relatedSheet": "전체",
           "conclusion": "",
-          "assetId": "asset_a112527001",
+          "relatedSheet": "전체",
           "managerQuestion": "",
           "recordedAt": "2026-04-16",
+          "assetId": "asset_a112527001",
           "rawId": "19",
           "category": "자산별 담당자 확인 필요 사항",
           "resolved": false
@@ -1926,38 +1952,38 @@
           "content": "공용부 세부면적 없는 이유 확인 필요",
           "conclusion": "",
           "relatedSheet": "전체",
+          "assetId": "asset_a112527001",
           "recordedAt": "2026-04-16",
           "managerQuestion": "",
-          "assetId": "asset_a112527001",
           "rawId": "20",
           "category": "자산별 담당자 확인 필요 사항",
           "resolved": false
         }
       ],
-      "calculationStatus": "review_required",
       "assetName": "동산물류센터",
+      "calculationStatus": "review_required",
       "is3pl": false,
       "asset": {
         "queryKey": "41500|33025|0|0977|0005",
         "assetCode": "A112527001",
         "approvalDate": "2017-09-27",
         "platGbCd": "0",
-        "floorCount": "4F / B1",
         "latitude": 37.1896213,
+        "floorCount": "4F / B1",
         "buildingHubStatus": "ok",
         "fetchedAt": "2026-04-22",
         "firstConfiguredAt": "2021-03-05",
         "landAreaSqm": 54990,
-        "buildingName": "동산물류센터",
         "bjdongCd": "33025",
+        "buildingName": "동산물류센터",
         "areaTableStatus": "unknown",
         "assetId": "asset_a112527001",
         "geocodeStatus": "ok_naver_geocode",
-        "assetName": "동산물류센터",
         "sigunguCd": "41500",
-        "grossFloorAreaSqm": 54331.93,
+        "assetName": "동산물류센터",
         "bun": "977",
         "standardizedAddress": "경기도 이천시 호법면 덕평로 257-21",
+        "grossFloorAreaSqm": 54331.93,
         "longitude": 127.3750501,
         "ji": "5"
       }
@@ -1973,16 +1999,16 @@
       "isDelinquent": false,
       "leaseId": "asset_a112527001|tenant_brn_5298800926|20240901|20280114",
       "historyCandidateCount": 1,
-      "recentContractDate": "2024-08-31",
       "fundCode": "112527",
-      "coldStorageType": "N",
+      "recentContractDate": "2024-08-31",
       "currentMoneyBasis": "latest_linked_history",
+      "coldStorageType": "N",
       "currentEndDate": "2028-01-14",
       "historyCandidates": [
         {
           "matchConfidence": "lease_space_id",
-          "reason": "재계약",
           "mfPerPy": 2000,
+          "reason": "재계약",
           "tenantMasterName": "뉴성진에이원(주)",
           "monthlyRentTotal": 46368725,
           "baseDate": "2026-01-12",
@@ -1991,10 +2017,10 @@
           "baseMonth": "2026-01",
           "isLatest": true,
           "fundCode": "112527",
-          "isSelectedForMoney": true,
-          "businessRegistrationNo": "529-88-00926",
-          "coldStorageType": "N",
           "rawTenantName": "뉴성진에이원(주)",
+          "businessRegistrationNo": "529-88-00926",
+          "isSelectedForMoney": true,
+          "coldStorageType": "N",
           "rowNumber": 152,
           "detailAreaLabel": "",
           "sector": "물류센터",
@@ -2009,8 +2035,8 @@
         }
       ],
       "rowNumber": 46,
-      "detailAreaLabel": "",
       "sector": "물류센터",
+      "detailAreaLabel": "",
       "exclusiveAreaSqm": 5236.39,
       "depositAmount": 154963698,
       "assetCode": "A112527001",
@@ -2020,8 +2046,8 @@
       "extensionCount": 0,
       "exclusiveRatioRaw": 100,
       "firstEndDate": "2028-01-14",
-      "goodsType": "공산품",
       "sourceRowHash": "A112527001|5298800926|4||20240901|20280114|5236.39|5236.39",
+      "goodsType": "공산품",
       "eNoc": 29909.8,
       "floorLabel": "4",
       "historyLinkStatus": "lease_space_id",
@@ -2031,9 +2057,9 @@
       "historyLinked": true,
       "historyLatestDate": "2026-01-12",
       "currentMonthlyRentTotal": 46368725,
-      "assetId": "asset_a112527001",
-      "firstContractDate": "2024-08-31",
       "isContractActive": true,
+      "firstContractDate": "2024-08-31",
+      "assetId": "asset_a112527001",
       "businessRegistrationNo": "529-88-00926",
       "rawTenantName": "뉴성진에이원(주)",
       "currentStartDate": "2024-09-01",
@@ -2077,10 +2103,9 @@
       "rfMonths": 1.9,
       "fundId": "fund_112527",
       "isPreLeased": false,
-      "officeAreaSqm": 236.83,
       "tenantId": "tenant_brn_5298800926",
-      "calculationStatus": "ok",
-      "assetName": "동산물류센터",
+      "officeAreaSqm": 236.83,
+      "is3pl": false,
       "linkedIssues": [
         {
           "owner": "",
@@ -2092,9 +2117,9 @@
           "content": "우진글로벌 임차인명 정확히 확인 필요",
           "relatedSheet": "전체",
           "conclusion": "",
-          "assetId": "asset_a112527001",
           "managerQuestion": "",
           "recordedAt": "2026-04-14",
+          "assetId": "asset_a112527001",
           "rawId": "7",
           "category": "자산별 담당자 확인 필요 사항",
           "resolved": false
@@ -2110,8 +2135,8 @@
           "relatedSheet": "전체",
           "conclusion": "",
           "managerQuestion": "",
-          "assetId": "asset_a112527001",
           "recordedAt": "2026-04-16",
+          "assetId": "asset_a112527001",
           "rawId": "19",
           "category": "자산별 담당자 확인 필요 사항",
           "resolved": false
@@ -2124,18 +2149,18 @@
           "relatedAssetLabel": "동산물류센터",
           "priority": "미정",
           "content": "공용부 세부면적 없는 이유 확인 필요",
-          "conclusion": "",
           "relatedSheet": "전체",
-          "recordedAt": "2026-04-16",
+          "conclusion": "",
           "assetId": "asset_a112527001",
+          "recordedAt": "2026-04-16",
           "managerQuestion": "",
           "rawId": "20",
           "category": "자산별 담당자 확인 필요 사항",
           "resolved": false
         }
       ],
-      "is3pl": false,
-      "currentRentPerPy": 29273,
+      "calculationStatus": "ok",
+      "assetName": "동산물류센터",
       "asset": {
         "queryKey": "41500|33025|0|0977|0005",
         "approvalDate": "2017-09-27",
@@ -2146,48 +2171,23 @@
         "buildingHubStatus": "ok",
         "fetchedAt": "2026-04-22",
         "firstConfiguredAt": "2021-03-05",
+        "buildingName": "동산물류센터",
         "bjdongCd": "33025",
         "landAreaSqm": 54990,
-        "buildingName": "동산물류센터",
         "areaTableStatus": "unknown",
         "assetId": "asset_a112527001",
         "geocodeStatus": "ok_naver_geocode",
         "sigunguCd": "41500",
         "assetName": "동산물류센터",
-        "standardizedAddress": "경기도 이천시 호법면 덕평로 257-21",
         "bun": "977",
         "grossFloorAreaSqm": 54331.93,
-        "ji": "5",
-        "longitude": 127.3750501
-      }
+        "standardizedAddress": "경기도 이천시 호법면 덕평로 257-21",
+        "longitude": 127.3750501,
+        "ji": "5"
+      },
+      "currentRentPerPy": 29273
     }
   ],
-  "basis": {
-    "rowScope": "selected_asset_rows",
-    "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
-    "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
-    "rowUnit": "lease_space_id",
-    "page": "asset",
-    "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
-    "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
-  },
-  "areaBreakdown": {
-    "exclusiveRatio": 0.9917400641148572,
-    "otherExclusiveAreaSqm": 247.53000000000003,
-    "warehouseAreaSqm": 52130.45999999999,
-    "otherCommonAreaSqm": 443.64,
-    "leasedAreaSqm": 53709.86,
-    "vacancyAreaSqm": 622.0799999999945,
-    "parkingAreaSqm": null,
-    "coreAreaSqm": null,
-    "dockAreaSqm": null,
-    "officeAreaSqm": 1331.87,
-    "grossFloorAreaSqm": 54331.93,
-    "corridorAreaSqm": null,
-    "mechanicalAreaSqm": null,
-    "rampAreaSqm": null,
-    "exclusiveAreaSqm": 53266.22
-  },
   "kpis": [
     {
       "label": "임대율",

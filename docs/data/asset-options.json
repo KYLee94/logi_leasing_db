@@ -5,8 +5,8 @@
     "uniqueTenantCount": 1,
     "fetchedAt": "2026-04-22",
     "averageENoc": 45996.45,
-    "monthlyCostTotal": 1060724933,
-    "vacancyRate": 0.22740490773422375
+    "vacancyRate": 0.22740490773422375,
+    "monthlyCostTotal": 1060724933
   },
   {
     "assetId": "asset_a112527001",
@@ -14,14 +14,14 @@
     "uniqueTenantCount": 4,
     "fetchedAt": "2026-04-22",
     "averageENoc": 26784.1,
-    "monthlyCostTotal": 435167477,
-    "vacancyRate": 0.011449620876710885
+    "vacancyRate": 0.011449620876710885,
+    "monthlyCostTotal": 435167477
   },
   {
     "assetId": "asset_a112755001",
     "assetName": "두동 LG전자 통합물류센터",
-    "fetchedAt": "2026-04-22",
     "uniqueTenantCount": 1,
+    "fetchedAt": "2026-04-22",
     "averageENoc": 38181.11,
     "vacancyRate": 0.0008472422420663569,
     "monthlyCostTotal": 630228000
@@ -32,13 +32,13 @@
     "fetchedAt": "2026-04-22",
     "uniqueTenantCount": 1,
     "averageENoc": 27449.95,
-    "vacancyRate": 0,
-    "monthlyCostTotal": 155328845
+    "monthlyCostTotal": 155328845,
+    "vacancyRate": 0
   },
   {
     "assetName": "부산송정물류센터",
-    "fetchedAt": "2026-04-22",
     "uniqueTenantCount": 1,
+    "fetchedAt": "2026-04-22",
     "assetId": "asset_a112109001",
     "vacancyRate": 0.027004153491596173
   },
@@ -48,8 +48,8 @@
     "fetchedAt": "2026-04-22",
     "uniqueTenantCount": 6,
     "averageENoc": 37283.28,
-    "vacancyRate": 0.3071110862557777,
-    "monthlyCostTotal": 669324200
+    "monthlyCostTotal": 669324200,
+    "vacancyRate": 0.3071110862557777
   },
   {
     "assetName": "아레나스안성",
@@ -61,8 +61,8 @@
   {
     "assetId": "asset_a112127001",
     "assetName": "아레나스양지물류센터",
-    "uniqueTenantCount": 2,
     "fetchedAt": "2026-04-22",
+    "uniqueTenantCount": 2,
     "averageENoc": 6706,
     "monthlyCostTotal": 552212356,
     "vacancyRate": 0.22161516861964634
@@ -73,8 +73,8 @@
     "fetchedAt": "2026-04-22",
     "uniqueTenantCount": 4,
     "averageENoc": 24627.67,
-    "vacancyRate": 0.3013357213767869,
-    "monthlyCostTotal": 604357000
+    "monthlyCostTotal": 604357000,
+    "vacancyRate": 0.3013357213767869
   },
   {
     "assetId": "asset_a112500003",
@@ -82,14 +82,14 @@
     "fetchedAt": "2026-04-22",
     "uniqueTenantCount": 1,
     "averageENoc": 63365.46,
-    "vacancyRate": 0.016556145554103226,
-    "monthlyCostTotal": 629174800
+    "monthlyCostTotal": 629174800,
+    "vacancyRate": 0.016556145554103226
   },
   {
     "assetId": "asset_s00002001",
     "assetName": "양산 유산동 물류센터",
-    "uniqueTenantCount": 3,
     "fetchedAt": "2026-04-22",
+    "uniqueTenantCount": 3,
     "averageENoc": 24901.1,
     "monthlyCostTotal": 251987517,
     "vacancyRate": 0.3656956897910055
@@ -100,14 +100,14 @@
     "fetchedAt": "2026-04-22",
     "uniqueTenantCount": 1,
     "averageENoc": 27039.41,
-    "vacancyRate": 0,
-    "monthlyCostTotal": 245219187
+    "monthlyCostTotal": 245219187,
+    "vacancyRate": 0
   },
   {
     "assetId": "asset_a112606001",
     "assetName": "여주 본두리 물류센터",
-    "uniqueTenantCount": 3,
     "fetchedAt": "2026-04-22",
+    "uniqueTenantCount": 3,
     "averageENoc": 32389.54,
     "monthlyCostTotal": 1028369423,
     "vacancyRate": 0.035098733326698266
@@ -118,14 +118,14 @@
     "fetchedAt": "2026-04-22",
     "uniqueTenantCount": 2,
     "averageENoc": 27884.74,
-    "vacancyRate": 0.030459886244241004,
-    "monthlyCostTotal": 275622000
+    "monthlyCostTotal": 275622000,
+    "vacancyRate": 0.030459886244241004
   },
   {
     "assetId": "asset_a112721001",
     "assetName": "인천석남물류센터",
-    "uniqueTenantCount": 1,
     "fetchedAt": "2026-04-22",
+    "uniqueTenantCount": 1,
     "averageENoc": 31632.69,
     "monthlyCostTotal": 2863471002,
     "vacancyRate": 0.00020146451000519652
@@ -133,8 +133,8 @@
   {
     "assetId": "asset_a112500002",
     "assetName": "평택아디다스물류센터",
-    "uniqueTenantCount": 1,
     "fetchedAt": "2026-04-22",
+    "uniqueTenantCount": 1,
     "averageENoc": 28607.48,
     "monthlyCostTotal": 460486000,
     "vacancyRate": 0
@@ -142,8 +142,8 @@
   {
     "assetId": "asset_a112642001",
     "assetName": "화성 석포리 물류센터",
-    "uniqueTenantCount": 1,
     "fetchedAt": "2026-04-22",
+    "uniqueTenantCount": 1,
     "averageENoc": 39312.35,
     "monthlyCostTotal": 1272556102,
     "vacancyRate": 0

@@ -4,6 +4,7 @@ const { chromium } = require("playwright");
 
 const PUBLIC_APP_URL = process.env.LOGI_DASHBOARD_PUBLIC_BASE
   || "https://script.google.com/macros/s/AKfycbw-MNDdPW19QrdlKOtZ111UY037Ko3z9O9nYWsqCsXj6r8C814ZUzH6wz1UORE1jdwgNg/exec?page=user";
+const CORE_ONLY = String(process.env.LOGI_DASHBOARD_EXPORT_CORE_ONLY || "").toLowerCase() === "true";
 
 function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true });
@@ -46,14 +47,33 @@ async function main() {
     ensureDir(outDir);
 
     const bootstrap = await callServer(frame, "getBootstrapData");
+    const initial = await callServer(frame, "getInitialDashboardData");
     const home = await callServer(frame, "getHomeData");
+    const sector = await callServer(frame, "getSectorData");
+    const tools = await callServer(frame, "getToolsData", {});
+    const playground = await callServer(frame, "getPlaygroundData", {});
     const assetOptions = await callServer(frame, "getAssetOptions");
     const companyOptions = await callServer(frame, "getCompanyOptions");
 
     writeJson(path.join(outDir, "bootstrap.json"), bootstrap);
+    writeJson(path.join(outDir, "initial.json"), initial);
     writeJson(path.join(outDir, "home.json"), home);
+    writeJson(path.join(outDir, "sector.json"), sector);
+    writeJson(path.join(outDir, "tools.json"), tools);
+    writeJson(path.join(outDir, "playground.json"), playground);
     writeJson(path.join(outDir, "asset-options.json"), assetOptions);
     writeJson(path.join(outDir, "company-options.json"), companyOptions);
+
+    if (CORE_ONLY) {
+      console.log(JSON.stringify({
+        outputDir: outDir,
+        assetCount: (assetOptions || []).length,
+        companyCount: (companyOptions || []).length,
+        appUrl: PUBLIC_APP_URL,
+        coreOnly: true,
+      }, null, 2));
+      return;
+    }
 
     for (const asset of assetOptions || []) {
       if (!asset || !asset.assetId) continue;
