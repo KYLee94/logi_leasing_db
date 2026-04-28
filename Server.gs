@@ -377,6 +377,85 @@ function getViewerContextFromRequest_(request) {
   return getViewerContext_({ adminSessionToken: request && request.adminSessionToken });
 }
 
+function parseBooleanPolicyValue_(value, fallback) {
+  const text = safeString_(value).toLowerCase();
+  if (!text) return fallback;
+  if (['true', 'y', 'yes', '1', '가능', '허용', '표시'].indexOf(text) > -1) return true;
+  if (['false', 'n', 'no', '0', '불가', '차단', '마스킹'].indexOf(text) > -1) return false;
+  return fallback;
+}
+
+function normalizeRoleName_(value) {
+  const role = safeString_(value || 'Viewer');
+  const lower = role.toLowerCase();
+  if (lower === 'admin') return 'Admin';
+  if (lower === 'manager') return 'Manager';
+  if (lower === 'external') return 'External';
+  if (lower === 'executive') return 'Executive';
+  return 'Viewer';
+}
+
+function buildDefaultViewerPolicy_(viewer) {
+  const isAdmin = viewer && viewer.isAdmin;
+  return {
+    email: safeString_(viewer && viewer.email),
+    role: isAdmin ? 'Admin' : 'Viewer',
+    allAssets: true,
+    allowedAssetIds: [],
+    canEdit: !!isAdmin,
+    viewRent: true,
+    viewDeposit: !!isAdmin,
+    viewSpecialTerms: !!isAdmin,
+    summaryOnly: false,
+  };
+}
+
+function getViewerPolicy_(requestOrViewer) {
+  const viewer = requestOrViewer && Object.prototype.hasOwnProperty.call(requestOrViewer, 'isAdmin')
+    ? requestOrViewer
+    : getViewerContextFromRequest_(requestOrViewer || {});
+  const fallback = buildDefaultViewerPolicy_(viewer);
+  if (fallback.role === 'Admin') return fallback;
+
+  try {
+    const sheetName = getConfig_().sheetNames.permission;
+    const rows = loadObjectsFromSheet_(getSpreadsheet_(), sheetName);
+    const email = safeString_(viewer && viewer.email).toLowerCase();
+    const matched = rows.find(function (row) {
+      return safeString_(pickField_(row, ['email', '이메일'])).toLowerCase() === email
+        && parseBooleanPolicyValue_(pickField_(row, ['active', '사용여부']), true) !== false;
+    });
+    if (!matched) return fallback;
+
+    const role = normalizeRoleName_(pickField_(matched, ['role', '권한']));
+    const allowedAssetText = safeString_(pickField_(matched, ['allowed_asset_ids', '허용자산', 'asset_ids']));
+    const allowedAssetIds = allowedAssetText === '*'
+      ? []
+      : allowedAssetText.split(/[,\n|]+/).map(function (item) { return safeString_(item); }).filter(Boolean);
+    const roleDefaults = {
+      Admin: { canEdit: true, viewRent: true, viewDeposit: true, viewSpecialTerms: true, summaryOnly: false },
+      Manager: { canEdit: true, viewRent: true, viewDeposit: true, viewSpecialTerms: true, summaryOnly: false },
+      Viewer: { canEdit: false, viewRent: true, viewDeposit: false, viewSpecialTerms: false, summaryOnly: false },
+      External: { canEdit: false, viewRent: false, viewDeposit: false, viewSpecialTerms: false, summaryOnly: false },
+      Executive: { canEdit: false, viewRent: false, viewDeposit: false, viewSpecialTerms: false, summaryOnly: true },
+    }[role] || {};
+
+    return {
+      email: email,
+      role: role,
+      allAssets: allowedAssetText === '*' || !allowedAssetIds.length || role === 'Admin' || role === 'Manager' || role === 'Viewer',
+      allowedAssetIds: allowedAssetIds,
+      canEdit: parseBooleanPolicyValue_(pickField_(matched, ['can_edit', '수정가능']), roleDefaults.canEdit),
+      viewRent: parseBooleanPolicyValue_(pickField_(matched, ['view_rent', '임대료표시']), roleDefaults.viewRent),
+      viewDeposit: parseBooleanPolicyValue_(pickField_(matched, ['view_deposit', '보증금표시']), roleDefaults.viewDeposit),
+      viewSpecialTerms: parseBooleanPolicyValue_(pickField_(matched, ['view_special_terms', '특약표시']), roleDefaults.viewSpecialTerms),
+      summaryOnly: roleDefaults.summaryOnly === true,
+    };
+  } catch (error) {
+    return fallback;
+  }
+}
+
 function getHomeData(request) {
   const startedAt = Date.now();
   const cacheKey = buildKeyedPayloadKey_('home');
@@ -713,6 +792,7 @@ function getAdminDashboardData(request) {
 }
 
 function buildAdminDashboardResponse_(viewer, snapshotState, dashboardPayload, adminErrors) {
+  const auditLogRows = typeof readAuditLogRows_ === 'function' ? readAuditLogRows_(50) : [];
   return {
     viewer: viewer,
     authorization: {
@@ -737,6 +817,8 @@ function buildAdminDashboardResponse_(viewer, snapshotState, dashboardPayload, a
       generatedAt: safeGet_(dashboardPayload, ['uiDataReconciliation', 'generatedAt']) || '',
     },
     auditRows: [],
+    auditLogRows: auditLogRows,
+    auditLogSummary: typeof summarizeAuditLog_ === 'function' ? summarizeAuditLog_(auditLogRows) : { total: 0, reasonRequired: 0, byAction: {} },
     auditErrorCount: Number(safeGet_(dashboardPayload, ['auditErrorCount']) || snapshotState.errorCount || 0),
     auditNeedsRefresh: true,
     triggers: [],
@@ -1542,37 +1624,39 @@ function getDeploymentInfo() {
 }
 
 function getAssetOptions() {
+  const policy = getViewerPolicy_(getViewerContext_());
   const cacheKey = 'asset-options:full';
   const cached = getCachedJson_(cacheKey);
-  if (cached) return cached;
+  if (cached) return sanitizePayloadForRole_(JSON.parse(JSON.stringify(cached)), policy);
   const persisted = readPersistedJsonProperty_('ASSET_OPTIONS_JSON');
   if (persisted) {
     putCachedJson_(cacheKey, persisted, getConfig_().payloadCacheTtlSeconds);
-    return persisted;
+    return sanitizePayloadForRole_(JSON.parse(JSON.stringify(persisted)), policy);
   }
   const model = getModelOrRefreshCache_();
   const options = buildAssetOptionList_(model);
   if (typeof persistJsonScriptProperty_ === 'function') {
     persistJsonScriptProperty_('ASSET_OPTIONS_JSON', options, { allowChunking: true });
   }
-  return putCachedJson_(cacheKey, options, getConfig_().payloadCacheTtlSeconds);
+  return sanitizePayloadForRole_(JSON.parse(JSON.stringify(putCachedJson_(cacheKey, options, getConfig_().payloadCacheTtlSeconds))), policy);
 }
 
 function getCompanyOptions() {
+  const policy = getViewerPolicy_(getViewerContext_());
   const cacheKey = 'company-options:full';
   const cached = getCachedJson_(cacheKey);
-  if (cached) return cached;
+  if (cached) return policy.summaryOnly ? [] : cached;
   const persisted = readPersistedJsonProperty_('COMPANY_OPTIONS_JSON');
   if (persisted) {
     putCachedJson_(cacheKey, persisted, getConfig_().payloadCacheTtlSeconds);
-    return persisted;
+    return policy.summaryOnly ? [] : persisted;
   }
   const model = getModelOrRefreshCache_();
   const options = buildCompanyOptionList_(model);
   if (typeof persistJsonScriptProperty_ === 'function') {
     persistJsonScriptProperty_('COMPANY_OPTIONS_JSON', options, { allowChunking: true });
   }
-  return putCachedJson_(cacheKey, options, getConfig_().payloadCacheTtlSeconds);
+  return policy.summaryOnly ? [] : putCachedJson_(cacheKey, options, getConfig_().payloadCacheTtlSeconds);
 }
 
 function isBootstrapPayloadFresh_(payload) {
@@ -1602,33 +1686,107 @@ function isHomePayloadFresh_(payload) {
   return true;
 }
 
-function buildViewerPayloadCacheKey_(cacheKey) {
-  return 'viewer:public:' + safeString_(cacheKey);
+function buildViewerPayloadCacheKey_(cacheKey, policy) {
+  const normalizedPolicy = policy || {};
+  return [
+    'viewer',
+    safeString_(normalizedPolicy.role || 'Viewer').toLowerCase(),
+    normalizedPolicy.viewRent ? 'rent' : 'no-rent',
+    normalizedPolicy.viewDeposit ? 'deposit' : 'no-deposit',
+    normalizedPolicy.viewSpecialTerms ? 'terms' : 'no-terms',
+    normalizedPolicy.allAssets ? 'all' : normalizeIdList_(normalizedPolicy.allowedAssetIds || []).join(','),
+    safeString_(cacheKey),
+  ].join(':');
 }
 
 function getCachedPayloadForViewer_(cacheKey, viewer) {
   if (!cacheKey || (viewer && viewer.isAdmin)) return null;
-  return getCachedJson_(buildViewerPayloadCacheKey_(cacheKey));
+  const policy = getViewerPolicy_(viewer);
+  return getCachedJson_(buildViewerPayloadCacheKey_(cacheKey, policy));
 }
 
 function returnPayloadForViewer_(payload, viewer, cacheKey) {
   if (!payload || (viewer && viewer.isAdmin) || !cacheKey) {
     return sanitizePayloadForViewer_(payload, viewer);
   }
-  const publicCacheKey = buildViewerPayloadCacheKey_(cacheKey);
+  const policy = getViewerPolicy_(viewer);
+  const publicCacheKey = buildViewerPayloadCacheKey_(cacheKey, policy);
   const cached = getCachedJson_(publicCacheKey);
   if (cached) return cached;
-  const sanitized = sanitizePayloadForViewer_(payload, viewer);
+  const sanitized = sanitizePayloadForViewer_(payload, viewer, policy);
   putCachedJson_(publicCacheKey, sanitized, getConfig_().payloadCacheTtlSeconds);
   return sanitized;
 }
 
-function sanitizePayloadForViewer_(payload, viewer) {
+function sanitizePayloadForViewer_(payload, viewer, policy) {
   if (!payload || (viewer && viewer.isAdmin)) return payload;
+  const effectivePolicy = policy || getViewerPolicy_(viewer);
   const clone = JSON.parse(JSON.stringify(payload));
   stripInternalFieldsForUser_(clone);
+  sanitizePayloadForRole_(clone, effectivePolicy);
   if (clone.issueBacklogCount != null) clone.issueBacklogCount = 0;
   return clone;
+}
+
+function isSensitiveFieldKey_(key, patterns) {
+  const normalized = safeString_(key).toLowerCase();
+  return patterns.some(function (pattern) {
+    return pattern.test(normalized) || pattern.test(safeString_(key));
+  });
+}
+
+function shouldDropObjectForPolicy_(value, policy) {
+  if (!value || typeof value !== 'object' || policy.allAssets) return false;
+  const assetId = safeString_(value.assetId || value.asset_code || value.assetCode);
+  if (!assetId) return false;
+  return (policy.allowedAssetIds || []).indexOf(assetId) === -1;
+}
+
+function sanitizePayloadForRole_(value, policy) {
+  if (Array.isArray(value)) {
+    for (let index = value.length - 1; index >= 0; index -= 1) {
+      if (shouldDropObjectForPolicy_(value[index], policy)) {
+        value.splice(index, 1);
+      } else {
+        sanitizePayloadForRole_(value[index], policy);
+      }
+    }
+    return value;
+  }
+  if (!value || typeof value !== 'object') return value;
+
+  if (policy.summaryOnly) {
+    [
+      'tenantRoster',
+      'contracts',
+      'topContracts',
+      'leasedAssets',
+      'contractRows',
+      'ledgerRows',
+      'sourceRows',
+      'floorPlan',
+      'expirySnapshot',
+    ].forEach(function (key) {
+      if (Object.prototype.hasOwnProperty.call(value, key)) value[key] = [];
+    });
+  }
+
+  Object.keys(value).forEach(function (key) {
+    if (!policy.viewRent && isSensitiveFieldKey_(key, [/rent/i, /lease.*cost/i, /monthly/i, /관리비/, /임대료/, /임관리비/, /e\.?noc/i])) {
+      value[key] = null;
+      return;
+    }
+    if (!policy.viewDeposit && isSensitiveFieldKey_(key, [/deposit/i, /보증금/])) {
+      value[key] = null;
+      return;
+    }
+    if (!policy.viewSpecialTerms && isSensitiveFieldKey_(key, [/special/i, /term/i, /rf/i, /fo/i, /ti/i, /renew/i, /termination/i, /source.*doc/i, /contract.*file/i, /특약/, /갱신/, /중도해지/, /계약서/])) {
+      value[key] = null;
+      return;
+    }
+    sanitizePayloadForRole_(value[key], policy);
+  });
+  return value;
 }
 
 function stripInternalFieldsForUser_(value) {

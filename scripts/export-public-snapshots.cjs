@@ -11,8 +11,32 @@ function ensureDir(dir) {
 }
 
 function writeJson(targetPath, payload) {
+  assertUserSafeSnapshot(targetPath, payload);
   ensureDir(path.dirname(targetPath));
   fs.writeFileSync(targetPath, JSON.stringify(payload, null, 2), "utf8");
+}
+
+function assertUserSafeSnapshot(targetPath, payload) {
+  const blocked = [];
+  const sensitiveKeyPattern = /(reviewNote|reviewNotes|reviewStatus|missingCounts|auditRows|triggers|deposit|보증금|specialTerms|sourceDocRef|contractFileUrl|특약|계약서)/i;
+  function walk(value, trail) {
+    if (!value || typeof value !== "object") return;
+    if (Array.isArray(value)) {
+      value.forEach((item, index) => walk(item, `${trail}[${index}]`));
+      return;
+    }
+    Object.keys(value).forEach((key) => {
+      const nextTrail = trail ? `${trail}.${key}` : key;
+      if (sensitiveKeyPattern.test(key) && value[key] !== null && value[key] !== "" && value[key] !== undefined) {
+        blocked.push(nextTrail);
+      }
+      walk(value[key], nextTrail);
+    });
+  }
+  walk(payload, "");
+  if (blocked.length) {
+    throw new Error(`Refusing to export non-user-safe snapshot ${targetPath}: ${blocked.slice(0, 20).join(", ")}`);
+  }
 }
 
 async function withFrame(page) {

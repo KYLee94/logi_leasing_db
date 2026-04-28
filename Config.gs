@@ -57,6 +57,8 @@ const DEFAULT_CONFIG = Object.freeze({
     logApi: 'LOG_API',
     logCalculation: 'LOG_계산',
     audit: 'AUDIT_데이터이상',
+    auditLog: 'AuditLog',
+    permission: 'SYS_권한',
   }),
 });
 

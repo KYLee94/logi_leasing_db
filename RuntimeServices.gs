@@ -435,7 +435,24 @@ function bumpDashboardCacheNamespace_(reason) {
 }
 
 function clearDashboardCache(reason) {
-  const nextVersion = bumpDashboardCacheNamespace_(reason || 'manual_clear');
+  const normalizedReason = reason || 'manual_clear';
+  const nextVersion = bumpDashboardCacheNamespace_(normalizedReason);
+  try {
+    writeAuditLog_({
+      actionType: 'CACHE_CLEAR',
+      entityType: 'cache',
+      entityId: 'dashboard',
+      fieldName: 'CACHE_VERSION',
+      oldValue: '',
+      newValue: nextVersion,
+      reason: normalizedReason,
+      sourceFunction: 'clearDashboardCache',
+      sourceType: 'server',
+      cacheInvalidated: true,
+    });
+  } catch (error) {
+    // Cache clearing must not fail because audit logging is unavailable.
+  }
   queueBootstrapBackgroundRefresh_('cache_cleared');
   return getDashboardCacheStatus_({ cacheVersion: nextVersion });
 }
@@ -1198,6 +1215,23 @@ function refreshStaticPayloadSnapshotsFromModel_(model, context) {
     deleteJsonScriptProperty_('STATIC_PAYLOAD_SNAPSHOT_ERRORS_JSON');
   }
 
+  try {
+    writeAuditLog_({
+      actionType: 'SYNC',
+      entityType: 'cache',
+      entityId: 'static_snapshot',
+      fieldName: 'snapshot_status',
+      oldValue: '',
+      newValue: errors.length ? 'partial_success' : 'success',
+      reason: 'static_snapshot_refresh',
+      sourceFunction: 'refreshStaticPayloadSnapshotsFromModel_',
+      sourceType: 'server',
+      cacheInvalidated: false,
+    });
+  } catch (error) {
+    // Snapshot generation should not fail because audit logging is unavailable.
+  }
+
   return {
     status: errors.length ? 'partial_success' : 'success',
     assetSaved: assetSaved,
@@ -1319,6 +1353,22 @@ function queueAdminOneShotJob_(handlerName, queueKey, delayMs) {
   }
   props.setProperty(`ADMIN_JOB_${queueKey}_STATUS`, 'queued');
   props.setProperty(`ADMIN_JOB_${queueKey}_QUEUED_AT`, String(Date.now()));
+  try {
+    writeAuditLog_({
+      actionType: 'SYNC',
+      entityType: 'admin_job',
+      entityId: queueKey,
+      fieldName: 'status',
+      oldValue: '',
+      newValue: 'queued',
+      reason: 'admin_action_queued',
+      sourceFunction: handlerName,
+      sourceType: 'admin',
+      cacheInvalidated: false,
+    });
+  } catch (error) {
+    // Admin queueing should not fail because audit logging is unavailable.
+  }
   return {
     status: 'queued',
     handler: handlerName,
@@ -1332,6 +1382,22 @@ function finalizeAdminOneShotJob_(handlerName, queueKey, status, message) {
   props.setProperty(`ADMIN_JOB_${queueKey}_STATUS`, safeString_(status || 'done'));
   props.setProperty(`ADMIN_JOB_${queueKey}_FINISHED_AT`, String(Date.now()));
   props.setProperty(`ADMIN_JOB_${queueKey}_MESSAGE`, safeString_(message || ''));
+  try {
+    writeAuditLog_({
+      actionType: 'SYNC',
+      entityType: 'admin_job',
+      entityId: queueKey,
+      fieldName: 'status',
+      oldValue: 'queued',
+      newValue: safeString_(status || 'done'),
+      reason: safeString_(message || ''),
+      sourceFunction: handlerName,
+      sourceType: 'admin',
+      cacheInvalidated: true,
+    });
+  } catch (error) {
+    // Admin finalization should not fail because audit logging is unavailable.
+  }
   clearProjectTriggersByHandler_(handlerName);
 }
 
@@ -1427,6 +1493,11 @@ function handleSpreadsheetChange(e) {
 }
 
 function handleSpreadsheetMutation_(e, reason) {
+  try {
+    logSpreadsheetMutationAudit_(e, reason);
+  } catch (error) {
+    // Data refresh should continue even when edit audit logging is unavailable.
+  }
   markDataDirty_(reason);
   invalidateDashboardCaches_(`spreadsheet_${reason}`);
   const props = PropertiesService.getScriptProperties();
@@ -1435,6 +1506,51 @@ function handleSpreadsheetMutation_(e, reason) {
   if (!lastRun || (Date.now() - lastRun) > cooldownMs) {
     refreshDerivedArtifacts_({ reason: `trigger_${reason}` });
   }
+}
+
+function logSpreadsheetMutationAudit_(e, reason) {
+  const range = e && e.range;
+  if (!range) return;
+  const sheet = range.getSheet();
+  const sheetName = sheet.getName();
+  const config = getConfig_();
+  const trackedSheets = [
+    config.sheetNames.general,
+    config.sheetNames.history,
+    config.sheetNames.asset,
+    config.sheetNames.company,
+    config.sheetNames.sysAssetLookup,
+  ];
+  if (sheetName === config.sheetNames.auditLog || trackedSheets.indexOf(sheetName) === -1) return;
+
+  const row = range.getRow();
+  const column = range.getColumn();
+  const rows = range.getNumRows();
+  const columns = range.getNumColumns();
+  const headers = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), column + columns - 1)).getDisplayValues()[0];
+  const fieldName = headers[column - 1] || `column_${column}`;
+  const entityType = sheetName === config.sheetNames.general ? 'contract'
+    : sheetName === config.sheetNames.history ? 'history'
+      : sheetName === config.sheetNames.asset || sheetName === config.sheetNames.sysAssetLookup ? 'asset'
+        : sheetName === config.sheetNames.company ? 'company'
+          : 'unknown';
+  const actionType = safeString_(reason) === 'change' || rows > 1 || columns > 1 ? 'BULK_UPDATE' : 'UPDATE';
+  const newValue = rows === 1 && columns === 1 ? safeString_(range.getDisplayValue()) : `${rows}x${columns} range changed`;
+  const oldValue = rows === 1 && columns === 1 ? safeString_(e.oldValue) : 'oldValue unavailable for bulk edit';
+  writeAuditLog_({
+    actionType: actionType,
+    entityType: entityType,
+    entityId: '',
+    sheetName: sheetName,
+    rowNumber: row,
+    fieldName: fieldName,
+    oldValue: oldValue,
+    newValue: newValue,
+    reason: isAuditCriticalField_(fieldName) ? 'reason_required' : safeString_(reason),
+    sourceFunction: 'handleSpreadsheetMutation_',
+    sourceType: 'sheet_trigger',
+    cacheInvalidated: true,
+  });
 }
 
 function refreshCalculationSheetIfStale_() {
@@ -1495,6 +1611,146 @@ function ensureAuditSheet_() {
   sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
   sheet.setFrozenRows(1);
   return sheet;
+}
+
+const AUDIT_LOG_HEADERS_ = Object.freeze([
+  'auditId',
+  'timestamp',
+  'userEmail',
+  'actionType',
+  'entityType',
+  'entityId',
+  'sheetName',
+  'rowNumber',
+  'fieldName',
+  'oldValue',
+  'newValue',
+  'reason',
+  'sourceFunction',
+  'sourceType',
+  'cacheInvalidated',
+  'requestId',
+]);
+
+const AUDIT_CRITICAL_FIELD_PATTERNS_ = Object.freeze([
+  /계약.*시작|계약개시|start.*date/i,
+  /계약.*종료|계약만기|end.*date/i,
+  /임대료|rent/i,
+  /보증금|deposit/i,
+  /면적|area/i,
+  /임차인|tenant/i,
+  /갱신|renew/i,
+  /중도해지|termination/i,
+  /특약|special/i,
+  /계약.*상태|status/i,
+]);
+
+function ensureAuditLogSheet_() {
+  const spreadsheet = getSpreadsheet_();
+  const sheetName = getConfig_().sheetNames.auditLog || 'AuditLog';
+  let sheet = spreadsheet.getSheetByName(sheetName);
+  if (!sheet) sheet = spreadsheet.insertSheet(sheetName);
+  const currentHeaders = sheet.getLastColumn() ? sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), AUDIT_LOG_HEADERS_.length)).getDisplayValues()[0] : [];
+  const needsHeader = AUDIT_LOG_HEADERS_.some(function (header, index) {
+    return currentHeaders[index] !== header;
+  });
+  if (needsHeader) {
+    sheet.getRange(1, 1, 1, AUDIT_LOG_HEADERS_.length).setValues([AUDIT_LOG_HEADERS_]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function getAuditUserEmail_() {
+  return safeString_(Session.getActiveUser().getEmail()).toLowerCase() || 'unknown';
+}
+
+function formatAuditTimestamp_(date) {
+  return Utilities.formatDate(date || new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd'T'HH:mm:ss");
+}
+
+function isAuditCriticalField_(fieldName) {
+  const text = safeString_(fieldName);
+  return AUDIT_CRITICAL_FIELD_PATTERNS_.some(function (pattern) {
+    return pattern.test(text);
+  });
+}
+
+function buildAuditLogRow_(entry) {
+  const now = new Date();
+  const fieldName = safeString_(entry && entry.fieldName);
+  const reason = safeString_(entry && entry.reason);
+  return [
+    safeString_(entry && entry.auditId) || Utilities.getUuid(),
+    safeString_(entry && entry.timestamp) || formatAuditTimestamp_(now),
+    safeString_(entry && entry.userEmail) || getAuditUserEmail_(),
+    safeString_(entry && entry.actionType) || 'UPDATE',
+    safeString_(entry && entry.entityType) || 'unknown',
+    safeString_(entry && entry.entityId),
+    safeString_(entry && entry.sheetName),
+    safeString_(entry && entry.rowNumber),
+    fieldName,
+    entry && entry.oldValue != null ? safeString_(entry.oldValue) : '',
+    entry && entry.newValue != null ? safeString_(entry.newValue) : '',
+    reason || (isAuditCriticalField_(fieldName) ? 'reason_required' : ''),
+    safeString_(entry && entry.sourceFunction),
+    safeString_(entry && entry.sourceType) || 'server',
+    entry && entry.cacheInvalidated === true ? 'Y' : 'N',
+    safeString_(entry && entry.requestId),
+  ];
+}
+
+function writeAuditLogs_(entries) {
+  const normalized = (entries || []).filter(Boolean);
+  if (!normalized.length) return { inserted: 0 };
+  const sheet = ensureAuditLogSheet_();
+  const rows = normalized.map(buildAuditLogRow_);
+  sheet.getRange(sheet.getLastRow() + 1, 1, rows.length, AUDIT_LOG_HEADERS_.length).setValues(rows);
+  return { inserted: rows.length };
+}
+
+function writeAuditLog_(entry) {
+  return writeAuditLogs_([entry]);
+}
+
+function getAuditEntityIdFromRow_(row, idx, entityType) {
+  if (entityType === 'contract') return readRowCell_(row, idx, ['lease_id', 'leaseId', '계약ID']);
+  if (entityType === 'asset') return readRowCell_(row, idx, ['asset_id', 'asset_code', 'assetId', '자산코드']);
+  if (entityType === 'company') return readRowCell_(row, idx, ['tenant_id', 'tenantId', '기업ID']);
+  return readRowCell_(row, idx, ['id', 'row_id']) || '';
+}
+
+function buildSheetDiffAuditEntries_(beforeRows, afterRows, headers, options) {
+  const normalized = options || {};
+  const idx = headerIndexes_(headers || []);
+  const entries = [];
+  const limit = Math.min((beforeRows || []).length, (afterRows || []).length);
+  for (let rowIndex = 0; rowIndex < limit; rowIndex += 1) {
+    const before = beforeRows[rowIndex] || [];
+    const after = afterRows[rowIndex] || [];
+    const entityId = getAuditEntityIdFromRow_(after, idx, normalized.entityType);
+    (headers || []).forEach(function (header, columnIndex) {
+      const oldValue = before[columnIndex] == null ? '' : String(before[columnIndex]);
+      const newValue = after[columnIndex] == null ? '' : String(after[columnIndex]);
+      if (oldValue === newValue) return;
+      entries.push({
+        actionType: normalized.actionType || 'UPDATE',
+        entityType: normalized.entityType || 'unknown',
+        entityId: entityId,
+        sheetName: normalized.sheetName,
+        rowNumber: rowIndex + 2,
+        fieldName: header,
+        oldValue: oldValue,
+        newValue: newValue,
+        reason: normalized.reason || (isAuditCriticalField_(header) ? 'system_sync' : ''),
+        sourceFunction: normalized.sourceFunction,
+        sourceType: normalized.sourceType || 'server',
+        cacheInvalidated: normalized.cacheInvalidated === true,
+        requestId: normalized.requestId,
+      });
+    });
+  }
+  return entries;
 }
 
 function makeAuditRow_(detectedAt, sheetName, rowRef, assetId, tenantId, ruleName, severity, status, message) {
@@ -2933,6 +3189,7 @@ function syncOpenDartData() {
 
     const headers = rows[0];
     const idx = headerIndexes_(headers);
+    const beforeRows = rows.slice(1).map(function (row) { return row.slice(); });
     const corpCodeMap = fetchOpenDartCorpCodeMap_();
     const normalizationRows = loadObjectsFromSheet_(spreadsheet, config.sheetNames.sysTenantNormalize);
     const candidateMap = buildOpenDartNameCandidates_(normalizationRows);
@@ -3016,6 +3273,15 @@ function syncOpenDartData() {
       companySheet.getRange(output.length + 2, 1, existingRowCount - output.length - 1, headers.length).clearContent();
     }
     const summaryMessage = updated + ' rows updated / ' + unmatched + ' unmatched';
+    writeAuditLogs_(buildSheetDiffAuditEntries_(beforeRows, output, headers, {
+      actionType: 'SYNC',
+      entityType: 'company',
+      sheetName: config.sheetNames.company,
+      reason: 'OpenDART 동기화',
+      sourceFunction: 'syncOpenDartData',
+      sourceType: 'server',
+      cacheInvalidated: true,
+    }));
     logApiEvent_('OpenDART', 'syncOpenDartData', 'DB_COMPANY', unmatched ? 'partial' : 'ok', summaryMessage, '');
     recordIntegrationRun_('open_dart', {
       status: unmatched ? 'partial_success' : 'success',
@@ -3454,6 +3720,42 @@ function getDataQualityData() {
   });
 }
 
+function readAuditLogRows_(limit) {
+  const sheet = getSpreadsheet_().getSheetByName(getConfig_().sheetNames.auditLog || 'AuditLog');
+  if (!sheet || sheet.getLastRow() < 2) return [];
+  const lastRow = sheet.getLastRow();
+  const width = Math.min(sheet.getLastColumn(), AUDIT_LOG_HEADERS_.length);
+  const normalizedLimit = Math.max(1, Math.min(500, Number(limit || 100)));
+  const startRow = Math.max(2, lastRow - normalizedLimit + 1);
+  const values = sheet.getRange(startRow, 1, lastRow - startRow + 1, width).getDisplayValues();
+  return values.map(function (row) {
+    return AUDIT_LOG_HEADERS_.reduce(function (accumulator, header, index) {
+      accumulator[header] = row[index] || '';
+      return accumulator;
+    }, {});
+  }).reverse();
+}
+
+function summarizeAuditLog_(rows) {
+  return (rows || []).reduce(function (summary, row) {
+    summary.total += 1;
+    const actionType = safeString_(row.actionType || 'unknown');
+    summary.byAction[actionType] = (summary.byAction[actionType] || 0) + 1;
+    if (safeString_(row.reason) === 'reason_required') summary.reasonRequired += 1;
+    return summary;
+  }, { total: 0, reasonRequired: 0, byAction: {} });
+}
+
+function getAuditLogData(request) {
+  assertAdmin_(request);
+  const rows = readAuditLogRows_(request && request.limit);
+  return {
+    generatedAt: formatAuditTimestamp_(new Date()),
+    summary: summarizeAuditLog_(rows),
+    rows: rows,
+  };
+}
+
 function normalizeBuildingParcelPart_(value) {
   const digits = safeString_(value).replace(/[^0-9]/g, '');
   if (!digits) return '';
@@ -3650,6 +3952,7 @@ function syncBuildingRegisterData() {
 
     const headers = rows[0];
     const idx = headerIndexes_(headers);
+    const beforeRows = rows.slice(1).map(function (row) { return row.slice(); });
     const output = [];
     const today = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd');
     let updated = 0;
@@ -3723,6 +4026,15 @@ function syncBuildingRegisterData() {
       assetSheet.getRange(output.length + 2, 1, existingRowCount - output.length - 1, headers.length).clearContent();
     }
     const summaryMessage = updated + ' rows updated / ' + pending + ' pending';
+    writeAuditLogs_(buildSheetDiffAuditEntries_(beforeRows, output, headers, {
+      actionType: 'SYNC',
+      entityType: 'asset',
+      sheetName: config.sheetNames.asset,
+      reason: '건축물대장 동기화',
+      sourceFunction: 'syncBuildingRegisterData',
+      sourceType: 'server',
+      cacheInvalidated: true,
+    }));
     logApiEvent_('BuildingRegister', 'syncBuildingRegisterData', 'DB_ASSET', pending ? 'partial' : 'ok', summaryMessage, '');
     recordIntegrationRun_('building_hub', {
       status: pending ? 'partial_success' : 'success',

@@ -44,11 +44,13 @@ function getPublicSnapshotBaseUrl_() {
 
 function getPublicSnapshotBaseUrls_() {
   const configured = getPublicSnapshotBaseUrl_();
-  const urls = [
-    configured,
-    "https://raw.githubusercontent.com/KYLee94/logi_leasing_db/main/docs/data",
-    "https://cdn.jsdelivr.net/gh/KYLee94/logi_leasing_db@main/docs/data",
-  ].map((url) => normalizeFlagString_(url).replace(/\/+$/, ""))
+  const rawGithub = "https://raw.githubusercontent.com/KYLee94/logi_leasing_db/main/docs/data";
+  const jsdelivr = "https://cdn.jsdelivr.net/gh/KYLee94/logi_leasing_db@main/docs/data";
+  const configuredFirst = configured && configured.indexOf("github.io") === -1;
+  const urls = (configuredFirst
+    ? [configured, rawGithub, jsdelivr]
+    : [rawGithub, jsdelivr, configured]
+  ).map((url) => normalizeFlagString_(url).replace(/\/+$/, ""))
     .filter(Boolean);
   return Array.from(new Set(urls));
 }
@@ -7960,6 +7962,38 @@ function loadAdminBacklogDetailModal_(kind, title, type) {
     .finally(() => showLoading(false));
 }
 
+function renderAuditLogModal_(rows) {
+  const tableRows = (rows || []).map((row) => [
+    row.timestamp || "-",
+    row.userEmail || "-",
+    row.actionType || "-",
+    row.entityType || "-",
+    row.entityId || "-",
+    row.sheetName || "-",
+    row.rowNumber || "-",
+    row.fieldName || "-",
+    row.oldValue || "-",
+    row.newValue || "-",
+    row.reason || "-",
+    row.sourceFunction || "-",
+  ]);
+  openMetricModal_(
+    "변경 이력 AuditLog",
+    renderTable_(["시각", "사용자", "작업", "유형", "ID", "시트", "행", "필드", "이전값", "변경값", "사유", "함수"], tableRows, { wrapperClass: "table-wrap-report", tight: true }),
+    renderBasisLine_("현재 시점", "AuditLog", "건", "Admin 전용")
+  );
+}
+
+function loadAuditLogModal_() {
+  showLoading(true, "감사 로그를 불러오고 있습니다.", "AuditLog 최근 변경 이력을 조회합니다.");
+  return callServer_("getAuditLogData", Object.assign(buildAdminRequest_(), { limit: 200 }), { timeoutMs: 60000 })
+    .then((result) => renderAuditLogModal_(safeGet_(result, ["rows"]) || []))
+    .catch((error) => {
+      openMetricModal_("감사 로그 오류", renderStateShell_("감사 로그를 불러오지 못했습니다.", (error && error.message) || String(error)), renderBasisLine_("현재 시점", "AuditLog", "오류", "Apps Script"));
+    })
+    .finally(() => showLoading(false));
+}
+
 function renderAdmin(admin) {
   const view = getTabRoot_("admin");
   if (!view) return;
@@ -7981,6 +8015,8 @@ function renderAdmin(admin) {
   const reconciliation = safeGet_(safeAdmin, ["uiDataReconciliation"]) || {};
   const jobStates = safeGet_(safeAdmin, ["jobStates"]) || {};
   const reviewMetrics = safeAdmin.reviewMetrics || [];
+  const auditLogRows = safeAdmin.auditLogRows || [];
+  const auditLogSummary = safeAdmin.auditLogSummary || {};
   const loadErrors = safeAdmin.loadErrors || [];
   const hasSnapshotTrigger = triggerRows.some((row) => row.handler === "scheduledRefreshDashboardSnapshot");
   const snapshotStatus = snapshotState.updatedAt
@@ -8096,6 +8132,37 @@ function renderAdmin(admin) {
           <div class="page-note">세부 검증이 필요하면 상단의 UI-DB 정합성 검증 버튼을 실행하세요.</div>
         </section>
       </div>
+
+      <section class="workspace-panel">
+        <div class="section-header">
+          <div class="section-heading-copy">
+            <h3 class="section-title">변경 이력 AuditLog</h3>
+            <p class="section-subtitle">계약·자산·기업·캐시 변경 이력을 최근순으로 확인합니다.</p>
+            ${renderBasisLine_("현재 시점", "AuditLog 최근 50건", "건", "AuditLog")}
+          </div>
+          <button class="secondary-button" type="button" data-admin-audit-log-refresh>감사 로그 새로고침</button>
+        </div>
+        <div class="dense-strip dense-strip-4">
+          ${renderAdminActionTile_({ label: "최근 로그", valueHtml: formatNumber_(auditLogSummary.total || auditLogRows.length), metaHtml: "최근 50건 기준", action: "admin-audit-log" })}
+          ${renderAdminActionTile_({ label: "사유 보완 필요", valueHtml: formatNumber_(auditLogSummary.reasonRequired || 0), metaHtml: "reason_required", action: "admin-audit-log" })}
+          ${renderAdminActionTile_({ label: "캐시/스냅샷", valueHtml: formatNumber_((auditLogSummary.byAction || {}).CACHE_CLEAR || 0), metaHtml: "CACHE_CLEAR", action: "admin-audit-log" })}
+          ${renderAdminActionTile_({ label: "동기화/관리작업", valueHtml: formatNumber_((auditLogSummary.byAction || {}).SYNC || 0), metaHtml: "SYNC", action: "admin-audit-log" })}
+        </div>
+        ${renderTable_(
+          ["시각", "사용자", "작업", "대상", "필드", "이전값", "변경값", "사유"],
+          auditLogRows.slice(0, 12).map((row) => [
+            row.timestamp || "-",
+            row.userEmail || "-",
+            row.actionType || "-",
+            `${row.entityType || "-"} / ${row.entityId || "-"}`,
+            row.fieldName || "-",
+            row.oldValue || "-",
+            row.newValue || "-",
+            row.reason || "-",
+          ]),
+          { wrapperClass: "table-wrap-report", tight: true }
+        )}
+      </section>
     </div>
   `;
 
@@ -8147,6 +8214,13 @@ function renderAdmin(admin) {
     if (action === "admin-audit-preview") {
       button.onclick = () => loadAdminBacklogDetailModal_("audit", "정적 스냅샷 오류", "audit");
     }
+    if (action === "admin-audit-log") {
+      button.onclick = () => renderAuditLogModal_(auditLogRows);
+    }
   });
+  const auditRefreshButton = view.querySelector("[data-admin-audit-log-refresh]");
+  if (auditRefreshButton) {
+    auditRefreshButton.onclick = () => loadAuditLogModal_();
+  }
 }
 </script>
