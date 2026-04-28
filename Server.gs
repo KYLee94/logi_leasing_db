@@ -436,6 +436,11 @@ function getAdminDashboardData(request) {
   const viewer = getViewerContext_({ adminSessionToken: request && request.adminSessionToken });
   const adminErrors = [];
   const snapshotState = getStaticPayloadSnapshotState_();
+  const dashboardSummary = readPersistedJsonProperty_('ADMIN_DASHBOARD_SUMMARY_JSON') || {};
+  if (isAdminDashboardSummaryFresh_(dashboardSummary)) {
+    return buildAdminDashboardResponse_(viewer, snapshotState, dashboardSummary, adminErrors);
+  }
+
   const summary = readPersistedJsonProperty_('ADMIN_SUMMARY_JSON') || {};
   const reviewCache = readPersistedJsonProperty_('ADMIN_REVIEW_CACHE_JSON') || {};
   let shell = null;
@@ -540,6 +545,27 @@ function getAdminDashboardData(request) {
     if (resolvedBuildingBacklogCount === 0) resolvedBuildingBacklogCount = Number(backlogCounts.buildingBacklogCount || 0);
   }
 
+  const dashboardPayload = {
+    integrations: safeGet_(effectiveSummary, ['integrations']) || getAdminMinimalIntegrations_(),
+    reviewMetrics: safeGet_(effectiveSummary, ['reviewMetrics']) || [],
+    issueBacklogCount: resolvedIssueBacklogCount,
+    openDartBacklogCount: resolvedOpenDartBacklogCount,
+    buildingBacklogCount: resolvedBuildingBacklogCount,
+    uiDataReconciliation: {
+      status: safeGet_(effectiveSummary, ['uiDataReconciliation', 'status']) || 'summary_only',
+      okCount: Number(safeGet_(effectiveSummary, ['uiDataReconciliation', 'okCount']) || 0),
+      reviewCount: Number(safeGet_(effectiveSummary, ['uiDataReconciliation', 'reviewCount']) || 0),
+      errorCount: Number(safeGet_(effectiveSummary, ['uiDataReconciliation', 'errorCount']) || 0),
+      generatedAt: safeGet_(effectiveSummary, ['uiDataReconciliation', 'generatedAt']) || '',
+    },
+    auditErrorCount: Number(safeGet_(effectiveSummary, ['auditErrorCount']) || snapshotState.errorCount || 0),
+    generatedTs: Date.now(),
+  };
+  persistAdminDashboardSummary_(dashboardPayload);
+  return buildAdminDashboardResponse_(viewer, snapshotState, dashboardPayload, adminErrors);
+}
+
+function buildAdminDashboardResponse_(viewer, snapshotState, dashboardPayload, adminErrors) {
   return {
     viewer: viewer,
     authorization: {
@@ -548,28 +574,46 @@ function getAdminDashboardData(request) {
     },
     bootstrapState: {},
     staticSnapshotState: snapshotState,
-    integrations: safeGet_(effectiveSummary, ['integrations']) || getAdminMinimalIntegrations_(),
+    integrations: safeGet_(dashboardPayload, ['integrations']) || getAdminMinimalIntegrations_(),
     deployment: getAdminMinimalDeploymentInfo_(),
-    reviewMetrics: safeGet_(effectiveSummary, ['reviewMetrics']) || [],
-    reviewDetails: safeGet_(effectiveSummary, ['reviewDetails']) || {},
-    issueBacklogCount: resolvedIssueBacklogCount,
-    openDartBacklogCount: resolvedOpenDartBacklogCount,
-    buildingBacklogCount: resolvedBuildingBacklogCount,
+    reviewMetrics: safeGet_(dashboardPayload, ['reviewMetrics']) || [],
+    reviewDetails: {},
+    issueBacklogCount: Number(safeGet_(dashboardPayload, ['issueBacklogCount']) || 0),
+    openDartBacklogCount: Number(safeGet_(dashboardPayload, ['openDartBacklogCount']) || 0),
+    buildingBacklogCount: Number(safeGet_(dashboardPayload, ['buildingBacklogCount']) || 0),
     reviewBacklog: [],
     uiDataReconciliation: {
-      status: safeGet_(effectiveSummary, ['uiDataReconciliation', 'status']) || 'summary_only',
-      okCount: Number(safeGet_(effectiveSummary, ['uiDataReconciliation', 'okCount']) || 0),
-      reviewCount: Number(safeGet_(effectiveSummary, ['uiDataReconciliation', 'reviewCount']) || 0),
-      errorCount: Number(safeGet_(effectiveSummary, ['uiDataReconciliation', 'errorCount']) || 0),
-      generatedAt: safeGet_(effectiveSummary, ['uiDataReconciliation', 'generatedAt']) || '',
+      status: safeGet_(dashboardPayload, ['uiDataReconciliation', 'status']) || 'summary_only',
+      okCount: Number(safeGet_(dashboardPayload, ['uiDataReconciliation', 'okCount']) || 0),
+      reviewCount: Number(safeGet_(dashboardPayload, ['uiDataReconciliation', 'reviewCount']) || 0),
+      errorCount: Number(safeGet_(dashboardPayload, ['uiDataReconciliation', 'errorCount']) || 0),
+      generatedAt: safeGet_(dashboardPayload, ['uiDataReconciliation', 'generatedAt']) || '',
     },
     auditRows: [],
-    auditErrorCount: Number(safeGet_(effectiveSummary, ['auditErrorCount']) || snapshotState.errorCount || 0),
+    auditErrorCount: Number(safeGet_(dashboardPayload, ['auditErrorCount']) || snapshotState.errorCount || 0),
     auditNeedsRefresh: true,
     triggers: [],
     jobStates: getAdminJobStates_(),
     loadErrors: adminErrors,
   };
+}
+
+function isAdminDashboardSummaryFresh_(summary) {
+  const generatedTs = Number(summary && summary.generatedTs || 0);
+  if (!generatedTs || Date.now() - generatedTs > 6 * 60 * 60 * 1000) return false;
+  return Array.isArray(summary.reviewMetrics) && summary.reviewMetrics.length > 0;
+}
+
+function persistAdminDashboardSummary_(summary) {
+  try {
+    if (typeof persistJsonScriptProperty_ === 'function') {
+      persistJsonScriptProperty_('ADMIN_DASHBOARD_SUMMARY_JSON', summary, { allowChunking: true });
+    } else {
+      PropertiesService.getScriptProperties().setProperty('ADMIN_DASHBOARD_SUMMARY_JSON', JSON.stringify(summary));
+    }
+  } catch (error) {
+    // The dashboard still renders if this small performance cache cannot be saved.
+  }
 }
 
 function resolveAdminCachedCount_(primary, secondary, fallback) {
@@ -625,24 +669,50 @@ function getAdminHomePayloadFast_() {
 function getAdminReviewDetail(request) {
   assertAdmin_(request);
   const key = safeString_(request && request.key);
-  const reviewCache = readPersistedJsonProperty_('ADMIN_REVIEW_CACHE_JSON') || {};
-  const cachedRows = safeGet_(reviewCache, ['reviewDetails', key]);
+  const detailsCache = readPersistedJsonProperty_('ADMIN_REVIEW_DETAILS_JSON') || {};
+  const cachedRows = detailsCache[key];
   if (Array.isArray(cachedRows)) {
-    return { key: key, rows: cachedRows, cacheMissing: false, source: 'admin_review_cache' };
+    return { key: key, rows: cachedRows, cacheMissing: false, source: 'admin_review_details_cache' };
   }
+
   const lightweightRows = readAdminGeneralReviewRows_(key);
   if (Array.isArray(lightweightRows) && lightweightRows.length) {
+    persistAdminReviewDetailRows_(key, lightweightRows);
     return { key: key, rows: lightweightRows, cacheMissing: false, source: 'general_sheet_lightweight' };
   }
+
+  const reviewCache = readPersistedJsonProperty_('ADMIN_REVIEW_CACHE_JSON') || {};
+  const legacyCachedRows = safeGet_(reviewCache, ['reviewDetails', key]);
+  if (Array.isArray(legacyCachedRows)) {
+    persistAdminReviewDetailRows_(key, legacyCachedRows);
+    return { key: key, rows: legacyCachedRows, cacheMissing: false, source: 'admin_review_cache' };
+  }
+
   const model = getAdminModelForDetail_();
   const homePayload = getAdminHomePayloadFast_();
   if (!model && key !== 'issueBacklog') return { key: key, rows: [], cacheMissing: true };
   const details = buildAdminReviewDetails_(homePayload, model);
+  if (Array.isArray(details[key])) persistAdminReviewDetailRows_(key, details[key]);
   return {
     key: key,
     rows: details[key] || [],
     cacheMissing: false,
   };
+}
+
+function persistAdminReviewDetailRows_(key, rows) {
+  try {
+    const detailsCache = readPersistedJsonProperty_('ADMIN_REVIEW_DETAILS_JSON') || {};
+    detailsCache[key] = (rows || []).slice(0, 50);
+    detailsCache.generatedTs = Date.now();
+    if (typeof persistJsonScriptProperty_ === 'function') {
+      persistJsonScriptProperty_('ADMIN_REVIEW_DETAILS_JSON', detailsCache, { allowChunking: true });
+    } else {
+      PropertiesService.getScriptProperties().setProperty('ADMIN_REVIEW_DETAILS_JSON', JSON.stringify(detailsCache));
+    }
+  } catch (error) {
+    // Detail modal still renders even if the small cache cannot be saved.
+  }
 }
 
 function getAdminBacklogDetail(request) {

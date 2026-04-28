@@ -5,6 +5,7 @@ const ADMIN_URL =
   process.env.ADMIN_URL ||
   'https://script.google.com/macros/s/AKfycbw-MNDdPW19QrdlKOtZ111UY037Ko3z9O9nYWsqCsXj6r8C814ZUzH6wz1UORE1jdwgNg/exec?page=admin';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+const CLICK_REVIEW = process.env.CLICK_REVIEW === '1';
 
 async function findFrameWithPassword(page) {
   for (const frame of page.frames()) {
@@ -79,6 +80,20 @@ async function clickFirstAvailable(frame, selectors) {
     missing,
     excerpt: bodyText.slice(0, 1800),
   }));
+
+  if (CLICK_REVIEW) {
+    const detailStartedAt = Date.now();
+    await frame.locator('[data-action="admin-review:historyUnmatched"]').first().click();
+    await frame.locator('text=자산명').first().waitFor({ timeout: 60000 });
+    const detailText = await frame.locator('body').innerText({ timeout: 10000 });
+    console.log(JSON.stringify({
+      phase: 'review-detail-ready',
+      ms: Date.now() - detailStartedAt,
+      hasAssetName: detailText.includes('자산명'),
+      hasTenantName: detailText.includes('임차인명'),
+      excerpt: detailText.slice(0, 1200),
+    }));
+  }
 
   await browser.close();
 })().catch(async (error) => {
