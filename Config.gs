@@ -4,7 +4,7 @@ const DEFAULT_SECRETS = Object.freeze({
   openDartApiKey: '',
   buildingRegisterApiKeyEncoded: '',
   buildingRegisterApiKeyDecoded: '',
-  naverMapsClientId: '',
+  naverMapsClientId: 'xmxdr3l9ij',
   naverMapsClientSecret: '',
 });
 

@@ -36,6 +36,7 @@ const APP_FLAGS = {
 };
 
 window.APP_FLAGS = APP_FLAGS;
+let PUBLIC_SNAPSHOT_FAILURE_UNTIL = 0;
 
 function getPublicSnapshotBaseUrl_() {
   return normalizeFlagString_(RUNTIME_CLIENT_CONFIG.publicSnapshotBaseUrl || "");
@@ -53,7 +54,7 @@ function getPublicSnapshotBaseUrls_() {
 }
 
 function canUsePublicSnapshots_() {
-  return !IS_ADMIN && getPublicSnapshotBaseUrls_().length > 0;
+  return !IS_ADMIN && Date.now() > PUBLIC_SNAPSHOT_FAILURE_UNTIL && getPublicSnapshotBaseUrls_().length > 0;
 }
 
 const IS_ADMIN = APP_FLAGS.isAdmin;
@@ -599,28 +600,28 @@ function fetchPublicSnapshotJson_(name, timeoutMs) {
   const bases = getPublicSnapshotBaseUrls_();
   if (!bases.length) return Promise.reject(new Error("PUBLIC_SNAPSHOT_BASE_URL is not configured"));
   let lastError = null;
-  return bases.reduce((chain, base) => {
-    return chain.catch(() => {
-      const url = `${base}/${name}`;
-      const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
-      const timer = controller ? window.setTimeout(() => controller.abort(), timeoutMs || 15000) : null;
-      return fetch(url, {
-        method: "GET",
-        headers: { "Accept": "application/json" },
-        cache: "no-store",
-        signal: controller ? controller.signal : undefined,
-      }).then((response) => {
-        if (!response.ok) throw new Error(`Public snapshot fetch failed: ${response.status}`);
-        return response.json();
-      }).catch((error) => {
-        lastError = error;
-        throw error;
-      }).finally(() => {
-        if (timer) window.clearTimeout(timer);
-      });
+  const attempts = bases.map((base) => {
+    const url = `${base}/${name}`;
+    const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+    const timer = controller ? window.setTimeout(() => controller.abort(), timeoutMs || 3000) : null;
+    return fetch(url, {
+      method: "GET",
+      headers: { "Accept": "application/json" },
+      cache: "no-store",
+      signal: controller ? controller.signal : undefined,
+    }).then((response) => {
+      if (!response.ok) throw new Error(`Public snapshot fetch failed: ${response.status}`);
+      return response.json();
+    }).catch((error) => {
+      lastError = error;
+      throw error;
+    }).finally(() => {
+      if (timer) window.clearTimeout(timer);
     });
-  }, Promise.reject(new Error("Trying public snapshot fallbacks")))
-    .catch(() => {
+  });
+  const firstSuccess = Promise.any ? Promise.any(attempts) : Promise.race(attempts);
+  return firstSuccess.catch(() => {
+      PUBLIC_SNAPSHOT_FAILURE_UNTIL = Date.now() + (5 * 60 * 1000);
       throw lastError || new Error("Public snapshot fetch failed");
     });
 }
@@ -629,7 +630,7 @@ function requestBootstrapData_() {
   if (!canUsePublicSnapshots_()) {
     return callServer_("getBootstrapData", undefined, { timeoutMs: 45000 });
   }
-  return fetchPublicSnapshotJson_("bootstrap.json", 15000)
+  return fetchPublicSnapshotJson_("bootstrap.json", 3000)
     .catch(() => callServer_("getBootstrapData", undefined, { timeoutMs: 45000 }));
 }
 
@@ -938,30 +939,30 @@ function loadTabData_(tab, options) {
 
 function requestPayloadForTab_(tab) {
   if (tab === "home") {
-    if (canUsePublicSnapshots_()) return fetchPublicSnapshotJson_("home.json", 15000).catch(() => callServer_("getHomeData", undefined, { timeoutMs: 60000 }));
-    return callServer_("getHomeData", undefined, { timeoutMs: 60000 });
+    if (canUsePublicSnapshots_()) return fetchPublicSnapshotJson_("home.json", 3000).catch(() => callServer_("getHomeData", undefined, { timeoutMs: 60000 }));
+    return callServer_("getHomeData", adminAwareRequest_(), { timeoutMs: 60000 });
   }
   if (tab === "asset") {
     const assetId = state.selections.assetId || safeGet_(state.bootstrap, ["defaults", "assetId"]) || "";
-    if (canUsePublicSnapshots_() && assetId) return fetchPublicSnapshotJson_(`asset/${encodeURIComponent(assetId)}.json`, 15000).catch(() => callServer_("getAssetData", assetId, { timeoutMs: 60000 }));
-    return callServer_("getAssetData", assetId, { timeoutMs: 60000 });
+    if (canUsePublicSnapshots_() && assetId) return fetchPublicSnapshotJson_(`asset/${encodeURIComponent(assetId)}.json`, 3000).catch(() => callServer_("getAssetData", assetId, { timeoutMs: 60000 }));
+    return callServer_("getAssetData", adminAwareEntityRequest_("assetId", assetId), { timeoutMs: 60000 });
   }
   if (tab === "company") {
     const tenantId = state.selections.tenantId || safeGet_(state.bootstrap, ["defaults", "tenantId"]) || "";
-    if (canUsePublicSnapshots_() && tenantId) return fetchPublicSnapshotJson_(`company/${encodeURIComponent(tenantId)}.json`, 15000).catch(() => callServer_("getCompanyData", tenantId, { timeoutMs: 60000 }));
-    return callServer_("getCompanyData", tenantId, { timeoutMs: 60000 });
+    if (canUsePublicSnapshots_() && tenantId) return fetchPublicSnapshotJson_(`company/${encodeURIComponent(tenantId)}.json`, 3000).catch(() => callServer_("getCompanyData", tenantId, { timeoutMs: 60000 }));
+    return callServer_("getCompanyData", adminAwareEntityRequest_("tenantId", tenantId), { timeoutMs: 60000 });
   }
-  if (tab === "sector") return callServer_("getSectorData", undefined, { timeoutMs: 45000 });
-  if (tab === "tools") return callServer_("getToolsData", { assetIds: state.selections.toolAssetIds || [], companyIds: state.selections.toolCompanyIds || [] }, { timeoutMs: 45000 });
+  if (tab === "sector") return callServer_("getSectorData", adminAwareRequest_(), { timeoutMs: 45000 });
+  if (tab === "tools") return callServer_("getToolsData", adminAwareRequest_({ assetIds: state.selections.toolAssetIds || [], companyIds: state.selections.toolCompanyIds || [] }), { timeoutMs: 45000 });
   if (tab === "playground") {
-    return callServer_("getPlaygroundData", {
+    return callServer_("getPlaygroundData", adminAwareRequest_({
       rowDimension: state.selections.playgroundDimension,
       columnDimension: state.selections.playgroundColumnDimension,
       filterDimension: state.selections.playgroundFilterDimension,
       filterValue: state.selections.playgroundFilterValue,
       valueMetric: state.selections.playgroundMetric,
       topN: state.selections.playgroundTopN,
-  }, { timeoutMs: 45000 });
+  }), { timeoutMs: 45000 });
   }
   if (tab === "admin") {
     if (!APP_FLAGS.adminSessionToken) return Promise.resolve({ requiresPassword: true });
@@ -972,6 +973,19 @@ function requestPayloadForTab_(tab) {
 
 function buildAdminRequest_() {
   return { adminSessionToken: APP_FLAGS.adminSessionToken || "" };
+}
+
+function adminAwareRequest_(payload) {
+  const base = payload && typeof payload === "object" ? Object.assign({}, payload) : {};
+  if (!IS_ADMIN || !APP_FLAGS.adminSessionToken) return payload === undefined ? undefined : base;
+  return Object.assign(base, buildAdminRequest_());
+}
+
+function adminAwareEntityRequest_(idKey, idValue) {
+  if (!IS_ADMIN || !APP_FLAGS.adminSessionToken) return idValue;
+  const payload = buildAdminRequest_();
+  payload[idKey] = idValue || "";
+  return payload;
 }
 
 function renderAdminPasswordGate_(view) {
@@ -5313,6 +5327,10 @@ function renderTools(tools) {
   const activeToolCompanyIds = safeGet_(tools, ["meta", "selection", "companyIds"]) || state.selections.toolCompanyIds || [];
   const selectionMeta = tools.selectionMeta || {};
   const topBenchmarks = benchmarkRows.slice().sort((left, right) => (right.monthlyRentTotal || 0) - (left.monthlyRentTotal || 0)).slice(0, 5);
+  const selectedAssetNames = selectedAssets.map((row) => row.assetName).filter(Boolean);
+  const selectedCompanyNames = selectedCompanies.map((row) => row.tenantMasterName).filter(Boolean);
+  const selectedAssetSummary = selectedAssetNames.length ? selectedAssetNames.slice(0, 3).join(", ") + (selectedAssetNames.length > 3 ? ` 외 ${selectedAssetNames.length - 3}개` : "") : "선택 없음";
+  const selectedCompanySummary = selectedCompanyNames.length ? selectedCompanyNames.slice(0, 3).join(", ") + (selectedCompanyNames.length > 3 ? ` 외 ${selectedCompanyNames.length - 3}개` : "") : "선택 없음";
 
   view.innerHTML = `
     <div class="page-stack advanced-page advanced-tools">
@@ -5336,6 +5354,10 @@ function renderTools(tools) {
               ${renderStatPill_("선택 자산", formatNumber_(activeToolAssetIds.length))}
               ${renderStatPill_("선택 기업", formatNumber_(activeToolCompanyIds.length))}
             </div>
+            <div class="selection-summary-box">
+              <div><strong>자산</strong><span>${escapeHtml_(selectedAssetSummary)}</span></div>
+              <div><strong>기업</strong><span>${escapeHtml_(selectedCompanySummary)}</span></div>
+            </div>
             <div class="field">
               <label>자산 검색</label>
               <input class="selector-filter-input" type="search" data-advanced-filter="assets" placeholder="자산명 검색">
@@ -5350,7 +5372,11 @@ function renderTools(tools) {
                 ${(filters.availableCompanies || []).map((row) => `<label class="toggle-item"><input type="checkbox" data-tools-company value="${escapeHtml_(row.tenantId)}" ${activeToolCompanyIds.indexOf(row.tenantId) > -1 ? "checked" : ""}><span>${escapeHtml_(row.tenantMasterName)}</span></label>`).join("") || renderEmptyState_("선택 가능한 기업이 없습니다.")}
               </div>
             </div>
-            <button class="primary-button" id="tools-apply-button" type="button">비교 실행</button>
+            <div class="button-row button-row-stack">
+              <button class="primary-button" id="tools-apply-button" type="button">선택한 대상으로 비교</button>
+              <button class="secondary-button" id="tools-default-button" type="button">기본 비교 세트</button>
+              <button class="ghost-button" id="tools-clear-button" type="button">선택 초기화</button>
+            </div>
           </section>
         </aside>
 
@@ -5401,6 +5427,16 @@ function renderTools(tools) {
     state.selections.toolAssetIds = collectCheckedValues_("[data-tools-asset]");
     state.selections.toolCompanyIds = collectCheckedValues_("[data-tools-company]");
     refreshActiveTab();
+  });
+  document.getElementById("tools-default-button")?.addEventListener("click", () => {
+    state.selections.toolAssetIds = [];
+    state.selections.toolCompanyIds = [];
+    refreshActiveTab();
+  });
+  document.getElementById("tools-clear-button")?.addEventListener("click", () => {
+    document.querySelectorAll("[data-tools-asset], [data-tools-company]").forEach((input) => { input.checked = false; });
+    state.selections.toolAssetIds = [];
+    state.selections.toolCompanyIds = [];
   });
   bindAdvancedFilter_('[data-advanced-filter="assets"]', '[data-advanced-list="assets"]');
   bindAdvancedFilter_('[data-advanced-filter="companies"]', '[data-advanced-list="companies"]');
@@ -7443,11 +7479,16 @@ function renderAdmin(admin) {
 function renderAdminReviewDetailModal_(title, rows, basisText) {
   const detailRows = rows || [];
   const tableRows = detailRows.map((row) => [
+    row.issueCategory || "-",
+    row.suspectedCause || row.reviewNote || "-",
     row.assetName || "-",
     row.tenantMasterName || "-",
     row.leaseSpaceId || "-",
     row.floorLabel || "-",
     row.detailAreaLabel || "-",
+    formatCurrency_(row.currentMonthlyRentTotal),
+    formatCurrency_(row.currentMonthlyMfTotal),
+    formatCurrency_(row.eNoc),
     formatDateCell_(row.currentEndDate),
     row.reviewStatus ? renderStatusChip_(row.reviewStatus) : "-",
     row.reviewNote || "-",
@@ -7455,7 +7496,7 @@ function renderAdminReviewDetailModal_(title, rows, basisText) {
   openMetricModal_(
     title,
     renderTable_(
-      ["자산명", "임차인명", "공간", "층", "세부구역", "만기일", "상태", "메모"],
+      ["검토 유형", "의심 오류", "자산명", "임차인명", "공간", "층", "세부구역", "월 임대료", "월 관리비", "E.NOC", "만기일", "상태", "메모"],
       tableRows,
       { wrapperClass: "table-wrap-report", tight: true }
     ),

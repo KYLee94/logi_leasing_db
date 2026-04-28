@@ -404,6 +404,7 @@ function linkHistoryRowsV2_(generalRows, historyRows) {
       row.calculatedReviewStatus = 'review_required';
       row.calculatedReviewNotes.push('E.NOC requires manual review.');
     }
+    flagENocOutlier_(row);
     row.calculatedReviewNotes = uniqueValues_(row.calculatedReviewNotes);
   });
 }
@@ -1248,7 +1249,21 @@ function linkHistoryRows_(generalRows, historyRows) {
       row.calculatedReviewStatus = 'review_required';
       row.calculatedReviewNotes.push('E.NOC 계산 입력값 검토 필요');
     }
+    flagENocOutlier_(row);
+    row.calculatedReviewNotes = uniqueValues_(row.calculatedReviewNotes);
   });
+}
+
+function flagENocOutlier_(row) {
+  if (!row || row.eNoc == null) return;
+  const eNoc = Number(row.eNoc);
+  if (!Number.isFinite(eNoc)) return;
+  if (eNoc < 1000 || eNoc > 100000) {
+    if (row.calculatedReviewStatus === 'ok') row.calculatedReviewStatus = 'suspected_error';
+    const ratioText = row.exclusiveRatio != null ? `전용률 ${roundNumber_(Number(row.exclusiveRatio) * 100, 2)}%` : '전용률 미확인';
+    row.calculatedReviewNotes = row.calculatedReviewNotes || [];
+    row.calculatedReviewNotes.push(`E.NOC 비정상 범위(${roundNumber_(eNoc, 0)}원/평): ${ratioText}와 최신 평당 임대료/관리비 입력값 확인 필요`);
+  }
 }
 
 function deriveContractYears_(startDate, endDate) {

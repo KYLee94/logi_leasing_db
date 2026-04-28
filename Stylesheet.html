@@ -1805,6 +1805,35 @@
     padding-right: 4px;
   }
 
+  .selection-summary-box {
+    display: grid;
+    gap: 8px;
+    padding: 10px 12px;
+    border: 1px solid rgba(var(--primary-rgb), 0.22);
+    border-radius: var(--radius-md);
+    background: rgba(var(--primary-rgb), 0.06);
+    color: var(--text-soft);
+    font-size: 0.78rem;
+  }
+
+  .selection-summary-box > div {
+    display: grid;
+    gap: 3px;
+  }
+
+  .selection-summary-box strong {
+    color: var(--text-strong);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .button-row-stack {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
   .mode-switch {
     display: inline-flex;
     align-items: center;

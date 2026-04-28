@@ -269,9 +269,13 @@ function enrichBootstrapPayload_(payload) {
   return clone;
 }
 
-function getHomeData() {
+function getViewerContextFromRequest_(request) {
+  return getViewerContext_({ adminSessionToken: request && request.adminSessionToken });
+}
+
+function getHomeData(request) {
   const cacheKey = buildKeyedPayloadKey_('home');
-  const viewer = getViewerContext_();
+  const viewer = getViewerContextFromRequest_(request);
   const viewerCached = getCachedPayloadForViewer_(cacheKey, viewer);
   if (viewerCached) return viewerCached;
   const cached = getCachedJson_(cacheKey);
@@ -325,10 +329,24 @@ function readPersistedJsonProperty_(key) {
   }
 }
 
-function getAssetData(assetId) {
-  const viewer = getViewerContext_();
+function normalizeEntityDataRequest_(input, idKey) {
+  if (input && typeof input === 'object' && !Array.isArray(input)) {
+    return {
+      id: safeString_(input[idKey]),
+      adminSessionToken: safeString_(input.adminSessionToken),
+    };
+  }
+  return {
+    id: safeString_(input),
+    adminSessionToken: '',
+  };
+}
+
+function getAssetData(input) {
+  const request = normalizeEntityDataRequest_(input, 'assetId');
+  const viewer = getViewerContextFromRequest_(request);
   const defaultAssetId = resolveDefaultAssetId_();
-  const selectedAssetId = safeString_(assetId) || defaultAssetId;
+  const selectedAssetId = request.id || defaultAssetId;
   const cacheKey = buildKeyedPayloadKey_('asset', selectedAssetId);
   const viewerCached = getCachedPayloadForViewer_(cacheKey, viewer);
   if (viewerCached) return viewerCached;
@@ -355,10 +373,11 @@ function getAssetData(assetId) {
   return returnPayloadForViewer_(payload, viewer, cacheKey);
 }
 
-function getCompanyData(tenantId) {
-  const viewer = getViewerContext_();
+function getCompanyData(input) {
+  const request = normalizeEntityDataRequest_(input, 'tenantId');
+  const viewer = getViewerContextFromRequest_(request);
   const defaultTenantId = resolveDefaultTenantId_();
-  const selectedTenantId = safeString_(tenantId) || defaultTenantId;
+  const selectedTenantId = request.id || defaultTenantId;
   const cacheKey = buildKeyedPayloadKey_('company', selectedTenantId);
   const viewerCached = getCachedPayloadForViewer_(cacheKey, viewer);
   if (viewerCached) return viewerCached;
@@ -385,46 +404,49 @@ function getCompanyData(tenantId) {
   return returnPayloadForViewer_(payload, viewer, cacheKey);
 }
 
-function getSectorData() {
+function getSectorData(request) {
+  const viewer = getViewerContextFromRequest_(request);
   const cacheKey = buildKeyedPayloadKey_('sector');
   const cached = getCachedJson_(cacheKey);
-  if (cached) return sanitizePayloadForViewer_(cached, getViewerContext_());
+  if (cached) return sanitizePayloadForViewer_(cached, viewer);
   const staticPayload = readStaticPayloadSnapshot_('sector', 'default');
   if (staticPayload) {
     putCachedJson_(cacheKey, staticPayload, getConfig_().payloadCacheTtlSeconds);
-    return sanitizePayloadForViewer_(staticPayload, getViewerContext_());
+    return sanitizePayloadForViewer_(staticPayload, viewer);
   }
-  return sanitizePayloadForViewer_(putCachedJson_(cacheKey, buildSectorPayload_(getModelOrRefreshCache_()), getConfig_().payloadCacheTtlSeconds), getViewerContext_());
+  return sanitizePayloadForViewer_(putCachedJson_(cacheKey, buildSectorPayload_(getModelOrRefreshCache_()), getConfig_().payloadCacheTtlSeconds), viewer);
 }
 
 function getToolsData(request) {
+  const viewer = getViewerContextFromRequest_(request);
   const normalized = normalizeToolsRequest_(request);
   const cacheKey = buildKeyedPayloadKey_('tools', normalized);
   const cached = getCachedJson_(cacheKey);
-  if (cached) return sanitizePayloadForViewer_(cached, getViewerContext_());
+  if (cached) return sanitizePayloadForViewer_(cached, viewer);
   if (isDefaultToolsRequest_(normalized)) {
     const staticPayload = readStaticPayloadSnapshot_('tools', 'default');
     if (staticPayload) {
       putCachedJson_(cacheKey, staticPayload, getConfig_().payloadCacheTtlSeconds);
-      return sanitizePayloadForViewer_(staticPayload, getViewerContext_());
+      return sanitizePayloadForViewer_(staticPayload, viewer);
     }
   }
-  return sanitizePayloadForViewer_(putCachedJson_(cacheKey, buildToolsPayload_(getModelOrRefreshCache_(), normalized), getConfig_().payloadCacheTtlSeconds), getViewerContext_());
+  return sanitizePayloadForViewer_(putCachedJson_(cacheKey, buildToolsPayload_(getModelOrRefreshCache_(), normalized), getConfig_().payloadCacheTtlSeconds), viewer);
 }
 
 function getPlaygroundData(request) {
+  const viewer = getViewerContextFromRequest_(request);
   const normalized = normalizePlaygroundRequest_(request);
   const cacheKey = buildKeyedPayloadKey_('playground', normalized);
   const cached = getCachedJson_(cacheKey);
-  if (cached) return sanitizePayloadForViewer_(cached, getViewerContext_());
+  if (cached) return sanitizePayloadForViewer_(cached, viewer);
   if (isDefaultPlaygroundRequest_(normalized)) {
     const staticPayload = readStaticPayloadSnapshot_('playground', 'default');
     if (staticPayload) {
       putCachedJson_(cacheKey, staticPayload, getConfig_().payloadCacheTtlSeconds);
-      return sanitizePayloadForViewer_(staticPayload, getViewerContext_());
+      return sanitizePayloadForViewer_(staticPayload, viewer);
     }
   }
-  return sanitizePayloadForViewer_(putCachedJson_(cacheKey, buildPlaygroundPayload_(getModelOrRefreshCache_(), normalized), getConfig_().payloadCacheTtlSeconds), getViewerContext_());
+  return sanitizePayloadForViewer_(putCachedJson_(cacheKey, buildPlaygroundPayload_(getModelOrRefreshCache_(), normalized), getConfig_().payloadCacheTtlSeconds), viewer);
 }
 
 function getReviewBacklog() {
@@ -672,31 +694,88 @@ function getAdminReviewDetail(request) {
   const detailsCache = readPersistedJsonProperty_('ADMIN_REVIEW_DETAILS_JSON') || {};
   const cachedRows = detailsCache[key];
   if (Array.isArray(cachedRows)) {
-    return { key: key, rows: cachedRows, cacheMissing: false, source: 'admin_review_details_cache' };
+    return { key: key, rows: enrichAdminReviewDetailRows_(key, cachedRows), cacheMissing: false, source: 'admin_review_details_cache' };
   }
 
   const lightweightRows = readAdminGeneralReviewRows_(key);
   if (Array.isArray(lightweightRows) && lightweightRows.length) {
-    persistAdminReviewDetailRows_(key, lightweightRows);
-    return { key: key, rows: lightweightRows, cacheMissing: false, source: 'general_sheet_lightweight' };
+    const enrichedRows = enrichAdminReviewDetailRows_(key, lightweightRows);
+    persistAdminReviewDetailRows_(key, enrichedRows);
+    return { key: key, rows: enrichedRows, cacheMissing: false, source: 'general_sheet_lightweight' };
   }
 
   const reviewCache = readPersistedJsonProperty_('ADMIN_REVIEW_CACHE_JSON') || {};
   const legacyCachedRows = safeGet_(reviewCache, ['reviewDetails', key]);
   if (Array.isArray(legacyCachedRows)) {
-    persistAdminReviewDetailRows_(key, legacyCachedRows);
-    return { key: key, rows: legacyCachedRows, cacheMissing: false, source: 'admin_review_cache' };
+    const enrichedRows = enrichAdminReviewDetailRows_(key, legacyCachedRows);
+    persistAdminReviewDetailRows_(key, enrichedRows);
+    return { key: key, rows: enrichedRows, cacheMissing: false, source: 'admin_review_cache' };
   }
 
   const model = getAdminModelForDetail_();
   const homePayload = getAdminHomePayloadFast_();
   if (!model && key !== 'issueBacklog') return { key: key, rows: [], cacheMissing: true };
   const details = buildAdminReviewDetails_(homePayload, model);
-  if (Array.isArray(details[key])) persistAdminReviewDetailRows_(key, details[key]);
+  const rows = enrichAdminReviewDetailRows_(key, details[key] || []);
+  if (Array.isArray(rows)) persistAdminReviewDetailRows_(key, rows);
   return {
     key: key,
-    rows: details[key] || [],
+    rows: rows,
     cacheMissing: false,
+  };
+}
+
+function enrichAdminReviewDetailRows_(key, rows) {
+  return (rows || []).map(function (row) {
+    const issue = buildAdminReviewIssueFields_(key, row);
+    const clone = Object.assign({}, row);
+    clone.issueCategory = clone.issueCategory || issue.issueCategory;
+    clone.suspectedCause = clone.suspectedCause || issue.suspectedCause;
+    return clone;
+  });
+}
+
+function buildAdminReviewIssueFields_(key, row) {
+  const note = safeString_(row && row.reviewNote);
+  if (key === 'historyUnmatched') {
+    return {
+      issueCategory: '히스토리 미연결',
+      suspectedCause: 'DB_히스토리 누적 최신 계약 행과 연결되지 않아 상승률 반영 평당 임대료/관리비를 확인할 수 없습니다.',
+    };
+  }
+  if (key === 'rentMissing') {
+    return {
+      issueCategory: '임대료 누락',
+      suspectedCause: 'DB_일반 월임대료 총액 또는 DB_히스토리 누적 평당 월임대료가 비어 있어 임관리비와 E.NOC 계산이 불완전합니다.',
+    };
+  }
+  if (key === 'mfMissing') {
+    return {
+      issueCategory: '관리비 누락',
+      suspectedCause: 'DB_일반 월관리비 총액 또는 DB_히스토리 누적 평당 월관리비가 비어 있어 월 임관리비와 E.NOC 계산이 불완전합니다.',
+    };
+  }
+  if (key === 'eNocMissing') {
+    return {
+      issueCategory: 'E.NOC 누락',
+      suspectedCause: 'E.NOC 계산에 필요한 평당 임대료/관리비, 계약기간, RF/FO, 전용률, 전용면적 중 하나 이상이 없거나 전용률이 0 이하입니다.',
+    };
+  }
+  if (key === 'reviewRequired') {
+    return {
+      issueCategory: '검토 필요',
+      suspectedCause: note || '공식 API, DB 원천값, 또는 계산 입력값 중 관리자 확인이 필요한 항목입니다.',
+    };
+  }
+  if (key === 'suspectedError') {
+    return {
+      issueCategory: '오류 의심',
+      suspectedCause: note || '계산값이 비정상 범위에 있거나 원천값 간 충돌이 있어 확인이 필요합니다.',
+    };
+  }
+  return {
+    issueCategory: '관리자 검토',
+    suspectedCause: note || '검토 기준에 해당하는 행입니다.',
   };
 }
 
@@ -858,6 +937,10 @@ function buildAdminGeneralDetailRow_(row) {
     floorLabel: row.floorLabel || '',
     detailAreaLabel: row.detailAreaLabel || '',
     currentEndDate: row.currentEndDate || '',
+    currentMonthlyRentTotal: row.currentMonthlyRentTotal,
+    currentMonthlyMfTotal: row.currentMonthlyMfTotal,
+    eNoc: row.eNoc,
+    historyLinked: row.historyLinked,
     reviewStatus: row.calculatedReviewStatus || row.reviewStatus || '',
     reviewNote: (row.calculatedReviewNotes || []).join(', ') || row.reviewNote || '',
   };
@@ -978,6 +1061,10 @@ function readAdminGeneralReviewRows_(key) {
       floorLabel: row.floorLabel,
       detailAreaLabel: row.detailAreaLabel,
       currentEndDate: row.currentEndDate,
+      currentMonthlyRentTotal: row.rentTotal,
+      currentMonthlyMfTotal: row.mfTotal,
+      eNoc: row.eNoc,
+      historyLinked: row.historyLinked,
       reviewStatus: row.reviewStatus,
       reviewNote: row.reviewNote,
     };
