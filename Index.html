@@ -80,6 +80,10 @@ window.RUNTIME_CLIENT_CONFIG = <?= RUNTIME_CLIENT_CONFIG ?>;
             <span class="material-symbols-outlined">database</span>
             <span>데이터 분석</span>
           </button>
+          <button class="nav-item" data-tab="quality" type="button">
+            <span class="material-symbols-outlined">rule_settings</span>
+            <span>데이터 품질</span>
+          </button>
           <? if (IS_ADMIN) { ?>
           <button class="nav-item nav-item-admin" data-tab="admin" type="button">
             <span class="material-symbols-outlined">shield_person</span>
@@ -207,6 +211,7 @@ window.RUNTIME_CLIENT_CONFIG = <?= RUNTIME_CLIENT_CONFIG ?>;
             </div>
             <button class="tab-panel-development-reset" type="button">개발 중 안내 다시 보기</button>
           </section>
+          <section class="tab-panel" data-panel="quality"><div id="quality-view" data-render-root="quality"></div></section>
           <? if (IS_ADMIN) { ?>
           <section class="tab-panel" data-panel="admin"><div id="admin-view"></div></section>
           <? } ?>

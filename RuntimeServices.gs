@@ -3269,6 +3269,191 @@ function runDataAudit() {
   return { inserted: rows.length };
 }
 
+function makeDashboardValidationIssue_(severity, sheetName, rowNumber, fieldName, issue, suggestedFix, details) {
+  return {
+    severity: severity,
+    sheetName: sheetName,
+    rowNumber: rowNumber || '',
+    fieldName: fieldName || '',
+    issue: issue || '',
+    suggestedFix: suggestedFix || '',
+    details: details || {},
+  };
+}
+
+function isLikelyMalformedDate_(rawValue, parsedValue) {
+  const text = safeString_(rawValue);
+  if (!text) return false;
+  if (parsedValue) return false;
+  return /[0-9]/.test(text);
+}
+
+function validateDashboardData() {
+  return measureDashboardStage_('validateDashboardData', 'total', function () {
+    const spreadsheet = getSpreadsheet_();
+    const config = getConfig_();
+    const model = getModelOrRefreshCache_();
+    const issues = [];
+    const today = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd');
+    const rawGeneralByRow = indexBy_(loadObjectsFromSheet_(spreadsheet, config.sheetNames.general), function (row) {
+      return String(row._rowNumber || '');
+    });
+    const rawHistoryByRow = indexBy_(loadObjectsFromSheet_(spreadsheet, config.sheetNames.history), function (row) {
+      return String(row._rowNumber || '');
+    });
+    const assetById = indexBy_(model.assetRows || [], 'assetId');
+    const leaseIdCounts = {};
+    const assetAreaRollup = {};
+
+    (model.generalRows || []).forEach(function (row) {
+      if (row.leaseId) leaseIdCounts[row.leaseId] = (leaseIdCounts[row.leaseId] || 0) + 1;
+      if (!row.assetId) return;
+      assetAreaRollup[row.assetId] = assetAreaRollup[row.assetId] || {
+        assetName: row.assetName,
+        grossArea: row.totalGrossAreaSqm || safeGet_(assetById[row.assetId], ['grossFloorAreaSqm']) || null,
+        leasedArea: 0,
+      };
+      assetAreaRollup[row.assetId].leasedArea += Number(row.leasedAreaSqm || 0);
+      if (!assetAreaRollup[row.assetId].grossArea && row.totalGrossAreaSqm) {
+        assetAreaRollup[row.assetId].grossArea = row.totalGrossAreaSqm;
+      }
+    });
+
+    function add(severity, sheetName, rowNumber, fieldName, issue, suggestedFix, details) {
+      issues.push(makeDashboardValidationIssue_(severity, sheetName, rowNumber, fieldName, issue, suggestedFix, details));
+    }
+
+    (model.generalRows || []).forEach(function (row) {
+      const raw = rawGeneralByRow[String(row.rowNumber || '')] || {};
+      const rowRef = row.rowNumber || '';
+      const statusRaw = safeString_(row.contractStatusRaw).toLowerCase();
+      const activeText = /active|유효|진행|운영|계약중|true|y|yes|1/.test(statusRaw);
+      const endedText = /end|expired|종료|만료|해지|false|n|no|0/.test(statusRaw);
+      const isActive = row.isContractActive !== false || activeText;
+
+      [
+        ['assetName', '자산명', row.assetName],
+        ['tenantMasterName', '임차인명', row.tenantMasterName || row.rawTenantName],
+        ['leaseId', 'lease_id', row.leaseId],
+        ['leaseSpaceId', 'lease_space_id', row.leaseSpaceId],
+        ['currentStartDate', '현재 계약개시일', row.currentStartDate],
+        ['currentEndDate', '현재 계약만기일', row.currentEndDate],
+        ['leasedAreaSqm', '임대면적', row.leasedAreaSqm],
+      ].forEach(function (item) {
+        if (item[2] == null || item[2] === '') {
+          add('Critical', config.sheetNames.general, rowRef, item[1], '필수값이 누락되었습니다.', '원천 시트에 값을 입력하고 lease/helper ID를 재생성하세요.', { key: item[0] });
+        }
+      });
+
+      if (row.currentStartDate && row.currentEndDate && row.currentStartDate > row.currentEndDate) {
+        add('Critical', config.sheetNames.general, rowRef, '현재 계약개시일/현재 계약만기일', '계약 시작일이 종료일보다 늦습니다.', '계약 시작일과 종료일을 원문 계약서 기준으로 재확인하세요.');
+      }
+      if (row.leasedAreaSqm != null && row.leasedAreaSqm <= 0) {
+        add('Critical', config.sheetNames.general, rowRef, '임대면적', '임대면적이 0 이하입니다.', '㎡ 단위의 양수 임대면적을 입력하세요.');
+      }
+      if (row.currentMonthlyRentTotal != null && row.currentMonthlyRentTotal < 0) {
+        add('Critical', config.sheetNames.general, rowRef, '월임대료', '임대료가 음수입니다.', 'DB_히스토리 누적의 월임대료 총액 또는 평당 월임대료를 확인하세요.');
+      }
+      if (row.depositAmount != null && row.depositAmount < 0) {
+        add('Critical', config.sheetNames.general, rowRef, '임대보증금', '보증금이 음수입니다.', '보증금은 원 단위 양수로 입력하세요.');
+      }
+      const assetMaster = assetById[row.assetId];
+      if (assetMaster && row.assetName && assetMaster.assetName && normalizeWhitespace_(assetMaster.assetName) !== normalizeWhitespace_(row.assetName)) {
+        add('Warning', config.sheetNames.general, rowRef, '자산명', '자산명 표기가 DB_자산과 일치하지 않습니다.', 'DB_자산의 표준 자산명으로 통일하세요.', { standardName: assetMaster.assetName, currentName: row.assetName });
+      }
+      if (row.rawTenantName && row.tenantMasterName && normalizeWhitespace_(row.rawTenantName) !== normalizeWhitespace_(row.tenantMasterName)) {
+        add('Info', config.sheetNames.general, rowRef, '임차인명', '원천 임차인명과 표준 임차인명이 다릅니다.', 'SYS_기업명정규화 매핑이 의도된 것인지 확인하세요.', { rawName: row.rawTenantName, standardName: row.tenantMasterName });
+      }
+      if (row.leaseId && leaseIdCounts[row.leaseId] > 1) {
+        add('Warning', config.sheetNames.general, rowRef, 'lease_id', '계약 ID가 중복됩니다.', '동일 계약의 공간 분할이면 lease_space_id로 구분하고, 별도 계약이면 lease_id를 분리하세요.', { leaseId: row.leaseId, count: leaseIdCounts[row.leaseId] });
+      }
+      if (row.currentEndDate && row.currentEndDate < today && isActive) {
+        add('Critical', config.sheetNames.general, rowRef, '계약 상태', '만기일이 지났는데 계약 상태가 Active로 해석됩니다.', '계약 상태를 종료로 바꾸거나 갱신 계약 정보를 입력하세요.', { currentEndDate: row.currentEndDate, contractStatusRaw: row.contractStatusRaw });
+      }
+      if (row.currentEndDate && row.currentEndDate >= today && endedText) {
+        add('Warning', config.sheetNames.general, rowRef, '계약 상태', '종료 상태로 보이지만 계약만기일은 아직 도래하지 않았습니다.', '중도해지 여부 또는 상태값을 확인하세요.', { currentEndDate: row.currentEndDate, contractStatusRaw: row.contractStatusRaw });
+      }
+      [
+        ['최초 계약일', row.firstContractDate],
+        ['최초 계약개시일', row.firstStartDate],
+        ['최초 계약만기일', row.firstEndDate],
+        ['최근 계약일', row.recentContractDate],
+        ['현재 계약개시일', row.currentStartDate],
+        ['현재 계약만기일', row.currentEndDate],
+      ].forEach(function (item) {
+        if (isLikelyMalformedDate_(pickField_(raw, [item[0]]), item[1])) {
+          add('Warning', config.sheetNames.general, rowRef, item[0], '날짜 형식 오류 가능성이 있습니다.', 'yyyy-mm-dd 형식으로 입력하세요.', { rawValue: pickField_(raw, [item[0]]) });
+        }
+      });
+      if (row.depositAmount != null && row.depositAmount > 0 && row.depositAmount < 1000000) {
+        add('Info', config.sheetNames.general, rowRef, '임대보증금', '금액 단위가 원 단위가 아닐 가능성이 있습니다.', '원 단위 금액인지, 천원/백만원 단위 입력인지 확인하세요.', { value: row.depositAmount });
+      }
+      if (row.currentMonthlyRentTotal != null && row.currentMonthlyRentTotal > 0 && row.currentMonthlyRentTotal < 10000) {
+        add('Info', config.sheetNames.general, rowRef, '월임대료', '임대료 단위 오류 가능성이 있습니다.', '월임대료가 원 단위 총액인지 확인하세요.', { value: row.currentMonthlyRentTotal });
+      }
+      const totalFreeMonths = Number(row.rfMonths || 0) + Number(row.foMonths || 0);
+      const contractMonths = row.currentPeriodYears == null ? null : Number(row.currentPeriodYears) * 12;
+      if (contractMonths != null && totalFreeMonths > contractMonths) {
+        add('Critical', config.sheetNames.general, rowRef, 'RF/FO', '렌트프리 기간이 계약 기간을 초과합니다.', 'RF와 FO의 단위가 월인지 확인하고 계약기간을 재검토하세요.', { totalFreeMonths: totalFreeMonths, contractMonths: contractMonths });
+      }
+      if (!row.sourceDocRef) {
+        add('Warning', config.sheetNames.general, rowRef, 'source_doc_ref', '계약서 또는 원문 파일 링크가 누락되었습니다.', '계약서 파일 URL 또는 문서 참조 ID를 입력하세요.');
+      }
+    });
+
+    (model.historyRows || []).forEach(function (row) {
+      const raw = rawHistoryByRow[String(row.rowNumber || '')] || {};
+      if (isLikelyMalformedDate_(pickField_(raw, ['기준일자']), row.baseDate)) {
+        add('Warning', config.sheetNames.history, row.rowNumber, '기준일자', '날짜 형식 오류 가능성이 있습니다.', 'yyyy-mm-dd 형식으로 입력하세요.', { rawValue: pickField_(raw, ['기준일자']) });
+      }
+      if (row.monthlyRentTotal != null && row.monthlyRentTotal < 0) {
+        add('Critical', config.sheetNames.history, row.rowNumber, '월임대료 총액', '임대료가 음수입니다.', '월임대료 총액을 원 단위 양수로 입력하세요.');
+      }
+      if (row.monthlyMfTotal != null && row.monthlyMfTotal < 0) {
+        add('Critical', config.sheetNames.history, row.rowNumber, '월관리비 총액', '관리비가 음수입니다.', '월관리비 총액을 원 단위 양수로 입력하세요.');
+      }
+      if (row.rentPerPy != null && row.rentPerPy > 0 && row.rentPerPy < 100) {
+        add('Info', config.sheetNames.history, row.rowNumber, '평당 월임대료', '평당 임대료 단위 오류 가능성이 있습니다.', '원/평/월 단위인지 확인하세요.', { value: row.rentPerPy });
+      }
+    });
+
+    Object.keys(assetAreaRollup).forEach(function (assetId) {
+      const item = assetAreaRollup[assetId];
+      if (item.grossArea != null && item.leasedArea - item.grossArea > 0.01) {
+        add('Critical', config.sheetNames.general, '', '임대면적/공실면적', '계약 면적 합계가 자산 연면적을 초과합니다.', '자산 연면적, 임대면적, 공실면적 기준을 재확인하세요.', {
+          assetId: assetId,
+          assetName: item.assetName,
+          grossArea: item.grossArea,
+          leasedArea: item.leasedArea,
+          excessArea: item.leasedArea - item.grossArea,
+        });
+      }
+    });
+
+    return issues.sort(function (left, right) {
+      const rank = { Critical: 0, Warning: 1, Info: 2 };
+      const leftRank = Object.prototype.hasOwnProperty.call(rank, left.severity) ? rank[left.severity] : 9;
+      const rightRank = Object.prototype.hasOwnProperty.call(rank, right.severity) ? rank[right.severity] : 9;
+      return leftRank - rightRank;
+    });
+  });
+}
+
+function getDataQualityData() {
+  const startedAt = Date.now();
+  const issues = validateDashboardData();
+  const summary = issues.reduce(function (accumulator, issue) {
+    accumulator.total += 1;
+    accumulator[issue.severity] = (accumulator[issue.severity] || 0) + 1;
+    return accumulator;
+  }, { total: 0, Critical: 0, Warning: 0, Info: 0 });
+  return returnDashboardPerf_('getDataQualityData', 'total', startedAt, {
+    generatedAt: Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd'T'HH:mm:ss"),
+    summary: summary,
+    issues: issues,
+  });
+}
+
 function normalizeBuildingParcelPart_(value) {
   const digits = safeString_(value).replace(/[^0-9]/g, '');
   if (!digits) return '';
