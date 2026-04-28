@@ -237,6 +237,18 @@ async function gotoAndCheck(page, mode, results) {
 
   if (state.status === "dashboard_shell") {
     if (mode === "admin") {
+      const target = await dashboardContext(page);
+      const authLocked = await target.evaluate(() => {
+        return document.getElementById("admin-auth-root") != null
+          || document.getElementById("app-shell")?.classList.contains("is-auth-locked");
+      });
+      if (authLocked) {
+        entry.dashboard = await getDashboardSnapshot(page);
+        entry.status = "admin_auth_gate";
+        entry.screenshot = await screenshot(page, `${mode}-auth-gate`, results);
+        results.entryChecks[mode] = entry;
+        return entry;
+      }
       await waitForDashboardReadyAny(page, ["admin", "home"]);
     } else {
       await waitForDashboardReady(page, "home");
@@ -387,7 +399,9 @@ async function main() {
     await runUserFlow(page, results);
 
     const adminEntry = await gotoAndCheck(page, "admin", results);
-    if (adminEntry.status === "login_required") {
+    if (adminEntry.status === "admin_auth_gate") {
+      results.flow.adminAuthGate = "ok";
+    } else if (adminEntry.status === "login_required") {
       results.blockers.push("복사된 Edge 프로필에 Google 로그인 세션이 없어 admin URL도 로그인 화면으로 이동했습니다.");
     } else if (adminEntry.status === "dashboard_but_not_admin") {
       results.blockers.push("admin URL은 열렸지만 현재 계정이 관리자 권한이 아니어서 Admin 본문으로 들어가지 못했습니다.");
@@ -428,7 +442,7 @@ async function main() {
 
   if ((results.entryChecks.user && results.entryChecks.user.status !== "dashboard_ready") ||
       (results.entryChecks.admin &&
-        !["dashboard_ready", "dashboard_but_not_admin"].includes(results.entryChecks.admin.status))) {
+        !["dashboard_ready", "dashboard_but_not_admin", "admin_auth_gate"].includes(results.entryChecks.admin.status))) {
     process.exitCode = 2;
   }
 }

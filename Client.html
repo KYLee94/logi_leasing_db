@@ -648,10 +648,10 @@ function requestInitialDashboardData_() {
     return requestBootstrapData_().then((bootstrap) => ({ bootstrap: bootstrap }));
   }
   if (canUsePublicSnapshots_()) {
-    return fetchPublicSnapshotJson_("initial.json", 5000)
-      .catch(() => callServer_("getInitialDashboardData", undefined, { timeoutMs: 60000 }));
+    return fetchPublicSnapshotJson_("initial.json", 2000)
+      .catch(() => requestBootstrapData_().then((bootstrap) => ({ bootstrap: bootstrap })));
   }
-  return callServer_("getInitialDashboardData", undefined, { timeoutMs: 60000 });
+  return requestBootstrapData_().then((bootstrap) => ({ bootstrap: bootstrap }));
 }
 
 function bootstrapApp_() {

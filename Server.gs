@@ -416,6 +416,7 @@ function getViewerPolicy_(requestOrViewer) {
     : getViewerContextFromRequest_(requestOrViewer || {});
   const fallback = buildDefaultViewerPolicy_(viewer);
   if (fallback.role === 'Admin') return fallback;
+  if (!safeString_(viewer && viewer.email)) return fallback;
 
   try {
     const sheetName = getConfig_().sheetNames.permission;
