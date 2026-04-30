@@ -35,7 +35,7 @@ const DEFAULT_CONFIG = Object.freeze({
   qaRoutingMode: 'same_project_route',
   mainWebappUrl: '',
   qaWebappUrl: '',
-  publicSnapshotBaseUrl: 'https://raw.githubusercontent.com/KYLee94/logi_leasing_db/main/docs/data',
+  publicSnapshotBaseUrl: '',
   debugMode: DEBUG_MODE,
   qaScriptId: '',
   reviewStatuses: ['ok', 'missing', 'suspected_error', 'review_required'],
