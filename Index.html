@@ -21,6 +21,7 @@ adminSessionToken: <?= JSON.stringify(ADMIN_SESSION_TOKEN || '') ?>,
 adminAuthRequired: <?= ADMIN_AUTH_REQUIRED ? 'true' : 'false' ?>
 };
 window.RUNTIME_CLIENT_CONFIG = <?= RUNTIME_CLIENT_CONFIG ?>;
+window.PRELOADED_PAYLOADS_B64 = <?= JSON.stringify(PRELOADED_PAYLOADS_B64 || '') ?>;
 </script>
 
     <? if (ADMIN_AUTH_REQUIRED) { ?>

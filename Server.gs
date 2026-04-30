@@ -19,12 +19,25 @@ function doGet(e) {
   template.RUNTIME_CLIENT_CONFIG = JSON.stringify(runtimeClientConfig);
   template.NAVER_MAP_CLIENT_ID = runtimeClientConfig.naverMapsClientId;
   template.NAVER_STATIC_MAP_KEY_ID = runtimeClientConfig.naverStaticMapKeyId;
+  template.PRELOADED_PAYLOADS_B64 = Utilities.base64Encode(buildInlinePreloadedPayloads_(requestedAdminShell, viewer), Utilities.Charset.UTF_8);
 
   return template
     .evaluate()
     .setTitle(APP_NAME)
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+}
+
+function buildInlinePreloadedPayloads_(requestedAdminShell, viewer) {
+  const payloads = {};
+  if (!requestedAdminShell) {
+    try {
+      payloads.weekly = sanitizePayloadForViewer_(buildWeeklyReportPayload_(), viewer);
+    } catch (error) {
+      payloads.weekly = null;
+    }
+  }
+  return JSON.stringify(payloads);
 }
 
 function maybeHandleApiGet_(e) {

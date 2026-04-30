@@ -1,5 +1,31 @@
 <script>
 const RAW_APP_FLAGS = window.APP_FLAGS || {};
+const RAW_PRELOADED_PAYLOADS = (() => {
+  let encoded = window.PRELOADED_PAYLOADS_B64;
+  if (typeof encoded === "string" && encoded) {
+    try {
+      const trimmed = encoded.trim();
+      if (trimmed[0] === '"' && trimmed[trimmed.length - 1] === '"') {
+        encoded = JSON.parse(trimmed);
+      }
+      const binary = atob(encoded);
+      const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+      return JSON.parse(new TextDecoder("utf-8").decode(bytes));
+    } catch (error) {
+      return {};
+    }
+  }
+  const raw = window.PRELOADED_PAYLOADS;
+  if (raw && typeof raw === "object") return raw;
+  if (typeof raw === "string") {
+    try {
+      return JSON.parse(raw);
+    } catch (error) {
+      return {};
+    }
+  }
+  return {};
+})();
 const RUNTIME_CLIENT_CONFIG = (() => {
   const raw = window.RUNTIME_CLIENT_CONFIG;
   if (raw && typeof raw === "object") return raw;
@@ -716,6 +742,13 @@ function requestInitialDashboardData_() {
 function bootstrapApp_() {
   const start = performance.now();
   let shellReleased = false;
+  const activePreloadedPayload = applyPreloadedPayloads_();
+  if (activePreloadedPayload && state.activeTab !== "admin") {
+    renderPayloadForTab_(state.activeTab, activePreloadedPayload);
+    showLoading(false);
+    shellReleased = true;
+    state.shellFallbackLoadStarted = true;
+  }
   const releaseInitialShell = () => {
     if (shellReleased) return;
     shellReleased = true;
@@ -791,6 +824,18 @@ function bootstrapApp_() {
         .catch((fallbackError) => handleError_(fallbackError || error, state.activeTab))
         .finally(() => showLoading(false));
     });
+}
+
+function applyPreloadedPayloads_() {
+  const payloads = RAW_PRELOADED_PAYLOADS && typeof RAW_PRELOADED_PAYLOADS === "object" ? RAW_PRELOADED_PAYLOADS : {};
+  let activePayload = null;
+  Object.keys(payloads).forEach((tab) => {
+    const payload = payloads[tab];
+    if (!payload) return;
+    cachePayload_(tab, buildClientCacheKey_(tab), payload);
+    if (tab === state.activeTab) activePayload = payload;
+  });
+  return activePayload;
 }
 
 function applyBootstrap_(bootstrap) {
