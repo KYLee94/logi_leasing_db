@@ -1792,6 +1792,136 @@
     justify-content: center;
   }
 
+  .home-expiry-chart-slot {
+    min-height: 210px;
+    height: 210px;
+  }
+
+  .weekly-report-page .dense-strip {
+    margin-top: 18px;
+  }
+
+  .weekly-main-table-panel .table-wrap-report {
+    max-height: 520px;
+  }
+
+  .weekly-maturity-panel .chart-frame {
+    min-height: 260px;
+  }
+
+  .weekly-maturity-chart-frame canvas {
+    width: 100%;
+    max-height: 260px;
+  }
+
+  .weekly-issue-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .weekly-issue-card {
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(248, 251, 242, 0.72));
+    box-shadow: var(--shadow-subtle);
+    padding: 14px 15px;
+  }
+
+  .weekly-issue-card strong {
+    display: block;
+    margin-top: 4px;
+    color: var(--text-strong);
+    font-size: 1.25rem;
+    letter-spacing: -0.03em;
+  }
+
+  .weekly-issue-card p {
+    margin: 8px 0 0;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
+  .weekly-asset-table table {
+    min-width: 1180px;
+  }
+
+  .weekly-detail-grid {
+    align-items: start;
+  }
+
+  .weekly-card-list {
+    display: grid;
+    gap: 14px;
+  }
+
+  .weekly-project-card {
+    border: 1px solid var(--border-soft);
+    border-radius: 18px;
+    background: color-mix(in srgb, var(--surface-1) 88%, var(--accent-soft));
+    box-shadow: var(--shadow-soft);
+    padding: 16px;
+  }
+
+  .weekly-project-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .weekly-project-card-head strong {
+    flex: 1;
+    color: var(--text-strong);
+    font-size: 1rem;
+  }
+
+  .weekly-project-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 14px;
+    margin: 0;
+  }
+
+  .weekly-project-grid div {
+    border-top: 1px solid var(--border-soft);
+    padding-top: 10px;
+  }
+
+  .weekly-project-grid dt {
+    color: var(--text-muted);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+
+  .weekly-project-grid dd {
+    color: var(--text-body);
+    font-size: 0.86rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .weekly-edit-button {
+    white-space: nowrap;
+  }
+
+  @media (max-width: 1180px) {
+    .weekly-issue-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 760px) {
+    .weekly-issue-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
   .insight-grid {
     display: grid;
     gap: 10px;
@@ -2596,6 +2726,81 @@
       transform 150ms ease,
       border-color 150ms ease,
       box-shadow 150ms ease;
+  }
+
+  .stack-chip strong {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 0.74rem;
+    font-weight: 800;
+    color: inherit;
+  }
+
+  .stack-chip span {
+    display: block;
+    color: inherit;
+    opacity: 0.82;
+    white-space: normal;
+  }
+
+  .stack-chip.stack-temp-cold {
+    border-color: rgba(14, 116, 144, 0.24);
+    background:
+      linear-gradient(180deg, rgba(186, 230, 253, 0.92) 0%, rgba(224, 242, 254, 0.9) 100%);
+    color: #0c4a6e;
+  }
+
+  .stack-chip.stack-temp-ambient {
+    border-color: rgba(190, 24, 93, 0.18);
+    background:
+      linear-gradient(180deg, rgba(252, 231, 243, 0.92) 0%, rgba(255, 241, 242, 0.9) 100%);
+    color: #831843;
+  }
+
+  .stack-chip.stack-temp-mixed {
+    border-color: rgba(109, 40, 217, 0.18);
+    background:
+      linear-gradient(180deg, rgba(237, 233, 254, 0.94) 0%, rgba(245, 243, 255, 0.9) 100%);
+    color: #4c1d95;
+  }
+
+  .stack-chip.stack-temp-office {
+    border-color: rgba(71, 85, 105, 0.18);
+    background:
+      linear-gradient(180deg, rgba(226, 232, 240, 0.94) 0%, rgba(248, 250, 252, 0.9) 100%);
+    color: #334155;
+  }
+
+  html[data-theme="dark"] .stack-chip.stack-temp-cold,
+  html.theme-dark .stack-chip.stack-temp-cold,
+  body[data-theme="dark"] .stack-chip.stack-temp-cold,
+  body.theme-dark .stack-chip.stack-temp-cold {
+    background: linear-gradient(180deg, rgba(14, 116, 144, 0.38) 0%, rgba(12, 74, 110, 0.3) 100%);
+    color: #bae6fd;
+  }
+
+  html[data-theme="dark"] .stack-chip.stack-temp-ambient,
+  html.theme-dark .stack-chip.stack-temp-ambient,
+  body[data-theme="dark"] .stack-chip.stack-temp-ambient,
+  body.theme-dark .stack-chip.stack-temp-ambient {
+    background: linear-gradient(180deg, rgba(190, 24, 93, 0.28) 0%, rgba(131, 24, 67, 0.24) 100%);
+    color: #fbcfe8;
+  }
+
+  html[data-theme="dark"] .stack-chip.stack-temp-mixed,
+  html.theme-dark .stack-chip.stack-temp-mixed,
+  body[data-theme="dark"] .stack-chip.stack-temp-mixed,
+  body.theme-dark .stack-chip.stack-temp-mixed {
+    background: linear-gradient(180deg, rgba(109, 40, 217, 0.32) 0%, rgba(76, 29, 149, 0.26) 100%);
+    color: #ddd6fe;
+  }
+
+  html[data-theme="dark"] .stack-chip.stack-temp-office,
+  html.theme-dark .stack-chip.stack-temp-office,
+  body[data-theme="dark"] .stack-chip.stack-temp-office,
+  body.theme-dark .stack-chip.stack-temp-office {
+    background: linear-gradient(180deg, rgba(100, 116, 139, 0.32) 0%, rgba(51, 65, 85, 0.26) 100%);
+    color: #e2e8f0;
   }
 
   .stack-chip:hover {

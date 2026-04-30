@@ -15,7 +15,7 @@ function doGet(e) {
   template.VIEWER_EMAIL = viewer.email;
   template.ADMIN_SESSION_TOKEN = adminSessionToken;
   template.DEPLOYMENT_CHANNEL = deployment.channel;
-  template.INITIAL_PAGE = requestedAdminShell ? 'admin' : 'home';
+  template.INITIAL_PAGE = requestedAdminShell ? 'admin' : 'weekly';
   template.RUNTIME_CLIENT_CONFIG = JSON.stringify(runtimeClientConfig);
   template.NAVER_MAP_CLIENT_ID = runtimeClientConfig.naverMapsClientId;
   template.NAVER_STATIC_MAP_KEY_ID = runtimeClientConfig.naverStaticMapKeyId;
@@ -47,6 +47,7 @@ function getPublicSnapshotPayload_(name, id) {
   if (name === 'company-options') return getCompanyOptions();
   if (name === 'asset') return getAssetData(id);
   if (name === 'company') return getCompanyData(id);
+  if (name === 'weekly') return getWeeklyReportData();
   if (name === 'sector') return getSectorData();
   if (name === 'tools') return getToolsData({});
   if (name === 'playground') return getPlaygroundData({});
@@ -256,12 +257,8 @@ function getInitialDashboardData(request) {
   const defaultTenantId = safeString_(defaults.tenantId) || safeString_(safeGet_(companyOptions, [0, 'tenantId']));
   const snapshotItems = [
     { page: 'home', id: 'default' },
-    { page: 'sector', id: 'default' },
-    { page: 'tools', id: 'default' },
-    { page: 'playground', id: 'default' },
+    { page: 'weekly', id: 'default' },
   ];
-  if (defaultAssetId) snapshotItems.push({ page: 'asset', id: defaultAssetId });
-  if (defaultTenantId) snapshotItems.push({ page: 'company', id: defaultTenantId });
 
   const snapshots = measureDashboardStage_('getInitialDashboardData', 'snapshot_batch_read', function () {
     return typeof readStaticPayloadSnapshotMap_ === 'function'
@@ -270,37 +267,17 @@ function getInitialDashboardData(request) {
   }, { snapshotCount: snapshotItems.length });
 
   function getSnapshot(page, id) {
-    return snapshots[buildStaticPayloadPropertyKey_(page, id || 'default')] || null;
+    const snapshot = snapshots[buildStaticPayloadPropertyKey_(page, id || 'default')] || null;
+    if (page === 'home') return isHomePayloadFresh_(snapshot) ? snapshot : null;
+    if (page === 'asset') return isAssetPayloadFresh_(snapshot) ? snapshot : null;
+    return snapshot;
   }
 
   const homePayload = measureDashboardStage_('getInitialDashboardData', 'home_payload', function () {
     return getSnapshot('home', 'default') || getHomeData(request);
   });
-  const assetPayload = defaultAssetId
-    ? measureDashboardStage_('getInitialDashboardData', 'asset_payload', function () {
-      return getSnapshot('asset', defaultAssetId) || getAssetData(Object.assign({}, request || {}, { assetId: defaultAssetId }));
-    }, { assetId: defaultAssetId })
-    : null;
-  const companyPayload = defaultTenantId
-    ? measureDashboardStage_('getInitialDashboardData', 'company_payload', function () {
-      return getSnapshot('company', defaultTenantId) || getCompanyData(Object.assign({}, request || {}, { tenantId: defaultTenantId }));
-    }, { tenantId: defaultTenantId })
-    : null;
-  const sectorPayload = measureDashboardStage_('getInitialDashboardData', 'sector_payload', function () {
-    return getSnapshot('sector', 'default') || getSectorData(request);
-  });
-  const toolsPayload = measureDashboardStage_('getInitialDashboardData', 'tools_payload', function () {
-    return getSnapshot('tools', 'default') || getToolsData(Object.assign({}, request || {}, { assetIds: [], companyIds: [] }));
-  });
-  const playgroundPayload = measureDashboardStage_('getInitialDashboardData', 'playground_payload', function () {
-    return getSnapshot('playground', 'default') || getPlaygroundData(Object.assign({}, request || {}, {
-      rowDimension: 'assetName',
-      columnDimension: 'none',
-      filterDimension: '',
-      filterValue: '',
-      valueMetric: 'leasedAreaSqm',
-      topN: 25,
-    }));
+  const weeklyPayload = measureDashboardStage_('getInitialDashboardData', 'weekly_payload', function () {
+    return getSnapshot('weekly', 'default') || getWeeklyReportData(request);
   });
 
   const enrichedBootstrap = Object.assign({}, bootstrap, {
@@ -318,21 +295,11 @@ function getInitialDashboardData(request) {
     companyOptions: companyOptions,
     tabPayloads: {
       home: sanitizePayloadForViewer_(homePayload, viewer),
-      asset: assetPayload ? {
-        id: defaultAssetId,
-        payload: sanitizePayloadForViewer_(assetPayload, viewer),
-      } : null,
-      company: companyPayload ? {
-        id: defaultTenantId,
-        payload: sanitizePayloadForViewer_(companyPayload, viewer),
-      } : null,
-      sector: sanitizePayloadForViewer_(sectorPayload, viewer),
-      tools: sanitizePayloadForViewer_(toolsPayload, viewer),
-      playground: sanitizePayloadForViewer_(playgroundPayload, viewer),
+      weekly: sanitizePayloadForViewer_(weeklyPayload, viewer),
     },
     timing: {
       durationMs: Date.now() - startedAt,
-      source: 'initial_dashboard_batch',
+      source: 'initial_dashboard_shell_home_weekly',
     },
   });
 }
@@ -342,11 +309,6 @@ function enrichBootstrapPayload_(payload) {
   clone.defaults = clone.defaults || {};
   clone.defaultAssetPayload = null;
   clone.defaultCompanyPayload = null;
-  const persistedHome = clone.home ? null : readPersistedJsonProperty_('HOME_PAYLOAD_JSON');
-
-  if (!clone.home && isHomePayloadFresh_(persistedHome)) {
-    clone.home = persistedHome;
-  }
   if ((!clone.homeLiteKpis || !clone.homeLiteKpis.length) && clone.home && Array.isArray(clone.home.kpis)) {
     const preferredHomeLiteKeys = ['operating_asset_count', 'leased_area_total', 'vacancy_area_total', 'monthly_total_cost'];
     clone.homeLiteKpis = preferredHomeLiteKeys.map(function (key) {
@@ -462,7 +424,7 @@ function getHomeData(request) {
   const cacheKey = buildKeyedPayloadKey_('home');
   const viewer = getViewerContextFromRequest_(request);
   const viewerCached = getCachedPayloadForViewer_(cacheKey, viewer);
-  if (viewerCached) return returnDashboardPerf_('getHomeData', 'total:viewer_cache', startedAt, viewerCached);
+  if (isHomePayloadFresh_(viewerCached)) return returnDashboardPerf_('getHomeData', 'total:viewer_cache', startedAt, viewerCached);
   const cached = getCachedJson_(cacheKey);
   if (isHomePayloadFresh_(cached)) return returnDashboardPerf_('getHomeData', 'total:cache', startedAt, returnPayloadForViewer_(cached, viewer, cacheKey));
   const staticHome = readStaticPayloadSnapshot_('home', 'default');
@@ -537,18 +499,18 @@ function getAssetData(input) {
   const selectedAssetId = request.id || defaultAssetId;
   const cacheKey = buildKeyedPayloadKey_('asset', selectedAssetId);
   const viewerCached = getCachedPayloadForViewer_(cacheKey, viewer);
-  if (viewerCached) return returnDashboardPerf_('getAssetData', 'total:viewer_cache', startedAt, viewerCached, { assetId: selectedAssetId });
+  if (isAssetPayloadFresh_(viewerCached)) return returnDashboardPerf_('getAssetData', 'total:viewer_cache', startedAt, viewerCached, { assetId: selectedAssetId });
   const cached = getCachedJson_(cacheKey);
-  if (cached) return returnDashboardPerf_('getAssetData', 'total:cache', startedAt, returnPayloadForViewer_(cached, viewer, cacheKey), { assetId: selectedAssetId });
+  if (isAssetPayloadFresh_(cached)) return returnDashboardPerf_('getAssetData', 'total:cache', startedAt, returnPayloadForViewer_(cached, viewer, cacheKey), { assetId: selectedAssetId });
   const staticPayload = readStaticPayloadSnapshot_('asset', selectedAssetId);
-  if (staticPayload) {
+  if (isAssetPayloadFresh_(staticPayload)) {
     putCachedJson_(cacheKey, staticPayload, getConfig_().payloadCacheTtlSeconds);
     if (isDataDirty_()) queueBootstrapBackgroundRefresh_('asset_static_snapshot_dirty');
     return returnDashboardPerf_('getAssetData', 'total:static_snapshot', startedAt, returnPayloadForViewer_(staticPayload, viewer, cacheKey), { assetId: selectedAssetId });
   }
   if (selectedAssetId && selectedAssetId === defaultAssetId) {
     const persisted = readPersistedJsonProperty_('DEFAULT_ASSET_PAYLOAD_JSON');
-    if (persisted) {
+    if (isAssetPayloadFresh_(persisted)) {
       putCachedJson_(cacheKey, persisted, getConfig_().payloadCacheTtlSeconds);
       return returnPayloadForViewer_(persisted, viewer, cacheKey);
     }
@@ -628,10 +590,10 @@ function getToolsData(request) {
       return returnDashboardPerf_('getToolsData', 'total:static_snapshot', startedAt, sanitizePayloadForViewer_(staticPayload, viewer));
     }
   }
-  const payload = measureDashboardStage_('getToolsData', 'build_payload', function () {
-    return buildToolsPayload_(getModelOrRefreshCache_(), normalized);
+  const payload = measureDashboardStage_('getToolsData', 'build_lightweight_payload', function () {
+    return buildToolsPayloadFromSheet_(normalized);
   });
-  return returnDashboardPerf_('getToolsData', 'total:build', startedAt, sanitizePayloadForViewer_(putCachedJson_(cacheKey, payload, getConfig_().payloadCacheTtlSeconds), viewer));
+  return returnDashboardPerf_('getToolsData', 'total:lightweight', startedAt, sanitizePayloadForViewer_(putCachedJson_(cacheKey, payload, getConfig_().payloadCacheTtlSeconds), viewer));
 }
 
 function getPlaygroundData(request) {
@@ -648,10 +610,482 @@ function getPlaygroundData(request) {
       return returnDashboardPerf_('getPlaygroundData', 'total:static_snapshot', startedAt, sanitizePayloadForViewer_(staticPayload, viewer));
     }
   }
-  const payload = measureDashboardStage_('getPlaygroundData', 'build_payload', function () {
-    return buildPlaygroundPayload_(getModelOrRefreshCache_(), normalized);
+  const payload = measureDashboardStage_('getPlaygroundData', 'build_lightweight_payload', function () {
+    return buildPlaygroundPayloadFromSheet_(normalized);
   });
-  return returnDashboardPerf_('getPlaygroundData', 'total:build', startedAt, sanitizePayloadForViewer_(putCachedJson_(cacheKey, payload, getConfig_().payloadCacheTtlSeconds), viewer));
+  return returnDashboardPerf_('getPlaygroundData', 'total:lightweight', startedAt, sanitizePayloadForViewer_(putCachedJson_(cacheKey, payload, getConfig_().payloadCacheTtlSeconds), viewer));
+}
+
+function getWeeklyReportData(request) {
+  const startedAt = Date.now();
+  const viewer = getViewerContextFromRequest_(request);
+  const cacheKey = buildKeyedPayloadKey_('weekly');
+  const cached = getCachedJson_(cacheKey);
+  if (cached) return returnDashboardPerf_('getWeeklyReportData', 'total:cache', startedAt, sanitizePayloadForViewer_(cached, viewer));
+  const payload = buildWeeklyReportPayload_();
+  putCachedJson_(cacheKey, payload, getConfig_().payloadCacheTtlSeconds);
+  return returnDashboardPerf_('getWeeklyReportData', 'total:build', startedAt, sanitizePayloadForViewer_(payload, viewer));
+}
+
+function adminUpdateWeeklyReportItem(request) {
+  assertAdmin_(request);
+  const normalized = request || {};
+  const section = safeString_(normalized.section);
+  const itemId = safeString_(normalized.itemId);
+  const field = safeString_(normalized.field);
+  const newValue = normalized.value == null ? '' : String(normalized.value);
+  const reason = safeString_(normalized.reason);
+  if (!section || !itemId || !field) throw new Error('수정 대상(section, itemId, field)이 필요합니다.');
+  if (!reason) throw new Error('주간 업무 리포트 수정 사유를 입력해야 합니다.');
+  const payload = buildWeeklyReportPayload_({ forceDefault: false });
+  const sectionRows = payload[section];
+  if (!Array.isArray(sectionRows)) throw new Error('수정 가능한 주간 업무 섹션이 아닙니다.');
+  const target = sectionRows.find(function (row) { return String(row.id) === itemId; });
+  if (!target) throw new Error('수정할 항목을 찾지 못했습니다.');
+  const oldValue = target[field] == null ? '' : String(target[field]);
+  target[field] = newValue;
+  payload.updatedAt = new Date().toISOString();
+  payload.updatedBy = getViewerContext_({ adminSessionToken: normalized.adminSessionToken }).email || 'admin_session';
+  payload.source = 'admin_edit';
+  PropertiesService.getScriptProperties().setProperty('WEEKLY_REPORT_PAYLOAD_JSON', JSON.stringify(payload));
+  putCachedJson_(buildKeyedPayloadKey_('weekly'), payload, getConfig_().payloadCacheTtlSeconds);
+  if (typeof writeAuditLog_ === 'function') {
+    writeAuditLog_({
+      userEmail: getViewerContext_({ adminSessionToken: normalized.adminSessionToken }).email || 'admin_session',
+      actionType: 'UPDATE',
+      entityType: 'weekly_report',
+      entityId: itemId,
+      sheetName: 'WEEKLY_REPORT_PAYLOAD_JSON',
+      rowNumber: '',
+      fieldName: field,
+      oldValue: oldValue,
+      newValue: newValue,
+      reason: reason,
+      sourceFunction: 'adminUpdateWeeklyReportItem',
+      sourceType: 'admin_ui',
+      cacheInvalidated: 'weekly',
+    });
+  }
+  return { ok: true, payload: payload };
+}
+
+function buildWeeklyReportPayload_(options) {
+  const normalized = options || {};
+  if (!normalized.forceDefault) {
+    const raw = PropertiesService.getScriptProperties().getProperty('WEEKLY_REPORT_PAYLOAD_JSON');
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.schemaVersion === 'weekly_report_v1') return parsed;
+      } catch (error) {
+        // Fall through to the embedded document baseline.
+      }
+    }
+  }
+  const assetRows = getDefaultWeeklyAssetRows_();
+  const newProjects = getDefaultWeeklyNewProjects_();
+  const managementProjects = getDefaultWeeklyManagementProjects_();
+  return {
+    schemaVersion: 'weekly_report_v1',
+    reportTitle: '리얼에셋부문 사업그룹 4파트 주간업무자료',
+    reportDate: '2026-04-06',
+    sourceDocumentName: 'RA부문_사업그룹4파트_주간업무자료(안)_260427_취합.docx',
+    sourceDocumentPath: '_cleanup_quarantine_20260429',
+    source: 'embedded_docx_baseline',
+    generatedAt: new Date().toISOString(),
+    updatedAt: '',
+    updatedBy: '',
+    summary: {
+      assetCount: assetRows.length,
+      totalGrossAreaPy: 537080,
+      riskAssetCount: assetRows.filter(function (row) { return row.operationRisk === '●' || row.exitRisk === '●'; }).length,
+      leaseUpIssueCount: assetRows.filter(function (row) { return String(row.mainIssue || '').indexOf('Lease-up') > -1; }).length,
+      fullyLeasedCount: assetRows.filter(function (row) { return row.occupancyRate === '100%'; }).length,
+    },
+    assetRows: assetRows,
+    newProjects: newProjects,
+    managementProjects: managementProjects,
+    notes: [
+      { id: 'note_cost_1', title: '원가 기준', body: '원가 = 취득과표원가 + capex' },
+      { id: 'note_cost_2', title: '현재시점대비 표시', body: '현재 원가가 주변 거래사례보다 높을 경우 ▲, 낮을 경우 ▼로 표기합니다.' },
+      { id: 'note_scope', title: '운영 기준', body: '본 탭은 주간업무자료 원문 기준의 별도 리포트이며 임대차 DB의 운영 자산 17개와 범위가 다를 수 있습니다.' },
+    ],
+    basisDisplay: {
+      asOfText: '보고일 2026-04-06',
+      scopeText: 'RA부문 사업그룹 4파트 주간업무자료',
+      unitText: '평/%/억원',
+      sourceText: 'Word 원문 기반',
+    },
+  };
+}
+
+function getDefaultWeeklyAssetRows_() {
+  return [
+    { id: 'weekly_asset_01', no: 1, category: '개발/기설정', assetName: '아레나스안성', operationRisk: '', exitRisk: '', grossAreaPy: 37656, completion: '2024.05', investmentType: '개발', acquisition: '2024.05', loanMaturity: '', fundMaturity: '2028.05', costPerPy: '5.0', costTrend: '▼', coldRatio: '36%', occupancyRate: '44%', mainTenant: '하우져', mainIssue: 'Lease-up' },
+    { id: 'weekly_asset_02', no: 2, category: '개발/기설정', assetName: '여주본두리', operationRisk: '', exitRisk: '', grossAreaPy: 32904, completion: '2023.11', investmentType: '개발', acquisition: '2023.11', loanMaturity: '', fundMaturity: '2028.10', costPerPy: '4.4', costTrend: '▼', coldRatio: '-', occupancyRate: '84%', mainTenant: 'Maersk', mainIssue: 'Lease-up' },
+    { id: 'weekly_asset_03', no: 3, category: '선매입', assetName: '화성석포리', operationRisk: '●', exitRisk: '●', grossAreaPy: 32370, completion: '2023.11', investmentType: '선매입', acquisition: '2022.02', loanMaturity: '2028.03', fundMaturity: '2028.03', costPerPy: '7.1', costTrend: '▲', coldRatio: '-', occupancyRate: '100%', mainTenant: '삼성전자로지텍', mainIssue: 'Upside Potential 확보' },
+    { id: 'weekly_asset_04', no: 4, category: '실물', assetName: '경산쿠팡물류', operationRisk: '●', exitRisk: '●', grossAreaPy: 29849, completion: '2024.08', investmentType: '실물', acquisition: '2025.06', loanMaturity: '2028.06', fundMaturity: '2028.05', costPerPy: '5.7', costTrend: '→', coldRatio: '26%', occupancyRate: '100%', mainTenant: '쿠팡', mainIssue: '재하도급업체 관련 대응' },
+    { id: 'weekly_asset_05', no: 5, category: '실물', assetName: '스카이박스1', operationRisk: '', exitRisk: '', grossAreaPy: 10706, completion: '2017.04', investmentType: '실물', acquisition: '2019.04', loanMaturity: '', fundMaturity: '2029.04', costPerPy: '', costTrend: '', coldRatio: '-', occupancyRate: '', mainTenant: 'LG생활건강', mainIssue: '' },
+    { id: 'weekly_asset_06', no: 6, category: '실물', assetName: '스카이박스2', operationRisk: '', exitRisk: '', grossAreaPy: 15189, completion: '2017.04', investmentType: '실물', acquisition: '2019.04', loanMaturity: '', fundMaturity: '2029.04', costPerPy: '5.5', costTrend: '▼', coldRatio: '-', occupancyRate: '80%', mainTenant: '쿠팡', mainIssue: 'Lease-up' },
+    { id: 'weekly_asset_07', no: 7, category: '실물', assetName: '이천동산', operationRisk: '', exitRisk: '', grossAreaPy: 16740, completion: '2015.11', investmentType: '실물', acquisition: '2021.03', loanMaturity: '', fundMaturity: '2031.03', costPerPy: '6.4', costTrend: '→', coldRatio: '-', occupancyRate: '99%', mainTenant: '쿠팡', mainIssue: 'Upside Potential 확보' },
+    { id: 'weekly_asset_08', no: 8, category: '실물', assetName: '에이블로지스', operationRisk: '', exitRisk: '', grossAreaPy: 9069, completion: '2016.11', investmentType: '실물', acquisition: '', loanMaturity: '', fundMaturity: '', costPerPy: '', costTrend: '', coldRatio: '-', occupancyRate: '', mainTenant: '아워박스', mainIssue: '' },
+    { id: 'weekly_asset_09', no: 9, category: '실물', assetName: '부국물류', operationRisk: '', exitRisk: '', grossAreaPy: 5658, completion: '2016.06', investmentType: '실물', acquisition: '', loanMaturity: '', fundMaturity: '', costPerPy: '', costTrend: '', coldRatio: '-', occupancyRate: '', mainTenant: '한익스프레스', mainIssue: '' },
+    { id: 'weekly_asset_10', no: 10, category: '실물', assetName: '창원두동LG', operationRisk: '', exitRisk: '', grossAreaPy: 16506, completion: '2019.11', investmentType: '실물', acquisition: '2023.02', loanMaturity: '', fundMaturity: '2028.02', costPerPy: '7.0', costTrend: '▲', coldRatio: '-', occupancyRate: '100%', mainTenant: 'LG전자', mainIssue: 'ML임차인 Re-tenanting' },
+    { id: 'weekly_asset_11', no: 11, category: '선매입', assetName: '이천회억리', operationRisk: '●', exitRisk: '●', grossAreaPy: 13531, completion: '2023.11', investmentType: '선매입', acquisition: '2025.01', loanMaturity: '2027.01', fundMaturity: '2028.01', costPerPy: '6.4', costTrend: '▲', coldRatio: '25%', occupancyRate: '73%', mainTenant: '한국로지스풀', mainIssue: 'Lease-up, Refinancing' },
+    { id: 'weekly_asset_12', no: 12, category: '실물', assetName: '부산송정', operationRisk: '●', exitRisk: '●', grossAreaPy: 7377, completion: '2015.11', investmentType: '실물', acquisition: '2017.01', loanMaturity: '2024.03', fundMaturity: '2047.01', costPerPy: '9.1', costTrend: '▲', coldRatio: '100%', occupancyRate: '공실', mainTenant: '-', mainIssue: 'EOD, 소송, 신규개발(DC)' },
+    { id: 'weekly_asset_13', no: 13, category: '선매입', assetName: '안성성은리', operationRisk: '', exitRisk: '', grossAreaPy: 34285, completion: '2024.12', investmentType: '선매입', acquisition: '선매입(연장)', loanMaturity: '', fundMaturity: '연장중', costPerPy: '7.0', costTrend: '▲', coldRatio: '17%', occupancyRate: '60%', mainTenant: '일본통운', mainIssue: 'Lease-up, 투자자확보(위약 50억)' },
+    { id: 'weekly_asset_14', no: 14, category: '선매입', assetName: '경남양산석암', operationRisk: '', exitRisk: '', grossAreaPy: 15953, completion: '2024.07', investmentType: '선매입', acquisition: '선매입(연장)', loanMaturity: '', fundMaturity: '연장중', costPerPy: '7.5', costTrend: '▲', coldRatio: '25%', occupancyRate: '20%', mainTenant: '소셜빈', mainIssue: 'Lease-up, 투자자확보(위약 68억)' },
+    { id: 'weekly_asset_15', no: 15, category: '개발', assetName: '야탑쿠팡물류', operationRisk: '', exitRisk: '', grossAreaPy: 21340, completion: '2023.10', investmentType: '개발', acquisition: '개발', loanMaturity: '', fundMaturity: '2027.08', costPerPy: '10.4', costTrend: '→', coldRatio: '47%', occupancyRate: '개발', mainTenant: '쿠팡', mainIssue: '쿠팡 M/L(예정) 및 출자' },
+    { id: 'weekly_asset_16', no: 16, category: '개발', assetName: '포천정교리', operationRisk: '', exitRisk: '', grossAreaPy: 16313, completion: '개발', investmentType: '개발', acquisition: '개발', loanMaturity: '', fundMaturity: '2030.02', costPerPy: '7.1', costTrend: '→', coldRatio: '51%', occupancyRate: '개발', mainTenant: '쿠팡', mainIssue: '쿠팡 M/L(예정) 및 출자' },
+    { id: 'weekly_asset_17', no: 17, category: '2nd 블펀', assetName: '아레나스양지', operationRisk: '', exitRisk: '', grossAreaPy: 105791, completion: '', investmentType: '선매입', acquisition: '2019.03', loanMaturity: '', fundMaturity: '2027.05', costPerPy: '3.8', costTrend: '▼', coldRatio: '-', occupancyRate: '99%', mainTenant: 'CJ/용마로지스', mainIssue: '임대료정상화(88%/GLA)' },
+    { id: 'weekly_asset_18', no: 18, category: '실물', assetName: '인천석남물류', operationRisk: '●', exitRisk: '●', grossAreaPy: 90540, completion: '2023.08', investmentType: '실물', acquisition: '2023.01', loanMaturity: '2027.04', fundMaturity: '2033.07', costPerPy: '6.8', costTrend: '→', coldRatio: '14%', occupancyRate: '100%', mainTenant: '쿠팡', mainIssue: 'Upside Potential 확보' },
+    { id: 'weekly_asset_19', no: 19, category: '실물', assetName: '평택아디다스', operationRisk: '', exitRisk: '', grossAreaPy: 15374, completion: '', investmentType: '실물', acquisition: '2021.10', loanMaturity: '', fundMaturity: '2032.08', costPerPy: '8.9', costTrend: '▲', coldRatio: '-', occupancyRate: '100%', mainTenant: '아디다스', mainIssue: '소송대응/Re-tenanting/복원공사' },
+    { id: 'weekly_asset_20', no: 20, category: '실물', assetName: '안성홈플러스', operationRisk: '', exitRisk: '', grossAreaPy: 9929, completion: '', investmentType: '실물', acquisition: '2022.08', loanMaturity: '', fundMaturity: '2032.07', costPerPy: '17.7(유휴부지별도)', costTrend: '▲', coldRatio: '100%', occupancyRate: '100%', mainTenant: '홈플러스', mainIssue: 'ML임차인 Re-tenanting' },
+  ];
+}
+
+function getDefaultWeeklyNewProjects_() {
+  return [
+    {
+      id: 'weekly_new_01',
+      funding: '시장자금 또는 환경개선펀드(산단공)',
+      projectName: '물류 복합개발 PJT',
+      overview: '서울시 금천구 소재 코리빙 및 물류 복합개발. 대지면적 약 1.5천평, 연면적 약 1.3만평, 총사업비 약 2,530억원.',
+      status: '환경개선펀드 제안서 제출, 현장답사, 사업 프리젠테이션, 산업통상자원부 우선협상 대상자 선정까지 진행.',
+      issue: '산단공 투자조건 협의, 토지주 매매계약, 매칭펀드 투자자 모집, 시공사 협의, LOC 제출기한 연장 협의.',
+      plan: '환경개선펀드 및 매칭투자자 조건 협의 후 설정시기 확정.',
+      expectedAum: '2,530억원',
+      setupTiming: 'TBD',
+    },
+  ];
+}
+
+function getDefaultWeeklyManagementProjects_() {
+  return [
+    {
+      id: 'weekly_mgmt_01',
+      no: 1,
+      risk: '운용/Exit ●',
+      projectName: '이천 회억리 물류센터',
+      overview: '복합물류, 선매입, 이천 마장면 회억리 105, 지상 3층, 연면적 13,531평, 임대율 73%, 주임차사 한국로지스풀.',
+      investment: '취득원가 862억원, 장부가 897억원, 목표매각가 1,132억원, Loan 465억원, LTV 54.7%.',
+      status: '초록마을/정육각 회생절차 및 명도 완료, 한진 B2층 저온 입주, 기존 대주단 미연장 의사 확인.',
+      plan: '지상 1층 임대차 마케팅, 대주단 미팅, IRR 기준 변경 가능성 타진, 잠재 매수의향자 tapping.',
+    },
+    {
+      id: 'weekly_mgmt_04',
+      no: 4,
+      risk: '운용/Exit ●',
+      projectName: '경산 쿠팡 물류센터',
+      overview: '복합물류, 실물매입, 경북 경산시 진량읍 문천리 903, B2/12F, 연면적 29,849평, 임대율 100%, 주임차사 쿠팡.',
+      investment: '취득원가 1,698억원, 장부가 2,020억원, 목표매각가 2,140억원, Loan 1,300억원, LTV 64.4%.',
+      status: '재하도급 업체 유치권 주장 및 시위 대응, 담보대출 심의 완료, 클로징 완료, 쿠팡 운용 중.',
+      plan: '하자치유 및 유치권 포기 합의서 근거로 재하도급 업체 관련 대응 지속.',
+    },
+    {
+      id: 'weekly_mgmt_05',
+      no: 5,
+      risk: '운용/Exit ●',
+      projectName: '인천 석남 물류센터',
+      overview: '복합물류, 선매입, 인천 서구 석남동 224-20, B1/8F, 연면적 90,541평, 임대율 100%, 주임차사 쿠팡.',
+      investment: '취득원가 5,935억원, 장부가 6,340억원, 목표매각가 7,536억원, Loan 3,426억원, LTV 54.0%.',
+      status: '거래종결 완료, 매도자-시공사 합의서 및 유치권 포기각서 확보, KKR 지분 및 이지스 보통주 일부 매각 완료.',
+      plan: 'Upside Potential 확보 및 운용 안정화 지속.',
+    },
+    {
+      id: 'weekly_mgmt_12',
+      no: 12,
+      risk: '운용/Exit ●',
+      projectName: '부산 송정 물류센터',
+      overview: '저온물류, 실물, 부산 강서구 송정동 1715-2, B1/6F, 연면적 7,377평, 전체 공실.',
+      investment: '취득원가 668억원, 장부가 808억원, Loan 480억원, 대출만기 2024.03(EOD).',
+      status: 'EOD 발생 후 법원 경매 진행, 하나로TNS 손해배상 소송 및 DC Conversion 검토.',
+      plan: '경매 대응, 후순위 대주 협의, 소송 대응, DC Conversion 검토 협조.',
+    },
+  ];
+}
+
+function readAnalysisGeneralRows_() {
+  const cacheKey = 'analysis:general:projection';
+  const cached = getCachedJson_(cacheKey);
+  if (cached) return cached;
+  const spreadsheet = getSpreadsheet_();
+  const sheet = spreadsheet.getSheetByName(getConfig_().sheetNames.general);
+  if (!sheet) return [];
+  const rows = readSheetProjection_(sheet, {
+    assetId: ['asset_id', 'assetId', '자산ID', '자산 ID'],
+    assetName: ['asset_name', 'assetName', '자산명'],
+    fundName: ['fund_name', 'fundName', '펀드명'],
+    tenantId: ['tenant_id', 'tenantId', '임차인ID', '임차인 ID'],
+    tenantMasterName: ['tenant_master_name', 'tenantMasterName', '임차인명', '표준 임차인명'],
+    sector: ['sector', '섹터'],
+    goodsType: ['goods_type', 'goodsType', '취급 상품 유형'],
+    coldStorageType: ['cold_storage_type', 'coldStorageType', '저온창고 여부', '저온 창고 여부'],
+    leasedAreaSqm: ['leased_area_sqm', 'leasedAreaSqm', '임대면적'],
+    currentMonthlyRentTotal: ['current_monthly_rent_total', 'currentMonthlyRentTotal', '현재 월임대료 총액', '월임대료 총액'],
+    currentMonthlyMfTotal: ['current_monthly_mf_total', 'currentMonthlyMfTotal', '현재 월관리비 총액', '월관리비 총액'],
+    currentMonthlyCostTotal: ['current_monthly_cost_total', 'currentMonthlyCostTotal', '현재 월임관리비 총액', '월임관리비 총액'],
+    eNoc: ['e_noc', 'eNoc', 'E.NOC', 'e_noc_v2'],
+    calculatedReviewStatus: ['calculated_review_status', 'calculatedReviewStatus', 'review_status', 'reviewStatus'],
+  }).map(function (row) {
+    const rent = toNumber_(row.currentMonthlyRentTotal);
+    const mf = toNumber_(row.currentMonthlyMfTotal);
+    const cost = toNumber_(row.currentMonthlyCostTotal);
+    return {
+      rowNumber: row._rowNumber || '',
+      assetId: safeString_(row.assetId) || makeDeterministicId_('asset', [row.assetName]),
+      assetName: safeString_(row.assetName) || '미분류 자산',
+      fundName: safeString_(row.fundName) || '미분류 펀드',
+      tenantId: safeString_(row.tenantId) || makeDeterministicId_('tenant', [row.tenantMasterName]),
+      tenantMasterName: safeString_(row.tenantMasterName) || '미분류 임차인',
+      sector: safeString_(row.sector) || '미분류',
+      goodsType: safeString_(row.goodsType) || '미분류',
+      coldStorageType: safeString_(row.coldStorageType) || '미분류',
+      leasedAreaSqm: toNumber_(row.leasedAreaSqm),
+      currentMonthlyRentTotal: rent,
+      currentMonthlyMfTotal: mf,
+      currentMonthlyCostTotal: cost != null ? cost : (rent != null || mf != null ? Number(rent || 0) + Number(mf || 0) : null),
+      eNoc: toNumber_(row.eNoc),
+      calculatedReviewStatus: safeString_(row.calculatedReviewStatus) || 'ok',
+    };
+  });
+  return putCachedJson_(cacheKey, rows, getConfig_().payloadCacheTtlSeconds);
+}
+
+function buildLightweightAnalysisOptions_(rows) {
+  const assetMap = {};
+  const companyMap = {};
+  (rows || []).forEach(function (row) {
+    if (row.assetId && !assetMap[row.assetId]) {
+      assetMap[row.assetId] = { assetId: row.assetId, assetName: row.assetName };
+    }
+    if (row.tenantId && !companyMap[row.tenantId]) {
+      companyMap[row.tenantId] = { tenantId: row.tenantId, tenantMasterName: row.tenantMasterName };
+    }
+  });
+  return {
+    availableAssets: sortBy_(Object.keys(assetMap).map(function (key) { return assetMap[key]; }), 'assetName'),
+    availableCompanies: sortBy_(Object.keys(companyMap).map(function (key) { return companyMap[key]; }), 'tenantMasterName'),
+  };
+}
+
+function buildToolsPayloadFromSheet_(request) {
+  const normalized = normalizeToolsRequest_(request);
+  const rows = readAnalysisGeneralRows_();
+  const options = buildLightweightAnalysisOptions_(rows);
+  const hasExplicitSelection = normalized.assetIds.length || normalized.companyIds.length;
+  const assetIds = normalized.disableDefaultSelection
+    ? []
+    : (normalized.assetIds.length
+      ? normalized.assetIds
+      : sortBy_(rollupRowsByKey_(rows, 'assetId'), 'monthlyRentTotal', 'desc').slice(0, 3).map(function (row) { return row.assetId; }));
+  const companyIds = normalized.disableDefaultSelection
+    ? []
+    : (normalized.companyIds.length
+      ? normalized.companyIds
+      : sortBy_(rollupRowsByKey_(rows, 'tenantId'), 'monthlyRentTotal', 'desc').slice(0, 3).map(function (row) { return row.tenantId; }));
+  const selectedRows = rows.filter(function (row) {
+    return assetIds.indexOf(row.assetId) > -1 || companyIds.indexOf(row.tenantId) > -1;
+  });
+  const assets = rollupRowsByKey_(rows.filter(function (row) { return assetIds.indexOf(row.assetId) > -1; }), 'assetId');
+  const companies = rollupRowsByKey_(rows.filter(function (row) { return companyIds.indexOf(row.tenantId) > -1; }), 'tenantId');
+  const benchmarkRows = assets.map(function (row) {
+    return {
+      assetId: row.assetId,
+      assetName: row.assetName,
+      region: deriveRegionFromAddress_(row.assetName),
+      leasedAreaSqm: row.leasedAreaSqm,
+      monthlyRentTotal: row.monthlyRentTotal,
+      monthlyCostTotal: row.monthlyCostTotal,
+      averageENoc: row.averageENoc,
+      reviewStatus: row.reviewStatus,
+    };
+  });
+  const rentValues = benchmarkRows.map(function (row) { return row.monthlyRentTotal; }).filter(function (value) { return value != null; });
+  return attachPayloadMeta_({
+    sourceRows: rows,
+    assets: assets,
+    companies: companies,
+    contracts: sortBy_(selectedRows, 'currentMonthlyCostTotal', 'desc').slice(0, 80),
+    divergence: {
+      rentSpread: rentValues.length ? Math.max.apply(null, rentValues) - Math.min.apply(null, rentValues) : null,
+      vacancySpread: null,
+      comparedAssetCount: assets.length,
+      comparedCompanyCount: companies.length,
+    },
+    selectionMeta: {
+      isDefaultSelection: !normalized.disableDefaultSelection && !hasExplicitSelection,
+      isEmptySelection: normalized.disableDefaultSelection && !hasExplicitSelection,
+      reason: normalized.disableDefaultSelection && !hasExplicitSelection ? 'empty_selection' : (!hasExplicitSelection ? 'default_top3_by_rent' : 'user_selection'),
+      assetLabels: assets.map(function (row) { return row.assetName; }),
+      companyLabels: companies.map(function (row) { return row.tenantMasterName; }),
+      summaryLabel: assets.map(function (row) { return row.assetName; }).concat(companies.map(function (row) { return row.tenantMasterName; })).slice(0, 6).join(', '),
+    },
+    deltas: {
+      monthlyRentMin: rentValues.length ? Math.min.apply(null, rentValues) : null,
+      monthlyRentMax: rentValues.length ? Math.max.apply(null, rentValues) : null,
+      vacancyMin: null,
+      vacancyMax: null,
+    },
+    benchmarkRows: benchmarkRows,
+    reviewHighlights: selectedRows.filter(function (row) { return row.calculatedReviewStatus && row.calculatedReviewStatus !== 'ok'; }).slice(0, 12),
+    filters: {
+      availableAssets: options.availableAssets,
+      availableCompanies: options.availableCompanies,
+    },
+  }, 'tools', { generatedAt: new Date().toISOString(), dataVersion: getCacheNamespace_() }, selectedRows, {
+    selection: { assetIds: assetIds, companyIds: companyIds, cacheKey: buildKeyedPayloadKey_('tools', normalized) },
+    basis: { rowScope: 'lightweight_general_projection' },
+  });
+}
+
+function rollupRowsByKey_(rows, keyName) {
+  const grouped = {};
+  (rows || []).forEach(function (row) {
+    const key = safeString_(row[keyName]);
+    if (!key) return;
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(row);
+  });
+  return Object.keys(grouped).map(function (key) {
+    const bucket = grouped[key];
+    return {
+      assetId: keyName === 'assetId' ? key : bucket[0].assetId,
+      assetName: bucket[0].assetName,
+      tenantId: keyName === 'tenantId' ? key : bucket[0].tenantId,
+      tenantMasterName: bucket[0].tenantMasterName,
+      leasedAreaSqm: sumKnownMetric_(bucket, 'leasedAreaSqm'),
+      monthlyRentTotal: sumKnownMetric_(bucket, 'currentMonthlyRentTotal'),
+      monthlyMfTotal: sumKnownMetric_(bucket, 'currentMonthlyMfTotal'),
+      monthlyCostTotal: sumKnownMetric_(bucket, 'currentMonthlyCostTotal'),
+      averageENoc: computeAverageENocForRows_(bucket),
+      reviewStatus: bucket.some(function (row) { return row.calculatedReviewStatus === 'suspected_error'; }) ? 'suspected_error' : bucket.some(function (row) { return row.calculatedReviewStatus !== 'ok'; }) ? 'review_required' : 'ok',
+    };
+  });
+}
+
+function buildPlaygroundPayloadFromSheet_(request) {
+  const normalized = normalizePlaygroundRequest_(request);
+  const rows = readAnalysisGeneralRows_();
+  return buildPlaygroundPayloadFromRows_(rows, normalized);
+}
+
+function buildPlaygroundPayloadFromRows_(allRows, normalized) {
+  const dimensions = [
+    { key: 'assetName', label: '자산' },
+    { key: 'fundName', label: '펀드' },
+    { key: 'tenantMasterName', label: '임차인' },
+    { key: 'sector', label: '섹터' },
+    { key: 'goodsType', label: '물류 유형' },
+    { key: 'coldStorageType', label: '저온 유형' },
+    { key: 'calculatedReviewStatus', label: '검토 상태' },
+  ];
+  const metrics = [
+    { key: 'leasedAreaSqm', label: '임대면적' },
+    { key: 'currentMonthlyRentTotal', label: '월 임대료' },
+    { key: 'currentMonthlyMfTotal', label: '월 관리비' },
+    { key: 'monthlyCostTotal', label: '월 임관리비' },
+    { key: 'eNoc', label: '평균 E.NOC' },
+    { key: 'count', label: '건수' },
+  ];
+  const allowedDimensions = dimensions.map(function (row) { return row.key; });
+  const allowedMetrics = metrics.map(function (row) { return row.key; });
+  const rowDimension = allowedDimensions.indexOf(normalized.rowDimension) > -1 ? normalized.rowDimension : 'assetName';
+  const columnDimension = allowedDimensions.indexOf(normalized.columnDimension) > -1 ? normalized.columnDimension : 'none';
+  const valueMetric = allowedMetrics.indexOf(normalized.valueMetric) > -1 ? normalized.valueMetric : 'leasedAreaSqm';
+  const filterDimension = allowedDimensions.indexOf(normalized.filterDimension) > -1 ? normalized.filterDimension : '';
+  const filterValue = normalized.filterValue || '';
+  const sourceRows = filterDimension && filterValue
+    ? allRows.filter(function (row) { return safeString_(defaultValue_(row[filterDimension], 'Unclassified')) === filterValue; })
+    : allRows.slice();
+
+  function aggregate(bucket) {
+    if (valueMetric === 'count') return bucket.length;
+    if (valueMetric === 'eNoc') return computeAverageENocForRows_(bucket);
+    if (valueMetric === 'monthlyCostTotal') return sumKnownMetric_(bucket, 'currentMonthlyCostTotal');
+    return sumKnownMetric_(bucket, valueMetric);
+  }
+  function buildFilterOptions(dimensionKey) {
+    const grouped = {};
+    allRows.forEach(function (row) {
+      const key = safeString_(defaultValue_(row[dimensionKey], 'Unclassified'));
+      grouped[key] = (grouped[key] || 0) + 1;
+    });
+    return sortBy_(Object.keys(grouped).map(function (key) {
+      return { value: key, label: key, count: grouped[key] };
+    }), 'count', 'desc').slice(0, 80);
+  }
+  const grouped = {};
+  sourceRows.forEach(function (row) {
+    const key = safeString_(defaultValue_(row[rowDimension], 'Unclassified'));
+    grouped[key] = grouped[key] || [];
+    grouped[key].push(row);
+  });
+  const availableColumns = columnDimension === 'none' ? [] : sortBy_(uniqueValues_(sourceRows.map(function (row) {
+    return safeString_(defaultValue_(row[columnDimension], 'Unclassified'));
+  })).map(function (key) {
+    return { key: key, label: key, count: sourceRows.filter(function (row) { return safeString_(defaultValue_(row[columnDimension], 'Unclassified')) === key; }).length };
+  }), 'count', 'desc').slice(0, 12);
+  const rows = sortBy_(Object.keys(grouped).map(function (key) {
+    const bucket = grouped[key];
+    const columns = {};
+    availableColumns.forEach(function (column) {
+      const columnBucket = bucket.filter(function (row) { return safeString_(defaultValue_(row[columnDimension], 'Unclassified')) === column.key; });
+      columns[column.key] = { value: columnBucket.length ? aggregate(columnBucket) : null, recordCount: columnBucket.length };
+    });
+    return {
+      dimension: key,
+      value: aggregate(bucket),
+      recordCount: bucket.length,
+      columns: columns,
+      reviewStatus: bucket.some(function (row) { return row.calculatedReviewStatus === 'suspected_error'; }) ? 'suspected_error' : bucket.some(function (row) { return row.calculatedReviewStatus !== 'ok'; }) ? 'review_required' : 'ok',
+    };
+  }), 'value', 'desc').slice(0, normalized.topN);
+  return attachPayloadMeta_({
+    sourceRows: allRows,
+    query: {
+      dimension: rowDimension,
+      metric: valueMetric,
+      rowDimension: rowDimension,
+      columnDimension: columnDimension,
+      valueMetric: valueMetric,
+      filterDimension: filterDimension,
+      filterValue: filterValue,
+      topN: normalized.topN,
+    },
+    dimensions: dimensions,
+    metrics: metrics,
+    columnOptions: [{ key: 'none', label: '사용 안 함' }].concat(dimensions),
+    filterOptions: dimensions.map(function (dimension) {
+      return { key: dimension.key, label: dimension.label, values: buildFilterOptions(dimension.key) };
+    }),
+    activeColumns: availableColumns.map(function (row) { return { key: row.key, label: row.label, recordCount: row.count }; }),
+    savedViews: [
+      { key: 'asset_rent', label: '자산별 월 임대료', rowDimension: 'assetName', columnDimension: 'none', valueMetric: 'currentMonthlyRentTotal', topN: 20 },
+      { key: 'tenant_area', label: '임차인별 임대면적', rowDimension: 'tenantMasterName', columnDimension: 'none', valueMetric: 'leasedAreaSqm', topN: 20 },
+      { key: 'sector_cost', label: '섹터별 월 임관리비', rowDimension: 'sector', columnDimension: 'goodsType', valueMetric: 'monthlyCostTotal', topN: 15 },
+    ],
+    summaryCards: [
+      { label: '원천 행', value: allRows.length, valueType: 'number' },
+      { label: '필터 후 행', value: sourceRows.length, valueType: 'number' },
+      { label: '결과 그룹', value: rows.length, valueType: 'number' },
+      { label: '컬럼 수', value: availableColumns.length || 1, valueType: 'number' },
+    ],
+    rows: rows,
+  }, 'playground', { generatedAt: new Date().toISOString(), dataVersion: getCacheNamespace_() }, sourceRows, {
+    selection: {
+      dimension: rowDimension,
+      metric: valueMetric,
+      rowDimension: rowDimension,
+      columnDimension: columnDimension,
+      valueMetric: valueMetric,
+      filterDimension: filterDimension,
+      filterValue: filterValue,
+      topN: normalized.topN,
+      cacheKey: buildKeyedPayloadKey_('playground', normalized),
+    },
+    basis: { rowScope: 'lightweight_general_projection' },
+  });
 }
 
 function getReviewBacklog() {
@@ -663,9 +1097,10 @@ function getAdminDashboardData(request) {
   const viewer = getViewerContext_({ adminSessionToken: request && request.adminSessionToken });
   const adminErrors = [];
   const snapshotState = getStaticPayloadSnapshotState_();
+  const cachedUiReconciliation = getAdminUiDataReconciliationSummaryCache_();
   const dashboardSummary = readPersistedJsonProperty_('ADMIN_DASHBOARD_SUMMARY_JSON') || {};
   if (isAdminDashboardSummaryFresh_(dashboardSummary)) {
-    return buildAdminDashboardResponse_(viewer, snapshotState, dashboardSummary, adminErrors);
+    return buildAdminDashboardResponse_(viewer, snapshotState, applyCachedUiReconciliation_(dashboardSummary, cachedUiReconciliation), adminErrors);
   }
 
   const summary = readPersistedJsonProperty_('ADMIN_SUMMARY_JSON') || {};
@@ -778,7 +1213,7 @@ function getAdminDashboardData(request) {
     issueBacklogCount: resolvedIssueBacklogCount,
     openDartBacklogCount: resolvedOpenDartBacklogCount,
     buildingBacklogCount: resolvedBuildingBacklogCount,
-    uiDataReconciliation: {
+    uiDataReconciliation: cachedUiReconciliation || {
       status: safeGet_(effectiveSummary, ['uiDataReconciliation', 'status']) || 'summary_only',
       okCount: Number(safeGet_(effectiveSummary, ['uiDataReconciliation', 'okCount']) || 0),
       reviewCount: Number(safeGet_(effectiveSummary, ['uiDataReconciliation', 'reviewCount']) || 0),
@@ -793,7 +1228,9 @@ function getAdminDashboardData(request) {
 }
 
 function buildAdminDashboardResponse_(viewer, snapshotState, dashboardPayload, adminErrors) {
-  const auditLogRows = typeof readAuditLogRows_ === 'function' ? readAuditLogRows_(50) : [];
+  const auditLogCache = getAdminAuditLogCache_();
+  const auditLogRows = auditLogCache.rows || [];
+  const auditLogSummary = auditLogCache.summary || { total: 0, reasonRequired: 0, byAction: {} };
   return {
     viewer: viewer,
     authorization: {
@@ -819,13 +1256,47 @@ function buildAdminDashboardResponse_(viewer, snapshotState, dashboardPayload, a
     },
     auditRows: [],
     auditLogRows: auditLogRows,
-    auditLogSummary: typeof summarizeAuditLog_ === 'function' ? summarizeAuditLog_(auditLogRows) : { total: 0, reasonRequired: 0, byAction: {} },
+    auditLogSummary: auditLogSummary,
+    auditLogDeferred: !auditLogCache.fresh,
     auditErrorCount: Number(safeGet_(dashboardPayload, ['auditErrorCount']) || snapshotState.errorCount || 0),
     auditNeedsRefresh: true,
     triggers: [],
     jobStates: getAdminJobStates_(),
     loadErrors: adminErrors,
   };
+}
+
+function getAdminAuditLogCache_() {
+  const cached = readPersistedJsonProperty_('ADMIN_AUDIT_LOG_CACHE_JSON') || {};
+  const generatedTs = Number(cached.generatedTs || 0);
+  const maxAgeMs = 6 * 60 * 60 * 1000;
+  if (generatedTs && Date.now() - generatedTs <= maxAgeMs && Array.isArray(cached.rows)) {
+    return {
+      fresh: true,
+      rows: cached.rows,
+      summary: cached.summary || (typeof summarizeAuditLog_ === 'function' ? summarizeAuditLog_(cached.rows) : { total: cached.rows.length, reasonRequired: 0, byAction: {} }),
+    };
+  }
+  return {
+    fresh: false,
+    rows: [],
+    summary: { total: 0, reasonRequired: 0, byAction: {} },
+  };
+}
+
+function persistAdminAuditLogCache_(rows) {
+  const normalizedRows = Array.isArray(rows) ? rows : [];
+  const payload = {
+    generatedTs: Date.now(),
+    rows: normalizedRows,
+    summary: typeof summarizeAuditLog_ === 'function' ? summarizeAuditLog_(normalizedRows) : { total: normalizedRows.length, reasonRequired: 0, byAction: {} },
+  };
+  try {
+    persistJsonScriptProperty_('ADMIN_AUDIT_LOG_CACHE_JSON', payload, { allowChunking: true });
+  } catch (error) {
+    // Audit log cache is a performance hint. Admin can still fetch live rows.
+  }
+  return payload;
 }
 
 function isAdminDashboardSummaryFresh_(summary) {
@@ -844,6 +1315,64 @@ function persistAdminDashboardSummary_(summary) {
   } catch (error) {
     // The dashboard still renders if this small performance cache cannot be saved.
   }
+}
+
+function getAdminUiDataReconciliationSummaryCache_() {
+  const cached = readPersistedJsonProperty_('ADMIN_UI_DATA_RECONCILIATION_JSON') || {};
+  const generatedTs = Number(cached.generatedTs || 0);
+  const maxAgeMs = 24 * 60 * 60 * 1000;
+  if (!generatedTs || Date.now() - generatedTs > maxAgeMs) return null;
+  const summary = cached.summary || {};
+  return summary.generatedAt ? summary : null;
+}
+
+function applyCachedUiReconciliation_(summary, cachedUiReconciliation) {
+  if (!cachedUiReconciliation) return summary;
+  const next = Object.assign({}, summary || {});
+  next.uiDataReconciliation = cachedUiReconciliation;
+  return next;
+}
+
+function buildUiDataReconciliationAdminSummary_(report) {
+  const totals = (report && report.totals) || {};
+  const formulaDifference = Number(totals.formulaDifference || 0);
+  const sourceMissing = Number(totals.sourceMissing || 0);
+  const apiNoResponse = Number(totals.apiNoResponse || 0);
+  const reviewRequired = Number(totals.reviewRequired || 0);
+  const displayRounding = Number(totals.displayRounding || 0);
+  const ok = Number(totals.ok || 0);
+  const reviewCount = reviewRequired + sourceMissing + apiNoResponse;
+  const errorCount = formulaDifference;
+  return {
+    status: errorCount ? 'formula_difference' : (reviewCount ? 'review_required' : 'ok'),
+    okCount: ok + displayRounding,
+    reviewCount: reviewCount,
+    errorCount: errorCount,
+    totalCount: Number(totals.total || 0),
+    displayRoundingCount: displayRounding,
+    eNocOutlierCount: Number(report && report.eNocOutlierCount || 0),
+    generatedAt: safeString_(report && report.generatedAt) || new Date().toISOString(),
+  };
+}
+
+function persistUiDataReconciliationAdminSummary_(report) {
+  const summary = buildUiDataReconciliationAdminSummary_(report);
+  try {
+    persistJsonScriptProperty_('ADMIN_UI_DATA_RECONCILIATION_JSON', {
+      generatedTs: Date.now(),
+      summary: summary,
+      prioritySamples: (report && report.prioritySamples || []).slice(0, 20),
+    }, { allowChunking: true });
+  } catch (error) {
+    // Admin can still show the live report even if the summary cache cannot be stored.
+  }
+  const dashboardSummary = readPersistedJsonProperty_('ADMIN_DASHBOARD_SUMMARY_JSON') || {};
+  if (dashboardSummary && Array.isArray(dashboardSummary.reviewMetrics)) {
+    dashboardSummary.uiDataReconciliation = summary;
+    dashboardSummary.generatedTs = Date.now();
+    persistAdminDashboardSummary_(dashboardSummary);
+  }
+  return summary;
 }
 
 function resolveAdminCachedCount_(primary, secondary, fallback) {
@@ -1108,7 +1637,7 @@ function getAdminCachedModelFast_() {
   }
 }
 
-function buildAdminReviewMetrics_(homePayload) {
+function buildAdminReviewMetricsDefaultLegacy_(homePayload) {
   return buildAdminReviewMetrics_(homePayload, null);
 }
 
@@ -1269,6 +1798,7 @@ function buildAdminUiReconciliationPreview_(model, snapshotState) {
 
 function buildAdminSummaryPayload_(model, homePayload, bootstrap, snapshotState) {
   const reviewCache = buildAdminReviewCache_(model, homePayload);
+  const cachedUiReconciliation = getAdminUiDataReconciliationSummaryCache_();
   return {
     generatedAt: model && model.generatedAt ? model.generatedAt : new Date().toISOString(),
     integrations: safeGet_(bootstrap, ['integrations']) || getMinimalIntegrationStatus_(),
@@ -1277,7 +1807,7 @@ function buildAdminSummaryPayload_(model, homePayload, bootstrap, snapshotState)
     issueBacklogCount: Number(reviewCache.issueBacklogCount || 0),
     openDartBacklogCount: Number(reviewCache.openDartBacklogCount || 0),
     buildingBacklogCount: Number(reviewCache.buildingBacklogCount || 0),
-    uiDataReconciliation: {
+    uiDataReconciliation: cachedUiReconciliation || {
       status: 'summary_only',
       okCount: 0,
       reviewCount: Number(safeGet_(homePayload, ['missingCounts', 'reviewRequired']) || 0),
@@ -1678,6 +2208,7 @@ function adminRunUiDataReconciliation(request) {
   assertAdmin_(request);
   const report = buildUiDataReconciliationReport_(getModelOrRefreshCache_(), { includeRows: true });
   writeUiDataReconciliationSheet_(report);
+  report.adminSummary = persistUiDataReconciliationAdminSummary_(report);
   return report;
 }
 
@@ -1812,10 +2343,32 @@ function isHomePayloadFresh_(payload) {
   if (kpiKeys.indexOf('leased_area_total') === -1) return false;
   if (kpiKeys.indexOf('vacancy_area_total') === -1) return false;
   if (kpiKeys.indexOf('monthly_total_cost') === -1) return false;
+  const rentTrend = payload.rentTrend || [];
+  if (rentTrend.length && !rentTrend.some(function (row) {
+    return row && row.monthlyCostTotalAdjusted != null && row.activeAssetCount != null && row.contractActiveAssetCount != null;
+  })) return false;
+  const monthlyVacancy = safeGet_(payload, ['contractSummary', 'monthlyVacancy']) || [];
+  const upcoming = safeGet_(payload, ['contractSummary', 'upcoming']) || [];
+  if ((!Array.isArray(monthlyVacancy) || !monthlyVacancy.length) && (!Array.isArray(upcoming) || !upcoming.length)) return false;
   if (!payload.occupancy) return false;
   const mapPoints = payload.mapPoints || [];
   if (mapPoints.length && !mapPoints.some(function (point) { return safeString_(point.address); })) return false;
   return true;
+}
+
+function isAssetPayloadFresh_(payload) {
+  if (!payload) return false;
+  const floors = safeGet_(payload, ['summary', 'floors']) || safeGet_(payload, ['floors']) || [];
+  if (!Array.isArray(floors) || !floors.length) return true;
+  return floors.some(function (floor) {
+    return (floor.tenants || []).some(function (tenant) {
+      return tenant && (
+        Object.prototype.hasOwnProperty.call(tenant, 'coldStorageType') ||
+        Object.prototype.hasOwnProperty.call(tenant, 'goodsType') ||
+        Object.prototype.hasOwnProperty.call(tenant, 'officeAreaSqm')
+      );
+    });
+  });
 }
 
 function buildViewerPayloadCacheKey_(cacheKey, policy) {
@@ -1844,7 +2397,15 @@ function returnPayloadForViewer_(payload, viewer, cacheKey) {
   const policy = getViewerPolicy_(viewer);
   const publicCacheKey = buildViewerPayloadCacheKey_(cacheKey, policy);
   const cached = getCachedJson_(publicCacheKey);
-  if (cached) return cached;
+  if (cached) {
+    if (safeString_(cacheKey).indexOf(':home') > -1 && !isHomePayloadFresh_(cached)) {
+      // stale viewer cache; rebuild below
+    } else if (safeString_(cacheKey).indexOf(':asset') > -1 && !isAssetPayloadFresh_(cached)) {
+      // stale viewer cache; rebuild below
+    } else {
+      return cached;
+    }
+  }
   const sanitized = sanitizePayloadForViewer_(payload, viewer, policy);
   putCachedJson_(publicCacheKey, sanitized, getConfig_().payloadCacheTtlSeconds);
   return sanitized;
@@ -1912,7 +2473,7 @@ function sanitizePayloadForRole_(value, policy) {
       value[key] = null;
       return;
     }
-    if (!policy.viewSpecialTerms && isSensitiveFieldKey_(key, [/special/i, /term/i, /rf/i, /fo/i, /ti/i, /renew/i, /termination/i, /source.*doc/i, /contract.*file/i, /특약/, /갱신/, /중도해지/, /계약서/])) {
+    if (!policy.viewSpecialTerms && isSensitiveFieldKey_(key, [/special/i, /term/i, /^rf$/i, /rfMonths/i, /^fo$/i, /foMonths/i, /^ti$/i, /tiAmount/i, /tenantImprovement/i, /renew/i, /termination/i, /source.*doc/i, /contract.*file/i, /특약/, /갱신/, /중도해지/, /계약서/])) {
       value[key] = null;
       return;
     }

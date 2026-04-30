@@ -56,7 +56,11 @@ window.RUNTIME_CLIENT_CONFIG = <?= RUNTIME_CLIENT_CONFIG ?>;
         </button>
 
         <nav class="sidebar-nav" id="user-nav">
-          <button class="nav-item is-active" data-tab="home" type="button">
+          <button class="nav-item is-active" data-tab="weekly" type="button">
+            <span class="material-symbols-outlined">article</span>
+            <span>주간 업무</span>
+          </button>
+          <button class="nav-item" data-tab="home" type="button">
             <span class="material-symbols-outlined">dashboard</span>
             <span>Home</span>
           </button>
@@ -159,9 +163,9 @@ window.RUNTIME_CLIENT_CONFIG = <?= RUNTIME_CLIENT_CONFIG ?>;
         <div class="canvas" id="canvas">
           <div class="page-head" id="page-head" data-page-head-layout="copy-only">
             <div class="page-head-copy">
-              <p class="page-kicker" id="page-kicker">포트폴리오 모니터</p>
-              <h2 class="page-title" id="page-title">홈</h2>
-              <p class="page-subtitle" id="page-subtitle">포트폴리오 전체 임대 현황과 핵심 숫자를 빠르게 읽는 운영 화면입니다.</p>
+              <p class="page-kicker" id="page-kicker">Weekly Operations</p>
+              <h2 class="page-title" id="page-title">주간 업무 리포트</h2>
+              <p class="page-subtitle" id="page-subtitle">보고자료 기반 운용·만기·이슈를 먼저 확인하는 화면입니다.</p>
             </div>
             <div class="page-head-utility">
               <section class="view-mode-card" aria-label="Current workspace mode">
@@ -172,45 +176,13 @@ window.RUNTIME_CLIENT_CONFIG = <?= RUNTIME_CLIENT_CONFIG ?>;
             </div>
           </div>
 
-          <section class="tab-panel is-active" data-panel="home"><div id="home-view" data-render-root="home" data-map-root="home"></div></section>
+          <section class="tab-panel is-active" data-panel="weekly"><div id="weekly-view" data-render-root="weekly"></div></section>
+          <section class="tab-panel" data-panel="home"><div id="home-view" data-render-root="home" data-map-root="home"></div></section>
           <section class="tab-panel" data-panel="asset"><div id="asset-view" data-render-root="asset"></div></section>
           <section class="tab-panel" data-panel="company"><div id="company-view" data-render-root="company"></div></section>
-          <section class="tab-panel tab-panel-under-construction" data-panel="sector">
-            <div class="tab-panel-development-view"><div id="sector-view" data-render-root="sector"></div></div>
-            <div class="tab-panel-development-overlay" role="button" tabindex="0" aria-label="더블클릭하여 섹터 현재 화면 보기">
-              <div class="tab-panel-development-card">
-                <span class="tab-panel-development-badge">In Progress</span>
-                <strong>섹터 화면은 개편 예정입니다</strong>
-                <p>권역, 자산, 임차인 비교 구조를 전면 개편할 예정입니다.</p>
-                <p class="tab-panel-development-hint">현재 구현 화면을 보려면 이 안내를 더블클릭하세요.</p>
-              </div>
-            </div>
-            <button class="tab-panel-development-reset" type="button">개발 중 안내 다시 보기</button>
-          </section>
-          <section class="tab-panel tab-panel-under-construction" data-panel="tools">
-            <div class="tab-panel-development-view"><div id="tools-view" data-render-root="tools"></div></div>
-            <div class="tab-panel-development-overlay" role="button" tabindex="0" aria-label="더블클릭하여 분석 도구 현재 화면 보기">
-              <div class="tab-panel-development-card">
-                <span class="tab-panel-development-badge">In Progress</span>
-                <strong>분석 도구 화면은 개편 예정입니다</strong>
-                <p>비교 선택, 벤치마크, 계약 원장 흐름을 전면 개편할 예정입니다.</p>
-                <p class="tab-panel-development-hint">현재 구현 화면을 보려면 이 안내를 더블클릭하세요.</p>
-              </div>
-            </div>
-            <button class="tab-panel-development-reset" type="button">개발 중 안내 다시 보기</button>
-          </section>
-          <section class="tab-panel tab-panel-under-construction" data-panel="playground">
-            <div class="tab-panel-development-view"><div id="playground-view" data-render-root="playground"></div></div>
-            <div class="tab-panel-development-overlay" role="button" tabindex="0" aria-label="더블클릭하여 데이터 분석 현재 화면 보기">
-              <div class="tab-panel-development-card">
-                <span class="tab-panel-development-badge">In Progress</span>
-                <strong>데이터 분석 화면은 개편 예정입니다</strong>
-                <p>비개발자도 쉽게 쓰는 집계·피벗 분석 화면으로 전면 개편할 예정입니다.</p>
-                <p class="tab-panel-development-hint">현재 구현 화면을 보려면 이 안내를 더블클릭하세요.</p>
-              </div>
-            </div>
-            <button class="tab-panel-development-reset" type="button">개발 중 안내 다시 보기</button>
-          </section>
+          <section class="tab-panel" data-panel="sector"><div id="sector-view" data-render-root="sector"></div></section>
+          <section class="tab-panel" data-panel="tools"><div id="tools-view" data-render-root="tools"></div></section>
+          <section class="tab-panel" data-panel="playground"><div id="playground-view" data-render-root="playground"></div></section>
           <section class="tab-panel" data-panel="quality"><div id="quality-view" data-render-root="quality"></div></section>
           <? if (IS_ADMIN) { ?>
           <section class="tab-panel" data-panel="admin"><div id="admin-view"></div></section>

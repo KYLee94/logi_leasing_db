@@ -1,12 +1,5 @@
 {
   "analytics": {
-    "goodsTypeMix": [
-      {
-        "value": 23729.34,
-        "recordCount": 1,
-        "label": "-"
-      }
-    ],
     "coreTenants": [
       {
         "tenantMasterName": "-",
@@ -20,11 +13,11 @@
         "assetCount": 1
       }
     ],
-    "rentVsMf": [
+    "goodsTypeMix": [
       {
-        "leaseSpaceId": "asset_a112109001|tenant_name_|-|-|-|na",
-        "tenantMasterName": "-",
-        "leasedAreaPy": 7178.13
+        "value": 23729.34,
+        "recordCount": 1,
+        "label": "-"
       }
     ],
     "expirySnapshot": {
@@ -48,26 +41,23 @@
       ],
       "entries": []
     },
+    "rentVsMf": [
+      {
+        "leaseSpaceId": "asset_a112109001|tenant_name_|-|-|-|na",
+        "tenantMasterName": "-",
+        "leasedAreaPy": 7178.13
+      }
+    ],
     "uniqueTenants": [
       {
+        "earliestExpiry": "",
         "latestExpiry": "",
         "tenantMasterName": "-",
-        "earliestExpiry": "",
         "leaseSpaceCount": 1,
         "businessRegistrationNo": "",
         "tenantId": "tenant_name_",
         "leasedAreaSqm": 23729.34,
         "assetCount": 1
-      }
-    ],
-    "contractExpiry": [
-      {
-        "currentEndDate": "",
-        "spaceLabel": "-",
-        "leaseSpaceId": "asset_a112109001|tenant_name_|-|-|-|na",
-        "tenantMasterName": "-",
-        "floorLabel": "-",
-        "detailAreaLabel": ""
       }
     ],
     "eNocAudit": {
@@ -85,13 +75,23 @@
           "leasedAreaSqm": 23729.34,
           "currentMoneyBasis": "unresolved",
           "tenantId": "tenant_name_",
-          "calculationStatus": "review_required",
           "leaseSpaceId": "asset_a112109001|tenant_name_|-|-|-|na",
+          "calculationStatus": "review_required",
           "exclusiveAreaSqm": 23729.34
         }
       ],
       "formula": "((rentPerPy * ((periodYears*12 - rfMonths - foMonths)/(periodYears*12)) + mfPerPy) / exclusiveRatio) - (tiAmount / (exclusiveAreaSqm*0.3025) / (periodYears*12))"
     },
+    "contractExpiry": [
+      {
+        "currentEndDate": "",
+        "spaceLabel": "-",
+        "leaseSpaceId": "asset_a112109001|tenant_name_|-|-|-|na",
+        "tenantMasterName": "-",
+        "floorLabel": "-",
+        "detailAreaLabel": ""
+      }
+    ],
     "monthlyCostByTenant": [
       {
         "tenantId": "tenant_name_",
@@ -111,30 +111,33 @@
       "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
       "rule": "later_of_first_configured_at_and_approval_date",
       "approvalDate": "2015-11-16",
-      "effectiveMonth": "2017-02",
-      "firstConfiguredAt": "2017-02-09"
+      "firstConfiguredAt": "2017-02-09",
+      "effectiveMonth": "2017-02"
     },
     "issueCount": 0,
     "vacancyRate": 0.027004153491596173,
-    "areaTableStatus": "unknown",
     "floors": [
       {
         "tenants": [
           {
-            "tenantId": "tenant_name_",
             "tenantMasterName": "-",
+            "coldStorageType": "Y",
+            "tenantId": "tenant_name_",
+            "officeAreaSqm": 984.45,
             "leasedAreaSqm": 23729.34,
             "share": 1,
-            "detailAreaLabel": ""
+            "detailAreaLabel": "",
+            "goodsType": "-"
           }
         ],
         "floorLabel": "-",
         "totalFloorAreaSqm": 23729.34
       }
     ],
+    "areaTableStatus": "unknown",
     "assetId": "asset_a112109001",
-    "uniqueTenantCount": 1,
     "standardizedAddress": "부산광역시 강서구 녹산산단232로 38-17",
+    "uniqueTenantCount": 1,
     "rowCount": 1,
     "sector": "물류센터",
     "tenantCount": 1,
@@ -142,8 +145,8 @@
     "assetCode": "A112109001",
     "topTenants": [
       {
-        "latestExpiry": "",
         "tenantMasterName": "-",
+        "latestExpiry": "",
         "earliestExpiry": "",
         "leaseSpaceCount": 1,
         "businessRegistrationNo": "",
@@ -157,13 +160,13 @@
       "assetCode": "A112109001",
       "fundCode": "112109",
       "assetName": "부산송정물류센터",
-      "fundName": "이지스제114호전문투자형사모부동산투자유한회사",
       "managerName": "유미현",
+      "fundName": "이지스제114호전문투자형사모부동산투자유한회사",
       "email": "mihyunu@igisam.com"
     },
     "grossFloorAreaTimelineRule": "later_of_first_configured_at_and_approval_date",
-    "floorCount": "6F / B1",
     "monthlyMfTotal": null,
+    "floorCount": "6F / B1",
     "leasedAreaSqm": 23729.34,
     "fetchedAt": "2026-04-22",
     "firstConfiguredAt": "2017-02-09",
@@ -178,8 +181,8 @@
   },
   "topTenants": [
     {
-      "latestExpiry": "",
       "earliestExpiry": "",
+      "latestExpiry": "",
       "tenantMasterName": "-",
       "leaseSpaceCount": 1,
       "businessRegistrationNo": "",
@@ -194,22 +197,22 @@
       "assetId": "asset_a112109001"
     },
     "timing": {
-      "refreshedAt": "2026-04-27T18:27:46",
+      "refreshedAt": "2026-04-30T10:58:51",
       "fetchedAt": "2026-04-22",
       "derivedAt": "",
       "fetchedAts": [
         "2026-04-22"
       ]
     },
-    "generatedAt": "2026-04-27T18:27:46",
+    "generatedAt": "2026-04-30T10:58:51",
     "basisDisplay": {
       "derivedAt": "",
-      "asOf": "2026-04-27T18:27:46",
-      "generatedAt": "2026-04-27T18:27:46",
-      "refreshedAt": "2026-04-27T18:27:46",
+      "asOf": "2026-04-30T10:58:51",
+      "generatedAt": "2026-04-30T10:58:51",
+      "refreshedAt": "2026-04-30T10:58:51",
       "fetchedAt": "2026-04-22",
-      "page": "asset",
       "source": "DB_GENERAL + DB_HISTORY + DB_ASSET",
+      "page": "asset",
       "fetchedAts": [
         "2026-04-22"
       ]
@@ -221,36 +224,39 @@
       "rowScope": "selected_asset_rows",
       "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
       "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
-      "rowUnit": "lease_space_id",
       "page": "asset",
+      "rowUnit": "lease_space_id",
       "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
       "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
     }
   },
+  "generatedAt": "2026-04-30T10:58:51",
   "stackingPlan": [
     {
       "tenants": [
         {
-          "tenantId": "tenant_name_",
           "tenantMasterName": "-",
-          "share": 1,
+          "coldStorageType": "Y",
+          "tenantId": "tenant_name_",
+          "officeAreaSqm": 984.45,
           "leasedAreaSqm": 23729.34,
-          "detailAreaLabel": ""
+          "share": 1,
+          "detailAreaLabel": "",
+          "goodsType": "-"
         }
       ],
       "floorLabel": "-",
       "totalFloorAreaSqm": 23729.34
     }
   ],
-  "generatedAt": "2026-04-27T18:27:46",
   "basisDisplay": {
     "derivedAt": "",
-    "asOf": "2026-04-27T18:27:46",
-    "generatedAt": "2026-04-27T18:27:46",
+    "asOf": "2026-04-30T10:58:51",
+    "generatedAt": "2026-04-30T10:58:51",
+    "refreshedAt": "2026-04-30T10:58:51",
     "fetchedAt": "2026-04-22",
-    "refreshedAt": "2026-04-27T18:27:46",
-    "page": "asset",
     "source": "DB_GENERAL + DB_HISTORY + DB_ASSET",
+    "page": "asset",
     "fetchedAts": [
       "2026-04-22"
     ]
@@ -263,52 +269,51 @@
         "assetName": "경산 쿠팡물류센터",
         "uniqueTenantCount": 1,
         "fetchedAt": "2026-04-22",
-        "averageENoc": 45996.45,
-        "monthlyCostTotal": 1060724933,
-        "vacancyRate": 0.22740490773422375
+        "averageENoc": 598840.95,
+        "vacancyRate": 0.22740490773422375,
+        "monthlyCostTotal": 1060724933
       },
       {
         "assetId": "asset_a112527001",
         "assetName": "동산물류센터",
         "uniqueTenantCount": 4,
         "fetchedAt": "2026-04-22",
-        "averageENoc": 26784.1,
+        "averageENoc": 30240.58,
         "vacancyRate": 0.011449620876710885,
         "monthlyCostTotal": 435167477
       },
       {
         "assetId": "asset_a112755001",
         "assetName": "두동 LG전자 통합물류센터",
-        "uniqueTenantCount": 1,
         "fetchedAt": "2026-04-22",
-        "averageENoc": 38181.11,
-        "vacancyRate": 0.0008472422420663569,
-        "monthlyCostTotal": 630228000
+        "uniqueTenantCount": 1,
+        "averageENoc": 35317.14,
+        "monthlyCostTotal": 630228000,
+        "vacancyRate": 0.0008472422420663569
       },
       {
-        "assetId": "asset_a112527002",
         "assetName": "부국물류센터",
-        "uniqueTenantCount": 1,
         "fetchedAt": "2026-04-22",
-        "averageENoc": 27449.95,
-        "monthlyCostTotal": 155328845,
-        "vacancyRate": 0
+        "uniqueTenantCount": 1,
+        "assetId": "asset_a112527002",
+        "vacancyRate": 0,
+        "monthlyCostTotal": 155328845
       },
       {
         "assetName": "부산송정물류센터",
-        "fetchedAt": "2026-04-22",
         "uniqueTenantCount": 1,
+        "fetchedAt": "2026-04-22",
         "assetId": "asset_a112109001",
         "vacancyRate": 0.027004153491596173
       },
       {
         "assetId": "asset_a112299001",
         "assetName": "스카이박스1, 스카이박스2",
-        "uniqueTenantCount": 6,
         "fetchedAt": "2026-04-22",
-        "averageENoc": 37283.28,
-        "vacancyRate": 0.3071110862557777,
-        "monthlyCostTotal": 669324200
+        "uniqueTenantCount": 6,
+        "averageENoc": 69040.1,
+        "monthlyCostTotal": 669324200,
+        "vacancyRate": 0.3071110862557777
       },
       {
         "assetName": "아레나스안성",
@@ -320,9 +325,9 @@
       {
         "assetId": "asset_a112127001",
         "assetName": "아레나스양지물류센터",
-        "fetchedAt": "2026-04-22",
         "uniqueTenantCount": 2,
-        "averageENoc": 6706,
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 43823.51,
         "monthlyCostTotal": 552212356,
         "vacancyRate": 0.22161516861964634
       },
@@ -331,43 +336,42 @@
         "assetName": "안성 성은지구 물류센터",
         "fetchedAt": "2026-04-22",
         "uniqueTenantCount": 4,
-        "averageENoc": 24627.67,
+        "averageENoc": 33304.78,
         "monthlyCostTotal": 604357000,
         "vacancyRate": 0.3013357213767869
       },
       {
-        "assetId": "asset_a112500003",
         "assetName": "안성 홈플러스 중부허브 물류센터",
-        "uniqueTenantCount": 1,
         "fetchedAt": "2026-04-22",
-        "averageENoc": 63365.46,
-        "vacancyRate": 0.016556145554103226,
-        "monthlyCostTotal": 629174800
+        "uniqueTenantCount": 1,
+        "assetId": "asset_a112500003",
+        "monthlyCostTotal": 629174800,
+        "vacancyRate": 0.016556145554103226
       },
       {
         "assetId": "asset_s00002001",
         "assetName": "양산 유산동 물류센터",
         "uniqueTenantCount": 3,
         "fetchedAt": "2026-04-22",
-        "averageENoc": 24901.1,
+        "averageENoc": 25871.37,
         "vacancyRate": 0.3656956897910055,
         "monthlyCostTotal": 251987517
       },
       {
         "assetId": "asset_a112527003",
         "assetName": "에이블로지스물류센터",
-        "fetchedAt": "2026-04-22",
         "uniqueTenantCount": 1,
-        "averageENoc": 27039.41,
-        "vacancyRate": 0,
-        "monthlyCostTotal": 245219187
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 25700.92,
+        "monthlyCostTotal": 245219187,
+        "vacancyRate": 0
       },
       {
         "assetId": "asset_a112606001",
         "assetName": "여주 본두리 물류센터",
         "fetchedAt": "2026-04-22",
         "uniqueTenantCount": 3,
-        "averageENoc": 32389.54,
+        "averageENoc": 34391.92,
         "vacancyRate": 0.035098733326698266,
         "monthlyCostTotal": 1028369423
       },
@@ -376,34 +380,31 @@
         "assetName": "이천 마장면 물류센터",
         "fetchedAt": "2026-04-22",
         "uniqueTenantCount": 2,
-        "averageENoc": 27884.74,
-        "vacancyRate": 0.030459886244241004,
-        "monthlyCostTotal": 275622000
+        "averageENoc": 28184.45,
+        "monthlyCostTotal": 275622000,
+        "vacancyRate": 0.030459886244241004
       },
       {
-        "assetId": "asset_a112721001",
         "assetName": "인천석남물류센터",
         "fetchedAt": "2026-04-22",
         "uniqueTenantCount": 1,
-        "averageENoc": 31632.69,
-        "monthlyCostTotal": 2863471002,
-        "vacancyRate": 0.00020146451000519652
+        "assetId": "asset_a112721001",
+        "vacancyRate": 0.00020146451000519652,
+        "monthlyCostTotal": 2863471002
       },
       {
-        "assetId": "asset_a112500002",
         "assetName": "평택아디다스물류센터",
-        "fetchedAt": "2026-04-22",
         "uniqueTenantCount": 1,
-        "averageENoc": 28607.48,
+        "fetchedAt": "2026-04-22",
+        "assetId": "asset_a112500002",
         "monthlyCostTotal": 460486000,
         "vacancyRate": 0
       },
       {
-        "assetId": "asset_a112642001",
         "assetName": "화성 석포리 물류센터",
         "uniqueTenantCount": 1,
         "fetchedAt": "2026-04-22",
-        "averageENoc": 39312.35,
+        "assetId": "asset_a112642001",
         "vacancyRate": 0,
         "monthlyCostTotal": 1272556102
       }
@@ -432,43 +433,40 @@
   },
   "rows": [
     {
-      "insuranceSpecialClause": "없음",
       "firstOperationDate": "",
       "tenantMasterName": "-",
       "totalGrossAreaSqm": 24387.92,
       "floorSplitIndex": 1,
-      "sourceDocRef": "",
       "otherCommonAreaSqm": 2405.31,
       "leaseId": "asset_a112109001|tenant_name_|-|-",
       "historyCandidateCount": 0,
       "recentContractDate": "",
       "fundCode": "112109",
-      "coldStorageType": "Y",
       "currentMoneyBasis": "unresolved",
+      "coldStorageType": "Y",
       "currentEndDate": "",
       "rowNumber": 37,
-      "detailAreaLabel": "",
       "sector": "물류센터",
+      "detailAreaLabel": "",
       "exclusiveAreaSqm": 23729.34,
       "assetCode": "A112109001",
       "warehouseAreaSqm": 19654.71,
       "currentMoneyAsOf": "",
       "exclusiveRatioRaw": 100,
       "firstEndDate": "",
-      "goodsType": "-",
       "sourceRowHash": "A112109001|-|-||-|-|23729.34|23729.34",
+      "goodsType": "-",
       "floorLabel": "-",
       "historyLinkStatus": "review_required",
       "fundName": "이지스제114호전문투자형사모부동산투자유한회사",
       "contractStatusRaw": "N",
-      "otherSpecialClause": "없음",
       "historyLinked": false,
       "historyLatestDate": "",
       "assetId": "asset_a112109001",
-      "firstContractDate": "",
       "isContractActive": false,
-      "businessRegistrationNo": "",
+      "firstContractDate": "",
       "rawTenantName": "-",
+      "businessRegistrationNo": "",
       "currentStartDate": "",
       "leaseSpaceId": "asset_a112109001|tenant_name_|-|-|-|na",
       "firstStartDate": "",
@@ -479,8 +477,8 @@
         "assetCode": "A112109001",
         "fundCode": "112109",
         "assetName": "부산송정물류센터",
-        "fundName": "이지스제114호전문투자형사모부동산투자유한회사",
         "managerName": "유미현",
+        "fundName": "이지스제114호전문투자형사모부동산투자유한회사",
         "email": "mihyunu@igisam.com"
       },
       "leasedAreaSqm": 23729.34,
@@ -489,37 +487,46 @@
       "fundId": "fund_112109",
       "tenantId": "tenant_name_",
       "officeAreaSqm": 984.45,
-      "assetName": "부산송정물류센터",
-      "linkedIssues": [],
       "calculationStatus": "missing",
+      "linkedIssues": [],
+      "assetName": "부산송정물류센터",
       "mechanicalAreaSqm": 684.87,
-      "machineAreaSqm": 684.87,
       "asset": {
         "queryKey": "26440|10900|0|1715|0002",
         "assetCode": "A112109001",
         "approvalDate": "2015-11-16",
         "platGbCd": "0",
-        "floorCount": "6F / B1",
         "latitude": 35.0850649,
+        "floorCount": "6F / B1",
         "buildingHubStatus": "ok_official_fallback",
         "fetchedAt": "2026-04-22",
         "firstConfiguredAt": "2017-02-09",
-        "buildingName": "부산 신항 이아스종합물류센터",
         "landAreaSqm": 11329.6,
+        "buildingName": "부산 신항 이아스종합물류센터",
         "bjdongCd": "10900",
         "areaTableStatus": "unknown",
         "assetId": "asset_a112109001",
         "geocodeStatus": "ok_naver_geocode",
-        "assetName": "부산송정물류센터",
         "sigunguCd": "26440",
+        "assetName": "부산송정물류센터",
+        "bun": "1715",
         "grossFloorAreaSqm": 24387.915,
         "standardizedAddress": "부산광역시 강서구 녹산산단232로 38-17",
-        "bun": "1715",
         "longitude": 128.8409153,
         "ji": "2"
-      }
+      },
+      "machineAreaSqm": 684.87
     }
   ],
+  "basis": {
+    "rowScope": "selected_asset_rows",
+    "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
+    "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
+    "page": "asset",
+    "rowUnit": "lease_space_id",
+    "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
+    "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
+  },
   "areaBreakdown": {
     "exclusiveRatio": 1,
     "otherExclusiveAreaSqm": null,
@@ -531,20 +538,11 @@
     "coreAreaSqm": null,
     "dockAreaSqm": null,
     "officeAreaSqm": 984.45,
-    "mechanicalAreaSqm": 684.87,
-    "grossFloorAreaSqm": 24387.915,
     "corridorAreaSqm": null,
+    "grossFloorAreaSqm": 24387.915,
+    "mechanicalAreaSqm": 684.87,
     "rampAreaSqm": null,
     "exclusiveAreaSqm": 23729.34
-  },
-  "basis": {
-    "rowScope": "selected_asset_rows",
-    "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
-    "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
-    "rowUnit": "lease_space_id",
-    "page": "asset",
-    "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
-    "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
   },
   "kpis": [
     {

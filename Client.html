@@ -30,13 +30,20 @@ function normalizeBooleanFlag_(value) {
 const APP_FLAGS = {
   isAdmin: normalizeBooleanFlag_(RAW_APP_FLAGS.isAdmin),
   viewerEmail: normalizeFlagString_(RAW_APP_FLAGS.viewerEmail),
-  initialPage: normalizeFlagString_(RAW_APP_FLAGS.initialPage) || "home",
+  initialPage: normalizeFlagString_(RAW_APP_FLAGS.initialPage) || "weekly",
   adminSessionToken: normalizeFlagString_(RAW_APP_FLAGS.adminSessionToken),
   adminAuthRequired: normalizeBooleanFlag_(RAW_APP_FLAGS.adminAuthRequired),
 };
 
 window.APP_FLAGS = APP_FLAGS;
-let PUBLIC_SNAPSHOT_FAILURE_UNTIL = 0;
+const PUBLIC_SNAPSHOT_FAILURE_STORAGE_KEY = "dashboard.publicSnapshotFailureUntil";
+let PUBLIC_SNAPSHOT_FAILURE_UNTIL = (() => {
+  try {
+    return Number(localStorage.getItem(PUBLIC_SNAPSHOT_FAILURE_STORAGE_KEY) || 0);
+  } catch (error) {
+    return 0;
+  }
+})();
 
 function getPublicSnapshotBaseUrl_() {
   return normalizeFlagString_(RUNTIME_CLIENT_CONFIG.publicSnapshotBaseUrl || "");
@@ -44,13 +51,8 @@ function getPublicSnapshotBaseUrl_() {
 
 function getPublicSnapshotBaseUrls_() {
   const configured = getPublicSnapshotBaseUrl_();
-  const rawGithub = "https://raw.githubusercontent.com/KYLee94/logi_leasing_db/main/docs/data";
-  const jsdelivr = "https://cdn.jsdelivr.net/gh/KYLee94/logi_leasing_db@main/docs/data";
-  const configuredFirst = configured && configured.indexOf("github.io") === -1;
-  const urls = (configuredFirst
-    ? [configured, rawGithub, jsdelivr]
-    : [rawGithub, jsdelivr, configured]
-  ).map((url) => normalizeFlagString_(url).replace(/\/+$/, ""))
+  const urls = configured.split(/[,\n]+/)
+    .map((url) => normalizeFlagString_(url).replace(/\/+$/, ""))
     .filter(Boolean);
   return Array.from(new Set(urls));
 }
@@ -61,7 +63,7 @@ function canUsePublicSnapshots_() {
 
 const IS_ADMIN = APP_FLAGS.isAdmin;
 const CLIENT_DEBUG_MODE = RUNTIME_CLIENT_CONFIG.debugMode === true || String(localStorage.getItem("dashboard.debugMode") || "").toLowerCase() === "true";
-const TAB_ORDER = ["home", "asset", "company", "sector", "tools", "playground", "quality"].concat(IS_ADMIN ? ["admin"] : []);
+const TAB_ORDER = ["weekly", "home", "asset", "company", "sector", "tools", "playground", "quality"].concat(IS_ADMIN ? ["admin"] : []);
 const PAGE_META = {
   home: {
     kicker: "포트폴리오 모니터",
@@ -77,6 +79,11 @@ const PAGE_META = {
     kicker: "임차인 프로필",
     title: "기업",
     subtitle: "기업 기본 정보와 포트폴리오 내 임차 노출을 함께 확인하는 화면입니다.",
+  },
+  weekly: {
+    kicker: "Weekly Operations",
+    title: "주간 업무 리포트",
+    subtitle: "RA부문 사업그룹 4파트 주간업무자료를 자산현황, 신규 투자, 관리 프로젝트로 재구성한 화면입니다.",
   },
   sector: {
     kicker: "권역 비교",
@@ -131,6 +138,7 @@ const state = {
     companyExposureMetric: "cost",
     toolAssetIds: [],
     toolCompanyIds: [],
+    toolDisableDefaultSelection: false,
     playgroundMode: "sandbox",
     playgroundDimension: "assetName",
     playgroundColumnDimension: "none",
@@ -143,6 +151,7 @@ const state = {
   pendingRequests: {},
   warmedDefaults: false,
   initialDataLoaded: false,
+  shellFallbackLoadStarted: false,
 };
 
 window.__dashboardPerf = state.performance;
@@ -208,9 +217,15 @@ function bindStandaloneAdminAuth_() {
         document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.toggle("is-active", panel.dataset.panel === state.activeTab));
         document.querySelectorAll(".nav-item").forEach((nav) => nav.classList.toggle("is-active", nav.dataset.tab === state.activeTab));
         renderTabSkeleton(state.activeTab, { useBootstrapHint: false });
-        showLoading(true, "관리자 콘솔을 불러오고 있습니다.", "관리자 데이터만 바로 불러옵니다.");
-        return loadTabData_("admin", { force: true, overlay: false, allowStaleFallback: false })
+        if (state.activeTab === "admin") renderPayloadForTab_("admin", buildAdminLoadingPayload_());
+        if (authRoot) authRoot.remove();
+        showLoading(false);
+        loadTabData_("admin", { force: true, overlay: false, allowStaleFallback: false })
+          .catch((error) => {
+            handleError_(error, "admin");
+          })
           .finally(() => showLoading(false));
+        return null;
       })
       .catch((error) => {
         if (message) message.textContent = (error && error.message) || "관리자 인증에 실패했습니다.";
@@ -621,6 +636,9 @@ function fetchPublicSnapshotJson_(name, timeoutMs) {
     }).then((response) => {
       if (!response.ok) throw new Error(`Public snapshot fetch failed: ${response.status}`);
       return response.json();
+    }).then((payload) => {
+      validatePublicSnapshotContract_(name, payload);
+      return payload;
     }).catch((error) => {
       lastError = error;
       throw error;
@@ -630,9 +648,57 @@ function fetchPublicSnapshotJson_(name, timeoutMs) {
   });
   const firstSuccess = Promise.any ? Promise.any(attempts) : Promise.race(attempts);
   return firstSuccess.catch(() => {
-      PUBLIC_SNAPSHOT_FAILURE_UNTIL = Date.now() + (5 * 60 * 1000);
+      PUBLIC_SNAPSHOT_FAILURE_UNTIL = Date.now() + (30 * 60 * 1000);
+      try {
+        localStorage.setItem(PUBLIC_SNAPSHOT_FAILURE_STORAGE_KEY, String(PUBLIC_SNAPSHOT_FAILURE_UNTIL));
+      } catch (error) {
+        // Storage failure should not block Apps Script fallback.
+      }
       throw lastError || new Error("Public snapshot fetch failed");
     });
+}
+
+function validatePublicSnapshotContract_(name, payload) {
+  if (name === "home.json" || name === "initial.json" || name === "bootstrap.json") {
+    const home = name === "home.json"
+      ? payload
+      : (safeGet_(payload, ["home"]) || safeGet_(payload, ["bootstrap", "home"]));
+    if (home && !isClientHomePayloadFresh_(home)) throw new Error("Public home snapshot is stale");
+  }
+  if (/^asset\//.test(name) && payload && !isClientAssetPayloadFresh_(payload)) {
+    throw new Error("Public asset snapshot is stale");
+  }
+}
+
+function isClientHomePayloadFresh_(home) {
+  const rows = safeGet_(home, ["rentTrend"]) || [];
+  const monthlyVacancy = safeGet_(home, ["contractSummary", "monthlyVacancy"]) || [];
+  const upcoming = safeGet_(home, ["contractSummary", "upcoming"]) || [];
+  if ((!Array.isArray(monthlyVacancy) || !monthlyVacancy.length) && (!Array.isArray(upcoming) || !upcoming.length)) return false;
+  if (!rows.length) return true;
+  return rows.some((row) => row && row.monthlyCostTotalAdjusted != null && row.activeAssetCount != null && row.contractActiveAssetCount != null);
+}
+
+function isClientAssetPayloadFresh_(asset) {
+  const floors = safeGet_(asset, ["summary", "floors"]) || safeGet_(asset, ["floors"]) || [];
+  const stackingPlan = safeGet_(asset, ["stackingPlan"]) || [];
+  const rows = safeGet_(asset, ["rows"]) || [];
+  const floorSource = Array.isArray(floors) && floors.length ? floors : stackingPlan;
+  if (!Array.isArray(floorSource) || !floorSource.length) return true;
+  const floorHasTemperatureSource = floorSource.some((floor) => (floor.tenants || []).some((tenant) => (
+    tenant && ("coldStorageType" in tenant || "goodsType" in tenant || "officeAreaSqm" in tenant)
+  )));
+  if (floorHasTemperatureSource) return true;
+  return Array.isArray(rows) && rows.some((row) => (
+    row && ("coldStorageType" in row || "goodsType" in row || "officeAreaSqm" in row)
+  ));
+}
+
+function isClientPayloadFreshForTab_(tab, payload) {
+  if (!payload) return false;
+  if (tab === "home") return isClientHomePayloadFresh_(payload);
+  if (tab === "asset") return isClientAssetPayloadFresh_(payload);
+  return true;
 }
 
 function requestBootstrapData_() {
@@ -644,20 +710,33 @@ function requestBootstrapData_() {
 }
 
 function requestInitialDashboardData_() {
-  if (IS_ADMIN) {
-    return requestBootstrapData_().then((bootstrap) => ({ bootstrap: bootstrap }));
-  }
-  if (canUsePublicSnapshots_()) {
-    return fetchPublicSnapshotJson_("initial.json", 2000)
-      .catch(() => requestBootstrapData_().then((bootstrap) => ({ bootstrap: bootstrap })));
-  }
   return requestBootstrapData_().then((bootstrap) => ({ bootstrap: bootstrap }));
 }
 
 function bootstrapApp_() {
   const start = performance.now();
+  let shellReleased = false;
+  const releaseInitialShell = () => {
+    if (shellReleased) return;
+    shellReleased = true;
+    updateTopbar(state.bootstrap);
+    renderTabSkeleton(state.activeTab, { useBootstrapHint: state.activeTab === "home" });
+    if (state.activeTab === "home" && (state.bootstrap.homeLiteKpis || []).length) {
+      renderHomeLite_(state.bootstrap.homeLiteKpis || []);
+    }
+    showLoading(false);
+    if (!state.shellFallbackLoadStarted && state.activeTab !== "admin") {
+      state.shellFallbackLoadStarted = true;
+      window.setTimeout(() => {
+        loadTabData_(state.activeTab, { force: false, overlay: false, allowStaleFallback: true })
+          .catch((error) => handleError_(error, state.activeTab));
+      }, 0);
+    }
+  };
+  const shellTimer = window.setTimeout(releaseInitialShell, 800);
   requestInitialDashboardData_()
     .then((initialData) => {
+      window.clearTimeout(shellTimer);
       logPerf_("bootstrap", performance.now() - start, { status: "ok" });
       const bootstrap = safeGet_(initialData || {}, ["bootstrap"]) || initialData;
       applyBootstrap_(bootstrap || buildFallbackBootstrap_());
@@ -671,15 +750,19 @@ function bootstrapApp_() {
         showLoading(false);
         warmCommonTabs_();
         ensureSearchCatalogLoaded_();
+        shellReleased = true;
+        state.shellFallbackLoadStarted = true;
         return;
       }
 
-      if (state.activeTab === "home" && state.bootstrap.home) {
+      if (state.activeTab === "home" && state.bootstrap.home && isClientHomePayloadFresh_(state.bootstrap.home)) {
         cachePayload_("home", buildClientCacheKey_("home"), state.bootstrap.home);
         renderHome(state.bootstrap.home);
         showLoading(false);
         warmCommonTabs_();
         ensureSearchCatalogLoaded_();
+        shellReleased = true;
+        state.shellFallbackLoadStarted = true;
         return;
       }
 
@@ -688,12 +771,15 @@ function bootstrapApp_() {
         renderHomeLite_(state.bootstrap.homeLiteKpis || []);
       }
       showLoading(false);
+      shellReleased = true;
+      state.shellFallbackLoadStarted = true;
       window.setTimeout(() => {
         loadTabData_(state.activeTab, { force: false, overlay: false }).catch((error) => handleError_(error, state.activeTab));
       }, 0);
       ensureSearchCatalogLoaded_();
     })
     .catch((error) => {
+      window.clearTimeout(shellTimer);
       logPerf_("bootstrap", performance.now() - start, { status: "error" });
       loadTabData_(state.activeTab, { force: true, overlay: false })
         .catch((fallbackError) => handleError_(fallbackError || error, state.activeTab))
@@ -716,7 +802,7 @@ function applyBootstrap_(bootstrap) {
   state.selections.playgroundFilterDimension = safeGet_(state.bootstrap, ["defaults", "playgroundFilterDimension"]) || state.selections.playgroundFilterDimension;
   state.selections.playgroundFilterValue = safeGet_(state.bootstrap, ["defaults", "playgroundFilterValue"]) || state.selections.playgroundFilterValue;
   const defaultAssetPayload = safeGet_(state.bootstrap, ["defaultAssetPayload"]);
-  if (defaultAssetPayload && defaults.assetId) {
+  if (defaultAssetPayload && defaults.assetId && isClientAssetPayloadFresh_(defaultAssetPayload)) {
     cachePayload_("asset", buildEntityCacheKey_("asset", defaults.assetId), defaultAssetPayload);
   }
   const defaultCompanyPayload = safeGet_(state.bootstrap, ["defaultCompanyPayload"]);
@@ -745,13 +831,15 @@ function applyInitialDashboardData_(initialData) {
   }
   if (payloads.asset && payloads.asset.payload) {
     const assetId = payloads.asset.id || safeGet_(payloads.asset.payload, ["overview", "assetId"]) || state.selections.assetId;
-    cachePayload_("asset", buildEntityCacheKey_("asset", assetId), payloads.asset.payload);
+    if (isClientAssetPayloadFresh_(payloads.asset.payload)) {
+      cachePayload_("asset", buildEntityCacheKey_("asset", assetId), payloads.asset.payload);
+    }
   }
   if (payloads.company && payloads.company.payload) {
     const tenantId = payloads.company.id || safeGet_(payloads.company.payload, ["profile", "tenantId"]) || state.selections.tenantId;
     cachePayload_("company", buildEntityCacheKey_("company", tenantId), payloads.company.payload);
   }
-  ["sector", "tools", "playground"].forEach((tab) => {
+  ["weekly", "sector", "tools", "playground"].forEach((tab) => {
     if (payloads[tab]) cachePayload_(tab, buildClientCacheKey_(tab), payloads[tab]);
   });
   state.initialDataLoaded = true;
@@ -772,6 +860,12 @@ function warmCommonTabs_() {
       loadTabData_("company", { force: false, overlay: false, renderIfInactive: false }).catch(() => {});
     }
   }, 600);
+  window.setTimeout(() => {
+    loadTabData_("playground", { force: false, overlay: false, renderIfInactive: false }).catch(() => {});
+  }, 1800);
+  window.setTimeout(() => {
+    loadTabData_("tools", { force: false, overlay: false, renderIfInactive: false }).catch(() => {});
+  }, 2600);
 }
 
 function prefetchEntityPayloads_(entityType, ids) {
@@ -791,9 +885,9 @@ function prefetchEntityPayloads_(entityType, ids) {
 }
 
 function resolveInitialTab_(value) {
-  const requested = String(value || "home").toLowerCase();
+  const requested = String(value || "weekly").toLowerCase();
   if (requested === "admin" && IS_ADMIN) return "admin";
-  return TAB_ORDER.indexOf(requested) > -1 ? requested : "home";
+  return TAB_ORDER.indexOf(requested) > -1 ? requested : "weekly";
 }
 
 function hydrateUiState() {
@@ -864,7 +958,20 @@ function switchTab(tab, options) {
     return;
   }
 
-  renderTabSkeleton(tab, { useBootstrapHint: tab === "home" });
+  if (tab === "asset" || tab === "company") {
+    if (getEntityShellOptionCount_(tab) > 1) {
+      renderEntitySelectionShell_(tab);
+    } else {
+      renderTabSkeleton(tab, { useBootstrapHint: false });
+      ensureSearchCatalogLoaded_().then(() => {
+        if (state.activeTab === tab && getEntityShellOptionCount_(tab) > 1) {
+          renderEntitySelectionShell_(tab);
+        }
+      }).catch(() => {});
+    }
+  } else {
+    renderTabSkeleton(tab, { useBootstrapHint: tab === "home" });
+  }
   loadTabData_(tab, { force: settings.force, overlay: false, allowStaleFallback: settings.allowStaleFallback });
 }
 
@@ -891,6 +998,67 @@ function refreshActiveTab() {
   loadTabData_(state.activeTab, { force: true, overlay: false });
 }
 
+function renderEntitySelectionShell_(tab) {
+  const target = getTabRoot_(tab);
+  if (!target) return false;
+  const isAsset = tab === "asset";
+  const catalogOptions = isAsset ? (state.searchCatalog.assets || []) : (state.searchCatalog.companies || []);
+  const bootstrapOptions = isAsset ? (state.bootstrap.assetOptions || []) : (state.bootstrap.companyOptions || []);
+  const options = catalogOptions.length > bootstrapOptions.length ? catalogOptions : bootstrapOptions;
+  const sortedOptions = sortRowsByLabelKoFirst_(options, isAsset ? "assetName" : "tenantMasterName");
+  const selectedId = isAsset
+    ? (state.selections.assetId || safeGet_(state.bootstrap, ["defaults", "assetId"]) || "")
+    : (state.selections.tenantId || safeGet_(state.bootstrap, ["defaults", "tenantId"]) || "");
+  const selectorId = isAsset ? "asset-selector" : "company-selector";
+  const getId = isAsset ? getSearchAssetId_ : getSearchCompanyId_;
+  const getLabel = isAsset ? getSearchAssetLabel_ : getSearchCompanyLabel_;
+  const selectedRow = sortedOptions.find((row) => getId(row) === selectedId) || sortedOptions[0] || {};
+  const selectedLabel = getLabel(selectedRow) || (isAsset ? "선택 자산" : "선택 기업");
+
+  target.innerHTML = `
+    <div class="page-stack">
+      <section class="workspace-panel workspace-panel-accent">
+        <div class="hero-head">
+          <div>
+            <p class="page-kicker">${isAsset ? "자산 선택" : "기업 선택"}</p>
+            <h3 class="hero-title">${escapeHtml_(selectedLabel)}</h3>
+            <p class="hero-subtitle">선택값을 먼저 반영했습니다. 상세 숫자와 차트는 이어서 불러옵니다.</p>
+            ${renderBasisLine_("현재 선택", isAsset ? "자산 옵션" : "기업 옵션", "선택값", "bootstrap")}
+          </div>
+          <div class="hero-actions">
+            <div class="field" style="min-width:280px;">
+              <label for="${selectorId}">${isAsset ? "자산 선택" : "기업 선택"}</label>
+              <select id="${selectorId}">
+                ${sortedOptions.map((row) => {
+                  const id = getId(row);
+                  return `<option value="${escapeHtml_(id)}" ${id === selectedId ? "selected" : ""}>${escapeHtml_(getLabel(row))}</option>`;
+                }).join("")}
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="state-shell">
+        <strong>${escapeHtml_(selectedLabel)} 상세 데이터를 불러오고 있습니다.</strong>
+        <p>탭 전환은 먼저 완료했고, Google Sheet/스냅샷 기반 상세 payload를 받으면 KPI와 표를 즉시 교체합니다.</p>
+      </section>
+    </div>
+  `;
+
+  document.getElementById(selectorId)?.addEventListener("change", (event) => {
+    if (isAsset) selectAssetAndReload_(event.target.value);
+    else selectCompanyAndReload_(event.target.value);
+  });
+  return true;
+}
+
+function getEntityShellOptionCount_(tab) {
+  const isAsset = tab === "asset";
+  const catalogOptions = isAsset ? (state.searchCatalog.assets || []) : (state.searchCatalog.companies || []);
+  const bootstrapOptions = isAsset ? (state.bootstrap.assetOptions || []) : (state.bootstrap.companyOptions || []);
+  return Math.max(catalogOptions.length, bootstrapOptions.length);
+}
+
 function buildClientCacheKey_(tab) {
   const version = state.bootstrap.dataVersion || "0";
   if (tab === "home") return `page:${version}:home:default`;
@@ -901,7 +1069,7 @@ function buildClientCacheKey_(tab) {
   if (tab === "tools") {
     const assets = (state.selections.toolAssetIds || []).slice().sort().join(",");
     const companies = (state.selections.toolCompanyIds || []).slice().sort().join(",");
-    return `page:${version}:tools:a=${assets}|c=${companies}`;
+    return `page:${version}:tools:a=${assets}|c=${companies}|empty=${state.selections.toolDisableDefaultSelection ? "1" : "0"}`;
   }
   if (tab === "playground") {
     return `page:${version}:playground:m=${state.selections.playgroundMode}|row=${state.selections.playgroundDimension}|col=${state.selections.playgroundColumnDimension}|filter=${state.selections.playgroundFilterDimension}:${state.selections.playgroundFilterValue}|metric=${state.selections.playgroundMetric}|top=${state.selections.playgroundTopN}`;
@@ -963,9 +1131,11 @@ function clearAllClientCaches_() {
 function loadTabData_(tab, options) {
   const settings = Object.assign({ force: false, overlay: false, renderIfInactive: true, allowStaleFallback: true }, options || {});
   const cacheKey = buildClientCacheKey_(tab);
-  const staleFallback = settings.allowStaleFallback ? loadSessionPayload_(cacheKey) : null;
+  const loadedFallback = settings.allowStaleFallback ? loadSessionPayload_(cacheKey) : null;
+  const staleFallback = isClientPayloadFreshForTab_(tab, loadedFallback) ? loadedFallback : null;
   if (!settings.force) {
-    const cached = getCachedPayload_(cacheKey) || staleFallback;
+    const memoryCached = getCachedPayload_(cacheKey);
+    const cached = isClientPayloadFreshForTab_(tab, memoryCached) ? memoryCached : staleFallback;
     if (cached) {
       cachePayload_(tab, cacheKey, cached);
       if (tab === state.activeTab || settings.renderIfInactive) renderPayloadForTab_(tab, cached);
@@ -1017,30 +1187,18 @@ function requestPayloadForTab_(tab) {
     if (canUsePublicSnapshots_() && tenantId) return fetchPublicSnapshotJson_(`company/${encodeURIComponent(tenantId)}.json`, 3000).catch(() => callServer_("getCompanyData", tenantId, { timeoutMs: 60000 }));
     return callServer_("getCompanyData", adminAwareEntityRequest_("tenantId", tenantId), { timeoutMs: 60000 });
   }
+  if (tab === "weekly") {
+    if (canUsePublicSnapshots_()) return fetchPublicSnapshotJson_("weekly.json", 3000).catch(() => callServer_("getWeeklyReportData", adminAwareRequest_(), { timeoutMs: 45000 }));
+    return callServer_("getWeeklyReportData", adminAwareRequest_(), { timeoutMs: 45000 });
+  }
   if (tab === "sector") {
     if (canUsePublicSnapshots_()) return fetchPublicSnapshotJson_("sector.json", 3000).catch(() => callServer_("getSectorData", adminAwareRequest_(), { timeoutMs: 45000 }));
     return callServer_("getSectorData", adminAwareRequest_(), { timeoutMs: 45000 });
   }
   if (tab === "tools") {
-    const isDefaultTools = !(state.selections.toolAssetIds || []).length && !(state.selections.toolCompanyIds || []).length;
-    if (canUsePublicSnapshots_() && isDefaultTools) return fetchPublicSnapshotJson_("tools.json", 3000).catch(() => callServer_("getToolsData", adminAwareRequest_({ assetIds: [], companyIds: [] }), { timeoutMs: 45000 }));
-    return callServer_("getToolsData", adminAwareRequest_({ assetIds: state.selections.toolAssetIds || [], companyIds: state.selections.toolCompanyIds || [] }), { timeoutMs: 45000 });
+    return callServer_("getToolsData", adminAwareRequest_({ assetIds: state.selections.toolAssetIds || [], companyIds: state.selections.toolCompanyIds || [], disableDefaultSelection: !!state.selections.toolDisableDefaultSelection }), { timeoutMs: 45000 });
   }
   if (tab === "playground") {
-    const isDefaultPlayground = state.selections.playgroundDimension === "assetName"
-      && state.selections.playgroundColumnDimension === "none"
-      && !state.selections.playgroundFilterDimension
-      && !state.selections.playgroundFilterValue
-      && state.selections.playgroundMetric === "leasedAreaSqm"
-      && Number(state.selections.playgroundTopN) === 25;
-    if (canUsePublicSnapshots_() && isDefaultPlayground) return fetchPublicSnapshotJson_("playground.json", 3000).catch(() => callServer_("getPlaygroundData", adminAwareRequest_({
-      rowDimension: "assetName",
-      columnDimension: "none",
-      filterDimension: "",
-      filterValue: "",
-      valueMetric: "leasedAreaSqm",
-      topN: 25,
-    }), { timeoutMs: 45000 }));
     return callServer_("getPlaygroundData", adminAwareRequest_({
       rowDimension: state.selections.playgroundDimension,
       columnDimension: state.selections.playgroundColumnDimension,
@@ -1114,8 +1272,10 @@ function renderAdminPasswordGate_(view) {
     callServer_("verifyAdminPassword", { password }, { timeoutMs: 30000 })
       .then((result) => {
         APP_FLAGS.adminSessionToken = normalizeFlagString_(result && result.adminSessionToken);
+        APP_FLAGS.adminAuthRequired = false;
         window.APP_FLAGS = APP_FLAGS;
         clearAllClientCaches_();
+        renderPayloadForTab_("admin", buildAdminLoadingPayload_());
         return loadTabData_("admin", { force: true, overlay: true, allowStaleFallback: false });
       })
       .catch((error) => {
@@ -1163,6 +1323,7 @@ function renderPayloadForTab_(tab, payload) {
     if (tab === "home") return renderHome(payload);
     if (tab === "asset") return renderAsset(payload);
     if (tab === "company") return renderCompany(payload);
+    if (tab === "weekly") return renderWeeklyReport(payload);
     if (tab === "sector") return renderSector(payload);
     if (tab === "tools") return renderTools(payload);
     if (tab === "playground") return renderPlayground(payload);
@@ -1174,6 +1335,33 @@ function renderPayloadForTab_(tab, payload) {
   } finally {
     logPerf_(`render:${tab}`, performance.now() - startedAt, { status: "complete" });
   }
+}
+
+function buildAdminLoadingPayload_() {
+  return {
+    authorization: { status: "인증 완료" },
+    integrations: {
+      openDart: {},
+      buildingHub: {},
+      naverMaps: {},
+    },
+    deployment: { routes: {} },
+    staticSnapshotState: {},
+    uiDataReconciliation: { status: "로딩 중", okCount: 0, reviewCount: 0, errorCount: 0 },
+    reviewMetrics: [
+      { key: "historyMissing", label: "히스토리 미연결", value: 0, unit: "건" },
+      { key: "rentMissing", label: "임대료 누락", value: 0, unit: "건" },
+      { key: "mfMissing", label: "관리비 누락", value: 0, unit: "건" },
+      { key: "enocMissing", label: "E.NOC 누락", value: 0, unit: "건" },
+      { key: "reviewRequired", label: "검토 필요", value: 0, unit: "건" },
+      { key: "suspectedError", label: "오류 의심", value: 0, unit: "건" },
+    ],
+    reviewDetails: {},
+    jobStates: {},
+    auditLogRows: [],
+    auditLogSummary: { total: 0, reasonRequired: 0, byAction: {} },
+    loadErrors: [{ message: "관리자 세부 데이터를 불러오는 중입니다. 버튼은 먼저 사용할 수 있습니다." }],
+  };
 }
 
 function renderHomeLite_(kpis) {
@@ -1472,6 +1660,15 @@ function renderAssetLegacy_(asset) {
 
   const rows = expandAssetRowsByFloorClient_(asset.rows || []);
   const summary = asset.overview || {};
+  const assetMapPoint = summary.latitude != null && summary.longitude != null
+    ? [{
+        assetId: summary.assetId || safeGet_(asset, ["filters", "selectedAssetId"]) || state.selections.assetId,
+        assetName: summary.assetName || "선택 자산",
+        address: summary.standardizedAddress || summary.address || "",
+        latitude: summary.latitude,
+        longitude: summary.longitude,
+      }]
+    : [];
   const breakdown = asset.areaBreakdown || {};
   const selectorOptions = safeGet_(asset, ["filters", "assets"]) || state.bootstrap.assetOptions || [];
   state.selections.assetId = safeGet_(asset, ["filters", "selectedAssetId"]) || state.selections.assetId || "";
@@ -2454,7 +2651,7 @@ function openTenantDetailModal_(tenantId, title) {
     .finally(() => showLoading(false));
 }
 
-function renderTenantSurfaceBody_(payload) {
+function renderTenantSurfaceBodyLegacy_(payload) {
   const profile = payload.profile || {};
   return `
     ${renderKeyValueGrid_([
@@ -2469,7 +2666,7 @@ function renderTenantSurfaceBody_(payload) {
   `;
 }
 
-function renderAssetSurfaceBody_(payload) {
+function renderAssetSurfaceBodyLegacy_(payload) {
   const overview = payload.overview || {};
   return `
     ${renderKeyValueGrid_([
@@ -2618,7 +2815,7 @@ function renderStatusChip_(status) {
   return `<span class="status-chip ${className}">${escapeHtml_(normalized)}</span>`;
 }
 
-function renderBasisLine_(asOf, scope, unit, source) {
+function renderBasisLineLegacy_(asOf, scope, unit, source) {
   return `<p class="basis-line">기준 | 시점: ${escapeHtml_(asOf || "-")} · 범위: ${escapeHtml_(scope || "-")} · 단위: ${escapeHtml_(unit || "-")} · 근거: ${escapeHtml_(source || "-")}</p>`;
 }
 
@@ -2684,17 +2881,98 @@ function renderStackingPlan_(floors) {
           </div>
           <div class="stack-floor-track">
             <div class="stack-track">
-              ${(floor.tenants || []).length ? (floor.tenants || []).map((tenant) => `
-                <button class="stack-chip ${IS_ADMIN && tenant.reviewStatus && tenant.reviewStatus !== "ok" ? "is-review" : ""}" type="button" data-tenant="${escapeHtml_(tenant.tenantId)}" style="flex:${Math.max(tenant.share || 0.08, 0.08)};">
-                  ${escapeHtml_(tenant.tenantMasterName)}<br>${escapeHtml_(tenant.detailAreaLabel || "세부구역 미입력")} · ${formatArea_(tenant.leasedAreaSqm)}
+              ${(floor.tenants || []).length ? (floor.tenants || []).map((tenant) => {
+                const temperatureType = normalizeStackTemperatureType_(tenant);
+                return `
+                <button class="stack-chip ${stackTemperatureClass_(temperatureType)} ${IS_ADMIN && tenant.reviewStatus && tenant.reviewStatus !== "ok" ? "is-review" : ""}" type="button" data-tenant="${escapeHtml_(tenant.tenantId)}" style="flex:${Math.max(tenant.share || 0.08, 0.08)};">
+                  <strong>${escapeHtml_(tenant.tenantMasterName)}</strong>
+                  <span>${escapeHtml_(tenant.detailAreaLabel || "세부구역 미입력")} · ${formatAreaWithPy_(tenant.leasedAreaSqm)} · ${escapeHtml_(temperatureType)}</span>
                 </button>
-              `).join("") : `<span class="stack-chip" style="flex:1 1 auto;">${escapeHtml_("공실 / 운영 없음")}</span>`}
+              `;
+              }).join("") : `<span class="stack-chip stack-temp-office" style="flex:1 1 auto;">${escapeHtml_("공실 / 운영 없음")}</span>`}
             </div>
           </div>
         </div>
       `).join("")}
     </div>
   `;
+}
+
+function enrichStackingPlanWithAssetRows_(floors, rows) {
+  const sourceRows = (rows || []).map((row) => Object.assign({}, row, {
+    __usedForStack: false,
+    __floorKey: normalizeStackFloorKey_(row.floorLabel),
+  }));
+  return (floors || []).map((floor) => {
+    const floorKey = normalizeStackFloorKey_(floor.floorLabel);
+    return Object.assign({}, floor, {
+      tenants: (floor.tenants || []).map((tenant) => {
+        const match = pickStackSourceRow_(sourceRows, floorKey, tenant);
+        return Object.assign({}, tenant, {
+          detailAreaLabel: firstNonEmptyValue_(tenant.detailAreaLabel, match && match.detailAreaLabel),
+          coldStorageType: firstNonEmptyValue_(tenant.coldStorageType, match && match.coldStorageType),
+          goodsType: firstNonEmptyValue_(tenant.goodsType, match && match.goodsType),
+          officeAreaSqm: firstDefinedNumber_(tenant.officeAreaSqm, match && match.officeAreaSqm),
+        });
+      }),
+    });
+  });
+}
+
+function normalizeStackFloorKey_(value) {
+  return String(value == null ? "" : value).replace(/\s+/g, "").toLowerCase();
+}
+
+function pickStackSourceRow_(rows, floorKey, tenant) {
+  const tenantId = tenant && tenant.tenantId;
+  const area = numericOrNull_(tenant && tenant.leasedAreaSqm);
+  const candidates = rows.filter((row) => !row.__usedForStack && row.__floorKey === floorKey && (!tenantId || row.tenantId === tenantId));
+  const exact = candidates.find((row) => {
+    const rowArea = numericOrNull_(row.leasedAreaSqm);
+    if (area == null || rowArea == null) return false;
+    return Math.abs(rowArea - area) <= Math.max(1, Math.abs(area) * 0.01);
+  });
+  const match = exact || candidates[0] || rows.find((row) => !row.__usedForStack && row.__floorKey === floorKey) || null;
+  if (match) match.__usedForStack = true;
+  return match;
+}
+
+function normalizeStackTemperatureType_(tenant) {
+  const sourceText = [
+    tenant && tenant.coldStorageType,
+    tenant && tenant.goodsType,
+    tenant && tenant.detailAreaLabel,
+  ].filter(Boolean).join(" ").toLowerCase();
+  if (!sourceText) return "상온";
+  if (sourceText.indexOf("혼합") !== -1 || sourceText.indexOf("mixed") !== -1) return "혼합";
+  if (sourceText.indexOf("사무") !== -1 || sourceText.indexOf("office") !== -1) return "사무실";
+  if (/^(y|yes|true|1)$/.test(sourceText.trim())) return "저온";
+  if (/^(n|no|false|0)$/.test(sourceText.trim())) return "상온";
+  if (
+    sourceText.indexOf("저온") !== -1 ||
+    sourceText.indexOf("냉장") !== -1 ||
+    sourceText.indexOf("냉동") !== -1 ||
+    sourceText.indexOf("cold") !== -1 ||
+    sourceText.indexOf("frozen") !== -1 ||
+    sourceText.indexOf("chilled") !== -1
+  ) return "저온";
+  if (sourceText.indexOf("상온") !== -1 || sourceText.indexOf("ambient") !== -1 || sourceText.indexOf("dry") !== -1) return "상온";
+  return "상온";
+}
+
+function stackTemperatureClass_(temperatureType) {
+  if (temperatureType === "저온") return "stack-temp-cold";
+  if (temperatureType === "혼합") return "stack-temp-mixed";
+  if (temperatureType === "사무실") return "stack-temp-office";
+  return "stack-temp-ambient";
+}
+
+function formatAreaWithPy_(sqm) {
+  const areaText = formatArea_(sqm);
+  const numeric = numericOrNull_(sqm);
+  const pyText = numeric == null ? "-" : `${formatNumber_(numeric * 0.3025)}평`;
+  if (areaText === "-") return "-";
+  return `${areaText} / ${pyText}`;
 }
 
 function expandClientFloorLabels_(floorLabel) {
@@ -2902,6 +3180,26 @@ function renderBarChartLegacy_(canvasId, rows, config) {
     .then(() => {
       destroyChart_(canvasId);
       setChartState_(canvasId, config.placeholderId, { showPlaceholder: false, message: "" });
+      const options = buildChartBaseOptions_(palette, {
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: cssColorToRgba_(palette.strong, 0.94),
+            titleColor: "#ffffff",
+            bodyColor: "#f8fafc",
+            borderColor: cssColorToRgba_(palette.outline, 0.8),
+            borderWidth: 1,
+            padding: 12,
+            callbacks: typeof config.tooltipLines === "function" ? {
+              label: (context) => {
+                const row = rows[context.dataIndex] || {};
+                const lines = config.tooltipLines(row, context) || [];
+                return Array.isArray(lines) && lines.length ? lines : `${config.label}: ${formatChartTickValue_(context.parsed && context.parsed.y, config.valueType || "number")}`;
+              },
+            } : undefined,
+          },
+        },
+      });
       state.charts[canvasId] = new Chart(canvas.getContext("2d"), {
         type: "bar",
         data: {
@@ -3141,17 +3439,21 @@ function renderLineChart_(canvasId, rows, config) {
             const stroke = series.color || palette.series[index % palette.series.length];
             seriesByLabel[series.label] = series;
             return {
+              type: series.type || "line",
               label: series.label,
               data: rows.map((row) => row[series.key] == null ? null : Number(row[series.key] || 0)),
               borderColor: stroke,
-              backgroundColor: cssColorToRgba_(stroke, index === 0 ? 0.18 : 0.12),
-              borderWidth: 2.4,
+              backgroundColor: cssColorToRgba_(stroke, series.type === "bar" ? 0.72 : (index === 0 ? 0.18 : 0.12)),
+              borderWidth: series.type === "bar" ? 0 : 2.4,
               tension: 0.3,
               pointRadius: 2.4,
               pointHoverRadius: 4,
               pointBorderWidth: 0,
               pointBackgroundColor: stroke,
               fill: false,
+              borderRadius: series.type === "bar" ? 8 : 0,
+              borderSkipped: false,
+              maxBarThickness: series.type === "bar" ? 28 : undefined,
               spanGaps: true,
               yAxisID: series.axis === "right" ? "y1" : "y",
             };
@@ -3166,12 +3468,26 @@ function renderLineChart_(canvasId, rows, config) {
                   const series = seriesByLabel[label] || {};
                   return `${label}: ${formatChartTickValue_(context.parsed && context.parsed.y, series.valueType || (context.dataset && context.dataset.yAxisID === "y1" ? rightValueType : leftValueType))}`;
                 },
+                afterBody: (contexts) => {
+                  if (typeof config.tooltipLines !== "function" || !contexts || !contexts.length) return [];
+                  const row = rows[contexts[0].dataIndex] || {};
+                  const lines = config.tooltipLines(row, contexts[0]);
+                  return Array.isArray(lines) ? lines : [String(lines || "")];
+                },
               },
             }),
           }),
         }),
       });
-      canvas.onclick = () => config.onClick && config.onClick();
+      canvas.onclick = (event) => {
+        if (!config.onClick) return;
+        const chart = state.charts[canvasId];
+        const points = chart && chart.getElementsAtEventForMode
+          ? chart.getElementsAtEventForMode(event, "nearest", { intersect: true }, true)
+          : [];
+        const selectedRow = points && points.length ? rows[points[0].index] : null;
+        config.onClick(selectedRow, event);
+      };
     })
     .catch(() => {
       destroyChart_(canvasId);
@@ -3192,6 +3508,17 @@ function renderBarChart_(canvasId, rows, config) {
       const palette = getChartPalette_();
       destroyChart_(canvasId);
       setChartState_(canvasId, config.placeholderId, { showPlaceholder: false, message: "" });
+      const options = buildChartBaseOptions_(palette, { valueType: config.valueType || "number" });
+      options.plugins.legend.display = false;
+      if (typeof config.tooltipLines === "function") {
+        options.plugins.tooltip.callbacks = {
+          label: (context) => {
+            const row = rows[context.dataIndex] || {};
+            const lines = config.tooltipLines(row, context);
+            return Array.isArray(lines) ? lines : [String(lines || "")];
+          },
+        };
+      }
       state.charts[canvasId] = new Chart(canvas.getContext("2d"), {
         type: "bar",
         data: {
@@ -3205,21 +3532,17 @@ function renderBarChart_(canvasId, rows, config) {
             maxBarThickness: 34,
           }],
         },
-        options: buildChartBaseOptions_(palette, {
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              backgroundColor: cssColorToRgba_(palette.strong, 0.94),
-              titleColor: "#ffffff",
-              bodyColor: "#f8fafc",
-              borderColor: cssColorToRgba_(palette.outline, 0.8),
-              borderWidth: 1,
-              padding: 12,
-            },
-          },
-        }),
+        options: options,
       });
-      canvas.onclick = () => config.onClick && config.onClick();
+      canvas.onclick = (event) => {
+        if (!config.onClick) return;
+        const chart = state.charts[canvasId];
+        const points = chart && chart.getElementsAtEventForMode
+          ? chart.getElementsAtEventForMode(event, "nearest", { intersect: true }, true)
+          : [];
+        const selectedRow = points && points.length ? rows[points[0].index] : null;
+        config.onClick(selectedRow, event);
+      };
     })
     .catch(() => {
       destroyChart_(canvasId);
@@ -3304,11 +3627,23 @@ function renderHome(home) {
   const dataBacklog = home.missingCounts || {};
   const mapPoints = home.mapPoints || [];
   const expiryBuckets = safeGet_(home, ["contractSummary", "byBucket"]) || [];
+  let cumulativeGrossFloorAreaSqm = null;
+  let cumulativeActiveAssetCount = null;
   const rentTrendRows = (home.rentTrend || []).map((row) => {
-    const grossFloorAreaSqm = firstDefinedNumber_(row.grossFloorAreaSqm, safeGet_(home, ["rentTrendSummary", "latestGrossFloorAreaSqm"]), occupancy.grossFloorAreaSqm);
+    const rawGrossFloorAreaSqm = firstDefinedNumber_(row.grossFloorAreaSqm, safeGet_(home, ["rentTrendSummary", "latestGrossFloorAreaSqm"]), occupancy.grossFloorAreaSqm);
+    if (rawGrossFloorAreaSqm != null) cumulativeGrossFloorAreaSqm = Math.max(Number(cumulativeGrossFloorAreaSqm || 0), Number(rawGrossFloorAreaSqm || 0));
+    const grossFloorAreaSqm = cumulativeGrossFloorAreaSqm != null ? cumulativeGrossFloorAreaSqm : rawGrossFloorAreaSqm;
+    const adjustedRent = firstDefinedNumber_(row.monthlyRentTotalAdjusted, row.monthlyRentTotal);
+    const adjustedMf = firstDefinedNumber_(row.monthlyMfTotalAdjusted, row.monthlyMfTotal);
+    const adjustedCombined = resolveCombinedAmount_(row.monthlyCostTotalAdjusted, adjustedRent, adjustedMf);
+    const rawActiveAssetCount = firstDefinedNumber_(row.activeAssetCount, safeGet_(home, ["rentTrendSummary", "latestActiveAssetCount"]));
+    if (rawActiveAssetCount != null) cumulativeActiveAssetCount = Math.max(Number(cumulativeActiveAssetCount || 0), Number(rawActiveAssetCount || 0));
     return Object.assign({}, row, {
       monthlyCombinedTotal: resolveCombinedAmount_(row.monthlyTotal, row.monthlyRentTotal, row.monthlyMfTotal),
-      activeAssetCount: firstDefinedNumber_(row.activeAssetCount, safeGet_(home, ["rentTrendSummary", "latestActiveAssetCount"])),
+      monthlyRentTotalAdjusted: adjustedRent,
+      monthlyMfTotalAdjusted: adjustedMf,
+      monthlyCostTotalAdjusted: adjustedCombined,
+      activeAssetCount: cumulativeActiveAssetCount != null ? cumulativeActiveAssetCount : rawActiveAssetCount,
       leasedAreaSqm: firstDefinedNumber_(row.leasedAreaSqm, occupancy.leasedAreaSqm),
       grossFloorAreaSqm: grossFloorAreaSqm,
       grossFloorAreaDisplay: grossFloorAreaSqm != null ? roundNumber_(grossFloorAreaSqm / 10000, 2) : null,
@@ -3386,6 +3721,108 @@ function renderHome(home) {
   const vacancyRowsByAssetId = mapByKey_(vacancyRows, "assetId");
   const mapAssetRows = mapPoints.map((row) => Object.assign({}, row, vacancyRowsByAssetId[row.assetId] || {}));
   const upcomingExpiryRows = safeGet_(home, ["contractSummary", "upcoming"]) || [];
+  const monthKeyFromIsoLocal_ = (value) => String(value || "").slice(0, 7);
+  const addMonthsToMonthKeyLocal_ = (monthKey, offset) => {
+    const [yearText, monthText] = String(monthKey || "").split("-");
+    const year = Number(yearText);
+    const month = Number(monthText);
+    if (!year || !month) return "";
+    const totalMonths = year * 12 + (month - 1) + Number(offset || 0);
+    const nextYear = Math.floor(totalMonths / 12);
+    const nextMonth = (totalMonths % 12) + 1;
+    return `${nextYear}-${String(nextMonth).padStart(2, "0")}`;
+  };
+  const buildMonthlyExpiryRowsFromUpcoming_ = (rows) => {
+    const groups = {};
+    (rows || []).forEach((row) => {
+      const month = row.expiryMonth || monthKeyFromIsoLocal_(row.currentEndDate);
+      if (!month) return;
+      if (!groups[month]) groups[month] = [];
+      groups[month].push(Object.assign({ expiryMonth: month }, row));
+    });
+    return Object.keys(groups).sort().map((month) => {
+      const items = groups[month];
+      const uniqueKeys = {};
+      items.forEach((item) => {
+        const tenantKey = item.tenantId || item.tenantMasterName || "unknown_tenant";
+        const assetKey = item.assetId || item.assetName || "unknown_asset";
+        uniqueKeys[`${assetKey}|${tenantKey}`] = true;
+      });
+      return {
+        month,
+        label: month,
+        expiringAreaSqm: sumRows_(items, (item) => item.leasedAreaSqm),
+        monthlyRentTotal: sumRows_(items, (item) => item.monthlyRentTotal),
+        monthlyMfTotal: sumRows_(items, (item) => item.monthlyMfTotal),
+        monthlyCostTotal: sumRows_(items, (item) => item.monthlyCostTotal),
+        contractCount: items.length,
+        uniqueTenantCount: Object.keys(uniqueKeys).length,
+        count: Object.keys(uniqueKeys).length,
+        items,
+      };
+    });
+  };
+  const fillMonthlyExpiryTimeline_ = (rows) => {
+    const bucketMap = {};
+    (rows || []).forEach((row) => {
+      const month = row.month || row.label;
+      if (month) bucketMap[month] = row;
+    });
+    const startMonth = monthKeyFromIsoLocal_(safeGet_(home, ["generatedAt"]) || safeGet_(home, ["meta", "generatedAt"]) || new Date().toISOString());
+    if (!startMonth) return rows || [];
+    return Array.from({ length: 37 }, (_, index) => {
+      const month = addMonthsToMonthKeyLocal_(startMonth, index);
+      const bucket = bucketMap[month] || {};
+      return Object.assign({
+        month,
+        label: month,
+        expiringAreaSqm: 0,
+        monthlyRentTotal: 0,
+        monthlyMfTotal: 0,
+        monthlyCostTotal: 0,
+        contractCount: 0,
+        uniqueTenantCount: 0,
+        count: 0,
+        items: [],
+      }, bucket, { month, label: month });
+    });
+  };
+  const explicitMonthlyExpiryRows = safeGet_(home, ["contractSummary", "monthlyExpirySeries"]) || safeGet_(home, ["contractSummary", "monthlyVacancy"]) || [];
+  const monthlyExpiryRows = fillMonthlyExpiryTimeline_(explicitMonthlyExpiryRows.length ? explicitMonthlyExpiryRows : buildMonthlyExpiryRowsFromUpcoming_(upcomingExpiryRows)).map((row) => Object.assign({}, row, {
+    uniqueTenantCount: firstDefinedNumber_(row.uniqueTenantCount, row.count, 0) || 0,
+    contractCount: firstDefinedNumber_(row.contractCount, safeGet_(row, ["items", "length"]), 0) || 0,
+  }));
+  const expiryReferenceMonth = monthKeyFromIsoLocal_(safeGet_(home, ["generatedAt"]) || safeGet_(home, ["meta", "generatedAt"]) || new Date().toISOString());
+  const monthlyExpiryDetailRows = monthlyExpiryRows.reduce((accumulator, bucket) => {
+    (bucket.items || []).forEach((item) => {
+      accumulator.push(Object.assign({ expiryMonth: bucket.month || bucket.label }, item));
+    });
+    return accumulator;
+  }, []);
+  const openHomeExpiryDetailModal_ = (selectedBucket) => {
+    const targetRows = selectedBucket && selectedBucket.items && selectedBucket.items.length
+      ? selectedBucket.items.map((item) => Object.assign({ expiryMonth: selectedBucket.month || selectedBucket.label }, item))
+      : monthlyExpiryDetailRows;
+    openMetricModal_(
+      selectedBucket && (selectedBucket.month || selectedBucket.label) ? `만기 집중도 상세 · ${selectedBucket.month || selectedBucket.label}` : "만기 집중도 월별 상세",
+      targetRows.length
+        ? renderTable_(["만기월", "임차인", "자산", "임대면적", "월 임대료", "월 관리비", "월 임관리비", "평당 월 임대료", "평당 월 관리비", "E.NOC", "공간"], targetRows.map((row) => [
+          row.expiryMonth || monthKeyFromIsoLocal_(row.currentEndDate) || "-",
+          row.tenantMasterName || "-",
+          row.assetName || "-",
+          formatArea_(row.leasedAreaSqm),
+          formatCurrency_(row.monthlyRentTotal),
+          formatCurrency_(row.monthlyMfTotal),
+          formatCurrency_(row.monthlyCostTotal),
+          formatCurrency_(row.rentPerPy),
+          formatCurrency_(row.mfPerPy),
+          formatCurrency_(row.eNoc),
+          [row.floorLabel, row.detailAreaLabel].filter(Boolean).join(" / ") || "-",
+        ]))
+        : renderEmptyState_("표시할 만기 상세 계약이 없습니다."),
+      renderBasisLine_(homeBasis("현 시점 이후 만기 계약", "㎡/원/평당", "DB_일반 + DB_히스토리 누적"))
+    );
+  };
   const mapPointCountText = `${formatNumber_(mapPoints.length)}개 자산`;
   const renderMapPointAddress_ = (point) => firstNonEmptyValue_(point.address, point.standardizedAddress, safeGet_(vacancyRowsByAssetId, [point.assetId, "address"]), "-");
   const getExpiryBucketLabel_ = (row) => firstNonEmptyValue_(row.bucketLabel, row.expiryBucket, row.bucket, row.label, "");
@@ -3550,22 +3987,16 @@ function renderHome(home) {
             <div class="section-header">
               <div class="section-heading-copy">
                 <h3 class="section-title">만기 집중도</h3>
-                <p class="section-subtitle">만기 구간별 건수와 상세 계약을 함께 확인할 수 있도록 아래로 붙였습니다.</p>
-                ${renderBasisLine_(homeBasis("포트폴리오 전체", "건", "DB_일반"))}
+                <p class="section-subtitle">월별 만기 임대면적과 자산별 unique 임차인 수를 함께 추적합니다.</p>
+                ${renderBasisLine_(homeBasis("현 시점 이후 36개월 만기 계약", "㎡ / unique 임차인", "DB_일반 + DB_히스토리 누적", expiryReferenceMonth ? `현 시점 ${expiryReferenceMonth}` : "현 시점 기준"))}
               </div>
               <div class="section-actions">
-                <button class="secondary-button" type="button" data-action="home-expiry-detail">상세 보기</button>
+                <button class="secondary-button" type="button" data-action="home-expiry-detail">월별 상세 보기</button>
               </div>
             </div>
-            <div class="summary-list summary-list-compact home-expiry-list">
-              ${expiryBuckets.length ? expiryBuckets.map((bucket) => `
-                <button class="summary-button home-expiry-bucket-button" type="button" data-home-expiry-bucket="${escapeHtml_(bucket.label)}">
-                <div class="summary-item home-expiry-item">
-                  <h4>${escapeHtml_(bucket.label)}</h4>
-                  <p>${formatNumber_(bucket.count)}건</p>
-                </div>
-                </button>
-              `).join("") : renderEmptyState_("표시할 만기 구간이 없습니다.")}
+            <div class="chart-shell">
+              <div class="chart-slot home-expiry-chart-slot"><canvas id="home-expiry-chart"></canvas></div>
+              <div class="chart-placeholder" id="home-expiry-placeholder">월별 만기 시계열을 준비하고 있습니다.</div>
             </div>
           </section>
         </div>
@@ -3630,7 +4061,7 @@ function renderHome(home) {
       ["공실률", formatPercent_(occupancy.vacancyRate)],
     ]), renderBasisLine_(homeBasis("포트폴리오 전체", "%", "DB_일반 + DB_자산"))),
     "home-kpi-total-cost": () => openMetricModal_("월 임관리비 총액 근거", renderTable_(["임차인명", "월 임대료", "월 관리비", "월 임관리비"], normalizedTopContractsForDisplay.map((row) => [row.tenantMasterName, formatCurrency_(row.monthlyRentTotal), formatCurrency_(row.monthlyMfTotal), formatCurrency_(row.monthlyCombinedTotal)])), renderBasisLine_(homeBasis("포트폴리오 전체", "원", "DB_히스토리 누적"))),
-    "home-rent-detail": () => openMetricModal_("임대료 추이 원본 표", renderTable_(["월", "월 임대료", "월 관리비", "월 임관리비", "자산 수", "총 연면적", "신규 편입 자산"], rentTrendRows.map((row) => [row.month, formatCurrency_(row.monthlyRentTotal), formatCurrency_(row.monthlyMfTotal), formatCurrency_(row.monthlyCombinedTotal), formatNumber_(row.activeAssetCount), formatArea_(row.grossFloorAreaSqm), (row.newlyAddedAssets || []).map((asset) => asset.assetName).join(", ") || "-"])), renderBasisLine_(homeBasis("포트폴리오 전체", "원 / 개 / ㎡", "DB_히스토리 누적 + DB_자산", safeGet_(home, ["rentTrendSummary", "latestMonth"]) ? `최신 반영월 ${safeGet_(home, ["rentTrendSummary", "latestMonth"])}` : ""))),
+    "home-rent-detail": () => openMetricModal_("임대료 추이 원본 표", renderTable_(["월", "월 임대료(RF/FO 반영)", "월 관리비", "월 임관리비(RF/FO 반영)", "원 월임대료", "원 월관리비", "원 월임관리비", "자산 수", "총 연면적", "신규 편입 자산"], rentTrendRows.map((row) => [row.month, formatCurrency_(row.monthlyRentTotalAdjusted), formatCurrency_(row.monthlyMfTotalAdjusted), formatCurrency_(row.monthlyCostTotalAdjusted), formatCurrency_(row.monthlyRentTotal), formatCurrency_(row.monthlyMfTotal), formatCurrency_(row.monthlyCombinedTotal), formatNumber_(row.activeAssetCount), formatArea_(row.grossFloorAreaSqm), (row.newlyAddedAssets || []).map((asset) => asset.assetName).join(", ") || "-"])), renderBasisLine_(homeBasis("포트폴리오 전체", "원 / 개 / ㎡", "DB_히스토리 누적 + DB_자산", safeGet_(home, ["rentTrendSummary", "latestMonth"]) ? `최신 반영월 ${safeGet_(home, ["rentTrendSummary", "latestMonth"])}` : ""))),
     "home-map-detail": () => openPortfolioMapModal_(mapPoints, renderBasisLine_(homeBasis("좌표 보유 자산", "자산", "DB_자산"))),
     "home-map-list": () => openMetricModal_("좌표 보유 자산 목록", renderTable_(["No.", "자산명", "주소", "좌표"], mapPoints.map((row, index) => [formatNumber_(index + 1), row.assetName, renderMapPointAddress_(row), row.latitude != null && row.longitude != null ? `${row.latitude}, ${row.longitude}` : "-"])), renderBasisLine_(homeBasis("좌표 보유 자산", "자산", "DB_자산"))),
     "home-expiry-detail": () => openMetricModal_("만기 집중도 상세", upcomingExpiryRows.length ? renderTable_(["자산명", "임차인명", "계약만기일", "잔여 개월"], upcomingExpiryRows.map((row) => [row.assetName, row.tenantMasterName, formatDateCell_(row.currentEndDate), formatNumber_(row.monthsToExpiry)])) : renderEmptyState_("표시할 만기 상세 계약이 없습니다."), renderBasisLine_(homeBasis("포트폴리오 전체", "개월", "DB_일반"))),
@@ -3644,15 +4075,45 @@ function renderHome(home) {
     placeholderId: "home-rent-placeholder",
     labelKey: "month",
     leftValueType: "currency",
-    rightValueType: "number",
+    rightValueType: "count",
     series: [
-      { key: "monthlyRentTotal", label: "월 임대료", valueType: "currency" },
-      { key: "monthlyMfTotal", label: "월 관리비", valueType: "currency" },
+      { key: "monthlyRentTotalAdjusted", label: "월 임대료(RF/FO 반영)", valueType: "currency" },
+      { key: "monthlyMfTotalAdjusted", label: "월 관리비", valueType: "currency" },
+      { key: "monthlyCostTotalAdjusted", label: "월 임관리비(RF/FO 반영)", valueType: "currency" },
+      { key: "grossFloorAreaDisplay", label: "총 연면적(만㎡)", valueType: "number" },
       { key: "activeAssetCount", label: "자산 수", axis: "right", valueType: "count" },
-      { key: "grossFloorAreaDisplay", label: "총 연면적(만㎡)", axis: "right", valueType: "number" },
     ],
-    onClick: () => openMetricModal_("임대료 추이 원본 표", renderTable_(["월", "월 임대료", "월 관리비", "월 임관리비", "자산 수", "총 연면적", "신규 편입 자산"], rentTrendRows.map((row) => [row.month, formatCurrency_(row.monthlyRentTotal), formatCurrency_(row.monthlyMfTotal), formatCurrency_(row.monthlyCombinedTotal), formatNumber_(row.activeAssetCount), formatArea_(row.grossFloorAreaSqm), (row.newlyAddedAssets || []).map((asset) => asset.assetName).join(", ") || "-"])), renderBasisLine_(homeBasis("포트폴리오 전체", "원 / 개 / ㎡", "DB_히스토리 누적 + DB_자산", safeGet_(home, ["rentTrendSummary", "latestMonth"]) ? `최신 반영월 ${safeGet_(home, ["rentTrendSummary", "latestMonth"])}` : ""))),
+    onClick: () => openMetricModal_("임대료 추이 원본 표", renderTable_(["월", "월 임대료(RF/FO 반영)", "월 관리비", "월 임관리비(RF/FO 반영)", "원 월임대료", "원 월관리비", "원 월임관리비", "자산 수", "총 연면적", "신규 편입 자산"], rentTrendRows.map((row) => [row.month, formatCurrency_(row.monthlyRentTotalAdjusted), formatCurrency_(row.monthlyMfTotalAdjusted), formatCurrency_(row.monthlyCostTotalAdjusted), formatCurrency_(row.monthlyRentTotal), formatCurrency_(row.monthlyMfTotal), formatCurrency_(row.monthlyCombinedTotal), formatNumber_(row.activeAssetCount), formatArea_(row.grossFloorAreaSqm), (row.newlyAddedAssets || []).map((asset) => asset.assetName).join(", ") || "-"])), renderBasisLine_(homeBasis("포트폴리오 전체", "원 / 개 / ㎡", "DB_히스토리 누적 + DB_자산", safeGet_(home, ["rentTrendSummary", "latestMonth"]) ? `최신 반영월 ${safeGet_(home, ["rentTrendSummary", "latestMonth"])}` : ""))),
   });
+  renderLineChart_("home-expiry-chart", monthlyExpiryRows.map((row) => ({
+    month: row.month || row.label,
+    expiringAreaSqm: row.expiringAreaSqm,
+    uniqueTenantCount: firstDefinedNumber_(row.uniqueTenantCount, row.count, 0) || 0,
+    contractCount: firstDefinedNumber_(row.contractCount, safeGet_(row, ["items", "length"]), 0) || 0,
+    monthlyCostTotal: row.monthlyCostTotal,
+    items: row.items || [],
+  })), {
+    placeholderId: "home-expiry-placeholder",
+    labelKey: "month",
+    leftValueType: "area",
+    rightValueType: "count",
+    series: [
+      { key: "expiringAreaSqm", label: "만기 임대면적", valueType: "area", type: "bar" },
+      { key: "uniqueTenantCount", label: "만기 임차인 수", valueType: "count", axis: "right" },
+    ],
+    tooltipLines: (row) => [
+      `월 임관리비: ${formatCurrency_(row.monthlyCostTotal)}`,
+      `계약 행: ${formatNumber_(row.contractCount)}건`,
+      ...(row.items || []).slice(0, 5).map((item) => `${item.tenantMasterName || "-"} · ${item.assetName || "-"} · ${formatArea_(item.leasedAreaSqm)}`),
+    ],
+    onClick: (selectedBucket) => openHomeExpiryDetailModal_(selectedBucket),
+  });
+  document.querySelectorAll("[data-action=\"home-expiry-detail\"]").forEach((button) => {
+    const clone = button.cloneNode(true);
+    button.parentNode.replaceChild(clone, button);
+    clone.addEventListener("click", () => openHomeExpiryDetailModal_());
+  });
+
   document.querySelectorAll("[data-home-tenant-sort]").forEach((button) => {
     button.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -4304,6 +4765,7 @@ function renderAsset(asset) {
     spaceLabel: buildSpaceLabel_(row),
     eNoc: firstDefinedNumber_(row.eNoc, row.averageENoc),
   }));
+  const stackingPlanRows = enrichStackingPlanWithAssetRows_(asset.stackingPlan || [], normalizedRows);
   const cautionItems = asset.cautionItems || [];
   const expiryRows = safeGet_(asset, ["analytics", "contractExpiry"]) || [];
   const uniqueTenantRows = (safeGet_(asset, ["analytics", "uniqueTenants"]) || buildTenantAggregateRows_(normalizedRows)).map((row) => Object.assign({}, row, {
@@ -4379,6 +4841,7 @@ function renderAsset(asset) {
                 ${sortedSelectorOptions.map((row) => `<option value="${escapeHtml_(getSearchAssetId_(row))}" ${getSearchAssetId_(row) === state.selections.assetId ? "selected" : ""}>${escapeHtml_(getSearchAssetLabel_(row))}</option>`).join("")}
               </select>
             </div>
+            <button class="secondary-button" id="asset-map" type="button" data-action="asset-map-detail">자산 위치 보기</button>
             ${IS_ADMIN ? renderStatusChip_(summary.reviewStatus) : ""}
           </div>
         </div>
@@ -4479,7 +4942,7 @@ function renderAsset(asset) {
               ${renderBasisLine_(assetBasis(summary.assetName || "자산 선택값", "층", "DB_일반"))}
             </div>
           </div>
-          ${renderStackingPlan_(asset.stackingPlan || [])}
+          ${renderStackingPlan_(stackingPlanRows)}
         </section>
         <section class="workspace-panel">
           <div class="section-header">
@@ -4571,6 +5034,17 @@ function renderAsset(asset) {
     ]), renderBasisLine_(assetBasis(summary.assetName || "자산 선택값", item.valueType === "area" ? "㎡/평" : item.valueType === "percent" ? "%" : item.valueType === "date" ? "일자" : "원", item.key === "average_e_noc" ? "DB_계산" : "DB_일반 + DB_자산")));
   });
   bindActionButtons_({
+    "asset-map-detail": () => {
+      if (assetMapPoint.length) {
+        openPortfolioMapModal_(assetMapPoint, renderBasisLine_(assetBasis(summary.assetName || "자산 선택값", "자산", "DB_자산")));
+        return;
+      }
+      openMetricModal_("자산 위치 정보", renderKeyValueGrid_([
+        ["자산명", summary.assetName || "-"],
+        ["주소", summary.standardizedAddress || "-"],
+        ["좌표", "미입력"],
+      ]), renderBasisLine_(assetBasis(summary.assetName || "자산 선택값", "자산", "DB_자산")));
+    },
     "asset-roster-detail": () => openMetricModal_("임차인 현황", renderTable_(["임차인명", "층/세부구역", "임대면적(㎡)", "임대면적(평)", "월 임대료", "월 관리비", "월 임관리비", "평당 임대료", "평당 관리비", "현재 계약개시일", "현재 계약만기일"], normalizedRows.map((row) => [row.tenantMasterName, row.spaceLabel, formatArea_(row.leasedAreaSqm), formatMetricValue_(row.leasedAreaPy, "py"), formatCurrency_(row.currentMonthlyRentTotal), formatCurrency_(row.currentMonthlyMfTotal), formatCurrency_(row.currentMonthlyCombinedTotal), formatCurrency_(row.currentRentPerPy), formatCurrency_(row.currentMfPerPy), formatDateCell_(row.currentStartDate), formatDateCell_(row.currentEndDate)])), renderBasisLine_(assetBasis(summary.assetName || "자산 선택값", "㎡/평/원/일자", "DB_일반 + DB_히스토리 누적"))),
     "asset-expiry-detail": () => openMetricModal_("만기 스냅샷", renderTable_(["임차인명", "세부 구역", "계약만기일", "잔여 개월", "월 임관리비"], expirySnapshotRows.map((row) => [row.tenantMasterName, row.spaceLabel || "-", formatDateCell_(firstNonEmptyValue_(row.currentEndDate, row.earliestExpiry, row.latestExpiry)), formatNumber_(row.monthsToExpiry), formatCurrency_(firstDefinedNumber_(row.monthlyCostTotal, row.monthlyCombinedTotal))])), renderBasisLine_(assetBasis(summary.assetName || "자산 선택값", "개월", "DB_일반"))),
   });
@@ -4799,6 +5273,25 @@ function renderToolsDraftLegacy_(tools) {
       </div>
     </div>
   `;
+
+  injectToolsQuickSelect_(
+    '[data-advanced-filter="assets"]',
+    "tools-asset-quick-select",
+    "자산 드롭다운에서 추가 선택",
+    filters.availableAssets || [],
+    "assetId",
+    "assetName",
+    "[data-tools-asset]"
+  );
+  injectToolsQuickSelect_(
+    '[data-advanced-filter="companies"]',
+    "tools-company-quick-select",
+    "기업 드롭다운에서 추가 선택",
+    filters.availableCompanies || [],
+    "tenantId",
+    "tenantMasterName",
+    "[data-tools-company]"
+  );
 
   document.getElementById("tools-apply-button")?.addEventListener("click", () => {
     state.selections.toolAssetIds = collectCheckedValues_("[data-tools-asset]");
@@ -5240,6 +5733,409 @@ function bindAdvancedFilter_(inputSelector, listSelector) {
   applyFilter();
 }
 
+function cssEscape_(value) {
+  if (window.CSS && typeof window.CSS.escape === "function") return window.CSS.escape(String(value || ""));
+  return String(value || "").replace(/["\\]/g, "\\$&");
+}
+
+function injectToolsQuickSelect_(inputSelector, selectId, placeholder, rows, valueKey, labelKey, checkboxSelector) {
+  const input = document.querySelector(inputSelector);
+  if (!input || document.getElementById(selectId)) return;
+  const select = document.createElement("select");
+  select.id = selectId;
+  select.className = "control-input tools-quick-select";
+  select.innerHTML = `<option value="">${escapeHtml_(placeholder)}</option>` + (rows || []).map((row) => (
+    `<option value="${escapeHtml_(row[valueKey])}">${escapeHtml_(row[labelKey])}</option>`
+  )).join("");
+  select.addEventListener("change", () => {
+    const value = select.value;
+    if (!value) return;
+    const checkbox = document.querySelector(`${checkboxSelector}[value="${cssEscape_(value)}"]`);
+    if (checkbox) {
+      checkbox.checked = true;
+      checkbox.closest(".toggle-item")?.scrollIntoView({ block: "nearest" });
+    }
+  });
+  input.parentNode.insertBefore(select, input);
+}
+
+function parseWeeklyMonthKey_(value) {
+  const text = String(value == null ? "" : value).trim();
+  if (!text || /연장|개발|미정|협의|없음|^-$/i.test(text)) return "";
+  const match = text.match(/(20\d{2})[.\-년\s\/]*(0?[1-9]|1[0-2])?/);
+  if (!match) return "";
+  const month = match[2] ? Number(match[2]) : 1;
+  return `${match[1]}-${String(month).padStart(2, "0")}`;
+}
+
+function formatWeeklyMonthLabel_(monthKey) {
+  const parts = String(monthKey || "").split("-");
+  if (parts.length !== 2) return monthKey || "-";
+  return `${parts[0]}.${parts[1]}`;
+}
+
+function monthDiff_(fromMonth, toMonth) {
+  const from = String(fromMonth || "").split("-").map(Number);
+  const to = String(toMonth || "").split("-").map(Number);
+  if (!from[0] || !from[1] || !to[0] || !to[1]) return null;
+  return (to[0] - from[0]) * 12 + (to[1] - from[1]);
+}
+
+function isWeeklyRiskAsset_(row) {
+  const text = [row.operationRisk, row.exitRisk, row.mainIssue].filter(Boolean).join(" ");
+  return text.indexOf("●") > -1 || /risk|eod|소송|lease-up|refinancing|re-tenanting|임대료정상화|유치권|재하도급/i.test(text);
+}
+
+function buildWeeklyMaturityModel_(assetRows, reportDate) {
+  const baseMonth = parseWeeklyMonthKey_(reportDate) || parseWeeklyMonthKey_(new Date().toISOString()) || "2026-04";
+  const buckets = {};
+  const details = [];
+  (assetRows || []).forEach((row) => {
+    [
+      { type: "대출만기", key: "loanMaturity" },
+      { type: "펀드만기", key: "fundMaturity" },
+    ].forEach((item) => {
+      const month = parseWeeklyMonthKey_(row[item.key]);
+      if (!month) return;
+      const diff = monthDiff_(baseMonth, month);
+      if (diff == null || diff < 0 || diff > 60) return;
+      buckets[month] = buckets[month] || { month: month, monthLabel: formatWeeklyMonthLabel_(month), loanCount: 0, fundCount: 0, issueCount: 0, rows: [] };
+      if (item.type === "대출만기") buckets[month].loanCount += 1;
+      if (item.type === "펀드만기") buckets[month].fundCount += 1;
+      const detail = {
+        month: month,
+        type: item.type,
+        assetName: row.assetName || "-",
+        grossAreaPy: Number(row.grossAreaPy || 0),
+        maturityText: row[item.key] || "-",
+        mainTenant: row.mainTenant || "-",
+        issue: row.mainIssue || "-",
+      };
+      buckets[month].rows.push(detail);
+      details.push(detail);
+    });
+    const issueMonth = parseWeeklyMonthKey_(row.loanMaturity || row.fundMaturity || row.completion);
+    if (isWeeklyRiskAsset_(row) && issueMonth) {
+      buckets[issueMonth] = buckets[issueMonth] || { month: issueMonth, monthLabel: formatWeeklyMonthLabel_(issueMonth), loanCount: 0, fundCount: 0, issueCount: 0, rows: [] };
+      buckets[issueMonth].issueCount += 1;
+    }
+  });
+  const rows = Object.keys(buckets).sort().map((month) => buckets[month]);
+  const next12 = details.filter((row) => {
+    const diff = monthDiff_(baseMonth, row.month);
+    return diff != null && diff >= 0 && diff < 12;
+  }).length;
+  const next24 = details.filter((row) => {
+    const diff = monthDiff_(baseMonth, row.month);
+    return diff != null && diff >= 0 && diff < 24;
+  }).length;
+  return { rows: rows, details: details, next12: next12, next24: next24, baseMonth: baseMonth };
+}
+
+function buildWeeklyIssueGroups_(assetRows) {
+  const groups = [
+    { key: "risk", title: "Risk 자산", matcher: (row) => isWeeklyRiskAsset_(row) },
+    { key: "leaseup", title: "Lease-up", matcher: (row) => /lease-up/i.test(row.mainIssue || "") },
+    { key: "retenanting", title: "Re-tenanting", matcher: (row) => /re-tenanting|임대료정상화/i.test(row.mainIssue || "") },
+    { key: "legal", title: "소송·EOD", matcher: (row) => /소송|eod|유치권|재하도급/i.test(row.mainIssue || "") },
+  ];
+  return groups.map((group) => Object.assign({}, group, {
+    rows: (assetRows || []).filter(group.matcher),
+  }));
+}
+
+function renderWeeklyIssueCards_(groups) {
+  return (groups || []).map((group) => `
+    <article class="weekly-issue-card" data-weekly-issue-group="${escapeHtml_(group.key)}">
+      <span class="mini-label">${escapeHtml_(group.title)}</span>
+      <strong>${formatNumber_((group.rows || []).length)}건</strong>
+      <p>${escapeHtml_((group.rows || []).slice(0, 3).map((row) => row.assetName).join(" · ") || "해당 없음")}</p>
+    </article>
+  `).join("");
+}
+
+function openWeeklyMaturityModal_(monthRow) {
+  const rows = (monthRow && monthRow.rows) || [];
+  openMetricModal_(
+    `주간 만기 캘린더 · ${monthRow ? monthRow.monthLabel : "전체"}`,
+    renderInteractiveTable_("weekly-maturity-detail-table", ["구분", "자산", "만기", "연면적(평)", "주요 임차사", "이슈"], rows.map((row) => ([
+      escapeHtml_(row.type || "-"),
+      escapeHtml_(row.assetName || "-"),
+      escapeHtml_(row.maturityText || "-"),
+      formatNumber_(row.grossAreaPy),
+      escapeHtml_(row.mainTenant || "-"),
+      escapeHtml_(row.issue || "-"),
+    ])), { wrapperClass: "table-wrap-report", tight: true }),
+    renderBasisLine_("보고일 기준", "대출만기/펀드만기", "건/평", "주간 업무자료")
+  );
+}
+
+function renderWeeklyReport(report) {
+  const view = getTabRoot_("weekly");
+  if (!view) return;
+  if (!report || report.error) {
+    view.innerHTML = renderStateShell_("주간 업무 리포트를 불러오지 못했습니다.", (report && report.error) || "워드 기반 리포트 데이터를 다시 확인해주세요.");
+    return;
+  }
+  const basis = report.basisDisplay || {};
+  const summary = report.summary || {};
+  const assetRows = report.assetRows || [];
+  const newProjects = report.newProjects || [];
+  const managementProjects = report.managementProjects || [];
+  const notes = report.notes || [];
+  const canEdit = IS_ADMIN && !!APP_FLAGS.adminSessionToken;
+  const maturityModel = buildWeeklyMaturityModel_(assetRows, report.reportDate);
+  const issueGroups = buildWeeklyIssueGroups_(assetRows);
+  const weeklyBasis = renderBasisLine_({
+    asOfText: basis.asOfText || report.reportDate || report.generatedAt,
+    scopeText: basis.scopeText || report.reportTitle || "주간 업무자료",
+    unitText: basis.unitText || "평/%/억원",
+    sourceText: basis.sourceText || report.sourceDocumentName || "Word 원문",
+  });
+  const assetTableRows = assetRows.map((row) => ([
+    canEdit ? `<button class="table-button" type="button" data-weekly-edit="assetRows" data-weekly-id="${escapeHtml_(row.id)}" data-weekly-field="assetName">${escapeHtml_(row.assetName || "-")}</button>` : escapeHtml_(row.assetName || "-"),
+    [row.operationRisk, row.exitRisk].filter(Boolean).join(" / ") || "-",
+    formatNumber_(row.grossAreaPy),
+    escapeHtml_(row.completion || "-"),
+    escapeHtml_(row.investmentType || "-"),
+    escapeHtml_(row.fundMaturity || "-"),
+    escapeHtml_(row.costPerPy || "-"),
+    escapeHtml_(row.costTrend || "-"),
+    escapeHtml_(row.coldRatio || "-"),
+    escapeHtml_(row.occupancyRate || "-"),
+    escapeHtml_(row.mainTenant || "-"),
+    canEdit ? `<button class="table-button" type="button" data-weekly-edit="assetRows" data-weekly-id="${escapeHtml_(row.id)}" data-weekly-field="mainIssue">${escapeHtml_(row.mainIssue || "-")}</button>` : escapeHtml_(row.mainIssue || "-"),
+  ]));
+  view.innerHTML = `
+    <div class="page-stack weekly-report-page">
+      <section class="hero-panel weekly-hero-panel">
+        <div class="hero-head">
+          <div>
+            <p class="page-kicker">Weekly Operations</p>
+            <h3 class="hero-title">${escapeHtml_(report.reportTitle || "주간 업무 리포트")}</h3>
+            <p class="hero-subtitle">만기와 운용 이슈를 먼저 보고, 자산현황과 프로젝트 세부사항으로 내려가는 주간 검토 화면입니다.</p>
+            ${weeklyBasis}
+          </div>
+          <div class="hero-actions">
+            ${canEdit ? '<span class="meta-chip role-chip">Admin 편집 가능</span>' : '<span class="meta-chip">읽기 전용</span>'}
+          </div>
+        </div>
+        <div class="dense-strip dense-strip-6">
+          ${renderMetricTile_({ label: "보고일", valueHtml: escapeHtml_(report.reportDate || "-"), metaHtml: "주간 업무자료 기준", clickable: false })}
+          ${renderMetricTile_({ label: "총 자산 수", valueHtml: `${formatNumber_(summary.assetCount || assetRows.length)}개`, metaHtml: "워드 1페이지 표 기준", clickable: false })}
+          ${renderMetricTile_({ label: "총 연면적", valueHtml: `${formatNumber_(summary.totalGrossAreaPy)}평`, metaHtml: "합계 행 기준", clickable: false })}
+          ${renderMetricTile_({ label: "Risk 자산", valueHtml: `${formatNumber_(summary.riskAssetCount)}개`, metaHtml: "운용/Exit ● 기준", clickable: false })}
+          ${renderMetricTile_({ label: "12개월 내 만기", valueHtml: `${formatNumber_(maturityModel.next12)}건`, metaHtml: "대출/펀드 만기", clickable: false })}
+          ${renderMetricTile_({ label: "24개월 내 만기", valueHtml: `${formatNumber_(maturityModel.next24)}건`, metaHtml: "대출/펀드 만기", clickable: false })}
+        </div>
+      </section>
+
+      <section class="workspace-panel weekly-maturity-panel">
+        <div class="section-header">
+          <div class="section-heading-copy">
+            <h3 class="section-title">만기 캘린더</h3>
+            <p class="section-subtitle">대출만기, 펀드만기, 운용 이슈를 월별로 묶어 먼저 확인합니다.</p>
+            ${renderBasisLine_("보고일 " + escapeHtml_(report.reportDate || "-"), "대출/펀드/운용 이슈", "건", "Word 원문")}
+          </div>
+        </div>
+        <div class="chart-frame weekly-maturity-chart-frame">
+          <canvas id="weekly-maturity-chart" height="220"></canvas>
+          <div class="chart-placeholder is-hidden" id="weekly-maturity-placeholder">표시할 만기 데이터가 없습니다.</div>
+        </div>
+      </section>
+
+      <section class="workspace-panel weekly-main-table-panel">
+        <div class="section-header">
+          <div class="section-heading-copy">
+            <h3 class="section-title">물류 전체 자산현황</h3>
+            <p class="section-subtitle">워드 1페이지 표를 운영 검토용 ledger table로 옮긴 영역입니다.</p>
+            ${weeklyBasis}
+          </div>
+        </div>
+        ${renderInteractiveTable_("weekly-assets-table", ["자산명", "Risk", "연면적(평)", "준공", "투자유형", "펀드만기", "원가", "현재대비", "저온비율", "임대율", "주요임차사", "Main Issue"], assetTableRows, { wrapperClass: "table-wrap-report weekly-asset-table", tight: true })}
+      </section>
+
+      <section class="workspace-panel">
+        <div class="section-header">
+          <div class="section-heading-copy">
+            <h3 class="section-title">Risk / Lease-up / Re-tenanting / 소송·EOD</h3>
+            <p class="section-subtitle">Main Issue와 Risk 표식을 기준으로 후속 검토가 필요한 자산을 묶었습니다.</p>
+          </div>
+        </div>
+        <div class="weekly-issue-grid">
+          ${renderWeeklyIssueCards_(issueGroups)}
+        </div>
+      </section>
+
+      <div class="content-grid-two weekly-detail-grid">
+        <section class="workspace-panel">
+          <div class="section-header">
+            <div class="section-heading-copy">
+              <h3 class="section-title">투자 Projects 신규</h3>
+              <p class="section-subtitle">신규 투자 프로젝트의 개요, 진행사항, 이슈, 계획을 분리해 봅니다.</p>
+              ${renderBasisLine_("보고일 " + escapeHtml_(report.reportDate || "-"), "투자 Projects(신규)", "억원/일정", "Word 원문")}
+            </div>
+          </div>
+          <div class="weekly-card-list">
+            ${newProjects.map((row) => renderWeeklyProjectCard_(row, "newProjects", canEdit)).join("") || renderEmptyState_("표시할 신규 투자 프로젝트가 없습니다.")}
+          </div>
+        </section>
+        <section class="workspace-panel">
+          <div class="section-header">
+            <div class="section-heading-copy">
+              <h3 class="section-title">관리 Projects 기설정 물류</h3>
+              <p class="section-subtitle">운용/Exit 리스크와 진행계획을 프로젝트별로 확인합니다.</p>
+              ${renderBasisLine_("보고일 " + escapeHtml_(report.reportDate || "-"), "관리 Projects", "진행현황/계획", "Word 원문")}
+            </div>
+          </div>
+          <div class="weekly-card-list">
+            ${managementProjects.map((row) => renderWeeklyProjectCard_(row, "managementProjects", canEdit)).join("") || renderEmptyState_("표시할 관리 프로젝트가 없습니다.")}
+          </div>
+        </section>
+      </div>
+
+      <section class="workspace-panel">
+        <div class="section-header">
+          <div class="section-heading-copy">
+            <h3 class="section-title">기준 및 기타사항</h3>
+            <p class="section-subtitle">원문 표의 주석과 운영상 유의사항입니다.</p>
+          </div>
+        </div>
+        <div class="summary-list summary-list-compact">
+          ${notes.map((row) => `<div class="summary-item"><h4>${escapeHtml_(row.title || "-")}</h4><p>${escapeHtml_(row.body || "-")}</p></div>`).join("")}
+        </div>
+      </section>
+    </div>
+  `;
+  renderLineChart_("weekly-maturity-chart", maturityModel.rows, {
+    placeholderId: "weekly-maturity-placeholder",
+    labelKey: "monthLabel",
+    leftValueType: "count",
+    series: [
+      { key: "loanCount", label: "대출만기", type: "bar", valueType: "count" },
+      { key: "fundCount", label: "펀드만기", type: "bar", valueType: "count" },
+      { key: "issueCount", label: "운용 이슈", type: "line", valueType: "count" },
+    ],
+    tooltipLines: (row) => (row.rows || []).slice(0, 5).map((item) => `${item.type} · ${item.assetName} · ${formatNumber_(item.grossAreaPy)}평`),
+    onClick: (row) => row && openWeeklyMaturityModal_(row),
+  });
+  bindInteractiveTable_("weekly-assets-table", assetRows, (row) => openWeeklyAssetDetailModal_(row, canEdit));
+  bindWeeklyEditButtons_(report);
+}
+
+function renderWeeklyProjectCard_(row, section, canEdit) {
+  const title = row.projectName || row.assetName || "-";
+  const editButton = canEdit
+    ? `<button class="secondary-button weekly-edit-button" type="button" data-weekly-edit="${escapeHtml_(section)}" data-weekly-id="${escapeHtml_(row.id)}" data-weekly-field="status">진행현황 수정</button>`
+    : "";
+  return `
+    <article class="weekly-project-card">
+      <div class="weekly-project-card-head">
+        <span class="meta-chip">${escapeHtml_(row.risk || row.funding || "Project")}</span>
+        <strong>${escapeHtml_(title)}</strong>
+        ${editButton}
+      </div>
+      <dl class="weekly-project-grid">
+        <div><dt>개요</dt><dd>${escapeHtml_(row.overview || "-")}</dd></div>
+        <div><dt>투자개요</dt><dd>${escapeHtml_(row.investment || row.expectedAum || "-")}</dd></div>
+        <div><dt>진행현황</dt><dd>${escapeHtml_(row.status || "-")}</dd></div>
+        <div><dt>이슈/계획</dt><dd>${escapeHtml_([row.issue, row.plan].filter(Boolean).join(" / ") || "-")}</dd></div>
+      </dl>
+    </article>
+  `;
+}
+
+function bindWeeklyEditButtons_(report) {
+  document.querySelectorAll("[data-weekly-edit]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const section = button.getAttribute("data-weekly-edit");
+      const itemId = button.getAttribute("data-weekly-id");
+      const field = button.getAttribute("data-weekly-field");
+      const rows = report[section] || [];
+      const row = rows.find((item) => String(item.id) === String(itemId));
+      if (row) openWeeklyEditModal_(report, section, row, field);
+    });
+  });
+}
+
+function openWeeklyAssetDetailModal_(row, canEdit) {
+  const editHint = canEdit ? '<p class="page-note">자산명 또는 Main Issue를 클릭하면 Admin 수정 팝업이 열립니다.</p>' : "";
+  openMetricModal_(
+    `주간 업무 자산 상세 · ${row.assetName || "-"}`,
+    `${renderKeyValueGrid_([
+      ["자산명", escapeHtml_(row.assetName || "-")],
+      ["Risk", escapeHtml_([row.operationRisk, row.exitRisk].filter(Boolean).join(" / ") || "-")],
+      ["연면적", `${formatNumber_(row.grossAreaPy)}평`],
+      ["준공시점", escapeHtml_(row.completion || "-")],
+      ["투자유형", escapeHtml_(row.investmentType || "-")],
+      ["매입시점", escapeHtml_(row.acquisition || "-")],
+      ["대출만기", escapeHtml_(row.loanMaturity || "-")],
+      ["펀드만기", escapeHtml_(row.fundMaturity || "-")],
+      ["원가", escapeHtml_(row.costPerPy || "-")],
+      ["저온비율", escapeHtml_(row.coldRatio || "-")],
+      ["임대율", escapeHtml_(row.occupancyRate || "-")],
+      ["주요임차사", escapeHtml_(row.mainTenant || "-")],
+      ["Main Issue", escapeHtml_(row.mainIssue || "-")],
+    ])}${editHint}`,
+    renderBasisLine_("보고일 기준", "물류 전체 자산현황", "평/%", "Word 원문")
+  );
+}
+
+function openWeeklyEditModal_(report, section, row, field) {
+  if (!IS_ADMIN || !APP_FLAGS.adminSessionToken) return;
+  const currentValue = row[field] == null ? "" : String(row[field]);
+  openMetricModal_(
+    "주간 업무 리포트 수정",
+    `
+      <div class="quality-edit-card">
+        <div class="key-value-grid">
+          <div><span>대상</span><strong>${escapeHtml_(row.assetName || row.projectName || row.id)}</strong></div>
+          <div><span>필드</span><strong>${escapeHtml_(field)}</strong></div>
+          <div><span>현재값</span><strong>${escapeHtml_(currentValue || "-")}</strong></div>
+        </div>
+        <label class="control-label" for="weekly-edit-value">새 값</label>
+        <textarea id="weekly-edit-value" class="control-input" rows="4">${escapeHtml_(currentValue)}</textarea>
+        <label class="control-label" for="weekly-edit-reason">수정 사유</label>
+        <textarea id="weekly-edit-reason" class="control-input" rows="3" placeholder="예: 주간업무자료 최신 수정본 기준으로 반영"></textarea>
+        <div class="button-row">
+          <button id="weekly-edit-save" class="primary-button" type="button">수정 저장</button>
+        </div>
+        <p id="weekly-edit-status" class="page-note">저장 시 AuditLog에 변경 이력이 남습니다.</p>
+      </div>
+    `,
+    renderBasisLine_("현재 세션", "주간 업무 리포트", "수정", "Admin")
+  );
+  document.getElementById("weekly-edit-save")?.addEventListener("click", () => {
+    const status = document.getElementById("weekly-edit-status");
+    const value = document.getElementById("weekly-edit-value")?.value || "";
+    const reason = document.getElementById("weekly-edit-reason")?.value || "";
+    if (!reason.trim()) {
+      if (status) status.textContent = "수정 사유를 입력해야 저장할 수 있습니다.";
+      return;
+    }
+    if (status) status.textContent = "저장 중입니다.";
+    callServer_("adminUpdateWeeklyReportItem", Object.assign(buildAdminRequest_(), {
+      section,
+      itemId: row.id,
+      field,
+      value,
+      reason,
+    }), { timeoutMs: 45000 })
+      .then((result) => {
+        const payload = result && result.payload ? result.payload : null;
+        if (payload) {
+          cachePayload_("weekly", buildClientCacheKey_("weekly"), payload);
+          renderWeeklyReport(payload);
+        }
+        closeSurface();
+      })
+      .catch((error) => {
+        if (status) status.textContent = (error && error.message) || String(error);
+      });
+  });
+}
+
 function renderSector(sector) {
   const view = getTabRoot_("sector");
   if (!view) return;
@@ -5407,6 +6303,144 @@ function renderSector(sector) {
   });
 }
 
+function buildEmptyToolsPayload_(source) {
+  const base = source || {};
+  return {
+    ...base,
+    assets: [],
+    companies: [],
+    contracts: [],
+    benchmarkRows: [],
+    reviewHighlights: [],
+    divergence: {
+      rentSpread: null,
+      vacancySpread: null,
+      comparedAssetCount: 0,
+      comparedCompanyCount: 0,
+    },
+    deltas: {
+      monthlyRentMin: null,
+      monthlyRentMax: null,
+      vacancyMin: null,
+      vacancyMax: null,
+    },
+    selectionMeta: {
+      isDefaultSelection: false,
+      isEmptySelection: true,
+      reason: "empty_selection",
+      assetLabels: [],
+      companyLabels: [],
+      summaryLabel: "",
+    },
+    filters: base.filters || { availableAssets: [], availableCompanies: [] },
+    meta: {
+      ...(base.meta || {}),
+      selection: {
+        assetIds: [],
+        companyIds: [],
+        cacheKey: buildClientCacheKey_("tools"),
+      },
+    },
+  };
+}
+
+function sortRowsDesc_(rows, key) {
+  return (rows || []).slice().sort((left, right) => (numericOrNull_(right && right[key]) || 0) - (numericOrNull_(left && left[key]) || 0));
+}
+
+function averageMetric_(rows, key) {
+  return averageBy_(rows || [], (row) => row && row[key]);
+}
+
+function rollupClientRowsByKey_(rows, keyName) {
+  const grouped = {};
+  (rows || []).forEach((row) => {
+    const key = row && row[keyName];
+    if (!key) return;
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(row);
+  });
+  return Object.keys(grouped).map((key) => {
+    const bucket = grouped[key];
+    return {
+      assetId: keyName === "assetId" ? key : bucket[0].assetId,
+      assetName: bucket[0].assetName,
+      tenantId: keyName === "tenantId" ? key : bucket[0].tenantId,
+      tenantMasterName: bucket[0].tenantMasterName,
+      leasedAreaSqm: sumRows_(bucket, (row) => row.leasedAreaSqm),
+      monthlyRentTotal: sumRows_(bucket, (row) => row.currentMonthlyRentTotal),
+      monthlyMfTotal: sumRows_(bucket, (row) => row.currentMonthlyMfTotal),
+      monthlyCostTotal: sumRows_(bucket, (row) => row.currentMonthlyCostTotal),
+      averageENoc: averageMetric_(bucket, "eNoc"),
+      reviewStatus: bucket.some((row) => row.calculatedReviewStatus === "suspected_error") ? "suspected_error" : (bucket.some((row) => row.calculatedReviewStatus && row.calculatedReviewStatus !== "ok") ? "review_required" : "ok"),
+    };
+  });
+}
+
+function buildToolsPayloadFromClientRows_(source, assetIds, companyIds, disableDefaultSelection) {
+  const rows = source && Array.isArray(source.sourceRows) ? source.sourceRows : [];
+  if (!rows.length) return null;
+  const normalizedAssetIds = uniqueValues_(assetIds || []);
+  const normalizedCompanyIds = uniqueValues_(companyIds || []);
+  const hasExplicitSelection = normalizedAssetIds.length || normalizedCompanyIds.length;
+  const resolvedAssetIds = disableDefaultSelection
+    ? []
+    : (normalizedAssetIds.length ? normalizedAssetIds : sortRowsDesc_(rollupClientRowsByKey_(rows, "assetId"), "monthlyRentTotal").slice(0, 3).map((row) => row.assetId));
+  const resolvedCompanyIds = disableDefaultSelection
+    ? []
+    : (normalizedCompanyIds.length ? normalizedCompanyIds : sortRowsDesc_(rollupClientRowsByKey_(rows, "tenantId"), "monthlyRentTotal").slice(0, 3).map((row) => row.tenantId));
+  const selectedRows = rows.filter((row) => resolvedAssetIds.indexOf(row.assetId) > -1 || resolvedCompanyIds.indexOf(row.tenantId) > -1);
+  const assets = rollupClientRowsByKey_(rows.filter((row) => resolvedAssetIds.indexOf(row.assetId) > -1), "assetId");
+  const companies = rollupClientRowsByKey_(rows.filter((row) => resolvedCompanyIds.indexOf(row.tenantId) > -1), "tenantId");
+  const benchmarkRows = assets.map((row) => ({
+    assetId: row.assetId,
+    assetName: row.assetName,
+    region: row.region || row.assetName,
+    leasedAreaSqm: row.leasedAreaSqm,
+    monthlyRentTotal: row.monthlyRentTotal,
+    monthlyCostTotal: row.monthlyCostTotal,
+    averageENoc: row.averageENoc,
+    reviewStatus: row.reviewStatus,
+  }));
+  const rentValues = benchmarkRows.map((row) => numericOrNull_(row.monthlyRentTotal)).filter((value) => value != null);
+  return {
+    ...source,
+    assets,
+    companies,
+    contracts: sortRowsDesc_(selectedRows, "currentMonthlyCostTotal").slice(0, 80),
+    benchmarkRows,
+    reviewHighlights: selectedRows.filter((row) => row.calculatedReviewStatus && row.calculatedReviewStatus !== "ok").slice(0, 12),
+    divergence: {
+      rentSpread: rentValues.length ? Math.max(...rentValues) - Math.min(...rentValues) : null,
+      vacancySpread: null,
+      comparedAssetCount: assets.length,
+      comparedCompanyCount: companies.length,
+    },
+    deltas: {
+      monthlyRentMin: rentValues.length ? Math.min(...rentValues) : null,
+      monthlyRentMax: rentValues.length ? Math.max(...rentValues) : null,
+      vacancyMin: null,
+      vacancyMax: null,
+    },
+    selectionMeta: {
+      isDefaultSelection: !disableDefaultSelection && !hasExplicitSelection,
+      isEmptySelection: !!disableDefaultSelection && !hasExplicitSelection,
+      reason: disableDefaultSelection && !hasExplicitSelection ? "empty_selection" : (!hasExplicitSelection ? "default_top3_by_rent" : "user_selection"),
+      assetLabels: assets.map((row) => row.assetName),
+      companyLabels: companies.map((row) => row.tenantMasterName),
+      summaryLabel: assets.map((row) => row.assetName).concat(companies.map((row) => row.tenantMasterName)).slice(0, 6).join(", "),
+    },
+    meta: {
+      ...(source.meta || {}),
+      selection: {
+        assetIds: resolvedAssetIds,
+        companyIds: resolvedCompanyIds,
+        cacheKey: buildClientCacheKey_("tools"),
+      },
+    },
+  };
+}
+
 function renderTools(tools) {
   const view = getTabRoot_("tools");
   if (!view) return;
@@ -5524,18 +6558,50 @@ function renderTools(tools) {
   document.getElementById("tools-apply-button")?.addEventListener("click", () => {
     state.selections.toolAssetIds = collectCheckedValues_("[data-tools-asset]");
     state.selections.toolCompanyIds = collectCheckedValues_("[data-tools-company]");
+    state.selections.toolDisableDefaultSelection = !state.selections.toolAssetIds.length && !state.selections.toolCompanyIds.length;
+    const localPayload = buildToolsPayloadFromClientRows_(tools, state.selections.toolAssetIds, state.selections.toolCompanyIds, state.selections.toolDisableDefaultSelection)
+      || (state.selections.toolDisableDefaultSelection ? buildEmptyToolsPayload_(tools) : null);
+    if (localPayload) {
+      cachePayload_("tools", buildClientCacheKey_("tools"), localPayload);
+      renderTools(localPayload);
+      return;
+    }
     refreshActiveTab();
   });
   document.getElementById("tools-default-button")?.addEventListener("click", () => {
     state.selections.toolAssetIds = [];
     state.selections.toolCompanyIds = [];
+    state.selections.toolDisableDefaultSelection = false;
     refreshActiveTab();
   });
   document.getElementById("tools-clear-button")?.addEventListener("click", () => {
     document.querySelectorAll("[data-tools-asset], [data-tools-company]").forEach((input) => { input.checked = false; });
+    document.querySelectorAll("#tools-asset-quick-select, #tools-company-quick-select").forEach((select) => { select.value = ""; });
     state.selections.toolAssetIds = [];
     state.selections.toolCompanyIds = [];
+    state.selections.toolDisableDefaultSelection = true;
+    const emptyPayload = buildToolsPayloadFromClientRows_(tools, [], [], true) || buildEmptyToolsPayload_(tools);
+    cachePayload_("tools", buildClientCacheKey_("tools"), emptyPayload);
+    renderTools(emptyPayload);
   });
+  injectToolsQuickSelect_(
+    '[data-advanced-filter="assets"]',
+    "tools-asset-quick-select",
+    "자산 드롭다운에서 추가 선택",
+    filters.availableAssets || [],
+    "assetId",
+    "assetName",
+    "[data-tools-asset]"
+  );
+  injectToolsQuickSelect_(
+    '[data-advanced-filter="companies"]',
+    "tools-company-quick-select",
+    "기업 드롭다운에서 추가 선택",
+    filters.availableCompanies || [],
+    "tenantId",
+    "tenantMasterName",
+    "[data-tools-company]"
+  );
   bindAdvancedFilter_('[data-advanced-filter="assets"]', '[data-advanced-list="assets"]');
   bindAdvancedFilter_('[data-advanced-filter="companies"]', '[data-advanced-list="companies"]');
   document.querySelectorAll("[data-tools-asset-panel]").forEach((button) => button.addEventListener("click", () => openAssetPanel_(button.getAttribute("data-tools-asset-panel"), "비교 자산 상세")));
@@ -5551,6 +6617,105 @@ function renderTools(tools) {
     valueType: "currency",
     onClick: () => openMetricModal_("벤치마크 원본 표", renderTable_(["자산명", "월 임대료", "공실률"], benchmarkRows.map((row) => [row.assetName, formatCurrency_(row.monthlyRentTotal), formatPercent_(row.vacancyRate)])), renderBasisLine_(advancedBasis_(tools, "선택 자산", "원/%", "DB_히스토리 누적"))),
   });
+}
+
+function buildPlaygroundPayloadFromClientRows_(source) {
+  const allRows = source && Array.isArray(source.sourceRows) ? source.sourceRows : [];
+  if (!allRows.length) return null;
+  const dimensions = source.dimensions || [];
+  const metrics = source.metrics || [];
+  const columnOptions = source.columnOptions || [{ key: "none", label: "사용 안 함" }].concat(dimensions);
+  const allowedDimensionKeys = dimensions.map((row) => row.key);
+  const allowedMetricKeys = metrics.map((row) => row.key);
+  const rowDimension = allowedDimensionKeys.indexOf(state.selections.playgroundDimension) > -1 ? state.selections.playgroundDimension : "assetName";
+  const columnDimension = allowedDimensionKeys.indexOf(state.selections.playgroundColumnDimension) > -1 ? state.selections.playgroundColumnDimension : "none";
+  const valueMetric = allowedMetricKeys.indexOf(state.selections.playgroundMetric) > -1 ? state.selections.playgroundMetric : "leasedAreaSqm";
+  const filterDimension = allowedDimensionKeys.indexOf(state.selections.playgroundFilterDimension) > -1 ? state.selections.playgroundFilterDimension : "";
+  const filterValue = state.selections.playgroundFilterValue || "";
+  const topN = Math.max(1, Math.min(100, Number(state.selections.playgroundTopN) || 25));
+  const filteredRows = filterDimension && filterValue
+    ? allRows.filter((row) => String(row[filterDimension] || "Unclassified") === filterValue)
+    : allRows.slice();
+  const aggregate = (bucket) => {
+    if (valueMetric === "count") return bucket.length;
+    if (valueMetric === "eNoc") return averageMetric_(bucket, "eNoc");
+    if (valueMetric === "monthlyCostTotal") return sumRows_(bucket, (row) => row.currentMonthlyCostTotal);
+    return sumRows_(bucket, (row) => row[valueMetric]);
+  };
+  const buildFilterValues = (dimensionKey) => {
+    const grouped = {};
+    allRows.forEach((row) => {
+      const key = String(row[dimensionKey] || "Unclassified");
+      grouped[key] = (grouped[key] || 0) + 1;
+    });
+    return Object.keys(grouped).map((key) => ({ value: key, label: key, count: grouped[key] }))
+      .sort((left, right) => right.count - left.count)
+      .slice(0, 80);
+  };
+  const grouped = {};
+  filteredRows.forEach((row) => {
+    const key = String(row[rowDimension] || "Unclassified");
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(row);
+  });
+  const activeColumns = columnDimension === "none" ? [] : uniqueValues_(filteredRows.map((row) => String(row[columnDimension] || "Unclassified")))
+    .map((key) => ({ key, label: key, recordCount: filteredRows.filter((row) => String(row[columnDimension] || "Unclassified") === key).length }))
+    .sort((left, right) => right.recordCount - left.recordCount)
+    .slice(0, 12);
+  const rows = Object.keys(grouped).map((key) => {
+    const bucket = grouped[key];
+    const columns = {};
+    activeColumns.forEach((column) => {
+      const columnBucket = bucket.filter((row) => String(row[columnDimension] || "Unclassified") === column.key);
+      columns[column.key] = { value: columnBucket.length ? aggregate(columnBucket) : null, recordCount: columnBucket.length };
+    });
+    return {
+      dimension: key,
+      value: aggregate(bucket),
+      recordCount: bucket.length,
+      columns,
+      reviewStatus: bucket.some((row) => row.calculatedReviewStatus === "suspected_error") ? "suspected_error" : (bucket.some((row) => row.calculatedReviewStatus && row.calculatedReviewStatus !== "ok") ? "review_required" : "ok"),
+    };
+  }).sort((left, right) => (numericOrNull_(right.value) || 0) - (numericOrNull_(left.value) || 0)).slice(0, topN);
+  return {
+    ...source,
+    query: {
+      dimension: rowDimension,
+      metric: valueMetric,
+      rowDimension,
+      columnDimension,
+      valueMetric,
+      filterDimension,
+      filterValue,
+      topN,
+    },
+    dimensions,
+    metrics,
+    columnOptions,
+    filterOptions: dimensions.map((dimension) => ({ key: dimension.key, label: dimension.label, values: buildFilterValues(dimension.key) })),
+    activeColumns,
+    summaryCards: [
+      { label: "원천 행", value: allRows.length, valueType: "number" },
+      { label: "필터 후 행", value: filteredRows.length, valueType: "number" },
+      { label: "결과 그룹", value: rows.length, valueType: "number" },
+      { label: "컬럼 수", value: activeColumns.length || 1, valueType: "number" },
+    ],
+    rows,
+    meta: {
+      ...(source.meta || {}),
+      selection: {
+        dimension: rowDimension,
+        metric: valueMetric,
+        rowDimension,
+        columnDimension,
+        valueMetric,
+        filterDimension,
+        filterValue,
+        topN,
+        cacheKey: buildClientCacheKey_("playground"),
+      },
+    },
+  };
 }
 
 function renderPlayground(playground) {
@@ -5661,9 +6826,15 @@ function renderPlayground(playground) {
   `;
 
   document.getElementById("playground-filter-dimension")?.addEventListener("change", (event) => {
-    state.selections.playgroundFilterDimension = event.target.value || "";
-    state.selections.playgroundFilterValue = "";
-    refreshActiveTab();
+    const nextDimension = event.target.value || "";
+    const valueSelect = document.getElementById("playground-filter-value");
+    if (!valueSelect) return;
+    const optionSet = (filterOptions || []).find((row) => row.key === nextDimension);
+    const values = optionSet ? (optionSet.values || []) : [];
+    valueSelect.innerHTML = `<option value="">전체</option>` + values.map((row) => (
+      `<option value="${escapeHtml_(row.value)}">${escapeHtml_(row.label)} (${formatNumber_(row.count)})</option>`
+    )).join("");
+    valueSelect.value = "";
   });
   document.getElementById("playground-apply-button")?.addEventListener("click", () => {
     state.selections.playgroundDimension = document.getElementById("playground-dimension")?.value || state.selections.playgroundDimension;
@@ -5672,6 +6843,12 @@ function renderPlayground(playground) {
     state.selections.playgroundFilterValue = document.getElementById("playground-filter-value")?.value || "";
     state.selections.playgroundMetric = document.getElementById("playground-metric")?.value || state.selections.playgroundMetric;
     state.selections.playgroundTopN = Number(document.getElementById("playground-topn")?.value || state.selections.playgroundTopN);
+    const localPayload = buildPlaygroundPayloadFromClientRows_(playground);
+    if (localPayload) {
+      cachePayload_("playground", buildClientCacheKey_("playground"), localPayload);
+      renderPlayground(localPayload);
+      return;
+    }
     refreshActiveTab();
   });
   document.querySelectorAll("[data-playground-view]").forEach((button) => {
@@ -5684,6 +6861,12 @@ function renderPlayground(playground) {
       state.selections.playgroundFilterValue = "";
       state.selections.playgroundMetric = selected.valueMetric || selected.metric || "leasedAreaSqm";
       state.selections.playgroundTopN = selected.topN || 25;
+      const localPayload = buildPlaygroundPayloadFromClientRows_(playground);
+      if (localPayload) {
+        cachePayload_("playground", buildClientCacheKey_("playground"), localPayload);
+        renderPlayground(localPayload);
+        return;
+      }
       refreshActiveTab();
     });
   });
@@ -5782,7 +6965,7 @@ function renderQualitySeverityChip_(severity) {
   return `<span class="status-chip ${className}">${escapeHtml_(normalized)}</span>`;
 }
 
-function openQualityIssueModal_(title, rows) {
+function openQualityIssueModalLegacy_(title, rows) {
   openMetricModal_(title, renderTable_(["Sheet", "Row", "Field", "Issue", "Suggested Fix"], (rows || []).map((item) => [
     escapeHtml_(item.sheetName || "-"),
     escapeHtml_(item.rowNumber || "-"),
@@ -5968,7 +7151,7 @@ function openQualityGroupModal_(title, groups) {
   ]), { wrapperClass: "table-wrap-report", tight: true }));
 }
 
-function openQualityIssueDetailModal_(issue) {
+function openQualityIssueDetailModalLegacy_(issue) {
   openMetricModal_("데이터 품질 상세", renderKeyValueGrid_([
     ["Severity", renderQualitySeverityChip_(issue.severity)],
     ["시트", escapeHtml_(issue.sheetName || "-")],
@@ -6337,7 +7520,7 @@ function buildTenantExpiryGroups_(rows) {
   });
 }
 
-function renderPortfolioMapPreview_(points) {
+function renderPortfolioMapPreviewSchematicLegacy_(points) {
   const validPoints = (points || []).filter((point) => point.latitude != null && point.longitude != null);
   if (!validPoints.length) {
     return renderEmptyState_("표시할 좌표 정보가 없습니다.");
@@ -7588,7 +8771,7 @@ function renderAdminStaleLegacy_(admin) {
 }
 
 /*
-function renderAdmin(admin) {
+function renderAdminSnapshotLegacy_(admin) {
   const view = getTabRoot_("admin");
   if (!view) return;
   if (admin && admin.requiresPassword) {
@@ -7765,7 +8948,7 @@ function renderAdmin(admin) {
 }
 */
 
-function renderAdmin(admin) {
+function renderAdminIntegrationLegacy_(admin) {
   const view = getTabRoot_("admin");
   if (!view) return;
   if (admin && admin.requiresPassword) {
@@ -8040,7 +9223,7 @@ function renderAdminAuditPreviewModal_(title, rows) {
   );
 }
 
-function renderAdmin(admin) {
+function renderAdminReviewLegacy_(admin) {
   const view = getTabRoot_("admin");
   if (!view) return;
   if (admin && admin.requiresPassword) {
@@ -8284,6 +9467,53 @@ function renderAuditLogModal_(rows) {
   );
 }
 
+function formatReconValue_(value, unit) {
+  if (value == null || value === "") return "-";
+  if (unit === "sqm") return formatArea_(value);
+  if (unit === "krw" || unit === "krw_per_py") return formatCurrency_(value);
+  if (unit === "ratio") return formatPercent_(value);
+  if (unit === "count") return formatNumber_(value);
+  return formatNumber_(value);
+}
+
+function renderUiDataReconciliationModal_(report) {
+  const rows = safeGet_(report, ["rows"]) || safeGet_(report, ["prioritySamples"]) || [];
+  const totals = safeGet_(report, ["totals"]) || {};
+  const tableRows = rows.slice(0, 200).map((row) => [
+    row.area || "-",
+    row.itemName || row.itemId || "-",
+    row.status || "-",
+    formatReconValue_(row.sourceValue, row.unit),
+    formatReconValue_(row.payloadValue, row.unit),
+    formatReconValue_(row.delta, row.unit),
+    row.unit || "-",
+    row.note || "-",
+  ]);
+  const summaryHtml = renderKeyValueGrid_([
+    ["전체", formatNumber_(totals.total)],
+    ["정상", formatNumber_(Number(totals.ok || 0) + Number(totals.displayRounding || 0))],
+    ["검토 필요", formatNumber_(Number(totals.reviewRequired || 0) + Number(totals.sourceMissing || 0) + Number(totals.apiNoResponse || 0))],
+    ["계산식 차이", formatNumber_(totals.formulaDifference)],
+    ["E.NOC 이상치", formatNumber_(safeGet_(report, ["eNocOutlierCount"]) || 0)],
+    ["생성 시각", safeGet_(report, ["generatedAt"]) || "-"],
+  ]);
+  openMetricModal_(
+    "UI-DB 정합성 상세",
+    `${summaryHtml}${renderTable_(["영역", "대상", "상태", "DB 기준값", "화면값", "차이", "단위", "메모"], tableRows, { wrapperClass: "table-wrap-report", tight: true })}`,
+    renderBasisLine_("현재 시점", "DB 원천값 vs 화면 payload", "건", "AUDIT_UI_DATA_RECON")
+  );
+}
+
+function loadUiDataReconciliationModal_() {
+  showLoading(true, "UI-DB 정합성 상세를 불러오고 있습니다.", "화면 숫자와 DB 기준값을 비교합니다.");
+  return callServer_("getUiDataReconciliationReport", buildAdminRequest_(), { timeoutMs: 120000 })
+    .then((report) => renderUiDataReconciliationModal_(report || {}))
+    .catch((error) => {
+      openMetricModal_("정합성 상세 오류", renderStateShell_("UI-DB 정합성 상세를 불러오지 못했습니다.", (error && error.message) || String(error)), renderBasisLine_("현재 시점", "UI-DB 정합성", "오류", "Apps Script"));
+    })
+    .finally(() => showLoading(false));
+}
+
 function loadAuditLogModal_() {
   showLoading(true, "감사 로그를 불러오고 있습니다.", "AuditLog 최근 변경 이력을 조회합니다.");
   return callServer_("getAuditLogData", Object.assign(buildAdminRequest_(), { limit: 200 }), { timeoutMs: 60000 })
@@ -8421,6 +9651,7 @@ function renderAdmin(admin) {
               <p class="section-subtitle">화면 숫자와 DB 기준 비교 상태를 요약합니다.</p>
               ${renderBasisLine_("현재 시점", "UI-DB 정합성", "건", "summary payload")}
             </div>
+            <button class="secondary-button" type="button" data-admin-recon-detail>상세 보기</button>
           </div>
           ${renderKeyValueGrid_([
             ["상태", reconciliation.status || "-"],
@@ -8521,6 +9752,10 @@ function renderAdmin(admin) {
   const auditRefreshButton = view.querySelector("[data-admin-audit-log-refresh]");
   if (auditRefreshButton) {
     auditRefreshButton.onclick = () => loadAuditLogModal_();
+  }
+  const reconDetailButton = view.querySelector("[data-admin-recon-detail]");
+  if (reconDetailButton) {
+    reconDetailButton.onclick = () => loadUiDataReconciliationModal_();
   }
 }
 </script>
