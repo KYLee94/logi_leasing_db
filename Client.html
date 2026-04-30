@@ -1111,27 +1111,27 @@ function getEntityShellOptionCount_(tab) {
 }
 
 function buildClientCacheKey_(tab) {
-  const version = state.bootstrap.dataVersion || "0";
-  if (tab === "home") return `page:${version}:home:default`;
-  if (tab === "asset") return `page:${version}:asset:${state.selections.assetId || safeGet_(state.bootstrap, ["defaults", "assetId"]) || "default"}`;
-  if (tab === "company") return `page:${version}:company:${state.selections.tenantId || safeGet_(state.bootstrap, ["defaults", "tenantId"]) || "default"}`;
-  if (tab === "sector") return `page:${version}:sector:default`;
-  if (tab === "admin") return `page:${version}:admin:default`;
+  // Keep client cache keys stable during a session. Bootstrap can update dataVersion
+  // after first paint; including it here caused already loaded tabs/popups to refetch.
+  if (tab === "home") return `page:home:default`;
+  if (tab === "asset") return `page:asset:${state.selections.assetId || safeGet_(state.bootstrap, ["defaults", "assetId"]) || "default"}`;
+  if (tab === "company") return `page:company:${state.selections.tenantId || safeGet_(state.bootstrap, ["defaults", "tenantId"]) || "default"}`;
+  if (tab === "sector") return `page:sector:default`;
+  if (tab === "admin") return `page:admin:default`;
   if (tab === "tools") {
     const assets = (state.selections.toolAssetIds || []).slice().sort().join(",");
     const companies = (state.selections.toolCompanyIds || []).slice().sort().join(",");
-    return `page:${version}:tools:a=${assets}|c=${companies}|empty=${state.selections.toolDisableDefaultSelection ? "1" : "0"}`;
+    return `page:tools:a=${assets}|c=${companies}|empty=${state.selections.toolDisableDefaultSelection ? "1" : "0"}`;
   }
   if (tab === "playground") {
-    return `page:${version}:playground:m=${state.selections.playgroundMode}|row=${state.selections.playgroundDimension}|col=${state.selections.playgroundColumnDimension}|filter=${state.selections.playgroundFilterDimension}:${state.selections.playgroundFilterValue}|metric=${state.selections.playgroundMetric}|top=${state.selections.playgroundTopN}`;
+    return `page:playground:m=${state.selections.playgroundMode}|row=${state.selections.playgroundDimension}|col=${state.selections.playgroundColumnDimension}|filter=${state.selections.playgroundFilterDimension}:${state.selections.playgroundFilterValue}|metric=${state.selections.playgroundMetric}|top=${state.selections.playgroundTopN}`;
   }
-  return `page:${version}:${tab}:default`;
+  return `page:${tab}:default`;
 }
 
 function buildEntityCacheKey_(tab, entityId) {
-  const version = state.bootstrap.dataVersion || "0";
-  if (tab === "asset") return `page:${version}:asset:${entityId || "default"}`;
-  if (tab === "company") return `page:${version}:company:${entityId || "default"}`;
+  if (tab === "asset") return `page:asset:${entityId || "default"}`;
+  if (tab === "company") return `page:company:${entityId || "default"}`;
   return buildClientCacheKey_(tab);
 }
 
@@ -2937,7 +2937,7 @@ function renderStackingPlan_(floors) {
                 return `
                 <button class="stack-chip ${stackTemperatureClass_(temperatureType)} ${IS_ADMIN && tenant.reviewStatus && tenant.reviewStatus !== "ok" ? "is-review" : ""}" type="button" data-tenant="${escapeHtml_(tenant.tenantId)}" style="flex:${Math.max(tenant.share || 0.08, 0.08)};">
                   <strong>${escapeHtml_(tenant.tenantMasterName)}</strong>
-                  <span>${escapeHtml_(tenant.detailAreaLabel || "세부구역 미입력")} · ${formatAreaWithPy_(tenant.leasedAreaSqm)} · ${escapeHtml_(temperatureType)}</span>
+                  <span>${escapeHtml_(renderStackingMeta_(tenant, temperatureType))}</span>
                 </button>
               `;
               }).join("") : `<span class="stack-chip stack-temp-office" style="flex:1 1 auto;">${escapeHtml_("공실 / 운영 없음")}</span>`}
@@ -3016,6 +3016,18 @@ function stackTemperatureClass_(temperatureType) {
   if (temperatureType === "혼합") return "stack-temp-mixed";
   if (temperatureType === "사무실") return "stack-temp-office";
   return "stack-temp-ambient";
+}
+
+function renderStackingMeta_(tenant, temperatureType) {
+  const detailAreaLabel = String(tenant.detailAreaLabel == null ? "" : tenant.detailAreaLabel).replace(/\s+/g, " ").trim();
+  const parts = [];
+  if (detailAreaLabel && detailAreaLabel !== "-" && detailAreaLabel !== "세부구역 미입력" && detailAreaLabel !== "세부구역 미지정") {
+    parts.push(detailAreaLabel);
+  }
+  const pyText = formatPy_(tenant.leasedAreaSqm);
+  if (pyText && pyText !== "-") parts.push(pyText);
+  if (temperatureType) parts.push(temperatureType);
+  return parts.join(" · ");
 }
 
 function formatAreaWithPy_(sqm) {
