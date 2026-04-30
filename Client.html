@@ -742,6 +742,12 @@ function bootstrapApp_() {
       applyBootstrap_(bootstrap || buildFallbackBootstrap_());
       applyInitialDashboardData_(initialData || {});
       updateTopbar(state.bootstrap);
+      if (shellReleased && state.lastSuccessfulPayloads[state.activeTab]) {
+        showLoading(false);
+        warmCommonTabs_();
+        ensureSearchCatalogLoaded_();
+        return;
+      }
       const activeKey = buildClientCacheKey_(state.activeTab);
       const cachedPayload = loadSessionPayload_(activeKey);
       if (cachedPayload) {
