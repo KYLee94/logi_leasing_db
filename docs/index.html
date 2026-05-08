@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IOTA Seoul 물류 임대 대시보드</title>
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./assets/iota.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <aside class="sidebar" id="sidebar" aria-label="물류 임대차 대시보드 탐색">
+      <div class="brand">
+        <div class="brand-title">IOTA Seoul</div>
+        <button class="collapse-btn" id="sidebar-toggle" type="button" aria-label="사이드바 접기">
+          <span aria-hidden="true">◧</span>
+        </button>
+      </div>
+      <nav class="nav" id="sidebar-nav" aria-label="주요 탭"></nav>
+      <div class="sidebar-footer">
+        <div class="avatar">LL</div>
+        <div class="footer-text">
+          <div class="footer-name">Logistics Leasing</div>
+          <div class="footer-sub" id="meta-source">source</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main" id="workspace">
+      <div class="content">
+        <header class="page-head">
+          <div>
+          <p class="kicker" id="page-kicker">Weekly Operations</p>
+          <h1 id="page-title">주간 업무</h1>
+          <p id="page-subtitle">기존 주간업무 구성을 유지하고 IOTA 화면 구조로 표시합니다.</p>
+          </div>
+          <div class="top-meta" id="head-meta" aria-label="데이터 상태"></div>
+        </header>
+
+        <div class="workspace-layout">
+          <aside class="project-rail" id="workspace-rail" aria-label="화면 및 데이터 상태"></aside>
+          <div class="workspace-main">
+            <div class="view-panel">
+              <div class="panel-stack" id="tab-panels" aria-live="polite"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-host" id="modal-host" aria-hidden="true"></div>
+  <div class="drawer-host" id="drawer-host" aria-hidden="true"></div>
+
+  <template id="panel-template">
+    <section class="tab-panel">
+      <div class="tab-panel-inner"></div>
+    </section>
+  </template>
+
+  <script src="./assets/app.js" defer></script>
+</body>
+</html>
