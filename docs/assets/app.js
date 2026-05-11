@@ -247,29 +247,32 @@
   }
 
   async function prepareOptions() {
-    const [assets, companies, bootstrap] = await Promise.all([
-      fetchJson("data/asset-options.json").catch(() => []),
-      fetchJson("data/company-options.json").catch(() => []),
-      loadSnapshotWithFallback("bootstrap", "shell", "data/bootstrap.json").catch(() => ({})),
-    ]);
+    const bootstrap = await loadSnapshotWithFallback("bootstrap", "shell", "data/bootstrap.json").catch(() => ({}));
     const bootstrapAssets = Array.isArray(bootstrap.assetOptions) && bootstrap.assetOptions.length ? bootstrap.assetOptions : null;
     const bootstrapCompanies = Array.isArray(bootstrap.companyOptions) && bootstrap.companyOptions.length ? bootstrap.companyOptions : null;
+    const [assets, companies] = await Promise.all([
+      bootstrapAssets ? [] : fetchJson("data/asset-options.json").catch(() => []),
+      bootstrapCompanies ? [] : fetchJson("data/company-options.json").catch(() => []),
+    ]);
     state.options.assets = bootstrapAssets || (Array.isArray(assets) ? assets : []);
     state.options.companies = bootstrapCompanies || (Array.isArray(companies) ? companies : []);
     state.bootstrap = bootstrap && bootstrap.meta ? bootstrap : tagPayload(bootstrap, "bootstrap", FALLBACK_PAYLOAD_SOURCE, FALLBACK_DATA_SOURCE_MODE);
 
-    state.selections.assetId =
+    const assetCandidate =
       state.selections.assetId ||
       getByPath(bootstrap, ["defaults", "assetId"]) ||
-      getByPath(bootstrap, ["defaultAssetPayload", "overview", "assetId"]) ||
-      state.options.assets[0]?.assetId ||
-      "";
-    state.selections.tenantId =
+      getByPath(bootstrap, ["defaultAssetPayload", "overview", "assetId"]);
+    state.selections.assetId = optionExists(state.options.assets, "assetId", assetCandidate)
+      ? assetCandidate
+      : (state.options.assets.find((item) => item.assetId)?.assetId || assetCandidate || "");
+
+    const tenantCandidate =
       state.selections.tenantId ||
       getByPath(bootstrap, ["defaults", "tenantId"]) ||
-      getByPath(bootstrap, ["defaultCompanyPayload", "profile", "tenantId"]) ||
-      state.options.companies[0]?.tenantId ||
-      "";
+      getByPath(bootstrap, ["defaultCompanyPayload", "profile", "tenantId"]);
+    state.selections.tenantId = optionExists(state.options.companies, "tenantId", tenantCandidate) && isUsableTenantId(tenantCandidate)
+      ? tenantCandidate
+      : (state.options.companies.find((item) => isUsableTenantId(item.tenantId))?.tenantId || state.options.companies[0]?.tenantId || tenantCandidate || "");
 
     fillSelect("asset-select", state.options.assets, "assetId", "assetName", state.selections.assetId);
     fillSelect("company-select", state.options.companies, "tenantId", "tenantMasterName", state.selections.tenantId);
@@ -1133,6 +1136,15 @@
 
   function selectedCompanyName() {
     return state.options.companies.find((item) => item.tenantId === state.selections.tenantId)?.tenantMasterName || "Company";
+  }
+
+  function optionExists(options, key, value) {
+    return !!value && (options || []).some((item) => String(item?.[key] || "") === String(value));
+  }
+
+  function isUsableTenantId(value) {
+    const text = String(value || "").trim();
+    return !!text && text !== "tenant_name_";
   }
 
   function inferKeys(rows) {
