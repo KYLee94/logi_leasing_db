@@ -4,3 +4,5 @@ _cleanup_quarantine_20260424/
 .clasp.json
 npm-debug.log*
 *.tmp
+supabase/functions/.env
+supabase/functions/.env.*
