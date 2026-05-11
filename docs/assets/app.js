@@ -175,6 +175,9 @@
     document.getElementById("drawer-backdrop")?.addEventListener("click", (event) => {
       if (event.target && event.target.id === "drawer-backdrop") closeDrawer();
     });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeDrawer();
+    });
   }
 
   function bindNavActions() {
@@ -249,8 +252,10 @@
       fetchJson("data/company-options.json").catch(() => []),
       loadSnapshotWithFallback("bootstrap", "shell", "data/bootstrap.json").catch(() => ({})),
     ]);
-    state.options.assets = Array.isArray(bootstrap.assetOptions) ? bootstrap.assetOptions : (Array.isArray(assets) ? assets : []);
-    state.options.companies = Array.isArray(bootstrap.companyOptions) ? bootstrap.companyOptions : (Array.isArray(companies) ? companies : []);
+    const bootstrapAssets = Array.isArray(bootstrap.assetOptions) && bootstrap.assetOptions.length ? bootstrap.assetOptions : null;
+    const bootstrapCompanies = Array.isArray(bootstrap.companyOptions) && bootstrap.companyOptions.length ? bootstrap.companyOptions : null;
+    state.options.assets = bootstrapAssets || (Array.isArray(assets) ? assets : []);
+    state.options.companies = bootstrapCompanies || (Array.isArray(companies) ? companies : []);
     state.bootstrap = bootstrap && bootstrap.meta ? bootstrap : tagPayload(bootstrap, "bootstrap", FALLBACK_PAYLOAD_SOURCE, FALLBACK_DATA_SOURCE_MODE);
 
     state.selections.assetId =
@@ -481,6 +486,13 @@
     });
     state.payloadSource = source;
     state.dataSourceMode = mode;
+    window.RUNTIME_CLIENT_CONFIG = Object.assign({}, window.RUNTIME_CLIENT_CONFIG || {}, {
+      dataSourceMode: mode,
+      payloadSource: source,
+      supabaseConfigured: true,
+      supabaseUrlConfigured: true,
+      supabaseServiceRoleKeyConfigured: false,
+    });
     return Object.assign({}, base, {
       __payloadSource: source,
       payloadSource: source,
@@ -1047,6 +1059,7 @@
         renderPayload(tab, payload);
       });
     });
+    if (tab === "weekly") bindWeeklyLegacyRows(panel);
     panel.querySelectorAll("[data-detail-key]").forEach((node) => {
       node.addEventListener("click", (event) => {
         event.stopPropagation();
@@ -1061,6 +1074,22 @@
     });
     panel.querySelectorAll("[data-search-scope]").forEach((input) => {
       input.addEventListener("input", () => filterTableRows(input.dataset.searchScope, input.value));
+    });
+  }
+
+  function bindWeeklyLegacyRows(panel) {
+    panel.querySelectorAll(".weekly-report-page .table-wrap tbody tr:not([data-detail-key])").forEach((row, index) => {
+      const table = row.closest("table");
+      const headers = Array.from(table?.querySelectorAll("thead th") || []).map((cell) => cell.textContent.trim());
+      const cells = Array.from(row.querySelectorAll("td")).map((cell) => cell.textContent.trim());
+      const detail = {};
+      cells.forEach((value, cellIndex) => {
+        detail[headers[cellIndex] || `field_${cellIndex + 1}`] = value;
+      });
+      const title = cells[0] || cells[1] || `Weekly row ${index + 1}`;
+      const detailKey = registerDetail("weekly_row", detail, title);
+      row.dataset.detailKey = detailKey;
+      row.tabIndex = 0;
     });
   }
 
@@ -1223,8 +1252,15 @@
         event.stopPropagation();
         openDetailByKey(node.dataset.detailKey);
       });
+      node.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openDetailByKey(node.dataset.detailKey);
+        }
+      });
     });
     backdrop.hidden = false;
+    document.getElementById("drawer-close")?.focus({ preventScroll: true });
   }
 
   function closeDrawer() {
