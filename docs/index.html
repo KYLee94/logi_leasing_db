@@ -3,62 +3,98 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>IOTA Seoul 물류 임대 대시보드</title>
-  <meta name="color-scheme" content="dark">
+  <title>IGIS Logistics Leasing Dashboard</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="./assets/iota.css">
+  <link rel="stylesheet" href="assets/app.css">
 </head>
-<body>
-  <div class="app" id="app">
-    <aside class="sidebar" id="sidebar" aria-label="물류 임대차 대시보드 탐색">
+<body id="app-body" data-theme="dark" data-theme-resolved="dark">
+  <div id="admin-auth-root" class="auth-gate" hidden>
+    <form id="admin-auth-form" class="auth-panel">
+      <div class="auth-brand">IGIS Logistics Leasing</div>
+      <h1>Admin</h1>
+      <input id="admin-auth-password" class="input" type="password" autocomplete="current-password" placeholder="Password">
+      <button id="admin-auth-submit" class="action-btn primary" type="submit">Enter</button>
+    </form>
+  </div>
+
+  <div id="app-shell" class="app-shell" hidden>
+    <aside class="sidebar" aria-label="Dashboard navigation">
       <div class="brand">
-        <div class="brand-title">IOTA Seoul</div>
-        <button class="collapse-btn" id="sidebar-toggle" type="button" aria-label="사이드바 접기">
-          <span aria-hidden="true">◧</span>
-        </button>
+        <div class="brand-mark">LL</div>
+        <div class="brand-text">
+          <strong>Logistics Leasing</strong>
+          <span>Real Asset Dashboard</span>
+        </div>
+        <button id="sidebar-toggle" class="icon-btn" type="button" aria-label="Toggle sidebar">‹</button>
       </div>
-      <nav class="nav" id="sidebar-nav" aria-label="주요 탭"></nav>
+
+      <nav class="nav">
+        <div class="nav-group">Workspace</div>
+        <button class="nav-item active" type="button" data-tab="weekly"><span>W</span><b>Weekly</b></button>
+        <button class="nav-item" type="button" data-tab="home"><span>H</span><b>Home</b></button>
+        <button class="nav-item" type="button" data-tab="asset"><span>A</span><b>Asset</b></button>
+        <button class="nav-item" type="button" data-tab="company"><span>C</span><b>Company</b></button>
+        <button class="nav-item" type="button" data-tab="sector"><span>S</span><b>Sector</b></button>
+        <div class="nav-group">Analysis</div>
+        <button class="nav-item" type="button" data-tab="tools"><span>T</span><b>Analysis Tools</b></button>
+        <button class="nav-item" type="button" data-tab="playground"><span>P</span><b>Data Playground</b></button>
+        <button class="nav-item" type="button" data-tab="quality"><span>Q</span><b>Data Quality</b></button>
+      </nav>
+
       <div class="sidebar-footer">
-        <div class="avatar">LL</div>
+        <div class="avatar">IG</div>
         <div class="footer-text">
-          <div class="footer-name">Logistics Leasing</div>
-          <div class="footer-sub" id="meta-source">source</div>
+          <strong id="source-label">github_snapshot</strong>
+          <span id="generated-label">static frontend</span>
         </div>
       </div>
     </aside>
 
-    <main class="main" id="workspace">
+    <main id="canvas" class="canvas">
       <div class="content">
         <header class="page-head">
           <div>
-          <p class="kicker" id="page-kicker">Weekly Operations</p>
-          <h1 id="page-title">주간 업무</h1>
-          <p id="page-subtitle">기존 주간업무 구성을 유지하고 IOTA 화면 구조로 표시합니다.</p>
+            <div class="eyebrow" id="page-eyebrow">Workspace</div>
+            <h1 id="page-title">Weekly</h1>
           </div>
-          <div class="top-meta" id="head-meta" aria-label="데이터 상태"></div>
+          <div class="head-actions">
+            <select id="asset-select" class="select scoped-control" hidden></select>
+            <select id="company-select" class="select scoped-control" hidden></select>
+            <button class="theme-btn" type="button" data-theme-choice="dark">Dark</button>
+            <button class="theme-btn" type="button" data-theme-choice="light">Light</button>
+          </div>
         </header>
 
-        <div class="workspace-layout">
-          <aside class="project-rail" id="workspace-rail" aria-label="화면 및 데이터 상태"></aside>
+        <section class="workspace-layout iota-workspace-layout">
           <div class="workspace-main">
-            <div class="view-panel">
-              <div class="panel-stack" id="tab-panels" aria-live="polite"></div>
-            </div>
+            <div id="weekly-view" class="tab-panel is-active" data-panel="weekly" data-render-status="skeleton"></div>
+            <div id="home-view" class="tab-panel" data-panel="home" data-render-status="skeleton" hidden></div>
+            <div id="asset-view" class="tab-panel" data-panel="asset" data-render-status="skeleton" hidden></div>
+            <div id="company-view" class="tab-panel" data-panel="company" data-render-status="skeleton" hidden></div>
+            <div id="sector-view" class="tab-panel" data-panel="sector" data-render-status="skeleton" hidden></div>
+            <div id="tools-view" class="tab-panel" data-panel="tools" data-render-status="skeleton" hidden></div>
+            <div id="playground-view" class="tab-panel" data-panel="playground" data-render-status="skeleton" hidden></div>
+            <div id="quality-view" class="tab-panel" data-panel="quality" data-render-status="skeleton" hidden></div>
           </div>
-        </div>
+          <aside class="project-rail">
+            <div class="rail-label">Views</div>
+            <div id="rail-tabs" class="rail-tabs"></div>
+            <div class="rail-divider"></div>
+            <div class="rail-label">Sections</div>
+            <div id="rail-index" class="rail-index"></div>
+          </aside>
+        </section>
       </div>
     </main>
   </div>
 
-  <div class="modal-host" id="modal-host" aria-hidden="true"></div>
-  <div class="drawer-host" id="drawer-host" aria-hidden="true"></div>
+  <div id="drawer-backdrop" class="drawer-backdrop" hidden>
+    <aside class="drawer" role="dialog" aria-modal="true">
+      <button id="drawer-close" class="icon-btn drawer-close" type="button" aria-label="Close">×</button>
+      <div id="drawer-content"></div>
+    </aside>
+  </div>
 
-  <template id="panel-template">
-    <section class="tab-panel">
-      <div class="tab-panel-inner"></div>
-    </section>
-  </template>
-
-  <script src="./assets/app.js" defer></script>
+  <script src="assets/app.js"></script>
 </body>
 </html>
