@@ -1,8 +1,12 @@
 (function () {
   "use strict";
 
-  const DATA_SOURCE_MODE = "static";
-  const PAYLOAD_SOURCE = "github_snapshot";
+  const DATA_SOURCE_MODE = "supabase_snapshot";
+  const PAYLOAD_SOURCE = "supabase_snapshot";
+  const FALLBACK_PAYLOAD_SOURCE = "github_snapshot";
+  const FALLBACK_DATA_SOURCE_MODE = "static";
+  const SUPABASE_URL = "https://qvegpozwrcmspdvjokiz.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Eb3TAC7BPbFrv8Odwwjc1g_Vv81Nf4P";
   const CACHE_PREFIX = "ll.static.cache:";
   const DETAIL_PREFIX = "detail_";
 
@@ -21,6 +25,75 @@
     "admin-data": { title: "Admin Data", group: "Admin", file: "virtual" },
   };
 
+  const LABELS = {
+    activeAssetCount: "운영 자산 수",
+    address: "주소",
+    assetCount: "자산 수",
+    assetId: "자산 ID",
+    assetName: "자산명",
+    assetType: "자산 유형",
+    averageENoc: "평균 E.NOC",
+    businessRegistrationNo: "사업자등록번호",
+    coldRatio: "저온 비중",
+    coldStorageType: "저온/상온",
+    completion: "준공",
+    contractActiveAssetCount: "계약 반영 자산 수",
+    currentEndDate: "계약만기일",
+    currentMonthlyCostTotal: "월 임관리비",
+    currentStartDate: "계약시작일",
+    detailAreaLabel: "세부 구역",
+    eNoc: "E.NOC",
+    exclusiveAreaSqm: "전용면적(㎡)",
+    expiryMonth: "만기월",
+    floor: "층",
+    floorLabel: "층",
+    fundCode: "펀드 코드",
+    fundMaturity: "펀드 만기",
+    fundName: "펀드명",
+    goodsType: "화물 유형",
+    grossAreaPy: "연면적(평)",
+    grossFloorAreaSqm: "연면적(㎡)",
+    issueCount: "이슈 수",
+    latestExpiry: "최근 만기",
+    leaseId: "계약 ID",
+    leaseSpaceCount: "임대 구역 수",
+    leasedAreaPy: "임대면적(평)",
+    leasedAreaSqm: "임대면적(㎡)",
+    loanMaturity: "대출 만기",
+    mainIssue: "주요 이슈",
+    mainTenant: "주요 임차인",
+    monthlyCostTotal: "월 임관리비",
+    monthlyCostTotalAdjusted: "월 임관리비(RF/FO 반영)",
+    monthlyMfTotal: "월 관리비",
+    monthlyRentTotal: "월 임대료",
+    monthlyRentTotalAdjusted: "월 임대료(RF/FO 반영)",
+    monthsToExpiry: "잔여 개월",
+    no: "No.",
+    occupancyRate: "임대율",
+    region: "권역",
+    rentPerPy: "평당 임대료",
+    rowCount: "행 수",
+    rowNumber: "원본 행",
+    sector: "섹터",
+    tenantId: "임차인 ID",
+    tenantMasterName: "임차인명",
+    totalFloorAreaSqm: "총 면적(㎡)",
+    totalGrossAreaSqm: "총 연면적(㎡)",
+    vacancyAreaSqm: "공실면적(㎡)",
+    vacancyRate: "공실률",
+    value: "값",
+    valueMetric: "집계 지표",
+    recordCount: "건수",
+    dimension: "차원",
+    month: "월",
+    label: "구분",
+    count: "건수",
+    status: "상태",
+    source: "원본",
+    source_system: "원본 시스템",
+    generatedAt: "생성 시각",
+  };
+
   const state = {
     role: "user",
     activeTab: "weekly",
@@ -35,17 +108,19 @@
     },
     detailStore: {},
     renderCounts: {},
-    dataSourceMode: DATA_SOURCE_MODE,
-    payloadSource: PAYLOAD_SOURCE,
+    dataSourceMode: FALLBACK_DATA_SOURCE_MODE,
+    payloadSource: FALLBACK_PAYLOAD_SOURCE,
   };
 
   const memoryCache = new Map();
 
   window.RUNTIME_CLIENT_CONFIG = Object.assign({}, window.RUNTIME_CLIENT_CONFIG || {}, {
-    dataSourceMode: DATA_SOURCE_MODE,
-    payloadSource: PAYLOAD_SOURCE,
-    supabaseConfigured: false,
-    supabaseUrlConfigured: false,
+    dataSourceMode: FALLBACK_DATA_SOURCE_MODE,
+    payloadSource: FALLBACK_PAYLOAD_SOURCE,
+    preferredDataSourceMode: DATA_SOURCE_MODE,
+    preferredPayloadSource: PAYLOAD_SOURCE,
+    supabaseConfigured: true,
+    supabaseUrlConfigured: true,
     supabaseServiceRoleKeyConfigured: false,
   });
 
@@ -162,9 +237,9 @@
     const shell = document.getElementById("app-shell");
     if (shell) shell.hidden = false;
     const sourceLabel = document.getElementById("source-label");
-    if (sourceLabel) sourceLabel.textContent = PAYLOAD_SOURCE;
+    if (sourceLabel) sourceLabel.textContent = state.payloadSource || FALLBACK_PAYLOAD_SOURCE;
     const generatedLabel = document.getElementById("generated-label");
-    if (generatedLabel) generatedLabel.textContent = "static frontend";
+    if (generatedLabel) generatedLabel.textContent = state.dataSourceMode || FALLBACK_DATA_SOURCE_MODE;
     buildRailTabs();
   }
 
@@ -172,11 +247,11 @@
     const [assets, companies, bootstrap] = await Promise.all([
       fetchJson("data/asset-options.json").catch(() => []),
       fetchJson("data/company-options.json").catch(() => []),
-      fetchJson("data/bootstrap.json").catch(() => ({})),
+      loadSnapshotWithFallback("bootstrap", "shell", "data/bootstrap.json").catch(() => ({})),
     ]);
-    state.options.assets = Array.isArray(assets) ? assets : [];
-    state.options.companies = Array.isArray(companies) ? companies : [];
-    state.bootstrap = tagPayload(bootstrap, "bootstrap");
+    state.options.assets = Array.isArray(bootstrap.assetOptions) ? bootstrap.assetOptions : (Array.isArray(assets) ? assets : []);
+    state.options.companies = Array.isArray(bootstrap.companyOptions) ? bootstrap.companyOptions : (Array.isArray(companies) ? companies : []);
+    state.bootstrap = bootstrap && bootstrap.meta ? bootstrap : tagPayload(bootstrap, "bootstrap", FALLBACK_PAYLOAD_SOURCE, FALLBACK_DATA_SOURCE_MODE);
 
     state.selections.assetId =
       state.selections.assetId ||
@@ -279,6 +354,7 @@
   function renderPayload(tab, payload) {
     const panel = getPanel(tab);
     if (!panel) return;
+    state.detailStore = {};
     const renderers = {
       weekly: renderWeekly,
       home: renderHome,
@@ -293,6 +369,8 @@
     };
     panel.innerHTML = renderSourceLine(payload) + (renderers[tab] || renderGeneric)(payload);
     panel.dataset.renderStatus = "ready";
+    setText("source-label", payload?.payloadSource || state.payloadSource || FALLBACK_PAYLOAD_SOURCE);
+    setText("generated-label", payload?.dataSourceMode || state.dataSourceMode || FALLBACK_DATA_SOURCE_MODE);
     bindPanelActions(panel, tab, payload);
     updateRailIndex(panel);
   }
@@ -300,19 +378,72 @@
   async function loadTabPayload(tab) {
     if (tab === "asset") {
       const assetId = state.selections.assetId || state.options.assets[0]?.assetId;
-      const payload = await fetchJson(`data/asset/${encodeURIComponent(assetId)}.json`);
-      return tagPayload(payload, tab);
+      return loadSnapshotWithFallback(tab, assetId, `data/asset/${encodeURIComponent(assetId)}.json`);
     }
     if (tab === "company") {
       const tenantId = state.selections.tenantId || state.options.companies[0]?.tenantId;
-      const payload = await fetchJson(`data/company/${encodeURIComponent(tenantId)}.json`);
-      return tagPayload(payload, tab);
+      return loadSnapshotWithFallback(tab, tenantId, `data/company/${encodeURIComponent(tenantId)}.json`);
     }
     if (tab === "quality") return buildQualityPayload();
     if (tab === "admin") return buildAdminPayload();
     if (tab === "admin-data") return buildAdminDataPayload();
-    const payload = await fetchJson(TAB_META[tab].file);
-    return tagPayload(payload, tab);
+    return loadSnapshotWithFallback(tab, "default", TAB_META[tab].file);
+  }
+
+  async function loadSnapshotWithFallback(tab, entityId, fallbackPath) {
+    try {
+      if (!shouldUseSupabaseSnapshots()) {
+        throw new Error("supabase snapshot disabled for local static QA");
+      }
+      return await fetchSupabaseSnapshot(tab, entityId);
+    } catch (error) {
+      const payload = await fetchJson(fallbackPath);
+      const tagged = tagPayload(payload, tab, FALLBACK_PAYLOAD_SOURCE, FALLBACK_DATA_SOURCE_MODE);
+      tagged.supabaseFallbackReason = error && error.message ? error.message : String(error);
+      return tagged;
+    }
+  }
+
+  function shouldUseSupabaseSnapshots() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("source") === "supabase") return true;
+    if (params.get("source") === "github") return false;
+    const host = window.location.hostname.toLowerCase();
+    if (host === "127.0.0.1" || host === "localhost") return false;
+    return true;
+  }
+
+  async function fetchSupabaseSnapshot(tab, entityId) {
+    const page = encodeURIComponent(tab);
+    const entity = encodeURIComponent(entityId || "default");
+    const query = [
+      "select=payload,generated_at,source,source_system,schema_version,page,entity_id,snapshot_key",
+      "user_safe=eq.true",
+      `page=eq.${page}`,
+      `entity_id=eq.${entity}`,
+      "order=generated_at.desc",
+      "limit=1",
+    ].join("&");
+    const url = `${SUPABASE_URL}/rest/v1/ll_payload_snapshots?${query}`;
+    const response = await fetch(url, {
+      cache: "no-store",
+      headers: {
+        apikey: SUPABASE_PUBLISHABLE_KEY,
+        Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+        Accept: "application/json",
+      },
+    });
+    if (!response.ok) throw new Error(`supabase snapshot HTTP ${response.status}`);
+    const rows = await response.json();
+    if (!Array.isArray(rows) || !rows.length || !rows[0].payload) {
+      throw new Error(`supabase snapshot empty: ${tab}/${entityId || "default"}`);
+    }
+    const row = rows[0];
+    const payload = Object.assign({}, row.payload || {}, {
+      generatedAt: row.payload?.generatedAt || row.generated_at,
+      schemaVersion: row.payload?.schemaVersion || row.schema_version,
+    });
+    return tagPayload(payload, tab, row.source || PAYLOAD_SOURCE, DATA_SOURCE_MODE, row);
   }
 
   async function fetchJson(path) {
@@ -337,17 +468,23 @@
     return parsed;
   }
 
-  function tagPayload(payload, tab) {
+  function tagPayload(payload, tab, payloadSource, dataSourceMode, sourceRow) {
+    const source = payloadSource || PAYLOAD_SOURCE;
+    const mode = dataSourceMode || DATA_SOURCE_MODE;
     const base = payload && typeof payload === "object" && !Array.isArray(payload) ? payload : { value: payload };
     const meta = Object.assign({}, base.meta || {}, {
-      payloadSource: PAYLOAD_SOURCE,
-      dataSourceMode: DATA_SOURCE_MODE,
+      payloadSource: source,
+      dataSourceMode: mode,
       tab,
+      supabaseSnapshotKey: sourceRow?.snapshot_key,
+      sourceSystem: sourceRow?.source_system,
     });
+    state.payloadSource = source;
+    state.dataSourceMode = mode;
     return Object.assign({}, base, {
-      __payloadSource: PAYLOAD_SOURCE,
-      payloadSource: PAYLOAD_SOURCE,
-      dataSourceMode: DATA_SOURCE_MODE,
+      __payloadSource: source,
+      payloadSource: source,
+      dataSourceMode: mode,
       meta,
     });
   }
@@ -409,24 +546,32 @@
   function renderHome(home) {
     const occupancy = home.occupancy || {};
     const kpis = normalizeKpis(home.kpis);
+    const rentTrend = (home.rentTrend || []).slice(-18);
+    const mapPoints = home.mapPoints || [];
     return `
       <div class="page-stack">
-        ${kpiGrid(kpis)}
-        ${section("Portfolio Snapshot", "Home", `
+        ${kpiGrid(kpis, "home_kpi")}
+        ${section("포트폴리오 스냅샷", "Home", `
           <div class="split">
-            ${infoCard("Occupancy", keyValueGrid({
+            ${infoCard("임대 현황", keyValueGrid({
               grossFloorAreaSqm: formatArea(occupancy.grossFloorAreaSqm),
               leasedAreaSqm: formatArea(occupancy.leasedAreaSqm),
               vacancyAreaSqm: formatArea(occupancy.vacancyAreaSqm),
               vacancyRate: formatPercent(occupancy.vacancyRate),
             }))}
-            ${infoCard("Contract Summary", keyValueGrid(home.contractSummary || {}))}
+            ${infoCard("계약 요약", keyValueGrid(home.contractSummary || {}))}
           </div>
         `)}
-        ${section("Top Tenants", "Home", renderTableFromObjects(home.topTenants || home.tenantSummary || [], ["tenantMasterName", "assetCount", "leasedAreaSqm", "monthlyCostTotal", "latestExpiry", "averageENoc"], 12))}
-        ${section("Vacancy", "Home", renderTableFromObjects(home.vacancySummary || [], ["assetName", "grossFloorAreaSqm", "vacancyAreaSqm", "vacancyRate"], 12))}
-        ${section("Rent Trend", "Home", renderTableFromObjects((home.rentTrend || []).slice(-18), ["month", "activeAssetCount", "leasedAreaSqm", "grossFloorAreaSqm", "monthlyRentTotal", "monthlyCostTotalAdjusted"], 18))}
-        ${section("Map Points", "Home", renderTableFromObjects(home.mapPoints || [], ["assetName", "address", "latitude", "longitude", "issueCount"], 20))}
+        ${section("주요 임차인", "Home", renderSearchableInteractiveTable("home_tenants", home.topTenants || home.tenantSummary || [], ["tenantMasterName", "assetCount", "leasedAreaSqm", "monthlyCostTotal", "latestExpiry", "averageENoc"], 12, { placeholder: "임차인 검색" }))}
+        ${section("공실 현황", "Home", renderInteractiveTable("home_vacancy", home.vacancySummary || [], ["assetName", "grossFloorAreaSqm", "vacancyAreaSqm", "vacancyRate"], 12))}
+        ${section("임대료 추이", "Home", `
+          ${renderBarChart("home_rent_trend_chart", rentTrend, "month", "monthlyCostTotalAdjusted", { title: "월 임관리비 추이" })}
+          ${renderInteractiveTable("home_rent_trend", rentTrend, ["month", "activeAssetCount", "leasedAreaSqm", "grossFloorAreaSqm", "monthlyRentTotal", "monthlyCostTotalAdjusted"], 18)}
+        `)}
+        ${section("자산 위치", "Home", `
+          ${renderMapPanel(mapPoints, "home_map")}
+          ${renderInteractiveTable("home_map_points", mapPoints, ["assetName", "address", "latitude", "longitude", "issueCount"], 20)}
+        `)}
       </div>
     `;
   }
@@ -437,13 +582,16 @@
     return `
       <div class="page-stack">
         ${section(title, "Asset", `
-          ${kpiGrid(normalizeKpis(asset.kpis))}
+          ${kpiGrid(normalizeKpis(asset.kpis), "asset_kpi")}
           ${keyValueGrid(overview)}
         `)}
-        ${section("Leases", "Asset", renderTableFromObjects(asset.rows || [], ["tenantMasterName", "floor", "leasedAreaSqm", "monthlyRentTotal", "monthlyMfTotal", "monthlyCostTotal", "currentStartDate", "currentEndDate"], 80))}
-        ${section("Top Tenants", "Asset", renderTableFromObjects(asset.topTenants || [], ["tenantMasterName", "leasedAreaSqm", "monthlyCostTotal", "latestExpiry", "averageENoc"], 20))}
-        ${section("Stacking Plan", "Asset", renderTableFromObjects(asset.stackingPlan || [], null, 80))}
-        ${section("Area Breakdown", "Asset", keyValueGrid(asset.areaBreakdown || {}))}
+        ${section("임대차 현황", "Asset", renderSearchableInteractiveTable("asset_leases", asset.rows || [], ["tenantMasterName", "floorLabel", "detailAreaLabel", "leasedAreaSqm", "monthlyRentTotal", "monthlyMfTotal", "currentMonthlyCostTotal", "currentStartDate", "currentEndDate"], 80, { placeholder: "임차인, 층, 구역 검색" }))}
+        ${section("주요 임차인", "Asset", `
+          ${renderBarChart("asset_top_tenants_chart", asset.topTenants || [], "tenantMasterName", "leasedAreaSqm", { title: "임차인별 임대면적" })}
+          ${renderInteractiveTable("asset_top_tenants", asset.topTenants || [], ["tenantMasterName", "leasedAreaSqm", "monthlyCostTotal", "latestExpiry", "averageENoc"], 20)}
+        `)}
+        ${section("층별 배치", "Asset", renderInteractiveTable("asset_stacking", asset.stackingPlan || [], null, 80))}
+        ${section("면적 구성", "Asset", keyValueGrid(asset.areaBreakdown || {}))}
       </div>
     `;
   }
@@ -454,26 +602,36 @@
     return `
       <div class="page-stack">
         ${section(title, "Company", `
-          ${kpiGrid(normalizeKpis(company.kpis))}
+          ${kpiGrid(normalizeKpis(company.kpis), "company_kpi")}
           ${keyValueGrid(profile)}
         `)}
-        ${section("Leased Assets", "Company", renderTableFromObjects(company.leasedAssets || [], ["assetName", "leasedAreaSqm", "monthlyCostTotal", "currentEndDate", "sector", "goodsType"], 40))}
-        ${section("Lease Rows", "Company", renderTableFromObjects(company.rows || [], ["assetName", "floor", "leasedAreaSqm", "monthlyRentTotal", "monthlyMfTotal", "monthlyCostTotal", "currentStartDate", "currentEndDate"], 80))}
-        ${section("Financials", "Company", renderTableFromObjects(company.financials || [], null, 20))}
-        ${section("Operations", "Company", keyValueGrid(company.operations || {}))}
+        ${section("임차 자산", "Company", `
+          ${renderMapPanel(company.mapPoints || [], "company_map")}
+          ${renderSearchableInteractiveTable("company_assets", company.leasedAssets || [], ["assetName", "leasedAreaSqm", "monthlyCostTotal", "latestExpiry", "sector", "goodsType"], 40, { placeholder: "자산명 검색" })}
+        `)}
+        ${section("계약 행", "Company", renderInteractiveTable("company_rows", company.rows || [], ["assetName", "floorLabel", "detailAreaLabel", "leasedAreaSqm", "monthlyRentTotal", "monthlyMfTotal", "currentMonthlyCostTotal", "currentStartDate", "currentEndDate"], 80))}
+        ${section("DART/재무 정보", "Company", renderRecordOrTable("company_financials", company.financials || {}))}
+        ${section("운영 정보", "Company", keyValueGrid(company.operations || {}))}
       </div>
     `;
   }
 
   function renderSector(sector) {
+    const monthlyRentTrend = getByPath(sector, ["trends", "monthlyRent"]) || [];
     return `
       <div class="page-stack">
-        ${kpiGrid(objectToKpis(sector.kpis || {}))}
-        ${section("Region Exposure", "Sector", renderTableFromObjects(sector.regionExposure || [], ["region", "assetCount", "grossFloorAreaSqm", "leasedAreaSqm", "vacancyRate", "monthlyCostTotal"], 20))}
-        ${section("Expiry Buckets", "Sector", renderTableFromObjects(sector.expiryBuckets || [], null, 20))}
-        ${section("Expiry Rows", "Sector", renderTableFromObjects(sector.expiryRows || [], ["expiryMonth", "tenantMasterName", "assetName", "leasedAreaSqm", "monthlyCostTotal", "eNoc", "monthsToExpiry"], 60))}
-        ${section("Rankings", "Sector", renderRankingTables(sector.rankings || {}))}
-        ${section("Trends", "Sector", keyValueGrid(sector.trends || {}))}
+        ${kpiGrid(objectToKpis(sector.kpis || {}), "sector_kpi")}
+        ${section("지역별 노출", "Sector", `
+          ${renderBarChart("sector_region_chart", sector.regionExposure || [], "region", "monthlyCostTotal", { title: "지역별 월 임관리비" })}
+          ${renderInteractiveTable("sector_region", sector.regionExposure || [], ["region", "assetCount", "grossFloorAreaSqm", "leasedAreaSqm", "vacancyRate", "monthlyCostTotal"], 20)}
+        `)}
+        ${section("만기 구간", "Sector", renderInteractiveTable("sector_expiry_buckets", sector.expiryBuckets || [], null, 20))}
+        ${section("만기 상세", "Sector", renderSearchableInteractiveTable("sector_expiry_rows", sector.expiryRows || [], ["expiryMonth", "tenantMasterName", "assetName", "leasedAreaSqm", "monthlyCostTotal", "eNoc", "monthsToExpiry"], 60, { placeholder: "자산/임차인/만기월 검색" }))}
+        ${section("랭킹", "Sector", renderRankingTables(sector.rankings || {}))}
+        ${section("추이", "Sector", `
+          ${renderBarChart("sector_rent_trend", monthlyRentTrend, "month", "monthlyCostTotal", { title: "월 임관리비 추이" })}
+          ${keyValueGrid(sector.trends || {})}
+        `)}
       </div>
     `;
   }
@@ -481,12 +639,15 @@
   function renderTools(tools) {
     return `
       <div class="page-stack">
-        ${kpiGrid(objectToKpis(Object.assign({}, tools.deltas || {}, tools.divergence || {})))}
-        ${section("Selection", "Analysis Tools", keyValueGrid(tools.selectionMeta || {}))}
-        ${section("Assets", "Analysis Tools", renderTableFromObjects(tools.assets || [], ["assetName", "tenantMasterName", "leasedAreaSqm", "monthlyCostTotal", "vacancyRate"], 30))}
-        ${section("Companies", "Analysis Tools", renderTableFromObjects(tools.companies || [], ["tenantMasterName", "assetName", "leasedAreaSqm", "monthlyCostTotal", "eNoc"], 30))}
-        ${section("Contracts", "Analysis Tools", renderTableFromObjects(tools.contracts || [], ["tenantMasterName", "assetName", "leasedAreaSqm", "monthlyRentTotal", "monthlyMfTotal", "monthlyCostTotal", "currentEndDate"], 80))}
-        ${section("Benchmark", "Analysis Tools", renderTableFromObjects(tools.benchmarkRows || [], null, 20))}
+        ${kpiGrid(objectToKpis(Object.assign({}, tools.deltas || {}, tools.divergence || {})), "tools_kpi")}
+        ${section("선택 조건", "Analysis Tools", keyValueGrid(tools.selectionMeta || {}))}
+        ${section("자산 비교", "Analysis Tools", renderSearchableInteractiveTable("tools_assets", tools.assets || [], ["assetName", "tenantMasterName", "leasedAreaSqm", "monthlyCostTotal", "vacancyRate"], 30, { placeholder: "자산/임차인 검색" }))}
+        ${section("기업 비교", "Analysis Tools", renderSearchableInteractiveTable("tools_companies", tools.companies || [], ["tenantMasterName", "assetName", "leasedAreaSqm", "monthlyCostTotal", "eNoc"], 30, { placeholder: "기업/자산 검색" }))}
+        ${section("계약 원장", "Analysis Tools", renderSearchableInteractiveTable("tools_contracts", tools.contracts || [], ["tenantMasterName", "assetName", "leasedAreaSqm", "monthlyRentTotal", "monthlyMfTotal", "monthlyCostTotal", "currentEndDate"], 80, { placeholder: "계약 원장 검색" }))}
+        ${section("벤치마크", "Analysis Tools", `
+          ${renderBarChart("tools_benchmark_chart", tools.benchmarkRows || [], "assetName", "leasedAreaSqm", { title: "비교 자산 임대면적" })}
+          ${renderInteractiveTable("tools_benchmark", tools.benchmarkRows || [], null, 20)}
+        `)}
       </div>
     `;
   }
@@ -494,15 +655,18 @@
   function renderPlayground(playground) {
     return `
       <div class="page-stack">
-        ${kpiGrid(normalizeKpis(playground.summaryCards))}
-        ${section("Query", "Data Playground", `
+        ${kpiGrid(normalizeKpis(playground.summaryCards), "playground_kpi")}
+        ${section("질의 조건", "Data Playground", `
           <div class="split">
-            ${infoCard("Current Query", keyValueGrid(playground.query || {}))}
-            ${infoCard("Saved Views", renderTableFromObjects(playground.savedViews || [], ["label", "rowDimension", "columnDimension", "valueMetric", "topN"], 10))}
+            ${infoCard("현재 질의", keyValueGrid(playground.query || {}))}
+            ${infoCard("저장된 보기", renderInteractiveTable("playground_saved_views", playground.savedViews || [], ["label", "rowDimension", "columnDimension", "valueMetric", "topN"], 10))}
           </div>
         `)}
-        ${section("Rows", "Data Playground", renderTableFromObjects(playground.rows || [], null, 80))}
-        ${section("Source Rows", "Data Playground", renderTableFromObjects(playground.sourceRows || [], ["tenantMasterName", "assetName", "leasedAreaSqm", "monthlyCostTotal", "sector", "goodsType"], 80))}
+        ${section("집계 결과", "Data Playground", `
+          ${renderBarChart("playground_result_chart", playground.rows || [], "dimension", "value", { title: "집계 결과" })}
+          ${renderInteractiveTable("playground_rows", playground.rows || [], null, 80)}
+        `)}
+        ${section("원본 행", "Data Playground", renderSearchableInteractiveTable("playground_source_rows", playground.sourceRows || [], ["tenantMasterName", "assetName", "leasedAreaSqm", "monthlyCostTotal", "sector", "goodsType"], 80, { placeholder: "임차인/자산/섹터 검색" }))}
       </div>
     `;
   }
@@ -510,14 +674,14 @@
   function renderQuality(payload) {
     return `
       <div class="page-stack">
-        ${kpiGrid(payload.kpis)}
-        ${section("Snapshot Files", "Data Quality", renderTableFromObjects(payload.files, ["name", "type", "rows", "status"], 80))}
-        ${section("Loaded Payloads", "Data Quality", renderTableFromObjects(payload.loadedTabs, ["tab", "status", "rows", "source"], 20))}
-        ${section("Rules", "Data Quality", renderTable(["항목", "상태"], [
+        ${kpiGrid(payload.kpis, "quality_kpi")}
+        ${section("스냅샷 파일", "Data Quality", renderInteractiveTable("quality_files", payload.files, ["name", "type", "rows", "status"], 80))}
+        ${section("불러온 Payload", "Data Quality", renderInteractiveTable("quality_loaded", payload.loadedTabs, ["tab", "status", "rows", "source"], 20))}
+        ${section("검증 규칙", "Data Quality", renderTable(["항목", "상태"], [
           ["화면 서버 호출", "사용 안 함"],
           ["외부 런타임 브리지", "사용 안 함"],
           ["민감 키 노출", "없음"],
-          ["데이터 원본", PAYLOAD_SOURCE],
+          ["데이터 원본", state.payloadSource || FALLBACK_PAYLOAD_SOURCE],
         ]))}
       </div>
     `;
@@ -526,14 +690,14 @@
   function renderAdmin(payload) {
     return `
       <div class="page-stack">
-        ${section("Static Admin Preview", "Admin", `
+        ${section("정적 Admin 미리보기", "Admin", `
           <div class="admin-password-gate">
-            ${kpiGrid(payload.kpis)}
-            <p class="page-note">이 화면은 정적 프론트 전환 상태를 확인하는 읽기전용 미리보기입니다. 저장, 동기화, 삭제 기능은 연결하지 않았습니다.</p>
+            ${kpiGrid(payload.kpis, "admin_kpi")}
+            <p class="page-note">이 화면은 GitHub Pages 전환 상태를 확인하는 읽기전용 미리보기입니다. 저장, 동기화, 삭제 기능은 비밀키가 필요한 서버 기능으로 분리해야 합니다.</p>
           </div>
         `)}
         ${section("Runtime", "Admin", keyValueGrid(payload.runtime))}
-        ${section("Available Data", "Admin", renderTableFromObjects(payload.files, ["name", "rows", "status"], 80))}
+        ${section("사용 가능한 데이터", "Admin", renderInteractiveTable("admin_files", payload.files, ["name", "rows", "status"], 80))}
       </div>
     `;
   }
@@ -542,12 +706,12 @@
     return `
       <div class="page-stack admin-data-workspace">
         ${section("Admin Data", "Admin", `
-          <p class="page-note admin-data-api-note">현재는 GitHub Pages 정적 JSON을 읽기전용으로 표시합니다. 쓰기 작업은 별도 backend 확정 후 연결합니다.</p>
+          <p class="page-note admin-data-api-note">현재는 GitHub Pages 정적 JSON과 Supabase snapshot 전환 상태를 읽기전용으로 표시합니다. 쓰기 작업은 서버 전용 API 확정 후 연결합니다.</p>
           <div id="admin-data-table">
-            ${renderTableFromObjects(payload.files, ["name", "type", "rows", "source", "status"], 120)}
+            ${renderInteractiveTable("admin_data_files", payload.files, ["name", "type", "rows", "source", "status"], 120)}
           </div>
         `)}
-        ${section("Cache", "Admin", renderTableFromObjects(payload.cache, ["key", "status"], 80))}
+        ${section("Cache", "Admin", renderInteractiveTable("admin_data_cache", payload.cache, ["key", "status"], 80))}
       </div>
     `;
   }
@@ -564,7 +728,7 @@
         tab,
         status: payload ? "ready" : "not visited",
         rows: estimateRows(payload),
-        source: payload ? PAYLOAD_SOURCE : "-",
+        source: payload ? (payload.payloadSource || payload.meta?.payloadSource || state.payloadSource || FALLBACK_PAYLOAD_SOURCE) : "-",
       };
     });
     return tagPayload({
@@ -584,13 +748,13 @@
     return tagPayload({
       kpis: [
         ["Mode", "Read only", "static frontend"],
-        ["Payload", PAYLOAD_SOURCE, DATA_SOURCE_MODE],
+        ["Payload", state.payloadSource || FALLBACK_PAYLOAD_SOURCE, state.dataSourceMode || FALLBACK_DATA_SOURCE_MODE],
         ["Files", formatNumber(files.length), "docs/data"],
         ["Admin write", "Off", "backend 미연결"],
       ],
       runtime: {
-        dataSourceMode: DATA_SOURCE_MODE,
-        payloadSource: PAYLOAD_SOURCE,
+        dataSourceMode: state.dataSourceMode || FALLBACK_DATA_SOURCE_MODE,
+        payloadSource: state.payloadSource || FALLBACK_PAYLOAD_SOURCE,
         screenRuntime: "static files",
         externalRuntimeBridge: "not used",
         frontendSecretKey: "none",
@@ -608,13 +772,13 @@
 
   function buildFileInventory() {
     return [
-      { name: "weekly.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.weekly), source: PAYLOAD_SOURCE, status: "ready" },
-      { name: "home.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.home), source: PAYLOAD_SOURCE, status: "ready" },
-      { name: "sector.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.sector), source: PAYLOAD_SOURCE, status: "ready" },
-      { name: "tools.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.tools), source: PAYLOAD_SOURCE, status: "ready" },
-      { name: "playground.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.playground), source: PAYLOAD_SOURCE, status: "ready" },
-      { name: "asset/*.json", type: "entity", rows: state.options.assets.length, source: PAYLOAD_SOURCE, status: "ready" },
-      { name: "company/*.json", type: "entity", rows: state.options.companies.length, source: PAYLOAD_SOURCE, status: "ready" },
+      { name: "weekly.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.weekly), source: sourceForPayload(state.lastSuccessfulPayloads.weekly), status: "ready" },
+      { name: "home.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.home), source: sourceForPayload(state.lastSuccessfulPayloads.home), status: "ready" },
+      { name: "sector.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.sector), source: sourceForPayload(state.lastSuccessfulPayloads.sector), status: "ready" },
+      { name: "tools.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.tools), source: sourceForPayload(state.lastSuccessfulPayloads.tools), status: "ready" },
+      { name: "playground.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.playground), source: sourceForPayload(state.lastSuccessfulPayloads.playground), status: "ready" },
+      { name: "asset/*.json", type: "entity", rows: state.options.assets.length, source: state.payloadSource || FALLBACK_PAYLOAD_SOURCE, status: "ready" },
+      { name: "company/*.json", type: "entity", rows: state.options.companies.length, source: state.payloadSource || FALLBACK_PAYLOAD_SOURCE, status: "ready" },
     ];
   }
 
@@ -630,18 +794,22 @@
     return Object.entries(obj || {}).map(([key, value]) => [labelize(key), formatCell(value), ""]);
   }
 
-  function kpiGrid(items) {
+  function kpiGrid(items, scope) {
     const rows = (items || []).filter(Boolean);
     if (!rows.length) return "";
     return `
       <div class="kpi-grid summary-strip">
-        ${rows.map((item) => `
-          <article class="kpi info-card">
+        ${rows.map((item, index) => {
+          const row = { label: item[0], value: item[1], note: item[2] || "" };
+          const detailKey = registerDetail(scope || "kpi", row, `${formatCell(item[0])} 상세`);
+          return `
+          <button class="kpi info-card kpi-button" type="button" data-detail-key="${escapeAttr(detailKey)}" aria-label="${escapeAttr(`${formatCell(item[0])} 상세 보기`)}">
             <div class="kpi-label">${escapeHtml(item[0])}</div>
             <div class="kpi-value">${escapeHtml(formatCell(item[1]))}</div>
             ${item[2] ? `<div class="kpi-note">${escapeHtml(formatCell(item[2]))}</div>` : ""}
-          </article>
-        `).join("")}
+          </button>
+        `;
+        }).join("")}
       </div>
     `;
   }
@@ -669,12 +837,116 @@
     `;
   }
 
+  function renderSearchableInteractiveTable(scope, rows, preferredKeys, limit, options) {
+    const placeholder = options?.placeholder || "검색";
+    return `
+      <div class="search-strip">
+        <input class="input table-search" type="search" placeholder="${escapeAttr(placeholder)}" data-search-scope="${escapeAttr(scope)}">
+      </div>
+      ${renderInteractiveTable(scope, rows, preferredKeys, limit)}
+    `;
+  }
+
+  function renderInteractiveTable(scope, rows, preferredKeys, limit) {
+    const list = Array.isArray(rows) ? rows.slice(0, limit || rows.length) : [];
+    if (!list.length) return renderEmpty("표시할 행이 없습니다.");
+    const keys = preferredKeys && preferredKeys.length ? preferredKeys : inferKeys(list);
+    return `
+      <div class="table-wrap compact-table" data-table-scope="${escapeAttr(scope)}">
+        <table>
+          <thead>
+            <tr>
+              ${keys.map((header) => `<th>${escapeHtml(labelize(header))}</th>`).join("")}
+              <th class="action-col">상세</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${list.map((row) => {
+              const detailKey = registerDetail(scope, row, buildDetailTitle(row, scope));
+              return `
+                <tr tabindex="0" data-detail-key="${escapeAttr(detailKey)}">
+                  ${keys.map((key) => `<td>${formatCellHtml(row?.[key])}</td>`).join("")}
+                  <td class="action-col"><button class="row-action" type="button" data-detail-key="${escapeAttr(detailKey)}">보기</button></td>
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  function renderRecordOrTable(scope, value) {
+    if (Array.isArray(value)) return renderInteractiveTable(scope, value, null, 80);
+    if (value && typeof value === "object") {
+      const rows = Object.entries(value).map(([key, item]) => ({ 항목: labelize(key), 값: item }));
+      return renderInteractiveTable(scope, rows, ["항목", "값"], 80);
+    }
+    return keyValueGrid({ value });
+  }
+
+  function renderBarChart(scope, rows, labelKey, valueKey, options) {
+    const list = (Array.isArray(rows) ? rows : []).filter(Boolean).slice(0, options?.limit || 18);
+    if (!list.length) return "";
+    const values = list.map((row) => Math.abs(Number(row?.[valueKey]) || 0));
+    const max = Math.max(...values, 1);
+    return `
+      <div class="chart-panel" data-chart-scope="${escapeAttr(scope)}">
+        <div class="chart-title">${escapeHtml(options?.title || "차트")}</div>
+        <div class="bar-chart">
+          ${list.map((row) => {
+            const detailKey = registerDetail(scope, row, buildDetailTitle(row, scope));
+            const rawValue = Number(row?.[valueKey]) || 0;
+            const width = Math.max(4, Math.round((Math.abs(rawValue) / max) * 100));
+            return `
+              <button class="bar-row" type="button" data-detail-key="${escapeAttr(detailKey)}">
+                <span class="bar-label">${escapeHtml(formatCell(row?.[labelKey]))}</span>
+                <span class="bar-track"><span class="bar-fill" style="width:${width}%"></span></span>
+                <span class="bar-value">${escapeHtml(formatCell(rawValue))}</span>
+              </button>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderMapPanel(points, scope) {
+    const list = (Array.isArray(points) ? points : []).filter((point) => point && point.latitude != null && point.longitude != null);
+    if (!list.length) return renderEmpty("표시할 지도 좌표가 없습니다.");
+    const lats = list.map((point) => Number(point.latitude)).filter(Number.isFinite);
+    const lngs = list.map((point) => Number(point.longitude)).filter(Number.isFinite);
+    const minLat = Math.min(...lats);
+    const maxLat = Math.max(...lats);
+    const minLng = Math.min(...lngs);
+    const maxLng = Math.max(...lngs);
+    const latSpan = Math.max(maxLat - minLat, 0.01);
+    const lngSpan = Math.max(maxLng - minLng, 0.01);
+    return `
+      <div class="map-panel" role="group" aria-label="자산 위치 지도">
+        <div class="map-grid"></div>
+        ${list.map((point, index) => {
+          const left = clamp(((Number(point.longitude) - minLng) / lngSpan) * 86 + 7, 5, 93);
+          const top = clamp((1 - ((Number(point.latitude) - minLat) / latSpan)) * 78 + 10, 8, 90);
+          const detailKey = registerDetail(scope, point, point.assetName || `지도 지점 ${index + 1}`);
+          return `
+            <button class="map-marker" type="button" style="left:${left}%;top:${top}%" data-detail-key="${escapeAttr(detailKey)}" aria-label="${escapeAttr(`${point.assetName || "자산"} 상세`)}">
+              <span>${formatNumber(index + 1)}</span>
+            </button>
+          `;
+        }).join("")}
+      </div>
+    `;
+  }
+
   function renderSourceLine(payload) {
     const generated = payload?.generatedAt || payload?.meta?.generatedAt || state.bootstrap?.generatedAt || "";
+    const source = payload?.payloadSource || payload?.meta?.payloadSource || state.payloadSource || FALLBACK_PAYLOAD_SOURCE;
+    const mode = payload?.dataSourceMode || payload?.meta?.dataSourceMode || state.dataSourceMode || FALLBACK_DATA_SOURCE_MODE;
     return `
       <div class="source-line">
-        <span class="iota-source-chip">${PAYLOAD_SOURCE}</span>
-        <span class="chip">${DATA_SOURCE_MODE}</span>
+        <span class="iota-source-chip">${escapeHtml(source)}</span>
+        <span class="chip">${escapeHtml(mode)}</span>
         ${generated ? `<span class="chip">${escapeHtml(formatDate(generated))}</span>` : ""}
       </div>
     `;
@@ -722,11 +994,50 @@
   function renderRankingTables(rankings) {
     const entries = Object.entries(rankings || {});
     if (!entries.length) return renderEmpty("표시할 랭킹이 없습니다.");
-    return entries.map(([key, rows]) => infoCard(labelize(key), renderTableFromObjects(rows || [], null, 12))).join("");
+    return entries.map(([key, rows]) => infoCard(labelize(key), renderInteractiveTable(`ranking_${key}`, rows || [], null, 12))).join("");
   }
 
   function renderEmpty(message) {
     return `<div class="empty state-shell">${message}</div>`;
+  }
+
+  function registerDetail(scope, row, title) {
+    const safeScope = String(scope || "detail").replace(/[^a-z0-9_-]/gi, "_");
+    const key = `${DETAIL_PREFIX}${safeScope}_${Object.keys(state.detailStore).length}`;
+    state.detailStore[key] = { title: title || buildDetailTitle(row, safeScope), row };
+    return key;
+  }
+
+  function buildDetailTitle(row, fallback) {
+    if (!row || typeof row !== "object") return "상세";
+    return row.assetName || row.tenantMasterName || row.projectName || row.label || row.dimension || row.month || row.name || fallback || "상세";
+  }
+
+  function openDetailByKey(key) {
+    const detail = state.detailStore[key];
+    if (!detail) return;
+    openDrawer(detail.title || "상세", renderDetailBody(detail.row));
+  }
+
+  function renderDetailBody(row) {
+    if (!row || typeof row !== "object") return `<p class="page-note">${escapeHtml(formatCell(row))}</p>`;
+    const simple = {};
+    const nested = [];
+    Object.entries(row).forEach(([key, value]) => {
+      if (value && typeof value === "object") nested.push([key, value]);
+      else simple[key] = value;
+    });
+    return `
+      ${keyValueGrid(simple)}
+      ${nested.map(([key, value]) => `
+        <section class="drawer-section">
+          <h3>${escapeHtml(labelize(key))}</h3>
+          ${Array.isArray(value)
+            ? renderInteractiveTable(`drawer_${key}`, value, null, 40)
+            : keyValueGrid(value)}
+        </section>
+      `).join("")}
+    `;
   }
 
   function bindPanelActions(panel, tab, payload) {
@@ -735,6 +1046,21 @@
         state.selections.weeklyAssetView = button.dataset.weeklyView || "core";
         renderPayload(tab, payload);
       });
+    });
+    panel.querySelectorAll("[data-detail-key]").forEach((node) => {
+      node.addEventListener("click", (event) => {
+        event.stopPropagation();
+        openDetailByKey(node.dataset.detailKey);
+      });
+      node.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openDetailByKey(node.dataset.detailKey);
+        }
+      });
+    });
+    panel.querySelectorAll("[data-search-scope]").forEach((input) => {
+      input.addEventListener("input", () => filterTableRows(input.dataset.searchScope, input.value));
     });
   }
 
@@ -749,6 +1075,16 @@
     }).join("");
     target.querySelectorAll("[data-scroll-target]").forEach((button) => {
       button.addEventListener("click", () => document.getElementById(button.dataset.scrollTarget)?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    });
+  }
+
+  function filterTableRows(scope, query) {
+    const normalized = String(query || "").trim().toLowerCase();
+    const table = Array.from(document.querySelectorAll("[data-table-scope]")).find((node) => node.dataset.tableScope === scope);
+    if (!table) return;
+    table.querySelectorAll("tbody tr").forEach((row) => {
+      const text = row.textContent.toLowerCase();
+      row.hidden = normalized && !text.includes(normalized);
     });
   }
 
@@ -789,6 +1125,10 @@
     return count;
   }
 
+  function sourceForPayload(payload) {
+    return payload?.payloadSource || payload?.meta?.payloadSource || state.payloadSource || FALLBACK_PAYLOAD_SOURCE;
+  }
+
   function formatCellHtml(value) {
     return escapeHtml(formatCell(value));
   }
@@ -796,8 +1136,8 @@
   function formatCell(value) {
     if (value === null || value === undefined || value === "") return "-";
     if (typeof value === "number") return formatNumber(value);
-    if (typeof value === "boolean") return value ? "true" : "false";
-    if (Array.isArray(value)) return `${formatNumber(value.length)} items`;
+    if (typeof value === "boolean") return value ? "예" : "아니오";
+    if (Array.isArray(value)) return `${formatNumber(value.length)}건`;
     if (typeof value === "object") {
       const entries = Object.entries(value).slice(0, 4);
       if (!entries.length) return "-";
@@ -809,13 +1149,15 @@
   function formatNested(value) {
     if (value === null || value === undefined || value === "") return "-";
     if (typeof value === "number") return formatNumber(value);
-    if (Array.isArray(value)) return `${formatNumber(value.length)} items`;
-    if (typeof value === "object") return `${formatNumber(Object.keys(value).length)} fields`;
+    if (Array.isArray(value)) return `${formatNumber(value.length)}건`;
+    if (typeof value === "object") return `${formatNumber(Object.keys(value).length)}개 필드`;
     return String(value);
   }
 
   function labelize(key) {
-    return String(key || "")
+    const raw = String(key || "");
+    if (LABELS[raw]) return LABELS[raw];
+    return raw
       .replace(/([a-z])([A-Z])/g, "$1 $2")
       .replace(/_/g, " ")
       .replace(/\b\w/g, (char) => char.toUpperCase());
@@ -839,7 +1181,11 @@
   function formatArea(value) {
     const num = Number(value);
     if (!Number.isFinite(num)) return "-";
-    return `${formatNumber(num)} sqm`;
+    return `${formatNumber(num)}㎡`;
+  }
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
   }
 
   function formatDate(value) {
@@ -872,6 +1218,12 @@
     const content = document.getElementById("drawer-content");
     if (!backdrop || !content) return;
     content.innerHTML = `<h2>${escapeHtml(title)}</h2>${body || ""}`;
+    content.querySelectorAll("[data-detail-key]").forEach((node) => {
+      node.addEventListener("click", (event) => {
+        event.stopPropagation();
+        openDetailByKey(node.dataset.detailKey);
+      });
+    });
     backdrop.hidden = false;
   }
 
