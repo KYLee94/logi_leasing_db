@@ -846,7 +846,9 @@
     {
       "assetName": "안성 홈플러스 중부허브 물류센터",
       "address": "경기도 안성시 원곡면 원곡물류단지1로 103",
-      "longitude": 127.1675276
+      "longitude": 127.1675276,
+      "assetId": "asset_a112500003",
+      "latitude": 37.048749
     }
   ]
 }

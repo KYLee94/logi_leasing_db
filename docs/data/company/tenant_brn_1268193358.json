@@ -858,7 +858,9 @@
     {
       "assetName": "동산물류센터",
       "address": "경기도 이천시 호법면 덕평로 257-21",
-      "longitude": 127.3750501
+      "longitude": 127.3750501,
+      "assetId": "asset_a112527001",
+      "latitude": 37.1896213
     }
   ]
 }

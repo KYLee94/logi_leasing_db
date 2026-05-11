@@ -985,7 +985,9 @@
     {
       "assetName": "여주 본두리 물류센터",
       "address": "경기도 여주시 가남읍 여주남로 536",
-      "longitude": 127.5900088
+      "longitude": 127.5900088,
+      "assetId": "asset_a112606001",
+      "latitude": 37.2498281
     }
   ]
 }

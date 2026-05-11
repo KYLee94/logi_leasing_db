@@ -8435,19 +8435,17 @@
     "generatedAt": "2026-04-30T10:22:17",
     "homeLiteKpis": [],
     "config": {
-      "formulaVersion": "E.NOC_v2",
-      "spreadsheetId": "1powCa2TV7Pkqi3Un3mz3clJPwJ9xw7lMr1bZ0eLMqVA"
+      "formulaVersion": "E.NOC_v2"
     },
     "integrations": {
       "openDart": {
         "lastFailureMessage": "",
         "lastSuccessAt": "",
         "lastSuccessMessage": "",
-        "scriptProperty": "OPENDART_API_KEY",
         "blocker": {
           "count": 0,
-          "state": "missing_api_key",
-          "message": "Script Properties에 OPENDART_API_KEY가 없습니다.",
+          "state": "server_config_required",
+          "message": "서버 연동 설정 확인이 필요합니다.",
           "blocking": true
         },
         "pendingCompanies": null,
@@ -8463,12 +8461,11 @@
         "lastFailureMessage": "",
         "blocker": {
           "count": 0,
-          "state": "missing_api_key",
-          "message": "Script Properties에 BUILDING_REGISTER_API_KEY_ENCODED가 없습니다.",
+          "state": "server_config_required",
+          "message": "서버 연동 설정 확인이 필요합니다.",
           "blocking": true
         },
         "pendingAssets": null,
-        "scriptProperty": "BUILDING_REGISTER_API_KEY_ENCODED",
         "lastFailureAt": "",
         "lastAttemptMessage": "",
         "ready": false,
@@ -8476,27 +8473,13 @@
         "lastStatus": ""
       },
       "naverMaps": {
-        "dynamicClientIdConfigured": true,
-        "dynamicSdkUrlPattern": "https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId={NAVER_MAPS_CLIENT_ID}&callback=__dashboardNaverMapsSdkReady",
         "blocker": {
-          "message": "정적 지도/서버 연동 확인용 NAVER_MAPS_CLIENT_SECRET이 없습니다.",
-          "blocking": false,
-          "state": "missing_client_secret"
+          "count": 0,
+          "state": "server_config_required",
+          "message": "지도 서버 연동 설정 확인이 필요합니다.",
+          "blocking": false
         },
-        "secretConfigured": false,
-        "scriptProperties": [
-          "NAVER_MAPS_CLIENT_ID",
-          "NAVER_STATIC_MAP_KEY_ID",
-          "NAVER_MAPS_CLIENT_SECRET"
-        ],
-        "staticKeyIdConfigured": true,
         "ready": true,
-        "allowedOriginHints": [
-          "https://script.google.com",
-          "https://script.googleusercontent.com",
-          "https://docs.google.com"
-        ],
-        "runtimeInjectionKey": "xmxdr3l9ij",
         "usesServerGeocoding": false
       }
     },

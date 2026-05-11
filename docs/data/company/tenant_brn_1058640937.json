@@ -1022,7 +1022,9 @@
     {
       "assetName": "이천 마장면 물류센터",
       "address": "경기도 이천시 마장면 억만리로 140-18",
-      "longitude": 127.3710436
+      "longitude": 127.3710436,
+      "assetId": "asset_a112573001",
+      "latitude": 37.2609774
     }
   ]
 }

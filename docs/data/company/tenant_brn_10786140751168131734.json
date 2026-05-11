@@ -853,7 +853,9 @@
     {
       "assetName": "두동 LG전자 통합물류센터",
       "address": "경상남도 창원시 진해구 두동로 32",
-      "longitude": 128.8020959
+      "longitude": 128.8020959,
+      "assetId": "asset_a112755001",
+      "latitude": 35.1201511
     }
   ]
 }

@@ -4507,22 +4507,30 @@
     {
       "assetName": "스카이박스1, 스카이박스2",
       "address": "인천광역시 서구 갑문1로 20, 인천광역시 서구 갑문3로 34",
-      "longitude": 126.6028299
+      "longitude": 126.6028299,
+      "assetId": "asset_a112299001",
+      "latitude": 37.5637998
     },
     {
       "assetName": "경산 쿠팡물류센터",
       "address": "경상북도 경산시 진량읍 공단12로 213-18",
-      "longitude": 128.8413233
+      "longitude": 128.8413233,
+      "assetId": "asset_a120085001",
+      "latitude": 35.874052
     },
     {
       "assetName": "인천석남물류센터",
       "address": "인천광역시 서구 봉수대로 370",
-      "longitude": 126.6633807
+      "longitude": 126.6633807,
+      "assetId": "asset_a112721001",
+      "latitude": 37.5080776
     },
     {
       "assetName": "동산물류센터",
       "address": "경기도 이천시 호법면 덕평로 257-21",
-      "longitude": 127.3750501
+      "longitude": 127.3750501,
+      "assetId": "asset_a112527001",
+      "latitude": 37.1896213
     }
   ]
 }

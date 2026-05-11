@@ -1032,12 +1032,16 @@
     {
       "assetName": "평택아디다스물류센터",
       "address": "경기도 평택시 도일유통길 64",
-      "longitude": 127.105842
+      "longitude": 127.105842,
+      "assetId": "asset_a112500002",
+      "latitude": 37.0384465
     },
     {
       "assetName": "안성 성은지구 물류센터",
       "address": "경기도 안성시 원곡면 지문로 459-14",
-      "longitude": 127.1526821
+      "longitude": 127.1526821,
+      "assetId": "asset_ap00014001",
+      "latitude": 37.0741638
     }
   ]
 }

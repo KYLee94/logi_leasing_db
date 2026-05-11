@@ -1694,7 +1694,9 @@
     {
       "assetName": "아레나스양지물류센터",
       "address": "경기도 용인시 처인구 양지면 남평로 111-73",
-      "longitude": 127.2950305
+      "longitude": 127.2950305,
+      "assetId": "asset_a112127001",
+      "latitude": 37.2300579
     }
   ]
 }

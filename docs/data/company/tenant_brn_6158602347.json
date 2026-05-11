@@ -823,7 +823,9 @@
     {
       "assetName": "양산 유산동 물류센터",
       "address": "경상남도 양산시 유산공단4길 28-170",
-      "longitude": 129.0262261
+      "longitude": 129.0262261,
+      "assetId": "asset_s00002001",
+      "latitude": 35.3629266
     }
   ]
 }

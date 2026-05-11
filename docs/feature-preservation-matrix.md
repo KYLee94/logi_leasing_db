@@ -35,18 +35,20 @@
 | `ll_assets` | 17 |
 | `ll_tenants` | 36 |
 | `ll_leases` | 45 |
-| `ll_lease_spaces` | 63 |
-| `ll_rent_history` | 164 |
+| `ll_lease_spaces` | 59 |
+| `ll_rent_history` | 163 |
 | `ll_asset_managers` | 17 |
 | `ll_issues` | 42 |
-| `ll_payload_snapshots` | 56 |
+| `ll_payload_snapshots` | 53 |
 
 검증 결과:
 
 - `check-ll-minimal-dataset`: failure 0건
 - `check-sql-ll-only`: 36개 SQL chunk 전부 통과
 - non-`ll_*` mutation: 0건
-- DB write: 아직 실행 전
+- DB write: 사용자 승인 후 `ll_*`에 한정해 실행 완료
+- DB readback: `ll_lease_spaces`, `ll_rent_history`, `ll_payload_snapshots`는 중복 primary/conflict key가 upsert에서 병합되어 preview보다 각각 4건, 1건, 3건 적게 저장됨
+- 임시 RLS 정책: migration 중에만 사용 후 제거 완료, 잔존 0건
 
 ## 완료 판정 규칙
 

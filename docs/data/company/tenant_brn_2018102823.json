@@ -3,7 +3,7 @@
     "operatingIncome": null,
     "debtRatio": null,
     "revenue": 2389581460829,
-    "emptyStateMessage": "OpenDART???곌껐?먯?留?怨듭떇 怨듭떆 ?묐떟??鍮꾩뼱 ?덉뒿?덈떎.",
+    "emptyStateMessage": "OpenDART 연결 결과 공식 공시 응답이 비어 있습니다.",
     "dartLinked": true,
     "fetchedAt": "2026-04-21",
     "employeeCount": 1673
@@ -1014,12 +1014,16 @@
     {
       "assetName": "이천 마장면 물류센터",
       "address": "경기도 이천시 마장면 억만리로 140-18",
-      "longitude": 127.3710436
+      "longitude": 127.3710436,
+      "assetId": "asset_a112573001",
+      "latitude": 37.2609774
     },
     {
       "assetName": "양산 유산동 물류센터",
       "address": "경상남도 양산시 유산공단4길 28-170",
-      "longitude": 129.0262261
+      "longitude": 129.0262261,
+      "assetId": "asset_s00002001",
+      "latitude": 35.3629266
     }
   ]
 }

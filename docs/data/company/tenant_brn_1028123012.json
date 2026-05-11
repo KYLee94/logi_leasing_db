@@ -3,7 +3,7 @@
     "operatingIncome": null,
     "debtRatio": null,
     "revenue": 3100210134255,
-    "emptyStateMessage": "OpenDART???곌껐?먯?留?怨듭떇 怨듭떆 ?묐떟??鍮꾩뼱 ?덉뒿?덈떎.",
+    "emptyStateMessage": "OpenDART 연결 결과 공식 공시 응답이 비어 있습니다.",
     "fetchedAt": "2026-04-21",
     "dartLinked": true,
     "employeeCount": 2252
@@ -814,7 +814,9 @@
     {
       "assetName": "안성 성은지구 물류센터",
       "address": "경기도 안성시 원곡면 지문로 459-14",
-      "longitude": 127.1526821
+      "longitude": 127.1526821,
+      "assetId": "asset_ap00014001",
+      "latitude": 37.0741638
     }
   ]
 }

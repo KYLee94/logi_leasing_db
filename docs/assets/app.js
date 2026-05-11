@@ -13,14 +13,14 @@
   const TAB_ORDER = ["weekly", "home", "asset", "company", "sector", "tools", "playground", "quality", "admin", "admin-data"];
   const PUBLIC_TABS = ["weekly", "home", "asset", "company", "sector", "tools", "playground", "quality"];
   const TAB_META = {
-    weekly: { title: "Weekly", group: "Workspace", file: "data/weekly.json" },
-    home: { title: "Home", group: "Workspace", file: "data/home.json" },
-    asset: { title: "Asset", group: "Workspace", file: "asset" },
-    company: { title: "Company", group: "Workspace", file: "company" },
-    sector: { title: "Sector", group: "Workspace", file: "data/sector.json" },
-    tools: { title: "Analysis Tools", group: "Analysis", file: "data/tools.json" },
-    playground: { title: "Data Playground", group: "Analysis", file: "data/playground.json" },
-    quality: { title: "Data Quality", group: "Analysis", file: "virtual" },
+    weekly: { title: "Weekly", group: "업무", file: "data/weekly.json" },
+    home: { title: "Home", group: "업무", file: "data/home.json" },
+    asset: { title: "Asset", group: "업무", file: "asset" },
+    company: { title: "Company", group: "업무", file: "company" },
+    sector: { title: "Sector", group: "업무", file: "data/sector.json" },
+    tools: { title: "Analysis Tools", group: "분석", file: "data/tools.json" },
+    playground: { title: "Data Playground", group: "분석", file: "data/playground.json" },
+    quality: { title: "Data Quality", group: "분석", file: "virtual" },
     admin: { title: "Admin", group: "Admin", file: "virtual" },
     "admin-data": { title: "Admin Data", group: "Admin", file: "virtual" },
   };
@@ -92,6 +92,42 @@
     source: "원본",
     source_system: "원본 시스템",
     generatedAt: "생성 시각",
+  };
+
+  const VALUE_LABELS = {
+    cached: "캐시됨",
+    currency: "금액",
+    entity: "개별 파일",
+    github_snapshot: "GitHub fallback",
+    number: "숫자",
+    ok: "정상",
+    ready: "준비됨",
+    review_required: "확인 필요",
+    "client cache": "클라이언트 캐시",
+    "docs/data": "공개 fallback JSON",
+    "not visited": "미방문",
+    "Read only": "읽기 전용",
+    "static frontend": "정적 프론트",
+    "supabase_snapshot": "Supabase 스냅샷",
+  };
+
+  const EXTRA_LABELS = {
+    activeTab: "현재 탭",
+    approvalDate: "승인일",
+    category: "분류",
+    columnDimension: "열 기준",
+    currentValue: "현재 값",
+    filterDimension: "필터 기준",
+    grossFloorAreaEffectiveAt: "연면적 기준일",
+    hasFinancialData: "재무 데이터 보유",
+    loadedTabs: "불러온 탭",
+    previousValue: "이전 값",
+    rowDimension: "행 기준",
+    rows: "행 수",
+    savedViews: "저장된 보기",
+    selectorSortMeta: "선택 목록 정렬 기준",
+    topN: "상위 N개",
+    type: "유형",
   };
 
   const state = {
@@ -511,10 +547,10 @@
       ["총 자산 수", `${formatNumber(summary.assetCount || assetRows.length)}개`, "주간업무자료"],
       ["총 연면적", `${formatNumber(summary.totalGrossAreaPy)}평`, "주간업무자료"],
       ["완전 임대", `${formatNumber(summary.fullyLeasedCount)}개`, "임대율 100%"],
-      ["Lease-up", `${formatNumber(summary.leaseUpIssueCount)}건`, "Main Issue"],
+      ["Lease-up", `${formatNumber(summary.leaseUpIssueCount)}건`, "주요 이슈"],
       ["Risk 자산", `${formatNumber(summary.riskAssetCount)}개`, "운용/Exit 표시"],
     ];
-    const projectHeaders = ["Project", "개요", "투자/자금", "현황", "계획"];
+    const projectHeaders = ["프로젝트", "개요", "투자/자금", "현황", "계획"];
     const projectRows = (items) => items.map((row) => [
       row.projectName || row.no || "-",
       row.overview || "-",
@@ -540,7 +576,7 @@
               <button class="segment-btn ${full ? "" : "active"}" type="button" data-weekly-view="core">운영 핵심 보기</button>
               <button class="segment-btn ${full ? "active" : ""}" type="button" data-weekly-view="full">원문 전체 보기</button>
             </div>
-            <span class="chip">${formatNumber(assetRows.length)} rows</span>
+            <span class="chip">${formatNumber(assetRows.length)}건</span>
           </div>
           ${renderTable(full ? fullHeaders : coreHeaders, assetTableRows, { compact: true })}
         `)}
@@ -787,13 +823,13 @@
 
   function buildFileInventory() {
     return [
-      { name: "weekly.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.weekly), source: sourceForPayload(state.lastSuccessfulPayloads.weekly), status: "ready" },
-      { name: "home.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.home), source: sourceForPayload(state.lastSuccessfulPayloads.home), status: "ready" },
-      { name: "sector.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.sector), source: sourceForPayload(state.lastSuccessfulPayloads.sector), status: "ready" },
-      { name: "tools.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.tools), source: sourceForPayload(state.lastSuccessfulPayloads.tools), status: "ready" },
-      { name: "playground.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.playground), source: sourceForPayload(state.lastSuccessfulPayloads.playground), status: "ready" },
-      { name: "asset/*.json", type: "entity", rows: state.options.assets.length, source: state.payloadSource || FALLBACK_PAYLOAD_SOURCE, status: "ready" },
-      { name: "company/*.json", type: "entity", rows: state.options.companies.length, source: state.payloadSource || FALLBACK_PAYLOAD_SOURCE, status: "ready" },
+      { name: "weekly.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.weekly), source: sourceForPayload(state.lastSuccessfulPayloads.weekly), status: state.lastSuccessfulPayloads.weekly ? "ready" : "not visited" },
+      { name: "home.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.home), source: sourceForPayload(state.lastSuccessfulPayloads.home), status: state.lastSuccessfulPayloads.home ? "ready" : "not visited" },
+      { name: "sector.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.sector), source: sourceForPayload(state.lastSuccessfulPayloads.sector), status: state.lastSuccessfulPayloads.sector ? "ready" : "not visited" },
+      { name: "tools.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.tools), source: sourceForPayload(state.lastSuccessfulPayloads.tools), status: state.lastSuccessfulPayloads.tools ? "ready" : "not visited" },
+      { name: "playground.json", type: "tab", rows: estimateRows(state.lastSuccessfulPayloads.playground), source: sourceForPayload(state.lastSuccessfulPayloads.playground), status: state.lastSuccessfulPayloads.playground ? "ready" : "not visited" },
+      { name: "asset/*.json", type: "entity", rows: state.options.assets.length, source: state.payloadSource || FALLBACK_PAYLOAD_SOURCE, status: state.options.assets.length ? "ready" : "not visited" },
+      { name: "company/*.json", type: "entity", rows: state.options.companies.length, source: state.payloadSource || FALLBACK_PAYLOAD_SOURCE, status: state.options.companies.length ? "ready" : "not visited" },
     ];
   }
 
@@ -854,11 +890,16 @@
 
   function renderSearchableInteractiveTable(scope, rows, preferredKeys, limit, options) {
     const placeholder = options?.placeholder || "검색";
+    const allRows = Array.isArray(rows) ? rows : [];
+    const countHint = limit && allRows.length > limit
+      ? `<span class="chip">${formatNumber(allRows.length)}건 전체 검색</span>`
+      : "";
     return `
       <div class="search-strip">
         <input class="input table-search" type="search" placeholder="${escapeAttr(placeholder)}" data-search-scope="${escapeAttr(scope)}">
+        ${countHint}
       </div>
-      ${renderInteractiveTable(scope, rows, preferredKeys, limit)}
+      ${renderInteractiveTable(scope, allRows, preferredKeys, null)}
     `;
   }
 
@@ -1184,7 +1225,7 @@
       if (!entries.length) return "-";
       return entries.map(([key, child]) => `${labelize(key)}: ${formatNested(child)}`).join(" / ");
     }
-    return String(value);
+    return displayText(value);
   }
 
   function formatNested(value) {
@@ -1192,16 +1233,22 @@
     if (typeof value === "number") return formatNumber(value);
     if (Array.isArray(value)) return `${formatNumber(value.length)}건`;
     if (typeof value === "object") return `${formatNumber(Object.keys(value).length)}개 필드`;
-    return String(value);
+    return displayText(value);
   }
 
   function labelize(key) {
     const raw = String(key || "");
+    if (EXTRA_LABELS[raw]) return EXTRA_LABELS[raw];
     if (LABELS[raw]) return LABELS[raw];
     return raw
       .replace(/([a-z])([A-Z])/g, "$1 $2")
       .replace(/_/g, " ")
       .replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+
+  function displayText(value) {
+    const raw = String(value);
+    return VALUE_LABELS[raw] || raw;
   }
 
   function formatNumber(value) {

@@ -3,7 +3,7 @@
     "debtRatio": null,
     "operatingIncome": null,
     "revenue": 582739477960,
-    "emptyStateMessage": "OpenDART???곌껐?먯?留?怨듭떇 怨듭떆 ?묐떟??鍮꾩뼱 ?덉뒿?덈떎.",
+    "emptyStateMessage": "OpenDART 연결 결과 공식 공시 응답이 비어 있습니다.",
     "fetchedAt": "2026-04-21",
     "dartLinked": true,
     "employeeCount": 420
@@ -829,7 +829,9 @@
     {
       "assetName": "부국물류센터",
       "address": "경기도 이천시 대월면 대월로 627-61",
-      "longitude": 127.4938952
+      "longitude": 127.4938952,
+      "assetId": "asset_a112527002",
+      "latitude": 37.2101065
     }
   ]
 }

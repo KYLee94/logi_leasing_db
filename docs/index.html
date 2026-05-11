@@ -12,30 +12,30 @@
     <form id="admin-auth-form" class="auth-panel">
       <div class="auth-brand">IGIS Logistics Leasing</div>
       <h1>Admin</h1>
-      <input id="admin-auth-password" class="input" type="password" autocomplete="current-password" placeholder="Password">
-      <button id="admin-auth-submit" class="action-btn primary" type="submit">Enter</button>
+      <input id="admin-auth-password" class="input" type="password" autocomplete="current-password" placeholder="관리자 비밀번호">
+      <button id="admin-auth-submit" class="action-btn primary" type="submit">확인</button>
     </form>
   </div>
 
   <div id="app-shell" class="app-shell" hidden>
-    <aside class="sidebar" aria-label="Dashboard navigation">
+    <aside class="sidebar" aria-label="대시보드 탐색">
       <div class="brand">
         <div class="brand-mark">LL</div>
         <div class="brand-text">
           <strong>Logistics Leasing</strong>
           <span>Real Asset Dashboard</span>
         </div>
-        <button id="sidebar-toggle" class="icon-btn" type="button" aria-label="Toggle sidebar">‹</button>
+        <button id="sidebar-toggle" class="icon-btn" type="button" aria-label="사이드바 접기/펼치기">‹</button>
       </div>
 
       <nav class="nav">
-        <div class="nav-group">Workspace</div>
+        <div class="nav-group">업무</div>
         <button class="nav-item active" type="button" data-tab="weekly"><span>W</span><b>Weekly</b></button>
         <button class="nav-item" type="button" data-tab="home"><span>H</span><b>Home</b></button>
         <button class="nav-item" type="button" data-tab="asset"><span>A</span><b>Asset</b></button>
         <button class="nav-item" type="button" data-tab="company"><span>C</span><b>Company</b></button>
         <button class="nav-item" type="button" data-tab="sector"><span>S</span><b>Sector</b></button>
-        <div class="nav-group">Analysis</div>
+        <div class="nav-group">분석</div>
         <button class="nav-item" type="button" data-tab="tools"><span>T</span><b>Analysis Tools</b></button>
         <button class="nav-item" type="button" data-tab="playground"><span>P</span><b>Data Playground</b></button>
         <button class="nav-item" type="button" data-tab="quality"><span>Q</span><b>Data Quality</b></button>
@@ -60,8 +60,8 @@
           <div class="head-actions">
             <select id="asset-select" class="select scoped-control" hidden></select>
             <select id="company-select" class="select scoped-control" hidden></select>
-            <button class="theme-btn" type="button" data-theme-choice="dark">Dark</button>
-            <button class="theme-btn" type="button" data-theme-choice="light">Light</button>
+            <button class="theme-btn" type="button" data-theme-choice="dark">어두운 화면</button>
+            <button class="theme-btn" type="button" data-theme-choice="light">밝은 화면</button>
           </div>
         </header>
 
@@ -77,10 +77,10 @@
             <div id="quality-view" class="tab-panel" data-panel="quality" data-render-status="skeleton" hidden></div>
           </div>
           <aside class="project-rail">
-            <div class="rail-label">Views</div>
+            <div class="rail-label">화면</div>
             <div id="rail-tabs" class="rail-tabs"></div>
             <div class="rail-divider"></div>
-            <div class="rail-label">Sections</div>
+            <div class="rail-label">섹션</div>
             <div id="rail-index" class="rail-index"></div>
           </aside>
         </section>
@@ -90,7 +90,7 @@
 
   <div id="drawer-backdrop" class="drawer-backdrop" hidden>
     <aside class="drawer" role="dialog" aria-modal="true">
-      <button id="drawer-close" class="icon-btn drawer-close" type="button" aria-label="Close">×</button>
+      <button id="drawer-close" class="icon-btn drawer-close" type="button" aria-label="닫기">×</button>
       <div id="drawer-content"></div>
     </aside>
   </div>

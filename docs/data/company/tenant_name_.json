@@ -3,7 +3,7 @@
     "operatingIncome": null,
     "debtRatio": null,
     "revenue": null,
-    "emptyStateMessage": "OpenDART媛 ?꾩쭅 ?곌껐?섏? ?딆븯?듬땲??",
+    "emptyStateMessage": "OpenDART 연결 결과 공식 공시 응답이 비어 있습니다.",
     "dartLinked": false,
     "fetchedAt": "",
     "employeeCount": null
@@ -734,7 +734,9 @@
     {
       "assetName": "부산송정물류센터",
       "address": "부산광역시 강서구 녹산산단232로 38-17",
-      "longitude": 128.8409153
+      "longitude": 128.8409153,
+      "assetId": "asset_a112109001",
+      "latitude": 35.0850649
     }
   ]
 }

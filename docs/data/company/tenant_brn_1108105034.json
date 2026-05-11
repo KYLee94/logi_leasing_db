@@ -3,7 +3,7 @@
     "operatingIncome": null,
     "debtRatio": null,
     "revenue": 8353852873161,
-    "emptyStateMessage": "OpenDART???곌껐?먯?留?怨듭떇 怨듭떆 ?묐떟??鍮꾩뼱 ?덉뒿?덈떎.",
+    "emptyStateMessage": "OpenDART 연결 결과 공식 공시 응답이 비어 있습니다.",
     "dartLinked": true,
     "fetchedAt": "2026-04-21",
     "employeeCount": 6847
@@ -2637,7 +2637,9 @@
     {
       "assetName": "아레나스양지물류센터",
       "address": "경기도 용인시 처인구 양지면 남평로 111-73",
-      "longitude": 127.2950305
+      "longitude": 127.2950305,
+      "assetId": "asset_a112127001",
+      "latitude": 37.2300579
     }
   ]
 }

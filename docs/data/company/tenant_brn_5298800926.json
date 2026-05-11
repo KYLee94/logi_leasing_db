@@ -3,7 +3,7 @@
     "operatingIncome": null,
     "debtRatio": null,
     "revenue": null,
-    "emptyStateMessage": "OpenDART媛 ?꾩쭅 ?곌껐?섏? ?딆븯?듬땲??",
+    "emptyStateMessage": "OpenDART 연결 결과 공식 공시 응답이 비어 있습니다.",
     "fetchedAt": "2026-04-22",
     "dartLinked": false,
     "employeeCount": null
@@ -865,7 +865,9 @@
     {
       "assetName": "동산물류센터",
       "address": "경기도 이천시 호법면 덕평로 257-21",
-      "longitude": 127.3750501
+      "longitude": 127.3750501,
+      "assetId": "asset_a112527001",
+      "latitude": 37.1896213
     }
   ]
 }

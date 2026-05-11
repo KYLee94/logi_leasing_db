@@ -92,6 +92,17 @@ const TARGETS = {
       };
     },
   },
+  "deep-interactions": {
+    script: path.resolve(__dirname, "github-pages-deep-interactions-check.cjs"),
+    env(baseUrl) {
+      const url = new URL(baseUrl);
+      url.searchParams.set("page", "user");
+      return {
+        STATIC_USER_URL: url.toString(),
+        QA_DEEP_INTERACTIONS_URL: url.toString(),
+      };
+    },
+  },
   "iota-reference": {
     script: path.resolve(__dirname, "iota-reference-check.cjs"),
     env(baseUrl) {

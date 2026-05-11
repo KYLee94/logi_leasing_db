@@ -879,7 +879,9 @@
     {
       "assetName": "화성 석포리 물류센터",
       "address": "경기도 화성시 장안면 북부마을길 42",
-      "longitude": 126.8350908
+      "longitude": 126.8350908,
+      "assetId": "asset_a112642001",
+      "latitude": 37.1220878
     }
   ]
 }

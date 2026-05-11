@@ -980,7 +980,9 @@
     {
       "assetName": "에이블로지스물류센터",
       "address": "경기도 용인시 처인구 백암면 죽양대로 956-8",
-      "longitude": 127.3889424
+      "longitude": 127.3889424,
+      "assetId": "asset_a112527003",
+      "latitude": 37.1511389
     }
   ]
 }

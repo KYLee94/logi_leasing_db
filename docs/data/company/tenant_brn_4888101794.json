@@ -822,7 +822,9 @@
     {
       "assetName": "아레나스안성",
       "address": "경기도 안성시 양성면 양성로 301",
-      "longitude": 127.2055776
+      "longitude": 127.2055776,
+      "assetId": "asset_a112505001",
+      "latitude": 37.0803652
     }
   ]
 }
