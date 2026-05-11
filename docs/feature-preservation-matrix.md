@@ -39,7 +39,7 @@
 | `ll_rent_history` | 163 |
 | `ll_asset_managers` | 17 |
 | `ll_issues` | 42 |
-| `ll_payload_snapshots` | 53 |
+| `ll_payload_snapshots` | 107 |
 
 검증 결과:
 
@@ -48,6 +48,7 @@
 - non-`ll_*` mutation: 0건
 - DB write: 사용자 승인 후 `ll_*`에 한정해 실행 완료
 - DB readback: `ll_lease_spaces`, `ll_rent_history`, `ll_payload_snapshots`는 중복 primary/conflict key가 upsert에서 병합되어 preview보다 각각 4건, 1건, 3건 적게 저장됨
+- rich snapshot 보강: `docs/data` 기반 User 화면용 snapshot 54건을 `ll_payload_snapshots`에 추가 upsert해 최신 화면 payload로 사용함
 - 임시 RLS 정책: migration 중에만 사용 후 제거 완료, 잔존 0건
 
 ## 완료 판정 규칙
