@@ -6,3 +6,4 @@ npm-debug.log*
 *.tmp
 supabase/functions/.env
 supabase/functions/.env.*
+supabase/.temp/
