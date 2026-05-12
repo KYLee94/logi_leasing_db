@@ -12,6 +12,7 @@ edge-profile-copy/**
 edge-profile-live/**
 chrome-profile-live/**
 *.png
+SourceMigration.gs
 corpCode.zip
 corpCode_extract/**
 opendart_matches.json

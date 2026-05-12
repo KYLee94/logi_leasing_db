@@ -136,8 +136,29 @@ function buildAssetSummaryLookup_(model) {
 
 function isAssetGrossFloorAreaEffectiveForMonth_(assetSummary, month) {
   const effectiveMonth = safeString_(assetSummary && assetSummary.grossFloorAreaEffectiveMonth);
-  if (!effectiveMonth) return true;
+  if (!effectiveMonth) return false;
   return effectiveMonth <= safeString_(month);
+}
+
+function monthIndexFromMonthKey_(month) {
+  const text = safeString_(month);
+  const match = text.match(/^(\d{4})-(\d{2})/);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const monthNumber = Number(match[2]);
+  if (!Number.isFinite(year) || !Number.isFinite(monthNumber)) return null;
+  return year * 12 + monthNumber - 1;
+}
+
+function isRentConcessionMonth_(month, generalRow) {
+  const startMonth = monthKeyFromIso_(generalRow && generalRow.currentStartDate);
+  const monthIndex = monthIndexFromMonthKey_(month);
+  const startIndex = monthIndexFromMonthKey_(startMonth);
+  if (monthIndex == null || startIndex == null) return false;
+  const elapsedMonths = monthIndex - startIndex;
+  if (elapsedMonths < 0) return false;
+  const concessionMonths = defaultValue_(generalRow && generalRow.rfMonths, 0) + defaultValue_(generalRow && generalRow.foMonths, 0);
+  return concessionMonths > 0 && elapsedMonths < concessionMonths;
 }
 
 function buildHomeGrossFloorAreaBasisRows_(assetSummaries) {
@@ -174,16 +195,22 @@ function buildRollingRentTrendRows_(model) {
     return row.linkedLeaseSpaceId && activeLeaseSpaceIndex[row.linkedLeaseSpaceId];
   }), 'linkedLeaseSpaceId');
   const assetLookup = buildAssetSummaryLookup_(model);
+  const assetSummaries = Object.keys(assetLookup).map(function (assetId) {
+    return assetLookup[assetId];
+  }).filter(Boolean);
   let previousAssetIds = [];
 
   return months.map(function (month) {
     let monthlyRentTotal = 0;
     let monthlyMfTotal = 0;
+    let monthlyRentTotalAdjusted = 0;
+    let monthlyMfTotalAdjusted = 0;
     let leasedAreaSqm = 0;
     let rentKnownCount = 0;
     let mfKnownCount = 0;
     let leasedAreaKnownCount = 0;
     let selectedLeaseSpaceCount = 0;
+    let concessionLeaseSpaceCount = 0;
     const activeAssetIds = [];
 
     Object.keys(rowsByLeaseSpace).forEach(function (leaseSpaceId) {
@@ -199,11 +226,17 @@ function buildRollingRentTrendRows_(model) {
       selectedLeaseSpaceCount += 1;
       if (activeAssetIds.indexOf(generalRow.assetId) === -1) activeAssetIds.push(generalRow.assetId);
       if (selected.monthlyRentTotal != null) {
-        monthlyRentTotal += Number(selected.monthlyRentTotal);
+        const rentAmount = Number(selected.monthlyRentTotal);
+        const isConcessionMonth = isRentConcessionMonth_(month, generalRow);
+        monthlyRentTotal += rentAmount;
+        monthlyRentTotalAdjusted += isConcessionMonth ? 0 : rentAmount;
+        if (isConcessionMonth) concessionLeaseSpaceCount += 1;
         rentKnownCount += 1;
       }
       if (selected.monthlyMfTotal != null) {
-        monthlyMfTotal += Number(selected.monthlyMfTotal);
+        const mfAmount = Number(selected.monthlyMfTotal);
+        monthlyMfTotal += mfAmount;
+        monthlyMfTotalAdjusted += mfAmount;
         mfKnownCount += 1;
       }
       if (generalRow.leasedAreaSqm != null) {
@@ -212,10 +245,17 @@ function buildRollingRentTrendRows_(model) {
       }
     });
 
-    const grossFloorAreaAppliedAssetIds = activeAssetIds.filter(function (assetId) {
-      return isAssetGrossFloorAreaEffectiveForMonth_(assetLookup[assetId], month);
+    const rawGrossFloorAreaAppliedAssetIds = assetSummaries.filter(function (asset) {
+      return isAssetGrossFloorAreaEffectiveForMonth_(asset, month);
+    }).map(function (asset) {
+      return asset.assetId;
     });
-    const grossFloorAreaPendingAssets = activeAssetIds.filter(function (assetId) {
+    const grossFloorAreaAppliedAssetIds = uniqueValues_(previousAssetIds.concat(rawGrossFloorAreaAppliedAssetIds).filter(Boolean));
+    const grossFloorAreaPendingAssets = assetSummaries.filter(function (asset) {
+      return asset && asset.grossFloorAreaEffectiveMonth && !isAssetGrossFloorAreaEffectiveForMonth_(asset, month);
+    }).map(function (asset) {
+      return asset.assetId;
+    }).filter(function (assetId) {
       return grossFloorAreaAppliedAssetIds.indexOf(assetId) === -1;
     }).map(function (assetId) {
       const asset = assetLookup[assetId] || {};
@@ -229,7 +269,7 @@ function buildRollingRentTrendRows_(model) {
     const grossFloorAreaSqm = sumKnownMetric_(grossFloorAreaAppliedAssetIds.map(function (assetId) {
       return assetLookup[assetId];
     }).filter(Boolean), 'grossFloorAreaSqm');
-    const newlyAddedAssetIds = activeAssetIds.filter(function (assetId) {
+    const newlyAddedAssetIds = grossFloorAreaAppliedAssetIds.filter(function (assetId) {
       return previousAssetIds.indexOf(assetId) === -1;
     });
     const newlyAddedAssets = newlyAddedAssetIds.map(function (assetId) {
@@ -240,13 +280,18 @@ function buildRollingRentTrendRows_(model) {
       };
     });
 
-    previousAssetIds = activeAssetIds.slice();
+    previousAssetIds = grossFloorAreaAppliedAssetIds.slice();
 
     return {
       month: month,
       monthlyRentTotal: rentKnownCount ? monthlyRentTotal : null,
       monthlyMfTotal: mfKnownCount ? monthlyMfTotal : null,
-      activeAssetCount: activeAssetIds.length,
+      monthlyTotal: rentKnownCount || mfKnownCount ? monthlyRentTotal + monthlyMfTotal : null,
+      monthlyRentTotalAdjusted: rentKnownCount ? monthlyRentTotalAdjusted : null,
+      monthlyMfTotalAdjusted: mfKnownCount ? monthlyMfTotalAdjusted : null,
+      monthlyCostTotalAdjusted: rentKnownCount || mfKnownCount ? monthlyRentTotalAdjusted + monthlyMfTotalAdjusted : null,
+      activeAssetCount: grossFloorAreaAppliedAssetIds.length,
+      contractActiveAssetCount: activeAssetIds.length,
       leasedAreaSqm: leasedAreaKnownCount ? leasedAreaSqm : null,
       grossFloorAreaSqm: grossFloorAreaSqm,
       grossFloorAreaAppliedAssetCount: grossFloorAreaAppliedAssetIds.length,
@@ -255,6 +300,7 @@ function buildRollingRentTrendRows_(model) {
       newlyAddedAssetCount: newlyAddedAssets.length,
       newlyAddedAssets: newlyAddedAssets,
       knownLeaseSpaceCount: selectedLeaseSpaceCount,
+      concessionLeaseSpaceCount: concessionLeaseSpaceCount,
       rentKnownCount: rentKnownCount,
       mfKnownCount: mfKnownCount,
     };
@@ -551,20 +597,82 @@ function buildTopContracts_(rows) {
 function buildContractSummary_(rows, generatedAt) {
   const referenceMonth = monthKeyFromIso_(generatedAt) + '-01';
   const upcoming = (rows || []).map(function (row) {
+    const monthlyRentTotal = row.currentMonthlyRentTotal;
+    const monthlyMfTotal = row.currentMonthlyMfTotal;
+    const monthlyCostTotal = row.currentMonthlyCostTotal != null
+      ? row.currentMonthlyCostTotal
+      : (monthlyRentTotal != null || monthlyMfTotal != null ? Number(monthlyRentTotal || 0) + Number(monthlyMfTotal || 0) : null);
     return {
+      assetId: row.assetId,
       assetName: row.assetName,
+      tenantId: row.tenantId,
       tenantMasterName: row.tenantMasterName,
       currentEndDate: row.currentEndDate,
+      expiryMonth: monthKeyFromIso_(row.currentEndDate),
       monthsToExpiry: monthsBetweenIso_(referenceMonth, row.currentEndDate),
       leaseSpaceId: row.leaseSpaceId,
+      floorLabel: row.floorLabel || '',
+      detailAreaLabel: row.detailAreaLabel || '',
+      leasedAreaSqm: row.leasedAreaSqm,
+      monthlyRentTotal: monthlyRentTotal,
+      monthlyMfTotal: monthlyMfTotal,
+      monthlyCostTotal: monthlyCostTotal,
+      rentPerPy: row.currentRentPerPy,
+      mfPerPy: row.currentMfPerPy,
+      eNoc: row.eNoc,
       reviewStatus: row.calculatedReviewStatus,
     };
   }).filter(function (row) {
-    return row.monthsToExpiry != null && row.monthsToExpiry >= 0 && row.monthsToExpiry <= 18;
+    return row.monthsToExpiry != null && row.monthsToExpiry >= 0 && row.monthsToExpiry <= 36;
+  });
+  const monthlyGroups = groupBy_(upcoming, 'expiryMonth');
+  const referenceMonthKey = monthKeyFromIso_(generatedAt);
+  const monthlyVacancy = (referenceMonthKey ? Array.from({ length: 37 }, function (_, index) {
+    return addMonthsToMonthKey_(referenceMonthKey, index);
+  }) : Object.keys(monthlyGroups)).map(function (month) {
+    const bucket = monthlyGroups[month];
+    const items = bucket || [];
+    const uniqueTenantAssetKeys = {};
+    items.forEach(function (item) {
+      const tenantKey = item.tenantId || item.tenantMasterName || 'unknown_tenant';
+      const assetKey = item.assetId || item.assetName || 'unknown_asset';
+      uniqueTenantAssetKeys[assetKey + '|' + tenantKey] = true;
+    });
+    return {
+      month: month,
+      label: month,
+      expiringAreaSqm: sumKnownMetric_(items, 'leasedAreaSqm') || 0,
+      monthlyRentTotal: sumKnownMetric_(items, 'monthlyRentTotal') || 0,
+      monthlyMfTotal: sumKnownMetric_(items, 'monthlyMfTotal') || 0,
+      monthlyCostTotal: sumKnownMetric_(items, 'monthlyCostTotal') || 0,
+      contractCount: items.length,
+      uniqueTenantCount: Object.keys(uniqueTenantAssetKeys).length,
+      count: Object.keys(uniqueTenantAssetKeys).length,
+      items: sortBy_(items, 'leasedAreaSqm', 'desc').map(function (item) {
+        return {
+          assetId: item.assetId,
+          assetName: item.assetName,
+          tenantId: item.tenantId,
+          tenantMasterName: item.tenantMasterName,
+          leasedAreaSqm: item.leasedAreaSqm,
+          monthlyRentTotal: item.monthlyRentTotal,
+          monthlyMfTotal: item.monthlyMfTotal,
+          monthlyCostTotal: item.monthlyCostTotal,
+          rentPerPy: item.rentPerPy,
+          mfPerPy: item.mfPerPy,
+          eNoc: item.eNoc,
+          currentEndDate: item.currentEndDate,
+          floorLabel: item.floorLabel,
+          detailAreaLabel: item.detailAreaLabel,
+        };
+      }),
+    };
   });
 
   return {
-    upcoming: sortBy_(upcoming, 'monthsToExpiry').slice(0, 10),
+    upcoming: sortBy_(upcoming, 'monthsToExpiry'),
+    monthlyVacancy: monthlyVacancy,
+    monthlyExpirySeries: monthlyVacancy,
     tenantCount: countUniqueMetric_(rows || [], 'tenantId'),
     byBucket: [
       { label: '0-3 months', count: upcoming.filter(function (row) { return row.monthsToExpiry <= 3; }).length },
@@ -572,6 +680,17 @@ function buildContractSummary_(rows, generatedAt) {
       { label: '0-12 months', count: upcoming.filter(function (row) { return row.monthsToExpiry <= 12; }).length },
     ],
   };
+}
+
+function addMonthsToMonthKey_(monthKey, offset) {
+  const parts = safeString_(monthKey).split('-');
+  const year = Number(parts[0]);
+  const month = Number(parts[1]);
+  if (!year || !month) return '';
+  const totalMonths = year * 12 + (month - 1) + Number(offset || 0);
+  const nextYear = Math.floor(totalMonths / 12);
+  const nextMonth = (totalMonths % 12) + 1;
+  return `${nextYear}-${String(nextMonth).padStart(2, '0')}`;
 }
 
 function buildMapPointsFromAssets_(assetSummaries) {

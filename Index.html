@@ -177,17 +177,43 @@ window.PRELOADED_PAYLOADS_B64 = <?= JSON.stringify(PRELOADED_PAYLOADS_B64 || '')
             </div>
           </div>
 
-          <section class="tab-panel is-active" data-panel="weekly"><div id="weekly-view" data-render-root="weekly"></div></section>
-          <section class="tab-panel" data-panel="home"><div id="home-view" data-render-root="home" data-map-root="home"></div></section>
-          <section class="tab-panel" data-panel="asset"><div id="asset-view" data-render-root="asset"></div></section>
-          <section class="tab-panel" data-panel="company"><div id="company-view" data-render-root="company"></div></section>
-          <section class="tab-panel" data-panel="sector"><div id="sector-view" data-render-root="sector"></div></section>
-          <section class="tab-panel" data-panel="tools"><div id="tools-view" data-render-root="tools"></div></section>
-          <section class="tab-panel" data-panel="playground"><div id="playground-view" data-render-root="playground"></div></section>
-          <section class="tab-panel" data-panel="quality"><div id="quality-view" data-render-root="quality"></div></section>
-          <? if (IS_ADMIN) { ?>
-          <section class="tab-panel" data-panel="admin"><div id="admin-view"></div></section>
-          <? } ?>
+          <div class="workspace-layout dashboard-workspace-layout">
+            <div class="workspace-main dashboard-workspace-main">
+              <section class="tab-panel is-active" data-panel="weekly"><div id="weekly-view" data-render-root="weekly"></div></section>
+              <section class="tab-panel" data-panel="home"><div id="home-view" data-render-root="home" data-map-root="home"></div></section>
+              <section class="tab-panel" data-panel="asset"><div id="asset-view" data-render-root="asset"></div></section>
+              <section class="tab-panel" data-panel="company"><div id="company-view" data-render-root="company"></div></section>
+              <section class="tab-panel" data-panel="sector"><div id="sector-view" data-render-root="sector"></div></section>
+              <section class="tab-panel" data-panel="tools"><div id="tools-view" data-render-root="tools"></div></section>
+              <section class="tab-panel" data-panel="playground"><div id="playground-view" data-render-root="playground"></div></section>
+              <section class="tab-panel" data-panel="quality"><div id="quality-view" data-render-root="quality"></div></section>
+              <? if (IS_ADMIN) { ?>
+              <section class="tab-panel" data-panel="admin"><div id="admin-view"></div></section>
+              <? } ?>
+            </div>
+            <aside class="project-rail dashboard-rail" aria-label="화면 바로가기">
+              <div class="rail-label">Workspace</div>
+              <button class="rail-btn is-active" data-tab="weekly" type="button">Weekly</button>
+              <button class="rail-btn" data-tab="home" type="button">Home</button>
+              <button class="rail-btn" data-tab="asset" type="button">Asset</button>
+              <button class="rail-btn" data-tab="company" type="button">Company</button>
+              <button class="rail-btn" data-tab="sector" type="button">Sector</button>
+              <button class="rail-btn" data-tab="tools" type="button">Tools</button>
+              <button class="rail-btn" data-tab="playground" type="button">Playground</button>
+              <button class="rail-btn" data-tab="quality" type="button">Quality</button>
+              <? if (IS_ADMIN) { ?>
+              <button class="rail-btn" data-tab="admin" type="button">Admin</button>
+              <? } ?>
+              <div class="rail-divider"></div>
+              <div class="rail-index" id="workspace-rail-index" aria-label="현재 화면 목차">
+                <div class="rail-index-title">Index</div>
+                <div class="rail-index-list">
+                  <button class="rail-index-btn" type="button" data-scroll-target="page-head">Overview</button>
+                  <button class="rail-index-btn" type="button" data-scroll-active-panel="true">Current View</button>
+                </div>
+              </div>
+            </aside>
+          </div>
         </div>
       </main>
     </div>

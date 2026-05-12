@@ -7,3 +7,7 @@ npm-debug.log*
 supabase/functions/.env
 supabase/functions/.env.*
 supabase/.temp/
+*.xlsx
+.clasp.*.json
+.qa-tmp/
+_cleanup_quarantine_*/

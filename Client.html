@@ -83,8 +83,12 @@ function getPublicSnapshotBaseUrls_() {
   return Array.from(new Set(urls));
 }
 
+function canUseAnyPublicSnapshot_() {
+  return Date.now() > PUBLIC_SNAPSHOT_FAILURE_UNTIL && getPublicSnapshotBaseUrls_().length > 0;
+}
+
 function canUsePublicSnapshots_() {
-  return !IS_ADMIN && Date.now() > PUBLIC_SNAPSHOT_FAILURE_UNTIL && getPublicSnapshotBaseUrls_().length > 0;
+  return !IS_ADMIN && canUseAnyPublicSnapshot_();
 }
 
 const IS_ADMIN = APP_FLAGS.isAdmin;
@@ -109,7 +113,7 @@ const PAGE_META = {
   weekly: {
     kicker: "Weekly Operations",
     title: "주간 업무 리포트",
-    subtitle: "RA부문 사업그룹 4파트 주간업무자료를 자산현황, 신규 투자, 관리 프로젝트로 재구성한 화면입니다.",
+    subtitle: "",
   },
   sector: {
     kicker: "권역 비교",
@@ -172,6 +176,8 @@ const state = {
     playgroundFilterValue: "",
     playgroundMetric: "leasedAreaSqm",
     playgroundTopN: 25,
+    weeklyNewProjectId: "",
+    weeklyManagementProjectId: "",
   },
   performance: [],
   pendingRequests: {},
@@ -241,7 +247,7 @@ function bindStandaloneAdminAuth_() {
         hydrateUiState();
         setPageMeta(state.activeTab);
         document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.toggle("is-active", panel.dataset.panel === state.activeTab));
-        document.querySelectorAll(".nav-item").forEach((nav) => nav.classList.toggle("is-active", nav.dataset.tab === state.activeTab));
+        syncNavigationState_(state.activeTab);
         renderTabSkeleton(state.activeTab, { useBootstrapHint: false });
         if (state.activeTab === "admin") renderPayloadForTab_("admin", buildAdminLoadingPayload_());
         if (authRoot) authRoot.remove();
@@ -271,8 +277,20 @@ function bindStandaloneAdminAuth_() {
 
 function bindGlobalEvents() {
   bindDevelopmentGateEvents_();
-  document.querySelectorAll(".nav-item").forEach((button) => {
+  document.querySelectorAll(".nav-item, .rail-btn[data-tab]").forEach((button) => {
     button.addEventListener("click", () => switchTab(button.dataset.tab));
+  });
+  document.querySelectorAll("[data-scroll-target]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const target = document.getElementById(button.getAttribute("data-scroll-target"));
+      if (target) target.scrollIntoView({ block: "start", behavior: "smooth" });
+    });
+  });
+  document.querySelectorAll("[data-scroll-active-panel]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const panel = document.querySelector(`.tab-panel[data-panel="${state.activeTab}"]`);
+      if (panel) panel.scrollIntoView({ block: "start", behavior: "smooth" });
+    });
   });
   document.getElementById("refresh-button")?.addEventListener("click", refreshActiveTab);
   document.getElementById("mobile-menu-button")?.addEventListener("click", () => {
@@ -945,7 +963,14 @@ function hydrateUiState() {
   state.sidebarCollapsed = localStorage.getItem("dashboard.sidebarCollapsed") === "true";
   document.getElementById("app-shell")?.classList.toggle("is-sidebar-collapsed", state.sidebarCollapsed);
   document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.toggle("is-active", panel.dataset.panel === state.activeTab));
-  document.querySelectorAll(".nav-item").forEach((button) => button.classList.toggle("is-active", button.dataset.tab === state.activeTab));
+  syncNavigationState_(state.activeTab);
+}
+
+function syncNavigationState_(tab) {
+  document.querySelectorAll(".nav-item, .rail-btn[data-tab]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.tab === tab);
+    if (button.dataset.tab) button.setAttribute("aria-current", button.dataset.tab === tab ? "page" : "false");
+  });
 }
 
 function toggleSidebarCollapse() {
@@ -996,7 +1021,7 @@ function switchTab(tab, options) {
   state.activeTab = tab;
   invalidateAiContext_();
   setPageMeta(tab);
-  document.querySelectorAll(".nav-item").forEach((button) => button.classList.toggle("is-active", button.dataset.tab === tab));
+  syncNavigationState_(tab);
   document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.toggle("is-active", panel.dataset.panel === tab));
   closeMobileMenu();
   closeSurface();
@@ -1239,7 +1264,7 @@ function requestPayloadForTab_(tab) {
     return callServer_("getCompanyData", adminAwareEntityRequest_("tenantId", tenantId), { timeoutMs: 60000 });
   }
   if (tab === "weekly") {
-    if (canUsePublicSnapshots_()) return fetchPublicSnapshotJson_("weekly.json", 3000).catch(() => callServer_("getWeeklyReportData", adminAwareRequest_(), { timeoutMs: 45000 }));
+    if (canUseAnyPublicSnapshot_()) return fetchPublicSnapshotJson_("weekly.json", 3000).catch(() => callServer_("getWeeklyReportData", adminAwareRequest_(), { timeoutMs: 45000 }));
     return callServer_("getWeeklyReportData", adminAwareRequest_(), { timeoutMs: 45000 });
   }
   if (tab === "sector") {
@@ -2775,16 +2800,18 @@ function openSurface_(options) {
   const layer = document.getElementById("surface-layer");
   const modalHost = document.getElementById("modal-host");
   const panelHost = document.getElementById("detail-panel-host");
+  window.__dashboardLastFocus = document.activeElement;
   closeSurface();
 
   const targetHost = options.mode === "panel" ? panelHost : modalHost;
+  const titleId = `surface-title-${Date.now()}`;
   layer.classList.add("is-open", options.mode === "panel" ? "is-panel-open" : "is-modal-open");
   targetHost.setAttribute("aria-hidden", "false");
   targetHost.innerHTML = `
-    <div class="surface-frame ${escapeHtml_(options.frameClass || "")}">
+    <div class="surface-frame ${escapeHtml_(options.frameClass || "")}" role="dialog" aria-modal="true" aria-labelledby="${titleId}" tabindex="-1">
       <div class="surface-head">
         <div class="surface-head-copy">
-          <h3 class="surface-title">${escapeHtml_(options.title || "상세")}</h3>
+          <h3 class="surface-title" id="${titleId}">${escapeHtml_(options.title || "상세")}</h3>
           ${options.basis || ""}
         </div>
         <button class="ghost-button" type="button" data-close-surface="true">닫기</button>
@@ -2795,6 +2822,9 @@ function openSurface_(options) {
   targetHost.querySelector("[data-close-surface]")?.addEventListener("click", closeSurface);
   document.body.classList.add("has-surface-open");
   updateSurfaceControl_(options.mode);
+  const frame = targetHost.querySelector(".surface-frame");
+  const firstFocus = targetHost.querySelector("button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])");
+  setTimeout(() => (firstFocus || frame)?.focus?.(), 0);
 }
 
 function closeSurface() {
@@ -2812,6 +2842,11 @@ function closeSurface() {
   }
   document.body.classList.remove("has-surface-open");
   updateSurfaceControl_();
+  const lastFocus = window.__dashboardLastFocus;
+  if (lastFocus && typeof lastFocus.focus === "function") {
+    setTimeout(() => lastFocus.focus(), 0);
+  }
+  window.__dashboardLastFocus = null;
 }
 
 function updateSurfaceControl_(mode) {
@@ -2824,9 +2859,15 @@ function updateSurfaceControl_(mode) {
 
 function bindInteractiveTable_(tableId, rows, onClick) {
   document.querySelectorAll(`#${tableId} tbody tr`).forEach((node) => {
-    node.addEventListener("click", () => {
+    const openRow = () => {
       const index = Number(node.getAttribute("data-row-index"));
       if (!Number.isNaN(index) && rows[index]) onClick(rows[index]);
+    };
+    node.addEventListener("click", openRow);
+    node.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      openRow();
     });
   });
 }
@@ -2912,7 +2953,7 @@ function renderInteractiveTable_(tableId, headers, rows, options) {
           <tr>${headers.map((header) => `<th>${escapeHtml_(header)}</th>`).join("")}</tr>
         </thead>
         <tbody>
-          ${rows.map((row, index) => `<tr class="is-clickable" data-row-index="${index}">${row.map((cell) => `<td>${cell == null ? "-" : cell}</td>`).join("")}</tr>`).join("")}
+          ${rows.map((row, index) => `<tr class="is-clickable" data-row-index="${index}" tabindex="0">${row.map((cell) => `<td>${cell == null ? "-" : cell}</td>`).join("")}</tr>`).join("")}
         </tbody>
       </table>
     </div>
@@ -5849,20 +5890,102 @@ function isWeeklyRiskAsset_(row) {
   return text.indexOf("●") > -1 || /risk|eod|소송|lease-up|refinancing|re-tenanting|임대료정상화|유치권|재하도급/i.test(text);
 }
 
+const WEEKLY_ASSET_DB_CONTEXT = {
+  "아레나스안성": { assetName: "아레나스안성", fundName: "이지스아레나스케이엘아이피1의2사모부동산모투자회사" },
+  "여주본두리": { assetName: "여주 본두리 물류센터", fundName: "이지스제440호부동산일반사모투자회사", leaseMaturity: "2030-02-28" },
+  "화성석포리": { assetName: "화성 석포리 물류센터", fundName: "이지스일반사모부동산투자신탁제451호(운용)" },
+  "경산쿠팡물류": { assetName: "경산 쿠팡물류센터", fundName: "이지스경산로지스제1호일반사모부동산투자회사(운용)", leaseMaturity: "2030-05-01" },
+  "스카이박스1": { assetName: "스카이박스1, 스카이박스2", fundName: "이지스아레나스전문투자형사모부동산투자신탁4호", leaseMaturity: "2029-04-01" },
+  "스카이박스2": { assetName: "스카이박스1, 스카이박스2", fundName: "이지스아레나스전문투자형사모부동산투자신탁4호", leaseMaturity: "2029-04-01" },
+  "이천동산": { assetName: "동산물류센터", fundName: "이지스전문투자형사모부동산투자신탁제404호", leaseMaturity: "2028-01-11" },
+  "에이블로지스": { assetName: "에이블로지스물류센터", fundName: "이지스전문투자형사모부동산투자신탁제404호", leaseMaturity: "2028-03-31" },
+  "부국물류": { assetName: "부국물류센터", fundName: "이지스전문투자형사모부동산투자신탁제404호" },
+  "창원두동LG": { assetName: "두동 LG전자 통합물류센터", fundName: "이지스제505호부동산일반사모투자회사", leaseMaturity: "2026-12-15" },
+  "이천회억리": { assetName: "이천 마장면 물류센터", fundName: "이지스일반사모부동산투자신탁제426호(운용)" },
+  "부산송정": { assetName: "부산송정물류센터", fundName: "이지스제114호전문투자형사모부동산투자유한회사" },
+  "안성성은리": { assetName: "안성 성은지구 물류센터", fundName: "안성성은물류피에프브이 주식회사", leaseMaturity: "2028-06-30" },
+  "경남양산석암": { assetName: "양산 유산동 물류센터", fundName: "주식회사 석암물류(SPC)" },
+  "야탑쿠팡물류": { assetName: "야탑쿠팡물류", fundName: "미분류 펀드" },
+  "포천정교리": { assetName: "포천정교리", fundName: "미분류 펀드" },
+  "아레나스양지": { assetName: "아레나스양지물류센터", fundName: "이지스일반사모부동산모투자신탁116호", leaseMaturity: "2034-02-28" },
+  "인천석남물류": { assetName: "인천석남물류센터", fundName: "이지스인컴앤그로스제2의4호일반사모부동산모투자회사", leaseMaturity: "2034-06-12" },
+  "평택아디다스": { assetName: "평택아디다스물류센터", fundName: "이지스인컴앤그로스일반사모부동산자투자신탁제2-2호", leaseMaturity: "2027-08-31" },
+  "안성홈플러스": { assetName: "안성 홈플러스 중부허브 물류센터", fundName: "이지스인컴앤그로스제2의3호일반사모부동산모투자회사", leaseMaturity: "2032-12-20" },
+};
+
+function normalizeWeeklyAssetKey_(value) {
+  return String(value || "").replace(/\s+/g, "").replace(/센터|물류센터|,|㈜|\(주\)|주식회사/g, "").trim();
+}
+
+function cleanWeeklyDisplayText_(value) {
+  return String(value == null ? "" : value)
+    .replace(/●/g, "")
+    .replace(/\s*\/\s*\/\s*/g, " / ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+function weeklyDisplayText_(value, fallback) {
+  const text = cleanWeeklyDisplayText_(value);
+  return text || fallback || "-";
+}
+
+function resolveWeeklyAssetContext_(row) {
+  const rawName = row && row.assetName;
+  const key = normalizeWeeklyAssetKey_(rawName);
+  if (WEEKLY_ASSET_DB_CONTEXT[key]) return WEEKLY_ASSET_DB_CONTEXT[key];
+  const matchedKey = Object.keys(WEEKLY_ASSET_DB_CONTEXT).find((item) => key && (item.indexOf(key) > -1 || key.indexOf(item) > -1));
+  return matchedKey ? WEEKLY_ASSET_DB_CONTEXT[matchedKey] : null;
+}
+
+function buildWeeklyLeaseMaturityMapFromHome_() {
+  const home = state.lastSuccessfulPayloads.home || getCachedPayload_(buildClientCacheKey_("home")) || {};
+  const map = {};
+  const collect = (rows) => {
+    (rows || []).forEach((row) => {
+      (row.leasedAssets || []).forEach((asset) => {
+        if (!asset.assetName || !asset.latestExpiry) return;
+        const key = normalizeWeeklyAssetKey_(asset.assetName);
+        if (!map[key] || String(asset.latestExpiry) > String(map[key])) map[key] = asset.latestExpiry;
+      });
+    });
+  };
+  collect(home.tenantSummary);
+  collect(home.topTenants);
+  return map;
+}
+
+function normalizeWeeklyAssetRows_(rows) {
+  const leaseMap = buildWeeklyLeaseMaturityMapFromHome_();
+  return (rows || []).map((row) => {
+    const context = resolveWeeklyAssetContext_(row) || {};
+    const displayName = context.assetName || row.assetName || "-";
+    const key = normalizeWeeklyAssetKey_(displayName);
+    return Object.assign({}, row, {
+      originalAssetName: row.originalAssetName || row.assetName || "",
+      assetName: displayName,
+      fundName: weeklyDisplayText_(row.fundName || context.fundName, ""),
+      leaseMaturity: row.leaseMaturity || leaseMap[key] || context.leaseMaturity || "",
+    });
+  });
+}
+
 function buildWeeklyMaturityModel_(assetRows, reportDate) {
   const baseMonth = parseWeeklyMonthKey_(reportDate) || parseWeeklyMonthKey_(new Date().toISOString()) || "2026-04";
   const buckets = {};
   const details = [];
   (assetRows || []).forEach((row) => {
     [
-      { type: "대출만기", key: "loanMaturity" },
+      { type: "임대차만기", key: "leaseMaturity" },
       { type: "펀드만기", key: "fundMaturity" },
+      { type: "대출만기", key: "loanMaturity" },
     ].forEach((item) => {
       const month = parseWeeklyMonthKey_(row[item.key]);
       if (!month) return;
       const diff = monthDiff_(baseMonth, month);
       if (diff == null || diff < 0 || diff > 60) return;
-      buckets[month] = buckets[month] || { month: month, monthLabel: formatWeeklyMonthLabel_(month), loanCount: 0, fundCount: 0, issueCount: 0, rows: [] };
+      buckets[month] = buckets[month] || { month: month, monthLabel: formatWeeklyMonthLabel_(month), leaseCount: 0, fundCount: 0, loanCount: 0, issueCount: 0, rows: [] };
+      if (item.type === "임대차만기") buckets[month].leaseCount += 1;
       if (item.type === "대출만기") buckets[month].loanCount += 1;
       if (item.type === "펀드만기") buckets[month].fundCount += 1;
       const detail = {
@@ -5877,9 +6000,9 @@ function buildWeeklyMaturityModel_(assetRows, reportDate) {
       buckets[month].rows.push(detail);
       details.push(detail);
     });
-    const issueMonth = parseWeeklyMonthKey_(row.loanMaturity || row.fundMaturity || row.completion);
+    const issueMonth = parseWeeklyMonthKey_(row.leaseMaturity || row.fundMaturity || row.loanMaturity || row.completion);
     if (isWeeklyRiskAsset_(row) && issueMonth) {
-      buckets[issueMonth] = buckets[issueMonth] || { month: issueMonth, monthLabel: formatWeeklyMonthLabel_(issueMonth), loanCount: 0, fundCount: 0, issueCount: 0, rows: [] };
+      buckets[issueMonth] = buckets[issueMonth] || { month: issueMonth, monthLabel: formatWeeklyMonthLabel_(issueMonth), leaseCount: 0, fundCount: 0, loanCount: 0, issueCount: 0, rows: [] };
       buckets[issueMonth].issueCount += 1;
     }
   });
@@ -5907,14 +6030,146 @@ function buildWeeklyIssueGroups_(assetRows) {
   }));
 }
 
+function weeklyNextAction_(row, type) {
+  const issue = String(row.mainIssue || "");
+  if (type === "legal" || /소송|eod|유치권|재하도급/i.test(issue)) return "법무/대주단 대응 현황 확인";
+  if (/lease-up/i.test(issue)) return "공실 마케팅 및 LOI 진행상태 확인";
+  if (/re-tenanting|임대료정상화/i.test(issue)) return "대체 임차인 후보와 임대료 조건 확인";
+  if (isWeeklyRiskAsset_(row)) return "운용/Exit 리스크 원인과 다음 액션 확인";
+  return "상세 이슈와 담당 액션 확인";
+}
+
+function buildWeeklyPriorityItems_(assetRows, maturityModel, issueGroups) {
+  const rows = assetRows || [];
+  const items = [];
+  (maturityModel.details || []).forEach((detail) => {
+    const diff = monthDiff_(maturityModel.baseMonth, detail.month);
+    if (diff == null || diff < 0 || diff >= 12) return;
+    items.push({
+      type: detail.type || "만기",
+      title: `${formatWeeklyMonthLabel_(detail.month)} ${detail.type}`,
+      assetName: detail.assetName,
+      reason: `${detail.maturityText} · ${formatNumber_(detail.grossAreaPy)}평`,
+      row: rows.find((asset) => asset.assetName === detail.assetName) || detail,
+      detail,
+      month: detail.month,
+    });
+  });
+  (issueGroups || []).forEach((group) => {
+    (group.rows || []).slice(0, 3).forEach((row) => {
+      items.push({
+        type: group.title,
+        title: row.assetName || "-",
+        assetName: row.assetName || "-",
+        reason: weeklyDisplayText_(row.mainIssue || [row.operationRisk, row.exitRisk].filter(Boolean).join(" / "), "검토 필요"),
+        action: weeklyNextAction_(row, group.key),
+        row,
+        issueKey: group.key,
+      });
+    });
+  });
+  const score = (item) => {
+    const text = `${item.type} ${item.reason}`.toLowerCase();
+    if (/eod|소송|유치권|재하도급/.test(text)) return 100;
+    if (/만기/.test(item.type || "")) return 90;
+    if (/risk|refinancing|lease-up/.test(text)) return 80;
+    return 50;
+  };
+  const seen = new Set();
+  return items
+    .sort((left, right) => score(right) - score(left))
+    .filter((item) => {
+      const key = `${item.type}:${item.assetName}:${item.reason}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, 5);
+}
+
+function renderWeeklyPriorityItems_(items) {
+  const rows = items || [];
+  if (!rows.length) return renderEmptyState_("이번 주 우선 확인 항목이 없습니다.");
+  return renderInteractiveTable_("weekly-priority-table", ["구분", "자산명", "사유"], rows.map((item) => ([
+    `<span class="meta-chip">${escapeHtml_(item.type || "확인")}</span>`,
+    escapeHtml_(item.assetName || item.title || "-"),
+    escapeHtml_(item.reason || "-"),
+  ])), { wrapperClass: "table-wrap-report weekly-ledger-table weekly-priority-ledger", tight: true });
+}
+
 function renderWeeklyIssueCards_(groups) {
-  return (groups || []).map((group) => `
-    <article class="weekly-issue-card" data-weekly-issue-group="${escapeHtml_(group.key)}">
-      <span class="mini-label">${escapeHtml_(group.title)}</span>
-      <strong>${formatNumber_((group.rows || []).length)}건</strong>
-      <p>${escapeHtml_((group.rows || []).slice(0, 3).map((row) => row.assetName).join(" · ") || "해당 없음")}</p>
-    </article>
-  `).join("");
+  return (groups || []).map((group) => {
+    const first = (group.rows || [])[0] || {};
+    return `
+      <button class="weekly-issue-card" type="button" data-weekly-issue-group="${escapeHtml_(group.key)}">
+        <span class="mini-label">${escapeHtml_(group.title)}</span>
+        <strong>${formatNumber_((group.rows || []).length)}건</strong>
+        <dl>
+          <div><dt>대표 자산</dt><dd>${escapeHtml_(first.assetName || "해당 없음")}</dd></div>
+          <div><dt>대표 사유</dt><dd>${escapeHtml_(weeklyDisplayText_(first.mainIssue || [first.operationRisk, first.exitRisk].filter(Boolean).join(" / "), "-"))}</dd></div>
+          <div><dt>다음 액션</dt><dd>${escapeHtml_(first.assetName ? weeklyNextAction_(first, group.key) : "추가 조치 없음")}</dd></div>
+        </dl>
+      </button>
+    `;
+  }).join("");
+}
+
+function renderWeeklyMaturityButtons_(maturityModel) {
+  const rows = (maturityModel.rows || []).filter((row) => (row.rows || []).length);
+  if (!rows.length) return "";
+  return `
+    <div class="weekly-maturity-buttons" aria-label="월별 만기 상세">
+      ${rows.slice(0, 12).map((row, index) => `
+        <button type="button" class="weekly-maturity-button" data-weekly-maturity-index="${index}">
+          <strong>${escapeHtml_(row.monthLabel)}</strong>
+          <span>임대차 ${formatNumber_(row.leaseCount)} · 펀드 ${formatNumber_(row.fundCount)} · 대출 ${formatNumber_(row.loanCount)}</span>
+        </button>
+      `).join("")}
+    </div>
+  `;
+}
+
+function buildWeeklyAssetTable_(assetRows, canEdit) {
+  const mode = state.selections.weeklyAssetView || "core";
+  const fullHeaders = ["자산명", "펀드명", "종류", "연면적(평)", "준공", "투자유형", "매입시점", "임대차만기", "펀드만기", "대출만기", "원가", "현재대비", "저온비율", "임대율", "주요임차사", "Main Issue"];
+  const coreHeaders = ["자산명", "펀드명", "종류", "임대차만기", "펀드만기", "대출만기", "임대율", "주요임차사", "Main Issue", "상세"];
+  const fullRows = (assetRows || []).map((row) => ([
+    escapeHtml_(row.assetName || "-"),
+    escapeHtml_(weeklyDisplayText_(row.fundName, "-")),
+    escapeHtml_(row.category || "-"),
+    formatNumber_(row.grossAreaPy),
+    escapeHtml_(row.completion || "-"),
+    escapeHtml_(row.investmentType || "-"),
+    escapeHtml_(row.acquisition || "-"),
+    escapeHtml_(row.leaseMaturity || "-"),
+    escapeHtml_(row.fundMaturity || "-"),
+    escapeHtml_(row.loanMaturity || "-"),
+    escapeHtml_(weeklyDisplayText_(row.costPerPy, "-")),
+    escapeHtml_(weeklyDisplayText_(row.costTrend, "-")),
+    escapeHtml_(weeklyDisplayText_(row.coldRatio, "-")),
+    escapeHtml_(weeklyDisplayText_(row.occupancyRate, "-")),
+    escapeHtml_(weeklyDisplayText_(row.mainTenant, "-")),
+    escapeHtml_(weeklyDisplayText_(row.mainIssue, "-")),
+  ]));
+  const coreRows = (assetRows || []).map((row) => ([
+    escapeHtml_(row.assetName || "-"),
+    escapeHtml_(weeklyDisplayText_(row.fundName, "-")),
+    escapeHtml_(row.category || "-"),
+    escapeHtml_(row.leaseMaturity || "-"),
+    escapeHtml_(row.fundMaturity || "-"),
+    escapeHtml_(row.loanMaturity || "-"),
+    escapeHtml_(weeklyDisplayText_(row.occupancyRate, "-")),
+    escapeHtml_(weeklyDisplayText_(row.mainTenant, "-")),
+    escapeHtml_(weeklyDisplayText_(row.mainIssue, "-")),
+    `<button class="table-button" type="button" data-weekly-row-detail="${escapeHtml_(row.id || "")}">상세 보기</button>`,
+  ]));
+  return `
+    <div class="segmented-control weekly-view-toggle" role="tablist" aria-label="자산현황 보기 전환">
+      <button class="${mode === "core" ? "is-active" : ""}" type="button" data-weekly-asset-view="core">운영 핵심 보기</button>
+      <button class="${mode === "full" ? "is-active" : ""}" type="button" data-weekly-asset-view="full">원문 전체 보기</button>
+    </div>
+    ${renderInteractiveTable_("weekly-assets-table", mode === "full" ? fullHeaders : coreHeaders, mode === "full" ? fullRows : coreRows, { wrapperClass: "table-wrap-report weekly-ledger-table weekly-asset-table", tight: true })}
+  `;
 }
 
 function openWeeklyMaturityModal_(monthRow) {
@@ -5926,11 +6181,105 @@ function openWeeklyMaturityModal_(monthRow) {
       escapeHtml_(row.assetName || "-"),
       escapeHtml_(row.maturityText || "-"),
       formatNumber_(row.grossAreaPy),
-      escapeHtml_(row.mainTenant || "-"),
-      escapeHtml_(row.issue || "-"),
-    ])), { wrapperClass: "table-wrap-report", tight: true }),
-    renderBasisLine_("보고일 기준", "대출만기/펀드만기", "건/평", "주간 업무자료")
+      escapeHtml_(weeklyDisplayText_(row.mainTenant, "-")),
+      escapeHtml_(weeklyDisplayText_(row.issue, "-")),
+    ])), { wrapperClass: "table-wrap-report weekly-ledger-table", tight: true }),
+    ""
   );
+}
+
+function openWeeklyAllMaturityModal_(maturityModel) {
+  const rows = (maturityModel && maturityModel.details) || [];
+  openMetricModal_(
+    "만기 캘린더 전체 상세",
+    renderInteractiveTable_("weekly-maturity-all-table", ["월", "구분", "자산", "만기", "연면적(평)", "주요 임차사", "이슈"], rows.map((row) => ([
+      escapeHtml_(formatWeeklyMonthLabel_(row.month) || "-"),
+      escapeHtml_(row.type || "-"),
+      escapeHtml_(row.assetName || "-"),
+      escapeHtml_(row.maturityText || "-"),
+      formatNumber_(row.grossAreaPy),
+      escapeHtml_(weeklyDisplayText_(row.mainTenant, "-")),
+      escapeHtml_(weeklyDisplayText_(row.issue, "-")),
+    ])), { wrapperClass: "table-wrap-report weekly-ledger-table", tight: true }),
+    ""
+  );
+}
+
+function openWeeklySummaryModal_(kind, report, maturityModel) {
+  const rows = report.assetRows || [];
+  if (kind === "assets") {
+    openMetricModal_("총 자산 수 상세", renderInteractiveTable_("weekly-summary-assets", ["자산명", "펀드명", "종류", "연면적(평)", "투자유형", "임대율", "Main Issue"], rows.map((row) => ([
+      escapeHtml_(row.assetName || "-"),
+      escapeHtml_(weeklyDisplayText_(row.fundName, "-")),
+      escapeHtml_(row.category || "-"),
+      formatNumber_(row.grossAreaPy),
+      escapeHtml_(row.investmentType || "-"),
+      escapeHtml_(weeklyDisplayText_(row.occupancyRate, "-")),
+      escapeHtml_(weeklyDisplayText_(row.mainIssue, "-")),
+    ])), { wrapperClass: "table-wrap-report weekly-ledger-table", tight: true }), "");
+    bindInteractiveTable_("weekly-summary-assets", rows, (row) => openWeeklyAssetDetailModal_(row, IS_ADMIN && !!APP_FLAGS.adminSessionToken));
+    return;
+  }
+  if (kind === "area") {
+    const sorted = rows.slice().sort((a, b) => Number(b.grossAreaPy || 0) - Number(a.grossAreaPy || 0));
+    openMetricModal_("총 연면적 상세", renderInteractiveTable_("weekly-summary-area", ["자산명", "펀드명", "종류", "연면적(평)", "비중"], sorted.map((row) => {
+      const total = Number(report.summary && report.summary.totalGrossAreaPy) || sorted.reduce((sum, item) => sum + Number(item.grossAreaPy || 0), 0);
+      return [
+        escapeHtml_(row.assetName || "-"),
+        escapeHtml_(weeklyDisplayText_(row.fundName, "-")),
+        escapeHtml_(row.category || "-"),
+        formatNumber_(row.grossAreaPy),
+        total ? formatPercent_(Number(row.grossAreaPy || 0) / total) : "-",
+      ];
+    }), { wrapperClass: "table-wrap-report weekly-ledger-table", tight: true }), "");
+    bindInteractiveTable_("weekly-summary-area", sorted, (row) => openWeeklyAssetDetailModal_(row, IS_ADMIN && !!APP_FLAGS.adminSessionToken));
+    return;
+  }
+  if (kind === "risk") {
+    const riskRows = rows.filter((row) => isWeeklyRiskAsset_(row));
+    openWeeklyIssueModal_({ key: "risk", title: "Risk 자산", rows: riskRows }, IS_ADMIN && !!APP_FLAGS.adminSessionToken);
+    return;
+  }
+  if (kind === "maturity12" || kind === "maturity24") {
+    const limit = kind === "maturity12" ? 12 : 24;
+    const details = (maturityModel.details || []).filter((row) => {
+      const diff = monthDiff_(maturityModel.baseMonth, row.month);
+      return diff != null && diff >= 0 && diff < limit;
+    });
+    openMetricModal_(`${limit}개월 내 만기 상세`, renderInteractiveTable_(`weekly-summary-${kind}`, ["월", "구분", "자산", "만기", "연면적(평)", "주요 임차사", "이슈"], details.map((row) => ([
+      escapeHtml_(formatWeeklyMonthLabel_(row.month) || "-"),
+      escapeHtml_(row.type || "-"),
+      escapeHtml_(row.assetName || "-"),
+      escapeHtml_(row.maturityText || "-"),
+      formatNumber_(row.grossAreaPy),
+      escapeHtml_(weeklyDisplayText_(row.mainTenant, "-")),
+      escapeHtml_(weeklyDisplayText_(row.issue, "-")),
+    ])), { wrapperClass: "table-wrap-report weekly-ledger-table", tight: true }), "");
+  }
+}
+
+function renderWeeklyKpiButton_(label, valueHtml, metaHtml, action) {
+  const actionAttr = action ? ` data-action="${escapeHtml_(action)}"` : "";
+  return `
+    <button class="weekly-kpi-button" type="button"${actionAttr}>
+      <span>${escapeHtml_(label)}</span>
+      <strong>${valueHtml}</strong>
+      ${metaHtml ? `<em>${metaHtml}</em>` : ""}
+    </button>
+  `;
+}
+
+function renderWeeklyKpiStrip_(report, summary, assetRows, maturityModel) {
+  return `
+    <div class="weekly-kpi-strip" aria-label="주간 업무 핵심 지표">
+      <article class="weekly-kpi-button weekly-kpi-static">
+        <span>보고일</span>
+        <strong>${escapeHtml_(report.reportDate || "-")}</strong>
+      </article>
+      ${renderWeeklyKpiButton_("총 자산 수", `${formatNumber_(summary.assetCount || assetRows.length)}개`, "", "weekly-summary-assets")}
+      ${renderWeeklyKpiButton_("총 연면적", `${formatNumber_(summary.totalGrossAreaPy)}평`, "", "weekly-summary-area")}
+    </div>
+  `;
 }
 
 function renderWeeklyReport(report) {
@@ -5940,35 +6289,17 @@ function renderWeeklyReport(report) {
     view.innerHTML = renderStateShell_("주간 업무 리포트를 불러오지 못했습니다.", (report && report.error) || "워드 기반 리포트 데이터를 다시 확인해주세요.");
     return;
   }
-  const basis = report.basisDisplay || {};
+  const assetRows = normalizeWeeklyAssetRows_(report.assetRows || []);
+  const normalizedReport = Object.assign({}, report, { assetRows: assetRows });
+  state.weeklyReport = normalizedReport;
   const summary = report.summary || {};
-  const assetRows = report.assetRows || [];
   const newProjects = report.newProjects || [];
   const managementProjects = report.managementProjects || [];
+  const selectedNewProject = resolveWeeklySelectedProject_(newProjects, "weeklyNewProjectId");
+  const selectedManagementProject = resolveWeeklySelectedProject_(managementProjects, "weeklyManagementProjectId");
   const notes = report.notes || [];
   const canEdit = IS_ADMIN && !!APP_FLAGS.adminSessionToken;
   const maturityModel = buildWeeklyMaturityModel_(assetRows, report.reportDate);
-  const issueGroups = buildWeeklyIssueGroups_(assetRows);
-  const weeklyBasis = renderBasisLine_({
-    asOfText: basis.asOfText || report.reportDate || report.generatedAt,
-    scopeText: basis.scopeText || report.reportTitle || "주간 업무자료",
-    unitText: basis.unitText || "평/%/억원",
-    sourceText: basis.sourceText || report.sourceDocumentName || "Word 원문",
-  });
-  const assetTableRows = assetRows.map((row) => ([
-    canEdit ? `<button class="table-button" type="button" data-weekly-edit="assetRows" data-weekly-id="${escapeHtml_(row.id)}" data-weekly-field="assetName">${escapeHtml_(row.assetName || "-")}</button>` : escapeHtml_(row.assetName || "-"),
-    [row.operationRisk, row.exitRisk].filter(Boolean).join(" / ") || "-",
-    formatNumber_(row.grossAreaPy),
-    escapeHtml_(row.completion || "-"),
-    escapeHtml_(row.investmentType || "-"),
-    escapeHtml_(row.fundMaturity || "-"),
-    escapeHtml_(row.costPerPy || "-"),
-    escapeHtml_(row.costTrend || "-"),
-    escapeHtml_(row.coldRatio || "-"),
-    escapeHtml_(row.occupancyRate || "-"),
-    escapeHtml_(row.mainTenant || "-"),
-    canEdit ? `<button class="table-button" type="button" data-weekly-edit="assetRows" data-weekly-id="${escapeHtml_(row.id)}" data-weekly-field="mainIssue">${escapeHtml_(row.mainIssue || "-")}</button>` : escapeHtml_(row.mainIssue || "-"),
-  ]));
   view.innerHTML = `
     <div class="page-stack weekly-report-page">
       <section class="hero-panel weekly-hero-panel">
@@ -5976,92 +6307,52 @@ function renderWeeklyReport(report) {
           <div>
             <p class="page-kicker">Weekly Operations</p>
             <h3 class="hero-title">${escapeHtml_(report.reportTitle || "주간 업무 리포트")}</h3>
-            <p class="hero-subtitle">만기와 운용 이슈를 먼저 보고, 자산현황과 프로젝트 세부사항으로 내려가는 주간 검토 화면입니다.</p>
-            ${weeklyBasis}
           </div>
           <div class="hero-actions">
             ${canEdit ? '<span class="meta-chip role-chip">Admin 편집 가능</span>' : '<span class="meta-chip">읽기 전용</span>'}
           </div>
         </div>
-        <div class="dense-strip dense-strip-6">
-          ${renderMetricTile_({ label: "보고일", valueHtml: escapeHtml_(report.reportDate || "-"), metaHtml: "주간 업무자료 기준", clickable: false })}
-          ${renderMetricTile_({ label: "총 자산 수", valueHtml: `${formatNumber_(summary.assetCount || assetRows.length)}개`, metaHtml: "워드 1페이지 표 기준", clickable: false })}
-          ${renderMetricTile_({ label: "총 연면적", valueHtml: `${formatNumber_(summary.totalGrossAreaPy)}평`, metaHtml: "합계 행 기준", clickable: false })}
-          ${renderMetricTile_({ label: "Risk 자산", valueHtml: `${formatNumber_(summary.riskAssetCount)}개`, metaHtml: "운용/Exit ● 기준", clickable: false })}
-          ${renderMetricTile_({ label: "12개월 내 만기", valueHtml: `${formatNumber_(maturityModel.next12)}건`, metaHtml: "대출/펀드 만기", clickable: false })}
-          ${renderMetricTile_({ label: "24개월 내 만기", valueHtml: `${formatNumber_(maturityModel.next24)}건`, metaHtml: "대출/펀드 만기", clickable: false })}
-        </div>
+        ${renderWeeklyKpiStrip_(report, summary, assetRows, maturityModel)}
       </section>
 
-      <section class="workspace-panel weekly-maturity-panel">
-        <div class="section-header">
-          <div class="section-heading-copy">
-            <h3 class="section-title">만기 캘린더</h3>
-            <p class="section-subtitle">대출만기, 펀드만기, 운용 이슈를 월별로 묶어 먼저 확인합니다.</p>
-            ${renderBasisLine_("보고일 " + escapeHtml_(report.reportDate || "-"), "대출/펀드/운용 이슈", "건", "Word 원문")}
-          </div>
-        </div>
-        <div class="chart-frame weekly-maturity-chart-frame">
-          <canvas id="weekly-maturity-chart" height="220"></canvas>
-          <div class="chart-placeholder is-hidden" id="weekly-maturity-placeholder">표시할 만기 데이터가 없습니다.</div>
-        </div>
-      </section>
-
-      <section class="workspace-panel weekly-main-table-panel">
-        <div class="section-header">
-          <div class="section-heading-copy">
-            <h3 class="section-title">물류 전체 자산현황</h3>
-            <p class="section-subtitle">워드 1페이지 표를 운영 검토용 ledger table로 옮긴 영역입니다.</p>
-            ${weeklyBasis}
-          </div>
-        </div>
-        ${renderInteractiveTable_("weekly-assets-table", ["자산명", "Risk", "연면적(평)", "준공", "투자유형", "펀드만기", "원가", "현재대비", "저온비율", "임대율", "주요임차사", "Main Issue"], assetTableRows, { wrapperClass: "table-wrap-report weekly-asset-table", tight: true })}
-      </section>
-
-      <section class="workspace-panel">
-        <div class="section-header">
-          <div class="section-heading-copy">
-            <h3 class="section-title">Risk / Lease-up / Re-tenanting / 소송·EOD</h3>
-            <p class="section-subtitle">Main Issue와 Risk 표식을 기준으로 후속 검토가 필요한 자산을 묶었습니다.</p>
-          </div>
-        </div>
-        <div class="weekly-issue-grid">
-          ${renderWeeklyIssueCards_(issueGroups)}
-        </div>
-      </section>
-
-      <div class="content-grid-two weekly-detail-grid">
+      <div class="content-grid-two weekly-detail-grid weekly-projects-layout">
         <section class="workspace-panel">
           <div class="section-header">
             <div class="section-heading-copy">
-              <h3 class="section-title">투자 Projects 신규</h3>
-              <p class="section-subtitle">신규 투자 프로젝트의 개요, 진행사항, 이슈, 계획을 분리해 봅니다.</p>
-              ${renderBasisLine_("보고일 " + escapeHtml_(report.reportDate || "-"), "투자 Projects(신규)", "억원/일정", "Word 원문")}
+              <h3 class="section-title">신규 투자 Projects</h3>
             </div>
+            ${renderWeeklyProjectSelector_("weeklyNewProjectId", newProjects, selectedNewProject)}
           </div>
-          <div class="weekly-card-list">
-            ${newProjects.map((row) => renderWeeklyProjectCard_(row, "newProjects", canEdit)).join("") || renderEmptyState_("표시할 신규 투자 프로젝트가 없습니다.")}
+          <div id="weekly-new-project-detail">
+            ${selectedNewProject ? renderWeeklyProjectDetail_(selectedNewProject, "newProjects", canEdit) : renderEmptyState_("표시할 신규 투자 프로젝트가 없습니다.")}
           </div>
         </section>
         <section class="workspace-panel">
           <div class="section-header">
             <div class="section-heading-copy">
-              <h3 class="section-title">관리 Projects 기설정 물류</h3>
-              <p class="section-subtitle">운용/Exit 리스크와 진행계획을 프로젝트별로 확인합니다.</p>
-              ${renderBasisLine_("보고일 " + escapeHtml_(report.reportDate || "-"), "관리 Projects", "진행현황/계획", "Word 원문")}
+              <h3 class="section-title">관리 Projects</h3>
             </div>
+            ${renderWeeklyProjectSelector_("weeklyManagementProjectId", managementProjects, selectedManagementProject)}
           </div>
-          <div class="weekly-card-list">
-            ${managementProjects.map((row) => renderWeeklyProjectCard_(row, "managementProjects", canEdit)).join("") || renderEmptyState_("표시할 관리 프로젝트가 없습니다.")}
+          <div id="weekly-management-project-detail">
+            ${selectedManagementProject ? renderWeeklyProjectDetail_(selectedManagementProject, "managementProjects", canEdit) : renderEmptyState_("표시할 관리 프로젝트가 없습니다.")}
           </div>
         </section>
       </div>
 
-      <section class="workspace-panel">
+      <section class="workspace-panel weekly-main-table-panel">
+        <div class="section-header">
+          <div class="section-heading-copy">
+            <h3 class="section-title">자산현황</h3>
+          </div>
+        </div>
+        ${buildWeeklyAssetTable_(assetRows, canEdit)}
+      </section>
+
+      <section class="workspace-panel weekly-notes-panel">
         <div class="section-header">
           <div class="section-heading-copy">
             <h3 class="section-title">기준 및 기타사항</h3>
-            <p class="section-subtitle">원문 표의 주석과 운영상 유의사항입니다.</p>
           </div>
         </div>
         <div class="summary-list summary-list-compact">
@@ -6070,42 +6361,302 @@ function renderWeeklyReport(report) {
       </section>
     </div>
   `;
-  renderLineChart_("weekly-maturity-chart", maturityModel.rows, {
-    placeholderId: "weekly-maturity-placeholder",
-    labelKey: "monthLabel",
-    leftValueType: "count",
-    series: [
-      { key: "loanCount", label: "대출만기", type: "bar", valueType: "count" },
-      { key: "fundCount", label: "펀드만기", type: "bar", valueType: "count" },
-      { key: "issueCount", label: "운용 이슈", type: "line", valueType: "count" },
-    ],
-    tooltipLines: (row) => (row.rows || []).slice(0, 5).map((item) => `${item.type} · ${item.assetName} · ${formatNumber_(item.grossAreaPy)}평`),
-    onClick: (row) => row && openWeeklyMaturityModal_(row),
-  });
+  bindWeeklySummaryTiles_(normalizedReport, maturityModel);
+  bindWeeklyAssetViewToggle_(normalizedReport);
   bindInteractiveTable_("weekly-assets-table", assetRows, (row) => openWeeklyAssetDetailModal_(row, canEdit));
-  bindWeeklyEditButtons_(report);
+  bindWeeklyProjectSelectors_(normalizedReport);
+  bindWeeklyEditButtons_(normalizedReport);
+  bindWeeklyRawProjectButtons_(normalizedReport);
 }
 
-function renderWeeklyProjectCard_(row, section, canEdit) {
-  const title = row.projectName || row.assetName || "-";
-  const editButton = canEdit
-    ? `<button class="secondary-button weekly-edit-button" type="button" data-weekly-edit="${escapeHtml_(section)}" data-weekly-id="${escapeHtml_(row.id)}" data-weekly-field="status">진행현황 수정</button>`
-    : "";
+function bindWeeklySummaryTiles_(report, maturityModel) {
+  const map = {
+    "weekly-summary-assets": "assets",
+    "weekly-summary-area": "area",
+    "weekly-summary-risk": "risk",
+    "weekly-summary-maturity12": "maturity12",
+    "weekly-summary-maturity24": "maturity24",
+  };
+  Object.keys(map).forEach((action) => {
+    document.querySelectorAll(`[data-action="${action}"]`).forEach((button) => {
+      button.addEventListener("click", () => openWeeklySummaryModal_(map[action], report, maturityModel));
+    });
+  });
+}
+
+function bindWeeklyPriorityItems_(items, canEdit) {
+  bindInteractiveTable_("weekly-priority-table", items || [], (item) => {
+    if (!item) return;
+    if (item.month) {
+      openWeeklyMaturityModal_({ monthLabel: item.title, rows: [item.detail || item.row] });
+      return;
+    }
+    openWeeklyAssetDetailModal_(item.row, canEdit);
+  });
+}
+
+function bindWeeklyIssueCards_(groups, canEdit) {
+  document.querySelectorAll("[data-weekly-issue-group]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const key = button.getAttribute("data-weekly-issue-group");
+      const group = (groups || []).find((item) => item.key === key);
+      openWeeklyIssueModal_(group, canEdit);
+    });
+  });
+}
+
+function openWeeklyIssueModal_(group, canEdit) {
+  const rows = (group && group.rows) || [];
+  openMetricModal_(
+    `${group ? group.title : "이슈"} 상세`,
+    renderInteractiveTable_("weekly-issue-detail-table", ["자산", "임대율", "주요 임차사", "Main Issue"], rows.map((row) => ([
+      escapeHtml_(row.assetName || "-"),
+      escapeHtml_(weeklyDisplayText_(row.occupancyRate, "-")),
+      escapeHtml_(weeklyDisplayText_(row.mainTenant, "-")),
+      escapeHtml_(weeklyDisplayText_(row.mainIssue, "-")),
+    ])), { wrapperClass: "table-wrap-report weekly-ledger-table", tight: true }),
+    ""
+  );
+  bindInteractiveTable_("weekly-issue-detail-table", rows, (row) => openWeeklyAssetDetailModal_(row, canEdit));
+}
+
+function bindWeeklyMaturityButtons_(maturityModel) {
+  const rows = (maturityModel.rows || []).filter((row) => (row.rows || []).length);
+  document.querySelectorAll("[data-weekly-maturity-index]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const row = rows[Number(button.getAttribute("data-weekly-maturity-index"))];
+      if (row) openWeeklyMaturityModal_(row);
+    });
+  });
+}
+
+function bindWeeklyAssetViewToggle_(report) {
+  document.querySelectorAll("[data-weekly-asset-view]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.selections.weeklyAssetView = button.getAttribute("data-weekly-asset-view") || "core";
+      renderWeeklyReport(report);
+    });
+  });
+}
+
+function resolveWeeklySelectedProject_(projects, stateKey) {
+  const rows = projects || [];
+  if (!rows.length) return null;
+  const selectedId = state.selections[stateKey];
+  const selected = rows.find((row) => String(row.id) === String(selectedId));
+  const resolved = selected || rows[0];
+  state.selections[stateKey] = resolved.id || "";
+  return resolved;
+}
+
+function renderWeeklyProjectSelector_(stateKey, projects, selectedProject) {
+  const rows = projects || [];
+  if (!rows.length) return "";
   return `
-    <article class="weekly-project-card">
+    <label class="weekly-project-selector">
+      <span>프로젝트 선택</span>
+      <select data-weekly-project-select="${escapeHtml_(stateKey)}">
+        ${rows.map((row) => `<option value="${escapeHtml_(row.id || "")}" ${selectedProject && String(selectedProject.id) === String(row.id) ? "selected" : ""}>${escapeHtml_(row.projectName || row.assetName || "-")}</option>`).join("")}
+      </select>
+    </label>
+  `;
+}
+
+function bindWeeklyProjectSelectors_(report) {
+  document.querySelectorAll("[data-weekly-project-select]").forEach((select) => {
+    select.addEventListener("change", () => {
+      const stateKey = select.getAttribute("data-weekly-project-select");
+      if (stateKey) state.selections[stateKey] = select.value;
+      const section = stateKey === "weeklyNewProjectId" ? "newProjects" : "managementProjects";
+      const targetId = stateKey === "weeklyNewProjectId" ? "weekly-new-project-detail" : "weekly-management-project-detail";
+      const rows = report[section] || [];
+      const row = rows.find((item) => String(item.id) === String(select.value));
+      const target = document.getElementById(targetId);
+      if (target) target.innerHTML = row ? renderWeeklyProjectDetail_(row, section, IS_ADMIN && !!APP_FLAGS.adminSessionToken) : renderEmptyState_("선택한 프로젝트가 없습니다.");
+      bindWeeklyEditButtons_(report);
+      bindWeeklyRawProjectButtons_(report);
+    });
+  });
+}
+
+function renderWeeklyProjectDetail_(row, section, canEdit) {
+  const title = row.projectName || row.assetName || "-";
+  const splitRows = splitWeeklyProjectRows_(row);
+  return `
+    <article class="weekly-project-card weekly-project-detail-card">
       <div class="weekly-project-card-head">
-        <span class="meta-chip">${escapeHtml_(row.risk || row.funding || "Project")}</span>
+        <span class="meta-chip">${escapeHtml_(weeklyDisplayText_(row.risk || row.funding || "Project"))}</span>
         <strong>${escapeHtml_(title)}</strong>
-        ${editButton}
       </div>
-      <dl class="weekly-project-grid">
-        <div><dt>개요</dt><dd>${escapeHtml_(row.overview || "-")}</dd></div>
-        <div><dt>투자개요</dt><dd>${escapeHtml_(row.investment || row.expectedAum || "-")}</dd></div>
-        <div><dt>진행현황</dt><dd>${escapeHtml_(row.status || "-")}</dd></div>
-        <div><dt>이슈/계획</dt><dd>${escapeHtml_([row.issue, row.plan].filter(Boolean).join(" / ") || "-")}</dd></div>
-      </dl>
+      <div class="weekly-project-table-stack">
+        ${renderWeeklyProjectSummaryTable_(row, section)}
+        ${renderWeeklyProjectOverviewTable_(splitRows.overviewRows)}
+        ${renderWeeklyProjectConditionTable_(splitRows.financeRows)}
+        ${renderWeeklyProjectNarrativeTable_(row, section, canEdit)}
+        <div class="weekly-project-actions">
+          <button class="secondary-button weekly-raw-button" type="button" data-weekly-raw-section="${escapeHtml_(section)}" data-weekly-raw-id="${escapeHtml_(row.id || "")}">상세 원문 보기</button>
+        </div>
+      </div>
     </article>
   `;
+}
+
+function renderWeeklyProjectSummaryTable_(row, section) {
+  const planLabel = section === "newProjects" ? "운영 메모" : "계획";
+  const rows = [
+    ["프로젝트", row.projectName || row.assetName || "-"],
+    ["리스크/자금", weeklyDisplayText_(row.risk || row.funding, "검토")],
+    ["진행 상태", compactWeeklyText_(row.status)],
+    ["주요 이슈", compactWeeklyText_(row.issue)],
+    [planLabel, compactWeeklyText_(row.plan)],
+  ];
+  return renderTable_(["구분", "내용"], rows.map((item) => [escapeHtml_(item[0]), escapeHtml_(item[1])]), { wrapperClass: "table-wrap-report weekly-ledger-table weekly-project-summary-table", tight: true });
+}
+
+function compactWeeklyText_(value, maxLength) {
+  const text = weeklyDisplayText_(value, "-").replace(/\s+/g, " ").trim();
+  const limit = maxLength || 80;
+  return text.length > limit ? `${text.slice(0, limit - 1)}…` : text;
+}
+
+function getWeeklyDetailValue_(row, label) {
+  const item = (row.detailRows || []).find((detail) => String(detail.label || "") === label);
+  return item ? item.value || "" : "";
+}
+
+function splitWeeklyProjectRows_(row) {
+  const existing = Array.isArray(row.detailRows) ? row.detailRows : [];
+  const byLabel = new Map(existing.map((item) => [String(item.label || ""), item.value || ""]));
+  if (!existing.length) {
+    byLabel.set("주소", row.address || "");
+    byLabel.set("섹터", row.sector || "");
+    byLabel.set("투자 전략", row.strategy || row.investment || row.funding || "");
+    byLabel.set("연면적", row.grossArea || "");
+    byLabel.set("대지면적", row.landArea || "");
+    byLabel.set("규모(층수)", row.scale || "");
+    byLabel.set("총 사업비", row.totalCost || row.expectedAum || "");
+    byLabel.set("기타", row.overview || row.investment || "");
+  }
+  const overviewLabels = ["주소", "섹터", "투자 전략", "연면적", "대지면적", "용적률 및 건폐율", "규모(층수)"];
+  const financeLabels = ["총 사업비", "Equity", "Loan"];
+  const parsedMisc = parseWeeklyMiscDetails_(byLabel.get("기타") || "");
+  return {
+    overviewRows: overviewLabels.map((label) => [label, byLabel.get(label) || ""]),
+    financeRows: [
+      ...financeLabels.map((label) => [label, byLabel.get(label) || ""]),
+      ...parsedMisc.rows,
+    ].filter((item) => item[1]),
+    rawRows: [
+      ...existing.map((item) => [item.label || "-", item.value || "-"]),
+      ...(row.status ? [["진행 현황", row.status]] : []),
+      ...(row.issue ? [["이슈", row.issue]] : []),
+      ...(row.plan ? [["계획/운영 메모", row.plan]] : []),
+      ...(parsedMisc.remainder.length ? [["기타 잔여 원문", parsedMisc.remainder.join(" / ")]] : []),
+      ...(IS_ADMIN ? [["sourceRef", row.sourceRef || "-"]] : []),
+    ],
+  };
+}
+
+function extractWeeklyMiscValue_(misc, label) {
+  const text = String(misc || "");
+  if (!text) return "";
+  if (label === "보수") {
+    return text.split("/").filter((part) => /보수/.test(part) && !/성과보수/.test(part)).map((part) => part.trim()).join(" / ");
+  }
+  const match = text.split("/").find((part) => part.indexOf(label) > -1);
+  return match ? match.trim() : "";
+}
+
+function parseWeeklyMiscDetails_(misc) {
+  const text = String(misc || "").trim();
+  const targets = [
+    ["매입가", /매입가/], ["취득원가", /취득원가/], ["장부가", /장부가/], ["목표매각가", /목표매각가/],
+    ["임대면적", /임대면적/], ["임대율", /임대율/], ["임대구조", /임대구조/], ["저온비중", /저온비중|저온/],
+    ["주요임차사", /주요임차사|주임차사/], ["WALE", /WALE/i], ["시공사", /시공사/], ["구조", /구조/],
+    ["접안유형", /접안유형|접안/], ["전기용량", /전기용량|전기/], ["하중", /하중/], ["주요투자자", /주요투자자/],
+    ["주요대주", /주요대주/], ["대출만기", /대출만기/], ["LTV", /LTV/i], ["All-in", /All-in|올인/i],
+    ["운용보수", /운용보수/], ["매입보수", /매입보수/], ["매각보수", /매각보수/], ["성과보수", /성과보수/],
+  ];
+  if (!text) return { rows: [], remainder: [] };
+  const buckets = new Map();
+  const remainder = [];
+  text.split(/\s*\/\s*/).map((part) => part.trim()).filter(Boolean).forEach((part) => {
+    const target = targets.find((item) => item[1].test(part));
+    if (!target) {
+      remainder.push(part);
+      return;
+    }
+    const current = buckets.get(target[0]) || [];
+    current.push(part);
+    buckets.set(target[0], current);
+  });
+  return {
+    rows: Array.from(buckets.entries()).map(([label, values]) => [label, values.join(" / ")]),
+    remainder,
+  };
+}
+
+function renderWeeklyProjectOverviewTable_(detailRows) {
+  return renderTable_(["항목", "내용"], (detailRows || []).map((item) => [
+    escapeHtml_(item[0]),
+    escapeHtml_(weeklyDisplayText_(item[1], "-")),
+  ]), { wrapperClass: "table-wrap-report weekly-ledger-table weekly-project-overview-table-wrap", tight: true });
+}
+
+function renderWeeklyProjectConditionTable_(financeRows) {
+  return renderTable_(["재무/투자조건", "내용"], (financeRows || []).map((item) => [
+    escapeHtml_(item[0]),
+    escapeHtml_(weeklyDisplayText_(item[1], "-")),
+  ]), { wrapperClass: "table-wrap-report weekly-ledger-table weekly-project-condition-table", tight: true });
+}
+
+function renderWeeklyProjectNarrativeTable_(row, section, canEdit) {
+  const planTitle = section === "newProjects" ? "운영 메모" : "계획";
+  const editCell = (field, label) => canEdit ? `<button class="text-link-button weekly-edit-button" type="button" data-weekly-edit="${escapeHtml_(section)}" data-weekly-id="${escapeHtml_(row.id)}" data-weekly-field="${escapeHtml_(field)}">${escapeHtml_(label)}</button>` : "";
+  const headers = canEdit ? ["구분", "내용", "관리"] : ["구분", "내용"];
+  const rows = [
+    ["진행 현황", row.status || "-", editCell("status", "수정")],
+    ["이슈/계획", row.issue || "-", editCell("issue", "수정")],
+    [planTitle, row.plan || "-", editCell("plan", `${planTitle} 수정`)],
+  ].map((item) => canEdit ? [escapeHtml_(item[0]), escapeHtml_(weeklyDisplayText_(item[1], "-")), item[2]] : [escapeHtml_(item[0]), escapeHtml_(weeklyDisplayText_(item[1], "-"))]);
+  return renderTable_(headers, rows, { wrapperClass: "table-wrap-report weekly-ledger-table weekly-project-narrative-table", tight: true });
+}
+
+function normalizeWeeklyProjectRows_(row) {
+  const labels = ["주소", "섹터", "투자 전략", "연면적", "대지면적", "용적률 및 건폐율", "규모(층수)", "총 사업비", "Equity", "Loan"];
+  const existing = Array.isArray(row.detailRows) ? row.detailRows : [];
+  const byLabel = new Map(existing.map((item) => [String(item.label || ""), item.value || ""]));
+  if (!existing.length) {
+    byLabel.set("주소", row.address || "");
+    byLabel.set("섹터", row.sector || "");
+    byLabel.set("투자 전략", row.strategy || row.investment || row.funding || "");
+    byLabel.set("연면적", row.grossArea || "");
+    byLabel.set("대지면적", row.landArea || "");
+    byLabel.set("규모(층수)", row.scale || "");
+    byLabel.set("총 사업비", row.totalCost || row.expectedAum || "");
+    byLabel.set("기타", row.overview || row.investment || "");
+  }
+  return labels.map((label) => ({ label, value: byLabel.get(label) || "" }));
+}
+
+function bindWeeklyRawProjectButtons_(report) {
+  document.querySelectorAll("[data-weekly-raw-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const section = button.getAttribute("data-weekly-raw-section");
+      const itemId = button.getAttribute("data-weekly-raw-id");
+      const row = ((report && report[section]) || []).find((item) => String(item.id) === String(itemId));
+      if (row) openWeeklyProjectRawModal_(row);
+    });
+  });
+}
+
+function openWeeklyProjectRawModal_(row) {
+  const splitRows = splitWeeklyProjectRows_(row);
+  openMetricModal_(
+    `상세 원문 · ${row.projectName || row.assetName || "-"}`,
+    renderTable_(["항목", "내용"], splitRows.rawRows.map((item) => [escapeHtml_(item[0]), escapeHtml_(weeklyDisplayText_(item[1], "-"))]), { wrapperClass: "table-wrap-report weekly-ledger-table", tight: true }),
+    ""
+  );
 }
 
 function bindWeeklyEditButtons_(report) {
@@ -6123,26 +6674,36 @@ function bindWeeklyEditButtons_(report) {
 }
 
 function openWeeklyAssetDetailModal_(row, canEdit) {
-  const editHint = canEdit ? '<p class="page-note">자산명 또는 Main Issue를 클릭하면 Admin 수정 팝업이 열립니다.</p>' : "";
+  const editActions = canEdit ? `
+    <div class="button-row">
+      <button class="secondary-button weekly-edit-button" type="button" data-weekly-edit="assetRows" data-weekly-id="${escapeHtml_(row.id)}" data-weekly-field="assetName">자산명 수정</button>
+      <button class="secondary-button weekly-edit-button" type="button" data-weekly-edit="assetRows" data-weekly-id="${escapeHtml_(row.id)}" data-weekly-field="mainIssue">Main Issue 수정</button>
+    </div>
+    <p class="page-note">Admin에서는 위 수정 버튼으로만 값을 변경합니다. 표 row 클릭은 항상 상세 보기입니다.</p>
+  ` : '<p class="page-note">주간 업무 원문 기준 상세 조회 화면입니다.</p>';
+  const sourceRows = IS_ADMIN ? [["sourceRef", escapeHtml_(row.sourceRef || "-")]] : [];
   openMetricModal_(
     `주간 업무 자산 상세 · ${row.assetName || "-"}`,
-    `${renderKeyValueGrid_([
+    `${renderTable_(["항목", "내용"], [
       ["자산명", escapeHtml_(row.assetName || "-")],
-      ["Risk", escapeHtml_([row.operationRisk, row.exitRisk].filter(Boolean).join(" / ") || "-")],
+      ["펀드명", escapeHtml_(weeklyDisplayText_(row.fundName, "-"))],
       ["연면적", `${formatNumber_(row.grossAreaPy)}평`],
       ["준공시점", escapeHtml_(row.completion || "-")],
       ["투자유형", escapeHtml_(row.investmentType || "-")],
       ["매입시점", escapeHtml_(row.acquisition || "-")],
-      ["대출만기", escapeHtml_(row.loanMaturity || "-")],
+      ["임대차만기", escapeHtml_(row.leaseMaturity || "-")],
       ["펀드만기", escapeHtml_(row.fundMaturity || "-")],
-      ["원가", escapeHtml_(row.costPerPy || "-")],
-      ["저온비율", escapeHtml_(row.coldRatio || "-")],
-      ["임대율", escapeHtml_(row.occupancyRate || "-")],
-      ["주요임차사", escapeHtml_(row.mainTenant || "-")],
-      ["Main Issue", escapeHtml_(row.mainIssue || "-")],
-    ])}${editHint}`,
-    renderBasisLine_("보고일 기준", "물류 전체 자산현황", "평/%", "Word 원문")
+      ["대출만기", escapeHtml_(row.loanMaturity || "-")],
+      ["원가", escapeHtml_(weeklyDisplayText_(row.costPerPy, "-"))],
+      ["저온비율", escapeHtml_(weeklyDisplayText_(row.coldRatio, "-"))],
+      ["임대율", escapeHtml_(weeklyDisplayText_(row.occupancyRate, "-"))],
+      ["주요임차사", escapeHtml_(weeklyDisplayText_(row.mainTenant, "-"))],
+      ["Main Issue", escapeHtml_(weeklyDisplayText_(row.mainIssue, "-"))],
+      ...sourceRows,
+    ], { wrapperClass: "table-wrap-report weekly-ledger-table", tight: true })}${editActions}`,
+    ""
   );
+  bindWeeklyEditButtons_(state.weeklyReport || {});
 }
 
 function openWeeklyEditModal_(report, section, row, field) {
@@ -6171,12 +6732,14 @@ function openWeeklyEditModal_(report, section, row, field) {
   );
   document.getElementById("weekly-edit-save")?.addEventListener("click", () => {
     const status = document.getElementById("weekly-edit-status");
+    const saveButton = document.getElementById("weekly-edit-save");
     const value = document.getElementById("weekly-edit-value")?.value || "";
     const reason = document.getElementById("weekly-edit-reason")?.value || "";
     if (!reason.trim()) {
       if (status) status.textContent = "수정 사유를 입력해야 저장할 수 있습니다.";
       return;
     }
+    if (saveButton) saveButton.disabled = true;
     if (status) status.textContent = "저장 중입니다.";
     callServer_("adminUpdateWeeklyReportItem", Object.assign(buildAdminRequest_(), {
       section,
@@ -6194,6 +6757,7 @@ function openWeeklyEditModal_(report, section, row, field) {
         closeSurface();
       })
       .catch((error) => {
+        if (saveButton) saveButton.disabled = false;
         if (status) status.textContent = (error && error.message) || String(error);
       });
   });

@@ -28,6 +28,16 @@ function doGet(e) {
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
 }
 
+function doPost(e) {
+  return maybeHandleApiPost_(e);
+}
+
+function jsonApiResponse_(payload) {
+  return ContentService
+    .createTextOutput(JSON.stringify(payload))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
 function buildInlinePreloadedPayloads_(requestedAdminShell, viewer) {
   const payloads = {};
   if (!requestedAdminShell) {
@@ -38,6 +48,31 @@ function buildInlinePreloadedPayloads_(requestedAdminShell, viewer) {
     }
   }
   return JSON.stringify(payloads);
+}
+
+function maybeHandleApiPost_(e) {
+  try {
+    const bodyText = safeString_(e && e.postData && e.postData.contents);
+    const body = bodyText ? JSON.parse(bodyText) : {};
+    const apiName = safeString_(body.api || (e && e.parameter && e.parameter.api)).toLowerCase();
+    if (apiName !== 'll-minimal-loader') {
+      return jsonApiResponse_({ status: 'error', message: 'Unknown POST api.' });
+    }
+    const payload = body.payloadB64 ? decodeBase64Json_(body.payloadB64) : body;
+    if (!isValidAdminKey_(body.password) && !verifySupabaseMinimalLoaderProof_(body)) {
+      return jsonApiResponse_({ status: 'error', message: 'Admin permission is required.' });
+    }
+    if (payload.action === 'count') return jsonApiResponse_(countSupabaseMinimalTables_());
+    if (payload.action === 'upsert') {
+      return jsonApiResponse_(upsertSupabaseMinimalRows_(safeString_(payload.tableName), payload.rows || []));
+    }
+    return jsonApiResponse_({ status: 'error', message: 'Unknown ll minimal loader action.' });
+  } catch (error) {
+    return jsonApiResponse_({
+      status: 'error',
+      message: error && error.message ? error.message : String(error),
+    });
+  }
 }
 
 function maybeHandleApiGet_(e) {
@@ -689,17 +724,23 @@ function buildWeeklyReportPayload_(options) {
     if (raw) {
       try {
         const parsed = JSON.parse(raw);
-        if (parsed && parsed.schemaVersion === 'weekly_report_v1') return parsed;
+        if (parsed && parsed.schemaVersion === 'weekly_report_v2') return parsed;
       } catch (error) {
         // Fall through to the embedded document baseline.
       }
     }
   }
-  const assetRows = getDefaultWeeklyAssetRows_();
-  const newProjects = getDefaultWeeklyNewProjects_();
-  const managementProjects = getDefaultWeeklyManagementProjects_();
+  const assetRows = getDefaultWeeklyAssetRows_().map(function (row) {
+    return Object.assign({}, row, { sourceRef: row.sourceRef || ('TABLE 1 R' + (Number(row.no || 0) + 1)) });
+  });
+  const newProjects = getDefaultWeeklyNewProjects_().map(function (row) {
+    return Object.assign({}, row, { sourceRef: row.sourceRef || ('TABLE 2 R' + (Number(row.no || 0) + 1)) });
+  });
+  const managementProjects = getDefaultWeeklyManagementProjects_().map(function (row) {
+    return Object.assign({}, row, { sourceRef: row.sourceRef || ('TABLE 3 R' + (Number(row.no || 0) + 1)) });
+  });
   return {
-    schemaVersion: 'weekly_report_v1',
+    schemaVersion: 'weekly_report_v2',
     reportTitle: '리얼에셋부문 사업그룹 4파트 주간업무자료',
     reportDate: '2026-04-06',
     sourceDocumentName: 'RA부문_사업그룹4파트_주간업무자료(안)_260427_취합.docx',
@@ -722,6 +763,8 @@ function buildWeeklyReportPayload_(options) {
       { id: 'note_cost_1', title: '원가 기준', body: '원가 = 취득과표원가 + capex' },
       { id: 'note_cost_2', title: '현재시점대비 표시', body: '현재 원가가 주변 거래사례보다 높을 경우 ▲, 낮을 경우 ▼로 표기합니다.' },
       { id: 'note_scope', title: '운영 기준', body: '본 탭은 주간업무자료 원문 기준의 별도 리포트이며 임대차 DB의 운영 자산 17개와 범위가 다를 수 있습니다.' },
+      { id: 'note_pipeline', title: '기타사항', body: 'ILIP 준비 / Value-Add 펀드 준비중 / 부천·고양·여주·이천·화성 물류 등 포트폴리오 확대 추진' },
+      { id: 'note_terms', title: '용어 기준', body: '유형은 개발·선매입·실물·2nd 블펀 등 자산 구분, 투자유형은 개발·선매입·실물 등 투자 방식, 임대구조는 Single/Multi Tenant 구분, 접안유형은 자연접안·램프접안 등 차량 접안 방식입니다.' },
     ],
     basisDisplay: {
       asOfText: '보고일 2026-04-06',
@@ -741,8 +784,8 @@ function getDefaultWeeklyAssetRows_() {
     { id: 'weekly_asset_05', no: 5, category: '실물', assetName: '스카이박스1', operationRisk: '', exitRisk: '', grossAreaPy: 10706, completion: '2017.04', investmentType: '실물', acquisition: '2019.04', loanMaturity: '', fundMaturity: '2029.04', costPerPy: '', costTrend: '', coldRatio: '-', occupancyRate: '', mainTenant: 'LG생활건강', mainIssue: '' },
     { id: 'weekly_asset_06', no: 6, category: '실물', assetName: '스카이박스2', operationRisk: '', exitRisk: '', grossAreaPy: 15189, completion: '2017.04', investmentType: '실물', acquisition: '2019.04', loanMaturity: '', fundMaturity: '2029.04', costPerPy: '5.5', costTrend: '▼', coldRatio: '-', occupancyRate: '80%', mainTenant: '쿠팡', mainIssue: 'Lease-up' },
     { id: 'weekly_asset_07', no: 7, category: '실물', assetName: '이천동산', operationRisk: '', exitRisk: '', grossAreaPy: 16740, completion: '2015.11', investmentType: '실물', acquisition: '2021.03', loanMaturity: '', fundMaturity: '2031.03', costPerPy: '6.4', costTrend: '→', coldRatio: '-', occupancyRate: '99%', mainTenant: '쿠팡', mainIssue: 'Upside Potential 확보' },
-    { id: 'weekly_asset_08', no: 8, category: '실물', assetName: '에이블로지스', operationRisk: '', exitRisk: '', grossAreaPy: 9069, completion: '2016.11', investmentType: '실물', acquisition: '', loanMaturity: '', fundMaturity: '', costPerPy: '', costTrend: '', coldRatio: '-', occupancyRate: '', mainTenant: '아워박스', mainIssue: '' },
-    { id: 'weekly_asset_09', no: 9, category: '실물', assetName: '부국물류', operationRisk: '', exitRisk: '', grossAreaPy: 5658, completion: '2016.06', investmentType: '실물', acquisition: '', loanMaturity: '', fundMaturity: '', costPerPy: '', costTrend: '', coldRatio: '-', occupancyRate: '', mainTenant: '한익스프레스', mainIssue: '' },
+    { id: 'weekly_asset_08', no: 8, category: '실물', assetName: '에이블로지스', operationRisk: '', exitRisk: '', grossAreaPy: 9069, completion: '2016.11', investmentType: '실물', acquisition: '2021.03', loanMaturity: '', fundMaturity: '2031.03', costPerPy: '', costTrend: '', coldRatio: '-', occupancyRate: '', mainTenant: '아워박스', mainIssue: '' },
+    { id: 'weekly_asset_09', no: 9, category: '실물', assetName: '부국물류', operationRisk: '', exitRisk: '', grossAreaPy: 5658, completion: '2016.06', investmentType: '실물', acquisition: '2021.03', loanMaturity: '', fundMaturity: '2031.03', costPerPy: '', costTrend: '', coldRatio: '-', occupancyRate: '', mainTenant: '한익스프레스', mainIssue: '' },
     { id: 'weekly_asset_10', no: 10, category: '실물', assetName: '창원두동LG', operationRisk: '', exitRisk: '', grossAreaPy: 16506, completion: '2019.11', investmentType: '실물', acquisition: '2023.02', loanMaturity: '', fundMaturity: '2028.02', costPerPy: '7.0', costTrend: '▲', coldRatio: '-', occupancyRate: '100%', mainTenant: 'LG전자', mainIssue: 'ML임차인 Re-tenanting' },
     { id: 'weekly_asset_11', no: 11, category: '선매입', assetName: '이천회억리', operationRisk: '●', exitRisk: '●', grossAreaPy: 13531, completion: '2023.11', investmentType: '선매입', acquisition: '2025.01', loanMaturity: '2027.01', fundMaturity: '2028.01', costPerPy: '6.4', costTrend: '▲', coldRatio: '25%', occupancyRate: '73%', mainTenant: '한국로지스풀', mainIssue: 'Lease-up, Refinancing' },
     { id: 'weekly_asset_12', no: 12, category: '실물', assetName: '부산송정', operationRisk: '●', exitRisk: '●', grossAreaPy: 7377, completion: '2015.11', investmentType: '실물', acquisition: '2017.01', loanMaturity: '2024.03', fundMaturity: '2047.01', costPerPy: '9.1', costTrend: '▲', coldRatio: '100%', occupancyRate: '공실', mainTenant: '-', mainIssue: 'EOD, 소송, 신규개발(DC)' },
@@ -761,12 +804,26 @@ function getDefaultWeeklyNewProjects_() {
   return [
     {
       id: 'weekly_new_01',
-      funding: '시장자금 또는 환경개선펀드(산단공)',
+      no: 1,
+      funding: '시장자금 또는 환경개선펀드(산단공) 적용',
       projectName: '물류 복합개발 PJT',
+      detailRows: [
+        { label: '주소', value: '서울시 금천구' },
+        { label: '섹터', value: '코리빙 & 물류' },
+        { label: '투자 전략', value: '개발 / 위탁펀드 대상 아님 / 시장자금 또는 환경개선펀드 적용 검토' },
+        { label: '연면적', value: '약 1.3만평' },
+        { label: '대지면적', value: '약 1.5천평' },
+        { label: '용적률 및 건폐율', value: '' },
+        { label: '규모(층수)', value: '' },
+        { label: '총 사업비', value: '[2,530]억원' },
+        { label: 'Equity', value: '[540]억원' },
+        { label: 'Loan', value: '[1,990]억원' },
+        { label: '기타', value: '수익률 TBD / 투자기간 [6]년 / AUM [2,530]억원 / 매입·운용 기준 TBD / 매각 - / 성과 - / 설정시기 TBD' },
+      ],
       overview: '서울시 금천구 소재 코리빙 및 물류 복합개발. 대지면적 약 1.5천평, 연면적 약 1.3만평, 총사업비 약 2,530억원.',
-      status: '환경개선펀드 제안서 제출, 현장답사, 사업 프리젠테이션, 산업통상자원부 우선협상 대상자 선정까지 진행.',
-      issue: '산단공 투자조건 협의, 토지주 매매계약, 매칭펀드 투자자 모집, 시공사 협의, LOC 제출기한 연장 협의.',
-      plan: '환경개선펀드 및 매칭투자자 조건 협의 후 설정시기 확정.',
+      status: '(25.02.04) 환경개선펀드 제안서 제출 완료 / (25.02.14) 산단공 현장답사 / (25.02.27) 사업 프리젠테이션 / (25.03.10) 산업통상자원부 우선협상 대상자 선정',
+      issue: '산업단지공단과 환경개선펀드 투자조건 협의 / 토지주와 매매계약 체결 / 환경개선펀드 기간 4월말까지 연장 완료 / 매칭펀드 투자자 모집중(FI, SI 등) / 토지매도자 및 시공사(동원건설산업) 협의중 / 매칭투자자 LOC 제출기한 연장 협의 완료(산단공)',
+      plan: '환경개선펀드 및 매칭투자자 조건 협의 후 설정시기 확정',
       expectedAum: '2,530억원',
       setupTiming: 'TBD',
     },
@@ -780,40 +837,114 @@ function getDefaultWeeklyManagementProjects_() {
       no: 1,
       risk: '운용/Exit ●',
       projectName: '이천 회억리 물류센터',
+      detailRows: [
+        { label: '주소', value: '이천 마장면 회억리 105' },
+        { label: '섹터', value: '복합물류' },
+        { label: '투자 전략', value: '선매입 / Vehicle 펀드 / 펀드설정 25.01 / 펀드만기 28.01' },
+        { label: '연면적', value: '13,531평' },
+        { label: '대지면적', value: '8,986평' },
+        { label: '용적률 및 건폐율', value: '' },
+        { label: '규모(층수)', value: '지상3층' },
+        { label: '총 사업비', value: '938억' },
+        { label: 'Equity', value: '445억 / 우선주 380억 / 보통주 65억' },
+        { label: 'Loan', value: '465억 / 선순위 465억 / LTV 54.7% / All-in 5.5%' },
+        { label: '기타', value: '매입가 800억(평당 5.9백만) / 취득원가 862억(평당 6.4백만) / 장부가 897억(평당 6.6백만) / 목표매각가 1,132억(평당 8.4백만) / 임차면적 13,531평 / 임대율 73% / 임대구조 멀티Tenant / 저온비중 25% / 주임차사 한국로지스풀 / WALE 2.7년 / 시공사 까뮤이앤씨 / 구조 PC+RC / 접안유형 자연접안 / 전기용량 2,200kW / 하중 저온 2.5T, 상온 2.0T / 주요투자자 Oaktree, GS retail, GF logis, IGIS 등 / 주요대주 신협11지점, BNK, 신한 / 대출만기 27.01 / 운용보수 연2.4억 / 매입보수 6.8억 / 매각보수 2.3억 / 성과보수 매각차익 2.0%, 8.4억' },
+      ],
       overview: '복합물류, 선매입, 이천 마장면 회억리 105, 지상 3층, 연면적 13,531평, 임대율 73%, 주임차사 한국로지스풀.',
       investment: '취득원가 862억원, 장부가 897억원, 목표매각가 1,132억원, Loan 465억원, LTV 54.7%.',
-      status: '초록마을/정육각 회생절차 및 명도 완료, 한진 B2층 저온 입주, 기존 대주단 미연장 의사 확인.',
-      plan: '지상 1층 임대차 마케팅, 대주단 미팅, IRR 기준 변경 가능성 타진, 잠재 매수의향자 tapping.',
+      status: '임대: 초록마을/정육각 기업회생절차 개시 및 명도 완료, 한진 B2층(저온) 전체 입주개시. 담보대출: 27년 1월 만기, 기존 대주단 미연장 의사. 매각: 우선주 수익률 IRR 18.0% 기준으로 매각가가 시차별로 높아짐.',
+      issue: '지상1층(GLA 27%) 임대차 마케팅 진행중 / 기존 대주단 미연장에 따른 Refinancing 대응 / IRR 기준 변경 가능성 타진 필요',
+      plan: '지상1층 임대차 마케팅 / 5월 중 대주단 미팅 / 시장 현황 설명으로 IRR 18.0% 기준 변경 가능성 타진 / Share-deal 또는 Asset-deal 관련없이 잠재매수의향자 tapping 예정',
+    },
+    {
+      id: 'weekly_mgmt_02',
+      no: 2,
+      risk: '운용/Exit ●',
+      projectName: '화성 석포리 물류센터',
+      detailRows: [
+        { label: '주소', value: '화성시 장안면 석포리 147-12' },
+        { label: '섹터', value: '상온물류' },
+        { label: '투자 전략', value: '선매입 / Vehicle 펀드 / 펀드설정 22.02 / 펀드만기 28.03' },
+        { label: '연면적', value: '32,370평' },
+        { label: '대지면적', value: '25,888평' },
+        { label: '용적률 및 건폐율', value: '' },
+        { label: '규모(층수)', value: 'B2/3F, B2/2F' },
+        { label: '총 사업비', value: '2,379억' },
+        { label: 'Equity', value: '615억 / 우선주(1종) 250억 / 보통주(2종) 245억 / 보통주(3종) 40억' },
+        { label: 'Loan', value: '1,695억 / 선순위 1,500억 / 중순위 195억 / LTV 73% / All-in 5.5%, TBD' },
+        { label: '기타', value: '매입가 2,120억(평당 655만) / 취득원가 2,301억(평당 711만) / 장부가 2,413억(평당 745만) / 목표매각가 2,363억(평당 730만) / 임대면적 32,370평 / 임대율 100% / 임대구조 싱글 tenant / 저온비중 0% / 주임차사 삼성전자로지텍 / WALE 2.86 / 시공사 SGC이테크 / 구조 합성·철근철골콘크리트구조 / 접안유형 자연접안 / 전기용량 3,500kW / 하중 2.5T / 주요투자자 메트라이프, 이지스, 성담, BNK캐피탈 등 / 주요대주 삼성SRA, 메트라이프, 신한캐피탈 등 / 대출만기 28.03 / 매입보수 12억 / 운용보수 설정액 연 0.40% / 매각보수 매각가 0.5%, TBD' },
+      ],
+      status: '담보대출 Tr.B 셀다운 검토(w/LFC), 기존 대주 진행현황 안내 및 F/u, Tr.B 신한캐피탈 대출수수료 지급 예정(5월 초), 신규 검토 대주 대응. 사면 보강공사 완료에 따른 개발행위 준공검사 신청. 전기차 충전시설 설치 신고 및 보험 가입 검토.',
+      issue: '담보대출 Tr.B 셀다운 / 일부 토지 매각 관련 협의 / 전기차 충전시설 설치 신고 및 보험가입 의무화 대응 / 태양광 임대차계약 관련 발전시설 설치 절차 / 삼성전자로지텍 시설물 분리운영 / 하자 처리',
+      plan: 'Tr.B 셀다운 검토 지속 / 일부 토지 매각 관련 Tr.B 셀다운 처 확정 시 북부종합건설 협의 / 준공검사 승인 후 공작물축조신고서 제출 예정 / 전기차 충전시설 보험 가입 검토 / 태양광 개발행위허가와 한전 계약 등 후속 절차 / 시설물 분리운영 검토 / SGC이테크 하자 처리',
+    },
+    {
+      id: 'weekly_mgmt_03',
+      no: 3,
+      risk: '운용/Exit ●',
+      projectName: '부산 송정 물류센터',
+      detailRows: [
+        { label: '주소', value: '부산 강서구 송정동 1715-2' },
+        { label: '섹터', value: '저온물류' },
+        { label: '투자 전략', value: '실물 / Vehicle 펀드 / 펀드설정 17.01 / 펀드만기 47.01' },
+        { label: '연면적', value: '7,377평' },
+        { label: '대지면적', value: '3,427평' },
+        { label: '용적률 및 건폐율', value: '' },
+        { label: '규모(층수)', value: 'B1/6F' },
+        { label: '총 사업비', value: '938억' },
+        { label: 'Equity', value: '280억' },
+        { label: 'Loan', value: '480억 / 선순위 400억 / 중순위 80억 / LTV 59.4% / All-in 6.0%, 9.0%' },
+        { label: '기타', value: '매입가 623억(평당 844만) / 취득원가 668억(평당 905만) / 장부가 808억(평당 1,095만) / 목표매각가 - / 임대면적 7,377평 / 임대율 0%(전체공실) / 임대구조 - / 저온비중 100% / 주임차사 - / WALE - / 시공사 신세계건설 / 구조 PC, 철골, RC / 전기용량 2,500kW / 주요투자자 안젤로고든 / 주요대주 유암코, 대신저축, 스카이저축 / 대출만기 24.03(EOD) / 목표 IRR(CG 포함) 30.29%, CG 미포함 10.26% / 매입보수 12.46억 / 운용보수 자산총액 연 0.80%, 연 6.5억 / 매각보수 매각가 1.0%, TBD' },
+      ],
+      status: 'EOD 발생으로 법원 경매 진행 중: EOD 발생(23.12.08), 경매 개시(24.03.04), 1차 매각기일 유찰(25.06.04/700억), 2차 매각기일 채권자 협의를 통한 연기 신청(최저매각가 490억). 하나로TNS 손해배상 청구소송 진행. DC Conversion 검토 협조. 집합투자재산 공정가치 평가 진행.',
+      issue: 'EOD 및 경매 대응 / 후순위 대주 대응 / 하나로TNS 손해배상 청구소송 / 감정인 의견 대응 / DC Conversion 검토',
+      plan: '경매 대응 방안 검토 및 협의 / 하나로TNS 소송 대응 / DC Conversion 검토 협조',
     },
     {
       id: 'weekly_mgmt_04',
       no: 4,
       risk: '운용/Exit ●',
       projectName: '경산 쿠팡 물류센터',
-      overview: '복합물류, 실물매입, 경북 경산시 진량읍 문천리 903, B2/12F, 연면적 29,849평, 임대율 100%, 주임차사 쿠팡.',
-      investment: '취득원가 1,698억원, 장부가 2,020억원, 목표매각가 2,140억원, Loan 1,300억원, LTV 64.4%.',
-      status: '재하도급 업체 유치권 주장 및 시위 대응, 담보대출 심의 완료, 클로징 완료, 쿠팡 운용 중.',
-      plan: '하자치유 및 유치권 포기 합의서 근거로 재하도급 업체 관련 대응 지속.',
+      detailRows: [
+        { label: '주소', value: '경북 경산시 진량읍 문천리 903' },
+        { label: '섹터', value: '복합물류' },
+        { label: '투자 전략', value: '실물매입 / Vehicle 펀드 / 펀드설정 25.05 / 펀드만기 28.05' },
+        { label: '연면적', value: '29,849평' },
+        { label: '대지면적', value: '5,389평' },
+        { label: '용적률 및 건폐율', value: '' },
+        { label: '규모(층수)', value: 'B2/12F' },
+        { label: '총 사업비', value: '1,835억' },
+        { label: 'Equity', value: '535억 / 우선주 350억 / 보통주 185억' },
+        { label: 'Loan', value: '1,300억 / 선순위 1,000억 / 중순위 300억 / LTV 64.4% / All-in 5.5%, 6.5%' },
+        { label: '기타', value: '매입가 1,558억(평당 5.2백만) / 취득원가 1,698억(평당 5.7백만) / 장부가 2,020억(평당 6.8백만) / 목표매각가 2,140억(평당 7.2백만) / 임차면적 23,061평 / 보증금 57억 / 임대율 100% / 임대구조 싱글Tenant / 저온비중 26% / 주임차사 쿠팡 / WALE 4.0년 / 시공사 삼부토건 / 구조 PC+RC / 접안유형 램프접안 / 전기용량 9,000kW / 하중 저온 2.2~2.5T, 상온 2.0T / 주요투자자 경산SS1호(NPL4호펀드), 경산로지스1-1호(NH증권) / 주요대주 한투캐피탈, 미래캐피탈, 수협은행, IM캐피탈, 광주은행 / 대출만기 28.06 / 목표IRR 우선주 22.6%, 보통주 26.5% / 매입보수 13.15억 / 운용보수 설정액 535억 연0.51%, 보통주 재간접 설정액 181억 연0.05%, 우선주 재간접 설정액 350억 연0.05%, 연2.96억 / 성과보수 우선주IRR 15%, 보통주IRR 20%, 초과수익의 20%, TBD' },
+      ],
+      status: '하도급 업체 유치권 주장 / 투자구조 변경(자산거래NPL 구조), 이지스 AI팀(NPL)과 협업 / 담보대출 대주 심의완료 / 6월 27일 클로징 완료 / 재하도급 업체(효현건설) 시위 / 공정위 회신 완료 및 소장 접수 완료 / 쿠팡 운용중(상온, 저온) / 9층 화재(25.12.16) 치유 완료 / 천장 사고처리 완료 / 경산산업단지 입주계약 체결 완료',
+      issue: '재하도급 업체 유치권 주장 및 시위 관련 대응',
+      plan: '25.06 체결한 하자치유 및 유치권 포기에 대한 합의서에 근거하여 대응 예정',
     },
     {
       id: 'weekly_mgmt_05',
       no: 5,
       risk: '운용/Exit ●',
       projectName: '인천 석남 물류센터',
+      detailRows: [
+        { label: '주소', value: '인천 서구 석남동 224-20' },
+        { label: '섹터', value: '복합물류' },
+        { label: '투자 전략', value: '선매입 / Vehicle 펀드 / 펀드설정 22.12 / 펀드만기 33.07' },
+        { label: '연면적', value: '90,541평' },
+        { label: '대지면적', value: '16,393평' },
+        { label: '용적률 및 건폐율', value: '' },
+        { label: '규모(층수)', value: 'B1/8F' },
+        { label: '총 사업비', value: '6,355억' },
+        { label: 'Equity', value: '2,396억 / 보통주 2,396억' },
+        { label: 'Loan', value: '3,426억 / 선순위 3,426억 / LTV 54.0% / All-in 6.1%(선취1.0%, CD+2.2%)' },
+        { label: '기타', value: '매입가 5,850억(평당 6.5백만) / 취득원가 5,935억(평당 6.6백만) / 장부가 6,340억(평당 7.0백만) / 목표매각가 7,536억(평당 8.3백만) / 임차면적 90,522평 / 보증금 83억 / 임대율 100% / 임대구조 마스터리스 / 저온비중 14% / 주임차사 쿠팡 / WALE 8.1년 / 시공사 동원건설산업 / 구조 PC+RC / 접안유형 램프접안 / 전기용량 13,950kW / 하중 저온 2.5T, 상온 2.0T / 주요투자자 인컴앤그로스2호(NPS 등), 장기지분형1-1호(KTCU 등), 인컴앤그로스2-4-4호(KBIZ) / 주요대주 KDB, DB손보, 하나, 신한, 현대해상, 전북은행 / 대출만기 27.04 / 운용보수 자1 설정액 729억 연0.77%, 자3 설정액 1,200억 연0.72%, 자4 설정액 467억 연0.02%, 연14.5억 / 매입보수 17.2억 / 매각보수 35.8억 / 성과보수 자1 IRR 8.0%, 자3 IRR 6.0%, 자4 IRR 8.0%, 초과수익의 15%, TBD' },
+      ],
       overview: '복합물류, 선매입, 인천 서구 석남동 224-20, B1/8F, 연면적 90,541평, 임대율 100%, 주임차사 쿠팡.',
       investment: '취득원가 5,935억원, 장부가 6,340억원, 목표매각가 7,536억원, Loan 3,426억원, LTV 54.0%.',
-      status: '거래종결 완료, 매도자-시공사 합의서 및 유치권 포기각서 확보, KKR 지분 및 이지스 보통주 일부 매각 완료.',
-      plan: 'Upside Potential 확보 및 운용 안정화 지속.',
-    },
-    {
-      id: 'weekly_mgmt_12',
-      no: 12,
-      risk: '운용/Exit ●',
-      projectName: '부산 송정 물류센터',
-      overview: '저온물류, 실물, 부산 강서구 송정동 1715-2, B1/6F, 연면적 7,377평, 전체 공실.',
-      investment: '취득원가 668억원, 장부가 808억원, Loan 480억원, 대출만기 2024.03(EOD).',
-      status: 'EOD 발생 후 법원 경매 진행, 하나로TNS 손해배상 소송 및 DC Conversion 검토.',
-      plan: '경매 대응, 후순위 대주 협의, 소송 대응, DC Conversion 검토 협조.',
+      status: '(24.04) 거래종결 완료 / (24.05) 매도자(쿠거)-시공사(동원건설산업) 간 합의서 체결 및 시공사 유치권 포기각서 제출 / (25.02) KKR 지분(인컴 2-4-4호) 매각 완료 / (25.05) 이지스 보통주 투자액 50억원 매각완료',
+      issue: '',
+      plan: '',
     },
   ];
 }

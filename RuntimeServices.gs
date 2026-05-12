@@ -1,4 +1,4 @@
-const CACHE_SCHEMA_VERSION_ = '20260424_11';
+const CACHE_SCHEMA_VERSION_ = '20260429_198';
 const SCRIPT_PROPERTY_JSON_MAX_LENGTH_ = 8500;
 const SCRIPT_PROPERTY_JSON_CHUNK_SIZE_ = 8000;
 const PAYLOAD_SNAPSHOT_SHEET_NAME_ = 'SYS_PAYLOAD_SNAPSHOT';
@@ -303,13 +303,17 @@ function readPayloadSnapshotFromSheet_(key) {
   if (cached) return cached;
   const sheet = getSpreadsheet_().getSheetByName(PAYLOAD_SNAPSHOT_SHEET_NAME_);
   if (!sheet || sheet.getLastRow() < 2) return null;
-  const values = sheet.getDataRange().getValues();
+  const matches = sheet
+    .createTextFinder(key)
+    .matchEntireCell(true)
+    .findAll();
   const chunks = [];
-  for (let rowIndex = 1; rowIndex < values.length; rowIndex += 1) {
-    const row = values[rowIndex];
-    if (safeString_(row[0]) !== key) continue;
+  (matches || []).forEach(function (range) {
+    const rowIndex = range.getRow();
+    if (rowIndex < 2 || range.getColumn() !== 1) return;
+    const row = sheet.getRange(rowIndex, 1, 1, 4).getValues()[0];
     chunks[Number(row[1] || 0)] = safeString_(row[3]);
-  }
+  });
   if (!chunks.length) return null;
   try {
     const parsed = JSON.parse(chunks.join(''));
@@ -402,7 +406,7 @@ function readStaticPayloadSnapshotMap_(items) {
 
 function isDefaultToolsRequest_(request) {
   const normalized = normalizeToolsRequest_(request || {});
-  return !normalized.assetIds.length && !normalized.companyIds.length;
+  return !normalized.disableDefaultSelection && !normalized.assetIds.length && !normalized.companyIds.length;
 }
 
 function isDefaultPlaygroundRequest_(request) {
@@ -520,6 +524,7 @@ function normalizeToolsRequest_(request) {
   return {
     companyIds: normalizeIdList_(request && request.companyIds),
     assetIds: normalizeIdList_(request && request.assetIds),
+    disableDefaultSelection: !!(request && request.disableDefaultSelection),
   };
 }
 
@@ -546,9 +551,10 @@ function buildKeyedPayloadKey_(page, request) {
   if (normalizedPage === 'asset') return 'asset:' + (safeString_(request) || 'default');
   if (normalizedPage === 'company') return 'company:' + (safeString_(request) || 'default');
   if (normalizedPage === 'sector') return 'sector:default';
+  if (normalizedPage === 'weekly') return 'weekly:v2';
   if (normalizedPage === 'tools') {
     const normalizedTools = normalizeToolsRequest_(request);
-    return `tools:companies=${normalizedTools.companyIds.join(',')}|assets=${normalizedTools.assetIds.join(',')}`;
+    return `tools:companies=${normalizedTools.companyIds.join(',')}|assets=${normalizedTools.assetIds.join(',')}|empty=${normalizedTools.disableDefaultSelection ? '1' : '0'}`;
   }
   if (normalizedPage === 'playground') {
     const normalizedPlayground = normalizePlaygroundRequest_(request);
@@ -891,7 +897,7 @@ function buildBootstrapShellSnapshot_(payload) {
     generatedAt: payload.generatedAt,
     dataVersion: payload.dataVersion || getCacheNamespace_(),
     config: payload.config || { formulaVersion: getConfig_().formulaVersion },
-    home: payload.home || null,
+    home: null,
     homeLiteKpis: payload.homeLiteKpis || [],
     assetOptions: payload.assetOptions || [],
     companyOptions: payload.companyOptions || [],
@@ -909,6 +915,22 @@ function buildBootstrapShellSnapshot_(payload) {
 
 function buildPersistedBootstrapShell_(payload) {
   const config = getConfig_();
+  const homePayload = safeGet_(payload, ['home']) || null;
+  const persistedHomeLiteKpis = safeGet_(payload, ['homeLiteKpis']) || [];
+  const preferredHomeLiteKeys = ['operating_asset_count', 'leased_area_total', 'vacancy_area_total', 'monthly_total_cost'];
+  const homeLiteKpis = persistedHomeLiteKpis.length
+    ? persistedHomeLiteKpis
+    : preferredHomeLiteKeys.map(function (key) {
+      return ((homePayload && homePayload.kpis) || []).find(function (item) { return item.key === key; });
+    }).filter(Boolean).map(function (item) {
+      return {
+        key: item.key,
+        value: item.value,
+        status: item.status,
+        valueType: item.valueType,
+      };
+    });
+
   return buildBootstrapShellSnapshot_({
     appName: payload && payload.appName,
     generatedAt: payload && payload.generatedAt,
@@ -917,8 +939,7 @@ function buildPersistedBootstrapShell_(payload) {
       formulaVersion: safeGet_(payload, ['config', 'formulaVersion']) || config.formulaVersion,
       spreadsheetId: safeGet_(payload, ['config', 'spreadsheetId']) || config.spreadsheetId,
     },
-    home: safeGet_(payload, ['home']) || null,
-    homeLiteKpis: safeGet_(payload, ['homeLiteKpis']) || [],
+    homeLiteKpis: homeLiteKpis,
     assetOptions: safeGet_(payload, ['assetOptions']) || [],
     companyOptions: safeGet_(payload, ['companyOptions']) || [],
     defaults: safeGet_(payload, ['defaults']) || { assetId: '', tenantId: '' },
@@ -959,18 +980,20 @@ function readPersistedBootstrapShell_() {
     const parsed = readJsonScriptProperty_(propertyKey);
     if (!parsed) continue;
     const savedVersion = safeString_(parsed && parsed.dataVersion);
-    if (savedVersion && savedVersion.indexOf(CACHE_SCHEMA_VERSION_) !== 0) {
-      deleteJsonScriptProperty_(propertyKey);
-      continue;
-    }
 
-    const normalized = propertyKey === 'BOOTSTRAP_SHELL_LITE_JSON'
-      ? parsed
-      : buildPersistedBootstrapShell_(parsed);
+    const normalized = buildPersistedBootstrapShell_(parsed);
     normalized.dataVersion = getCacheNamespace_();
 
-    if (propertyKey !== 'BOOTSTRAP_SHELL_LITE_JSON') {
+    const needsRewrite = propertyKey !== 'BOOTSTRAP_SHELL_LITE_JSON'
+      || savedVersion.indexOf(CACHE_SCHEMA_VERSION_) !== 0
+      || !!safeGet_(parsed, ['home'])
+      || !!safeGet_(parsed, ['defaultAssetPayload'])
+      || !!safeGet_(parsed, ['defaultCompanyPayload']);
+
+    if (needsRewrite) {
       persistJsonScriptProperty_('BOOTSTRAP_SHELL_LITE_JSON', normalized, { allowChunking: true });
+    }
+    if (propertyKey !== 'BOOTSTRAP_SHELL_LITE_JSON') {
       deleteJsonScriptProperty_(propertyKey);
     }
     return attachBootstrapState_(normalized, 'persisted_property');
@@ -1072,11 +1095,19 @@ function refreshDashboardCaches_() {
   const companyOptions = buildCompanyOptionList_(model);
   const defaultAsset = chooseDefaultAssetOption_(model, assetOptions);
   const defaultCompany = chooseDefaultCompanyOption_(model, companyOptions);
+  const bootstrapAssetLimit = Math.max(
+    Math.max(1, config.bootstrapOptionCount || 1),
+    Math.min(assetOptions.length, config.staticSnapshotMaxAssets || 200)
+  );
+  const bootstrapCompanyLimit = Math.max(
+    Math.max(1, config.bootstrapOptionCount || 1),
+    Math.min(companyOptions.length, config.staticSnapshotMaxCompanies || 300)
+  );
   const bootstrapAssetOptions = defaultAsset
-    ? [defaultAsset].concat(assetOptions.filter(function (item) { return item.assetId !== defaultAsset.assetId; })).slice(0, Math.max(1, config.bootstrapOptionCount || 1))
+    ? [defaultAsset].concat(assetOptions.filter(function (item) { return item.assetId !== defaultAsset.assetId; })).slice(0, bootstrapAssetLimit)
     : [];
   const bootstrapCompanyOptions = defaultCompany
-    ? [defaultCompany].concat(companyOptions.filter(function (item) { return item.tenantId !== defaultCompany.tenantId; })).slice(0, Math.max(1, config.bootstrapOptionCount || 1))
+    ? [defaultCompany].concat(companyOptions.filter(function (item) { return item.tenantId !== defaultCompany.tenantId; })).slice(0, bootstrapCompanyLimit)
     : [];
   const homePayload = buildHomePayload_(model);
   const preferredHomeLiteKeys = ['operating_asset_count', 'leased_area_total', 'vacancy_area_total', 'monthly_total_cost'];
@@ -2036,7 +2067,7 @@ function getOpenDartReportCodeCandidates_() {
   return ['11011', '11014', '11012', '11013'];
 }
 
-function getOpenDartQuarterReportCodeCandidates_() {
+function getOpenDartQuarterReportCodeCandidatesLegacy_() {
   return ['11014', '11012', '11013'];
 }
 
@@ -2312,7 +2343,7 @@ function resolveOpenDartEffectivePayload_(tenantMasterName, corpPayload) {
   return effective;
 }
 
-function syncOpenDartData() {
+function syncOpenDartDataBasicLegacy_() {
   const config = getConfig_();
   const spreadsheet = getSpreadsheet_();
   const companySheet = spreadsheet.getSheetByName(config.sheetNames.company);
@@ -3821,6 +3852,9 @@ function summarizeAuditLog_(rows) {
 function getAuditLogData(request) {
   assertAdmin_(request);
   const rows = readAuditLogRows_(request && request.limit);
+  if (typeof persistAdminAuditLogCache_ === 'function') {
+    persistAdminAuditLogCache_(rows);
+  }
   return {
     generatedAt: formatAuditTimestamp_(new Date()),
     summary: summarizeAuditLog_(rows),

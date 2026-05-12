@@ -1613,6 +1613,9 @@ function buildFloorStack_(rows) {
           share: totalFloorArea ? roundNumber_(row.leasedAreaSqm / totalFloorArea, 4) : null,
           reviewStatus: row.calculatedReviewStatus,
           detailAreaLabel: row.detailAreaLabel,
+          coldStorageType: row.coldStorageType,
+          goodsType: row.goodsType,
+          officeAreaSqm: row.officeAreaSqm,
         };
       }),
     };
