@@ -381,8 +381,15 @@ async function loginAdminIfPossible(context, failures) {
   }
   const unlocked = await context.waitForFunction(() => {
     const shell = document.querySelector("#app-shell, #app");
-    const hasGate = !!document.querySelector("#admin-auth-root, #admin-auth-password, #admin-password-input, #admin-password");
-    return shell && !shell.classList.contains("is-auth-locked") && !hasGate;
+    const visibleGate = Array.from(document.querySelectorAll("#admin-auth-root, #admin-auth-password, #admin-password-input, #admin-password"))
+      .some((node) => {
+        const element = node instanceof HTMLElement ? node : node.closest?.("*");
+        if (!element) return false;
+        if (element.closest("[hidden]")) return false;
+        const style = window.getComputedStyle(element);
+        return style.display !== "none" && style.visibility !== "hidden" && element.getClientRects().length > 0;
+      });
+    return shell && !shell.classList.contains("is-auth-locked") && !visibleGate;
   }, null, { timeout: 5000 }).then(() => true).catch(() => false);
   if (!unlocked) {
     failures.push({

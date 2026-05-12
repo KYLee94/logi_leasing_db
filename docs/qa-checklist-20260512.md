@@ -23,14 +23,14 @@
 | 게이트 | 기준 | 현재 상태 | 남은 작업 |
 |---|---|---|---|
 | 콘솔 오류 | 0건 | parity smoke 0건 | live Pages 재검증 필요 |
-| HTTP 4xx/5xx | 0건 | 로컬 smoke 기준 0건 | live Pages 재검증 필요 |
+| HTTP 4xx/5xx | 0건 | 로컬 smoke 0건 / live Pages 0건 | 없음 |
 | `[object Object]` | 0건 | smoke 기준 0건 | full scroll scan 필요 |
 | `undefined` / `NaN` | 0건 | smoke 기준 0건 | full scroll scan 필요 |
 | 가로 overflow | 0건 | 미검증 | Playwright viewport별 검사 필요 |
 | 지도 | 기존 위치/목록/상세 동작 | 정적 marker panel | 기존 지도 SDK/fallback 수준 비교 필요 |
 | 차트 | 기존 차트와 축/값 일치 | CSS bar chart | Chart.js 동일성 또는 정적 chart 허용 여부 결정 필요 |
 | 비밀키 | 프론트 노출 0건 | publishable key만 사용 | secret scan 필요 |
-| Supabase source | `supabase_snapshot` 우선 | 코드 반영 | live URL readback 필요 |
+| Supabase source | `supabase_snapshot` 우선 | live Pages source gate 통과 | 없음 |
 
 ## 다음 QA 명령
 
@@ -38,4 +38,17 @@
 2. `node scripts/audit/build-component-parity-audit.cjs`
 3. `node scripts/qa/static-parity-smoke.cjs` - 2026-05-12T02-20-15-216Z 통과
 4. 공개 `docs/` secret scan
-5. GitHub Pages live QA
+5. `npm run qa:smoke:pages` - 2026-05-12T02-25-17-102Z 통과
+
+## Live QA 증거
+
+| 항목 | 값 |
+|---|---|
+| URL | `https://kylee94.github.io/logi_leasing_db/?page=user` |
+| 산출물 | `qa-artifacts/github-pages-static/2026-05-12T02-25-17-102Z` |
+| 탭 캡처 | 36 |
+| 스크린샷 | 428 |
+| 실패 | 0 |
+| 콘솔 오류 | 0 |
+| HTTP 문제 | 0 |
+| 요청 실패 | 0 |

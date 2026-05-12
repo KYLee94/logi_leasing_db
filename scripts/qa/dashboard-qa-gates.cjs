@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const REQUIRED_DATA_SOURCE_MODE = process.env.QA_REQUIRED_DATA_SOURCE_MODE || "supabase";
+const REQUIRED_DATA_SOURCE_MODE = process.env.QA_REQUIRED_DATA_SOURCE_MODE || "supabase_snapshot";
 const REQUIRED_PAYLOAD_SOURCE = process.env.QA_REQUIRED_PAYLOAD_SOURCE || "supabase_snapshot";
 const SOURCE_GATE_REQUIRED = !/^false$/i.test(process.env.QA_SOURCE_GATE_REQUIRED || "true");
 
