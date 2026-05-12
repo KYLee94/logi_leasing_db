@@ -1610,8 +1610,10 @@
     const action = String(detail?.row?.__action || "");
     const title = String(detail?.title || "");
     if (/map/i.test(action) || /map/i.test(scope) || /지도|좌표/.test(title)) return "map-modal";
-    if (/rent|chart|expiry/i.test(action) || /chart|rent/i.test(scope) || /추이|차트|만기/.test(title)) return "chart-modal";
+    if (/rent|chart|expiry|exposure/i.test(action) || /chart|rent|exposure/i.test(scope) || /추이|차트|만기|노출도/.test(title)) return "chart-modal";
     if (/kpi|snapshot|summary/i.test(action) || /kpi|summary/i.test(scope)) return "metric-modal";
+    if (/home_tenants|home-tenant|home-contract|asset-roster|asset-core-tenants|sector-tenants/i.test(scope)) return "tenant-panel";
+    if (/home-vacancy|company-assets|company-exposure|sector-assets/i.test(scope)) return "asset-panel";
     if (/tenant|company/i.test(scope) || /임차인|기업/.test(title)) return "tenant-panel";
     if (/asset|vacancy/i.test(scope) || /자산|공실/.test(title)) return "asset-panel";
     if (/근거/.test(title)) return "metric-modal";

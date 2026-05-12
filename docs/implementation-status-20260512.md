@@ -113,6 +113,7 @@ Confirmed remaining frontend parity gaps:
 | Home surface split | Local QA now verifies map/rent/KPI buttons plus tenant row, vacancy row, map marker surface types; artifact `qa-artifacts/parity-smoke/2026-05-12T04-12-40-667Z` |
 | Home data QA | Inserted 3 `ll_data_quality_findings` rows for `docs_home_default` snapshot vs current `ll_*` KPI differences |
 | Live Pages QA after Home row checks | Passed with failure 0; artifact `qa-artifacts/github-pages-static/2026-05-12T04-16-10-754Z` |
+| Asset/Company/Sector surface split | Local QA now verifies entity row/detail routing: Asset tenant row/map/expiry, Company asset row/map/exposure, Sector asset row/tenant row/expiry; artifact `qa-artifacts/parity-smoke/2026-05-12T04-20-12-570Z` |
 
 Newly confirmed remaining blockers:
 

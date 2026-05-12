@@ -40,7 +40,7 @@
 | `ll_sheet_rows` | 347 | live Sheets 5개 탭 row-level만 보존 |
 | `ll_source_cells` | 13,752 | xlsx cell-by-cell 보존 완료 |
 | `ll_payload_snapshots` | 107 | 전부 `supabase_snapshot`, `user_safe=true` |
-| `ll_data_quality_findings` | 44 | 품질 이슈 기록 있음 |
+| `ll_data_quality_findings` | 47 | 품질 이슈 기록 있음. Home snapshot 대 현재 `ll_*` 차이 3건 추가 기록 |
 
 ## 4. 원본 보존 상태
 
@@ -73,6 +73,9 @@
 | 버튼 selector | `data-action` 버튼에 `data-testid=action-*` 자동 추가 |
 | Home surface 분기 | `home-map-detail`은 `map-modal`, `home-rent-detail`은 `chart-modal`, `home-kpi-assets`는 `metric-modal`로 열리도록 분리 |
 | Home row/marker 분기 | 주요 임차인 표 행은 `tenant-panel`, 공실 표 행은 `asset-panel`, 지도 마커는 `map-modal`로 열리도록 QA에 고정 |
+| Asset surface 분기 | 임차인 현황 표 행은 `tenant-panel`, 자산 지도 버튼은 `map-modal`, 만기 버튼은 `chart-modal`로 열리도록 QA에 고정 |
+| Company surface 분기 | 임차 자산 표 행은 `asset-panel`, 지도 버튼은 `map-modal`, 노출도 버튼은 `chart-modal`로 열리도록 QA에 고정 |
+| Sector surface 분기 | 자산 랭킹 표 행은 `asset-panel`, 임차인 표 행은 `tenant-panel`, 만기 버튼은 `chart-modal`로 열리도록 QA에 고정 |
 | 데이터 변경 | 없음 |
 | 숫자/계산 변경 | 없음 |
 

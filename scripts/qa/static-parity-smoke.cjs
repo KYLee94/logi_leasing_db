@@ -124,6 +124,54 @@ async function main() {
           }
         }
       }
+      if (tab === "asset") {
+        const targets = [
+          ['[data-table-scope="asset-roster-table"] [data-detail-key]', "tenant-panel"],
+          ['[data-testid="action-asset-map-detail"]', "map-modal"],
+          ['[data-testid="action-asset-expiry-detail"]', "chart-modal"],
+        ];
+        for (const [selector, expected] of targets) {
+          const locator = panel.locator(selector).first();
+          if (await locator.count()) {
+            const result = await clickAndCloseDrawer(page, locator, 0);
+            surfaceChecks.push({ selector, expected, actual: result.surfaceKind || "", ok: result.surfaceKind === expected });
+          } else {
+            surfaceChecks.push({ selector, expected, actual: "", ok: false });
+          }
+        }
+      }
+      if (tab === "company") {
+        const targets = [
+          ['[data-table-scope="company-assets-table"] [data-detail-key]', "asset-panel"],
+          ['[data-testid="action-company-map-detail"]', "map-modal"],
+          ['[data-testid="action-company-exposure-detail"]', "chart-modal"],
+        ];
+        for (const [selector, expected] of targets) {
+          const locator = panel.locator(selector).first();
+          if (await locator.count()) {
+            const result = await clickAndCloseDrawer(page, locator, 0);
+            surfaceChecks.push({ selector, expected, actual: result.surfaceKind || "", ok: result.surfaceKind === expected });
+          } else {
+            surfaceChecks.push({ selector, expected, actual: "", ok: false });
+          }
+        }
+      }
+      if (tab === "sector") {
+        const targets = [
+          ['[data-table-scope="sector-assets-table"] [data-detail-key]', "asset-panel"],
+          ['[data-table-scope="sector-tenants-table"] [data-detail-key]', "tenant-panel"],
+          ['[data-testid="action-sector-expiry"]', "chart-modal"],
+        ];
+        for (const [selector, expected] of targets) {
+          const locator = panel.locator(selector).first();
+          if (await locator.count()) {
+            const result = await clickAndCloseDrawer(page, locator, 0);
+            surfaceChecks.push({ selector, expected, actual: result.surfaceKind || "", ok: result.surfaceKind === expected });
+          } else {
+            surfaceChecks.push({ selector, expected, actual: "", ok: false });
+          }
+        }
+      }
       const opened = [];
       for (let index = 0; index < Math.min(3, detailCount); index += 1) {
         try {
