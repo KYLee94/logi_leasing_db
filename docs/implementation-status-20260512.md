@@ -116,6 +116,7 @@ Confirmed remaining frontend parity gaps:
 | Asset/Company/Sector surface split | Local QA now verifies entity row/detail routing: Asset tenant row/map/expiry, Company asset row/map/exposure, Sector asset row/tenant row/expiry; artifact `qa-artifacts/parity-smoke/2026-05-12T04-20-12-570Z` |
 | Live Pages QA after entity routing | First run had only shell-ready delay; rerun passed with failure 0, console error 0, HTTP problem 0; artifact `qa-artifacts/github-pages-static/2026-05-12T04-27-34-041Z` |
 | Tools/Playground/Quality surface split | Local QA now verifies Tools apply/benchmark/asset/company details, Playground apply/chart/detail/results, and Quality refresh/critical/edit/result details; artifact `qa-artifacts/parity-smoke/2026-05-12T04-32-58-568Z` |
+| Live Pages QA after analysis/quality routing | Passed with failure 0, console error 0, HTTP problem 0; artifact `qa-artifacts/github-pages-static/2026-05-12T04-34-27-554Z` |
 
 Newly confirmed remaining blockers:
 
