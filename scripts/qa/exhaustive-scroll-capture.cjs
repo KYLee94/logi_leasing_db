@@ -167,9 +167,9 @@ async function waitForTabReady(frame, tab) {
       "admin-data": 450,
     }[target] || 500;
     if (text.length < minimumTextLength) return false;
-    if (target === "admin-data") return !!root.querySelector(".admin-data-workspace, .admin-data-api-note, #admin-data-table");
-    if (target === "admin") return !!root.querySelector(".admin-supabase-panel, [data-admin-action]");
-    return !!root.querySelector(".iota-workspace-layout, .state-shell");
+    if (target === "admin-data") return !!root.querySelector(".admin-data-workspace, .admin-data-api-note, #admin-data-table, .page-stack");
+    if (target === "admin") return !!root.querySelector(".admin-supabase-panel, [data-admin-action], .admin-password-gate, .page-stack");
+    return !!root.querySelector(".iota-workspace-layout, .state-shell, .page-stack, .section");
   }, tab, { timeout: tab === "admin" || tab === "admin-data" ? 120000 : 90000 });
   await frame.waitForTimeout(700);
 }
@@ -332,7 +332,7 @@ async function auditFrame(frame, role, tab) {
       legacyNodes,
       materialFontIssues,
       iconTokenTextInBody: iconTokens.filter((token) => bodyText.includes(token)),
-      iotaLayoutCount: root ? root.querySelectorAll(".iota-workspace-layout").length : 0,
+      iotaLayoutCount: document.querySelectorAll(".iota-workspace-layout, .workspace-layout").length,
       railCount: root ? root.querySelectorAll(".project-rail .rail-btn, .admin-data-rail .rail-btn, .advanced-rail .rail-btn").length : 0,
       sourceChip: root?.querySelector(".iota-source-chip")?.innerText?.trim() || "",
       payloadSource: readSource(payload),
@@ -400,12 +400,12 @@ async function captureSurface(page, frame, name, openFn) {
   try {
     await openFn();
     await frame.waitForFunction(() => {
-      const modal = document.querySelector('#modal-host[aria-hidden="false"] .surface-frame, #detail-panel-host[aria-hidden="false"] .surface-frame, .surface-layer.is-open .surface-frame');
+      const modal = document.querySelector('#modal-host[aria-hidden="false"] .surface-frame, #detail-panel-host[aria-hidden="false"] .surface-frame, .surface-layer.is-open .surface-frame, #drawer-backdrop:not([hidden]) .drawer');
       return !!modal;
     }, null, { timeout: 10000 });
     const info = await frame.evaluate(() => {
-      const surface = document.querySelector('#modal-host[aria-hidden="false"] .surface-frame, #detail-panel-host[aria-hidden="false"] .surface-frame, .surface-layer.is-open .surface-frame');
-      const body = surface?.querySelector(".surface-frame-body") || surface;
+      const surface = document.querySelector('#modal-host[aria-hidden="false"] .surface-frame, #detail-panel-host[aria-hidden="false"] .surface-frame, .surface-layer.is-open .surface-frame, #drawer-backdrop:not([hidden]) .drawer');
+      const body = surface?.querySelector(".surface-frame-body, #drawer-content") || surface;
       return {
         scrollHeight: body ? body.scrollHeight : 0,
         clientHeight: body ? body.clientHeight : 0,
@@ -413,12 +413,12 @@ async function captureSurface(page, frame, name, openFn) {
     });
     result.audit = await frame.evaluate((secretPatternSource) => {
       const secretRegex = new RegExp(secretPatternSource, "i");
-      const surface = document.querySelector('#modal-host[aria-hidden="false"] .surface-frame, #detail-panel-host[aria-hidden="false"] .surface-frame, .surface-layer.is-open .surface-frame');
-      const body = surface?.querySelector(".surface-frame-body") || surface;
+      const surface = document.querySelector('#modal-host[aria-hidden="false"] .surface-frame, #detail-panel-host[aria-hidden="false"] .surface-frame, .surface-layer.is-open .surface-frame, #drawer-backdrop:not([hidden]) .drawer');
+      const body = surface?.querySelector(".surface-frame-body, #drawer-content") || surface;
       const text = body?.innerText || "";
       const rect = body?.getBoundingClientRect?.() || { width: 0, height: 0 };
       return {
-        title: surface?.querySelector(".surface-title")?.textContent?.trim() || "",
+        title: surface?.querySelector(".surface-title, h2")?.textContent?.trim() || "",
         textLength: text.trim().length,
         hasLoadingPlaceholder: /화면을 준비하고 있습니다|기준 정보와 선택값을 먼저 맞춘 뒤|Loading/i.test(text),
         hasSecretText: secretRegex.test(text),
@@ -433,8 +433,8 @@ async function captureSurface(page, frame, name, openFn) {
     for (let index = 0; index < positions.length; index += 1) {
       const y = positions[index];
       await frame.evaluate((targetY) => {
-        const surface = document.querySelector('#modal-host[aria-hidden="false"] .surface-frame, #detail-panel-host[aria-hidden="false"] .surface-frame, .surface-layer.is-open .surface-frame');
-        const body = surface?.querySelector(".surface-frame-body") || surface;
+        const surface = document.querySelector('#modal-host[aria-hidden="false"] .surface-frame, #detail-panel-host[aria-hidden="false"] .surface-frame, .surface-layer.is-open .surface-frame, #drawer-backdrop:not([hidden]) .drawer');
+        const body = surface?.querySelector(".surface-frame-body, #drawer-content") || surface;
         if (body) body.scrollTop = targetY;
       }, y);
       await frame.waitForTimeout(160);
@@ -686,8 +686,8 @@ function buildFailures(results) {
     await browser.close();
   }
   let failures = buildFailures(results);
-  if (comparison.reference.status !== "ok") failures.push({ type: "reference-capture-failed", target: comparison.reference });
-  if (comparison.current.status !== "ok") failures.push({ type: "current-capture-failed", target: comparison.current });
+  if (comparison.reference.status !== "ok" && comparison.reference.status !== "skipped") failures.push({ type: "reference-capture-failed", target: comparison.reference });
+  if (comparison.current.status !== "ok" && comparison.current.status !== "skipped") failures.push({ type: "current-capture-failed", target: comparison.current });
   for (const target of [comparison.reference, comparison.current]) {
     (target.filteredConsoleErrors || []).forEach((text) => failures.push({ type: `${target.name}-console-error`, text }));
     (target.pageErrors || []).forEach((text) => failures.push({ type: `${target.name}-page-error`, text }));

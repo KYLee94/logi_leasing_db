@@ -10,6 +10,10 @@ const PROFILE_SOURCE = process.env.DASHBOARD_PROFILE_DIR
   : null;
 const HEADLESS = !/^false$/i.test(process.env.DASHBOARD_HEADLESS || "true");
 const BASE_URL = process.env.DASHBOARD_BASE_URL || DEFAULT_BASE_URL;
+const DASHBOARD_TARGET = process.env.DASHBOARD_TARGET || "apps-script";
+const EXPECTED_INITIAL_TAB =
+  process.env.QA_EXPECTED_INITIAL_TAB ||
+  (DASHBOARD_TARGET === "local-docs" ? "weekly" : "home");
 const RUN_STAMP = new Date().toISOString().replace(/[:.]/g, "-");
 const OUTPUT_DIR = path.resolve(
   process.env.QA_OUTPUT_DIR || path.join("qa-artifacts", "perf", RUN_STAMP)
@@ -251,7 +255,7 @@ async function gotoAndCheck(page, mode, results) {
       }
       await waitForDashboardReadyAny(page, ["admin", "home"]);
     } else {
-      await waitForDashboardReady(page, "home");
+      await waitForDashboardReady(page, EXPECTED_INITIAL_TAB);
     }
     entry.dashboard = await getDashboardSnapshot(page);
     entry.status =

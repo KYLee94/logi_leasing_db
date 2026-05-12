@@ -113,6 +113,25 @@ const TARGETS = {
       };
     },
   },
+  "exhaustive-scroll": {
+    script: path.resolve(__dirname, "exhaustive-scroll-capture.cjs"),
+    env(baseUrl) {
+      const userUrl = new URL(baseUrl);
+      userUrl.searchParams.set("page", "user");
+      const adminUrl = new URL(baseUrl);
+      adminUrl.searchParams.set("page", "admin");
+      return {
+        DASHBOARD_TARGET: "local-docs",
+        DASHBOARD_BASE_URL: baseUrl,
+        DASHBOARD_LOCAL_DOCS_URL: baseUrl,
+        USER_URL: userUrl.toString(),
+        ADMIN_URL: adminUrl.toString(),
+        CURRENT_URL: userUrl.toString(),
+        IOTA_CURRENT_URL: userUrl.toString(),
+        QA_CAPTURE_REFERENCE: process.env.QA_CAPTURE_REFERENCE || "false",
+      };
+    },
+  },
 };
 
 const MIME_TYPES = {

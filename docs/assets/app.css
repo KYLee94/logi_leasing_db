@@ -532,6 +532,21 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   margin-bottom: 10px;
   flex-wrap: wrap;
 }
+.dense-toolbar {
+  justify-content: flex-start;
+  align-items: center;
+}
+.action-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+.compact-action {
+  min-height: 30px;
+  padding: 0 9px;
+  font-size: 11px;
+}
 .search-strip {
   display: flex;
   justify-content: flex-end;

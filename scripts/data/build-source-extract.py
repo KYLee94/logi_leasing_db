@@ -321,7 +321,7 @@ def main() -> int:
         "sheet": sheet_extract.get("summary") if sheet_extract else None,
         "diff": diff["summary"],
         "diff_status": diff["status"],
-        "adoption_rule": "live_google_sheets_first; xlsx_only metadata/source is preserved in ll_source_*",
+        "adoption_rule": "xlsx_first; live_google_sheets differences are recorded as reconciliation findings",
         "required_source_fields": [
             "sheet_name",
             "row_number",
@@ -345,6 +345,25 @@ def main() -> int:
         out_dir / "source-diff.csv",
         diff["diffs"],
         ["diff_id", "a1_ref", "diff_type", "xlsx_value", "sheet_value", "xlsx_formula", "sheet_formula", "chosen_source"],
+    )
+    write_csv(
+        out_dir / "xlsx-cells.csv",
+        xlsx_extract["cells"],
+        [
+            "cell_id",
+            "sheet_name",
+            "row_number",
+            "column_index",
+            "column_letter",
+            "a1_ref",
+            "header_label",
+            "display_value",
+            "raw_value",
+            "formula",
+            "is_blank",
+            "value_type",
+            "source_hash",
+        ],
     )
     print(json.dumps(summary, ensure_ascii=False, indent=2))
     return 0

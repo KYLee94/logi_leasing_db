@@ -164,6 +164,15 @@
     getState: () => state,
     switchTab: (tab) => switchTab(tab),
     setThemePreference: (theme) => setTheme(theme),
+    closeSurface: () => closeDrawer(),
+    openSupport: () => openDrawer("지원/문의", `
+      <p class="page-note">현재 화면은 GitHub Pages 정적 프론트와 Supabase 스냅샷을 기준으로 동작합니다.</p>
+      ${keyValueGrid({
+        payloadSource: state.payloadSource || FALLBACK_PAYLOAD_SOURCE,
+        dataSourceMode: state.dataSourceMode || FALLBACK_DATA_SOURCE_MODE,
+        apiWrite: "서버 전용 API 연결 전",
+      })}
+    `),
   };
 
   document.addEventListener("DOMContentLoaded", init);
@@ -568,6 +577,26 @@
     return `
       <div class="page-stack weekly-report-page">
         ${kpiGrid(kpis)}
+        ${actionStrip([
+          actionButton("신규/관리 프로젝트 상세", { "data-weekly-issue-group": "projects" }, {
+            newProjects: report.newProjects || [],
+            managementProjects: report.managementProjects || [],
+          }, "Weekly 프로젝트 상세"),
+          actionButton("만기/이슈 점검", { "data-weekly-maturity-index": "asset-maturity", "data-action": "weekly-summary-assets" }, {
+            assetRows: assetRows.filter((row) => row.fundMaturity || row.loanMaturity || row.mainIssue),
+          }, "Weekly 만기/이슈 점검"),
+          actionButton("원본 메타", { "data-weekly-raw-id": report.reportTitle || "weekly" }, {
+            reportTitle: report.reportTitle,
+            reportDate: report.reportDate,
+            schemaVersion: report.schemaVersion,
+            source: report.source,
+            generatedAt: report.generatedAt,
+          }, "Weekly 원본 메타"),
+          actionButton("수정 요청", { "data-weekly-edit": "request" }, {
+            status: "권한 기반 편집 API 연결 전",
+            안내: "현재 공개 화면에서는 저장하지 않고, 서버 전용 API와 권한 확정 후 수정 기능을 연결합니다.",
+          }, "Weekly 수정 요청"),
+        ])}
         ${section("신규 투자 Projects", "Weekly", renderTable(projectHeaders, projectRows(report.newProjects || []), { compact: true }))}
         ${section("관리 Projects", "Weekly", renderTable(projectHeaders, projectRows(report.managementProjects || []), { compact: true }))}
         ${section("자산현황", "Weekly", `
@@ -603,6 +632,15 @@
       <div class="page-stack">
         ${kpiGrid(kpis, "home_kpi")}
         ${section("포트폴리오 스냅샷", "Home", `
+          ${actionStrip([
+            actionButton("지도 상세", { "data-home-map-detail": "1" }, { mapPoints }, "Home 지도 상세"),
+            actionButton("임대료 추이 상세", { "data-home-rent-detail": "1" }, { rentTrend }, "Home 임대료 추이 상세"),
+            actionButton("만기/공실 상세", { "data-home-expiry-detail": "1", "data-action": "home-expiry-detail" }, {
+              vacancySummary: home.vacancySummary || [],
+              contractSummary: home.contractSummary || {},
+              tenants: home.topTenants || home.tenantSummary || [],
+            }, "Home 만기/공실 상세"),
+          ])}
           <div class="split">
             ${infoCard("임대 현황", keyValueGrid({
               grossFloorAreaSqm: formatArea(occupancy.grossFloorAreaSqm),
@@ -613,7 +651,17 @@
             ${infoCard("계약 요약", keyValueGrid(home.contractSummary || {}))}
           </div>
         `)}
-        ${section("주요 임차인", "Home", renderSearchableInteractiveTable("home_tenants", home.topTenants || home.tenantSummary || [], ["tenantMasterName", "assetCount", "leasedAreaSqm", "monthlyCostTotal", "latestExpiry", "averageENoc"], 12, { placeholder: "임차인 검색" }))}
+        ${section("주요 임차인", "Home", `
+          <div class="toolbar dense-toolbar">
+            <span class="chip">정렬</span>
+            <div class="segmented" aria-label="주요 임차인 정렬">
+              ${sortButton("home_tenants", "leasedAreaSqm", "임대면적", { "data-home-tenant-sort": "leasedAreaSqm" })}
+              ${sortButton("home_tenants", "monthlyCostTotal", "월 임관리비", { "data-home-tenant-sort": "monthlyCostTotal" })}
+              ${sortButton("home_tenants", "latestExpiry", "최근 만기", { "data-home-tenant-sort": "latestExpiry" })}
+            </div>
+          </div>
+          ${renderSearchableInteractiveTable("home_tenants", home.topTenants || home.tenantSummary || [], ["tenantMasterName", "assetCount", "leasedAreaSqm", "monthlyCostTotal", "latestExpiry", "averageENoc"], 12, { placeholder: "임차인 검색" })}
+        `)}
         ${section("공실 현황", "Home", renderInteractiveTable("home_vacancy", home.vacancySummary || [], ["assetName", "grossFloorAreaSqm", "vacancyAreaSqm", "vacancyRate"], 12))}
         ${section("임대료 추이", "Home", `
           ${renderBarChart("home_rent_trend_chart", rentTrend, "month", "monthlyCostTotalAdjusted", { title: "월 임관리비 추이" })}
@@ -634,6 +682,11 @@
       <div class="page-stack">
         ${section(title, "Asset", `
           ${kpiGrid(normalizeKpis(asset.kpis), "asset_kpi")}
+          ${actionStrip([
+            actionButton("층별/구역 상세", { "data-asset-stacking-detail": "1", "data-action": "asset-panel", "data-asset": overview.assetId || title }, { stackingPlan: asset.stackingPlan || [], rows: asset.rows || [] }, "Asset 층별/구역 상세"),
+            actionButton("E.NOC 상세", { "data-asset-enoc-detail": "1" }, { topTenants: asset.topTenants || [], rows: asset.rows || [] }, "Asset E.NOC 상세"),
+            actionButton("만기 상세", { "data-asset-expiry-detail": "1" }, { rows: (asset.rows || []).filter((row) => row.currentEndDate || row.latestExpiry) }, "Asset 만기 상세"),
+          ])}
           ${keyValueGrid(overview)}
         `)}
         ${section("임대차 현황", "Asset", renderSearchableInteractiveTable("asset_leases", asset.rows || [], ["tenantMasterName", "floorLabel", "detailAreaLabel", "leasedAreaSqm", "monthlyRentTotal", "monthlyMfTotal", "currentMonthlyCostTotal", "currentStartDate", "currentEndDate"], 80, { placeholder: "임차인, 층, 구역 검색" }))}
@@ -654,6 +707,19 @@
       <div class="page-stack">
         ${section(title, "Company", `
           ${kpiGrid(normalizeKpis(company.kpis), "company_kpi")}
+          <div class="toolbar dense-toolbar">
+            <span class="chip">노출 기준</span>
+            <div class="segmented" aria-label="기업 노출 기준">
+              ${actionButton("면적", { "data-company-exposure-mode": "area" }, { mode: "면적", leasedAssets: company.leasedAssets || [] }, "기업 노출 기준")}
+              ${actionButton("금액", { "data-company-exposure-mode": "amount" }, { mode: "금액", leasedAssets: company.leasedAssets || [] }, "기업 노출 기준")}
+              ${actionButton("만기", { "data-company-exposure-mode": "expiry" }, { mode: "만기", rows: company.rows || [] }, "기업 노출 기준")}
+            </div>
+          </div>
+          ${actionStrip([
+            actionButton("임차 자산 지도", { "data-company-map-detail": "1" }, { mapPoints: company.mapPoints || [] }, "Company 지도 상세"),
+            actionButton("계약 상세", { "data-company-contract-detail": "1" }, { rows: company.rows || [] }, "Company 계약 상세"),
+            actionButton("DART/재무 요청", { "data-company-dart-detail": "1" }, { financials: company.financials || {}, status: "서버 전용 API 연결 필요" }, "Company DART/재무 정보"),
+          ])}
           ${keyValueGrid(profile)}
         `)}
         ${section("임차 자산", "Company", `
@@ -672,6 +738,11 @@
     return `
       <div class="page-stack">
         ${kpiGrid(objectToKpis(sector.kpis || {}), "sector_kpi")}
+        ${actionStrip([
+          actionButton("자산 랭킹", { "data-sector-asset": "ranking" }, { rankings: sector.rankings || {}, regionExposure: sector.regionExposure || [] }, "Sector 자산 랭킹"),
+          actionButton("임차인 만기", { "data-sector-tenant": "expiry" }, { expiryRows: sector.expiryRows || [] }, "Sector 임차인 만기"),
+          actionButton("만기 구간", { "data-sector-expiry": "bucket" }, { expiryBuckets: sector.expiryBuckets || [] }, "Sector 만기 구간"),
+        ])}
         ${section("지역별 노출", "Sector", `
           ${renderBarChart("sector_region_chart", sector.regionExposure || [], "region", "monthlyCostTotal", { title: "지역별 월 임관리비" })}
           ${renderInteractiveTable("sector_region", sector.regionExposure || [], ["region", "assetCount", "grossFloorAreaSqm", "leasedAreaSqm", "vacancyRate", "monthlyCostTotal"], 20)}
@@ -691,7 +762,23 @@
     return `
       <div class="page-stack">
         ${kpiGrid(objectToKpis(Object.assign({}, tools.deltas || {}, tools.divergence || {})), "tools_kpi")}
-        ${section("선택 조건", "Analysis Tools", keyValueGrid(tools.selectionMeta || {}))}
+        ${section("선택 조건", "Analysis Tools", `
+          <div class="toolbar dense-toolbar">
+            <select id="tools-asset-select" class="select" aria-label="비교 자산 선택">
+              ${state.options.assets.slice(0, 80).map((asset) => `<option value="${escapeAttr(asset.assetId)}">${escapeHtml(asset.assetName || asset.assetId)}</option>`).join("")}
+            </select>
+            <select id="tools-company-select" class="select" aria-label="비교 기업 선택">
+              ${state.options.companies.slice(0, 80).map((company) => `<option value="${escapeAttr(company.tenantId)}">${escapeHtml(company.tenantMasterName || company.tenantId)}</option>`).join("")}
+            </select>
+            ${actionButton("적용", { id: "tools-apply-button" }, { selectionMeta: tools.selectionMeta || {}, assets: tools.assets || [], companies: tools.companies || [] }, "Analysis Tools 적용")}
+            ${actionButton("기본값", { id: "tools-default-button" }, { defaults: state.bootstrap?.defaults || {}, selectionMeta: tools.selectionMeta || {} }, "Analysis Tools 기본값")}
+          </div>
+          ${actionStrip([
+            ...((tools.assets || []).slice(0, 6).map((row) => actionButton(row.assetName || "자산", { "data-tools-asset": row.assetId || row.assetName || "" }, row, `${row.assetName || "자산"} 상세`))),
+            ...((tools.companies || []).slice(0, 6).map((row) => actionButton(row.tenantMasterName || "기업", { "data-tools-company": row.tenantId || row.tenantMasterName || "" }, row, `${row.tenantMasterName || "기업"} 상세`))),
+          ])}
+          ${keyValueGrid(tools.selectionMeta || {})}
+        `)}
         ${section("자산 비교", "Analysis Tools", renderSearchableInteractiveTable("tools_assets", tools.assets || [], ["assetName", "tenantMasterName", "leasedAreaSqm", "monthlyCostTotal", "vacancyRate"], 30, { placeholder: "자산/임차인 검색" }))}
         ${section("기업 비교", "Analysis Tools", renderSearchableInteractiveTable("tools_companies", tools.companies || [], ["tenantMasterName", "assetName", "leasedAreaSqm", "monthlyCostTotal", "eNoc"], 30, { placeholder: "기업/자산 검색" }))}
         ${section("계약 원장", "Analysis Tools", renderSearchableInteractiveTable("tools_contracts", tools.contracts || [], ["tenantMasterName", "assetName", "leasedAreaSqm", "monthlyRentTotal", "monthlyMfTotal", "monthlyCostTotal", "currentEndDate"], 80, { placeholder: "계약 원장 검색" }))}
@@ -708,6 +795,19 @@
       <div class="page-stack">
         ${kpiGrid(normalizeKpis(playground.summaryCards), "playground_kpi")}
         ${section("질의 조건", "Data Playground", `
+          <div class="toolbar dense-toolbar">
+            <select id="playground-dimension" class="select" aria-label="행 기준">
+              ${playgroundOptions(playground, "rowDimension").map((value) => `<option value="${escapeAttr(value)}">${escapeHtml(labelize(value))}</option>`).join("")}
+            </select>
+            <select id="playground-column" class="select" aria-label="열 기준">
+              ${playgroundOptions(playground, "columnDimension").map((value) => `<option value="${escapeAttr(value)}">${escapeHtml(labelize(value))}</option>`).join("")}
+            </select>
+            <select id="playground-filter-dimension" class="select" aria-label="필터 기준">
+              ${playgroundOptions(playground, "filterDimension").map((value) => `<option value="${escapeAttr(value)}">${escapeHtml(labelize(value))}</option>`).join("")}
+            </select>
+            <input id="playground-filter-value" class="input" type="search" placeholder="필터 값">
+            ${actionButton("집계 적용", { id: "playground-apply-button", "data-playground-apply": "1" }, { query: playground.query || {}, rows: playground.rows || [], sourceRows: playground.sourceRows || [] }, "Data Playground 집계 적용")}
+          </div>
           <div class="split">
             ${infoCard("현재 질의", keyValueGrid(playground.query || {}))}
             ${infoCard("저장된 보기", renderInteractiveTable("playground_saved_views", playground.savedViews || [], ["label", "rowDimension", "columnDimension", "valueMetric", "topN"], 10))}
@@ -726,7 +826,12 @@
     return `
       <div class="page-stack">
         ${kpiGrid(payload.kpis, "quality_kpi")}
-        ${section("스냅샷 파일", "Data Quality", renderInteractiveTable("quality_files", payload.files, ["name", "type", "rows", "status"], 80))}
+        ${actionStrip([
+          actionButton("새로고침 점검", { "data-quality-refresh": "1" }, { loadedTabs: payload.loadedTabs || [], files: payload.files || [] }, "Data Quality 새로고침 점검"),
+          actionButton("중요 이슈", { "data-quality-critical": "1" }, { files: (payload.files || []).filter((row) => row.status !== "ready"), loadedTabs: payload.loadedTabs || [] }, "Data Quality 중요 이슈"),
+          actionButton("수정 대기", { "data-quality-edit-queue": "1" }, { status: "권한 기반 수정 API 연결 전", loadedTabs: payload.loadedTabs || [] }, "Data Quality 수정 대기"),
+        ])}
+        ${section("스냅샷 파일", "Data Quality", renderQualityInteractiveTable("quality_files", payload.files, ["name", "type", "rows", "status"]))}
         ${section("불러온 Payload", "Data Quality", renderInteractiveTable("quality_loaded", payload.loadedTabs, ["tab", "status", "rows", "source"], 20))}
         ${section("검증 규칙", "Data Quality", renderTable(["항목", "상태"], [
           ["화면 서버 호출", "사용 안 함"],
@@ -888,6 +993,27 @@
     `;
   }
 
+  function actionStrip(buttons) {
+    const html = (buttons || []).filter(Boolean).join("");
+    if (!html) return "";
+    return `<div class="action-strip">${html}</div>`;
+  }
+
+  function actionButton(label, attrs, detail, title) {
+    const detailKey = registerDetail("action", detail || {}, title || `${label} 상세`);
+    const attrHtml = Object.entries(attrs || {})
+      .map(([key, value]) => `${key}="${escapeAttr(value)}"`)
+      .join(" ");
+    return `<button class="action-btn compact-action" type="button" ${attrHtml} data-detail-key="${escapeAttr(detailKey)}">${escapeHtml(label)}</button>`;
+  }
+
+  function sortButton(scope, key, label, attrs) {
+    const attrHtml = Object.entries(attrs || {})
+      .map(([attr, value]) => `${attr}="${escapeAttr(value)}"`)
+      .join(" ");
+    return `<button class="segment-btn" type="button" data-sort-table="${escapeAttr(scope)}" data-sort-key="${escapeAttr(key)}" ${attrHtml}>${escapeHtml(label)}</button>`;
+  }
+
   function renderSearchableInteractiveTable(scope, rows, preferredKeys, limit, options) {
     const placeholder = options?.placeholder || "검색";
     const allRows = Array.isArray(rows) ? rows : [];
@@ -939,6 +1065,20 @@
       return renderInteractiveTable(scope, rows, ["항목", "값"], 80);
     }
     return keyValueGrid({ value });
+  }
+
+  function playgroundOptions(playground, key) {
+    const values = [];
+    const add = (value) => {
+      const text = String(value || "").trim();
+      if (text && !values.includes(text)) values.push(text);
+    };
+    add(playground?.query?.[key]);
+    (playground?.savedViews || []).forEach((view) => add(view?.[key]));
+    (playground?.rows || []).slice(0, 12).forEach((row) => Object.keys(row || {}).forEach(add));
+    (playground?.sourceRows || []).slice(0, 12).forEach((row) => Object.keys(row || {}).forEach(add));
+    ["assetName", "tenantMasterName", "sector", "goodsType", "monthlyCostTotal", "leasedAreaSqm"].forEach(add);
+    return values.slice(0, 24);
   }
 
   function renderBarChart(scope, rows, labelKey, valueKey, options) {
@@ -1119,6 +1259,38 @@
     panel.querySelectorAll("[data-search-scope]").forEach((input) => {
       input.addEventListener("input", () => filterTableRows(input.dataset.searchScope, input.value));
     });
+    panel.querySelectorAll("[data-sort-table]").forEach((button) => {
+      button.addEventListener("click", () => sortTableRows(button.dataset.sortTable, button.dataset.sortKey));
+    });
+  }
+
+  function renderQualityInteractiveTable(scope, rows, preferredKeys) {
+    const list = Array.isArray(rows) ? rows : [];
+    if (!list.length) return renderEmpty("표시할 행이 없습니다.");
+    const keys = preferredKeys && preferredKeys.length ? preferredKeys : inferKeys(list);
+    return `
+      <div class="table-wrap compact-table" data-table-scope="${escapeAttr(scope)}">
+        <table>
+          <thead>
+            <tr>
+              ${keys.map((header) => `<th>${escapeHtml(labelize(header))}</th>`).join("")}
+              <th class="action-col">상세</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${list.map((row, index) => {
+              const detailKey = registerDetail(scope, row, buildDetailTitle(row, scope));
+              return `
+                <tr tabindex="0" data-quality-index="${escapeAttr(index + 1)}" data-detail-key="${escapeAttr(detailKey)}">
+                  ${keys.map((key) => `<td>${formatCellHtml(row?.[key])}</td>`).join("")}
+                  <td class="action-col"><button class="row-action" type="button" data-quality-index="${escapeAttr(index + 1)}" data-detail-key="${escapeAttr(detailKey)}">보기</button></td>
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>
+    `;
   }
 
   function bindWeeklyLegacyRows(panel) {
@@ -1159,6 +1331,26 @@
       const text = row.textContent.toLowerCase();
       row.hidden = normalized && !text.includes(normalized);
     });
+  }
+
+  function sortTableRows(scope, key) {
+    const table = Array.from(document.querySelectorAll("[data-table-scope]")).find((node) => node.dataset.tableScope === scope);
+    if (!table || !key) return;
+    const headerLabel = labelize(key);
+    const headers = Array.from(table.querySelectorAll("thead th")).map((th) => th.textContent.trim());
+    const columnIndex = headers.findIndex((header) => header === headerLabel || header === key);
+    if (columnIndex < 0) return;
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody?.querySelectorAll("tr") || []);
+    rows.sort((a, b) => compareCellText(b.children[columnIndex]?.textContent || "", a.children[columnIndex]?.textContent || ""));
+    rows.forEach((row) => tbody.appendChild(row));
+  }
+
+  function compareCellText(left, right) {
+    const leftNumber = Number(String(left).replace(/[^0-9.\-]/g, ""));
+    const rightNumber = Number(String(right).replace(/[^0-9.\-]/g, ""));
+    if (Number.isFinite(leftNumber) && Number.isFinite(rightNumber)) return leftNumber - rightNumber;
+    return String(left).localeCompare(String(right), "ko-KR");
   }
 
   function buildCacheKey(tab) {
