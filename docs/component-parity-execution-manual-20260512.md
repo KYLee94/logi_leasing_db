@@ -72,6 +72,7 @@
 | 표 selector | `renderInteractiveTable`, `renderTable`에 `id`, `data-table-scope`, `data-testid` 추가 |
 | 버튼 selector | `data-action` 버튼에 `data-testid=action-*` 자동 추가 |
 | Home surface 분기 | `home-map-detail`은 `map-modal`, `home-rent-detail`은 `chart-modal`, `home-kpi-assets`는 `metric-modal`로 열리도록 분리 |
+| Home row/marker 분기 | 주요 임차인 표 행은 `tenant-panel`, 공실 표 행은 `asset-panel`, 지도 마커는 `map-modal`로 열리도록 QA에 고정 |
 | 데이터 변경 | 없음 |
 | 숫자/계산 변경 | 없음 |
 

@@ -104,3 +104,15 @@ Google Drive metadata 기준 live 원본은 17개 시트입니다.
 3. xlsx와 live Sheets를 `sheet_name + row_number + column_number` 기준으로 비교합니다.
 4. null 6건을 원본 셀까지 역추적해 `ll_data_quality_findings`에 원인과 수정 후보를 남깁니다.
 5. 그 이후에만 `ll_*` 스키마 cleanup/restructure 후보를 확정합니다.
+
+## 9. Home snapshot vs `ll_*` 품질 이슈 기록
+
+2026-05-12 KST에 `docs_home_default` snapshot과 현재 `ll_*` 집계가 다른 Home KPI 3건을 `ll_data_quality_findings`에 기록했습니다. 기존 non-`ll_*` 테이블은 수정하지 않았습니다.
+
+| finding | snapshot 값 | `ll_*` readback 값 | 상태 |
+|---|---:|---:|---|
+| `leased_area_total` | 1,340,655.46 | 1,350,959.71 | `review_required` |
+| `monthly_rent_total` | 10,613,355,289 | 9,625,568,269 | `review_required` |
+| `monthly_total_cost` | 11,134,228,842 | 10,070,115,024 | `review_required` |
+
+Readback: `ll_data_quality_findings` 총 47건, `home_snapshot_vs_ll_20260512` 감사 run 3건.

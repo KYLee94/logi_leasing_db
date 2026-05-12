@@ -1499,7 +1499,7 @@
     const latSpan = Math.max(maxLat - minLat, 0.01);
     const lngSpan = Math.max(maxLng - minLng, 0.01);
     return `
-      <div class="map-panel" role="group" aria-label="자산 위치 지도">
+      <div id="${escapeAttr(scope)}" class="map-panel" role="group" aria-label="자산 위치 지도" data-map-scope="${escapeAttr(scope)}" data-testid="map-${escapeAttr(scope)}">
         <div class="map-grid"></div>
         ${list.map((point, index) => {
           const left = clamp(((Number(point.longitude) - minLng) / lngSpan) * 86 + 7, 5, 93);

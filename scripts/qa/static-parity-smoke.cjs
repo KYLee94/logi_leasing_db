@@ -110,6 +110,9 @@ async function main() {
           ['[data-testid="action-home-map-detail"]', "map-modal"],
           ['[data-testid="action-home-rent-detail"]', "chart-modal"],
           ['[data-testid="action-home-kpi-assets"]', "metric-modal"],
+          ['[data-table-scope="home_tenants"] [data-detail-key]', "tenant-panel"],
+          ['[data-table-scope="home-vacancy-table"] [data-detail-key]', "asset-panel"],
+          ['[data-map-scope="home-map-detail"] .map-marker', "map-modal"],
         ];
         for (const [selector, expected] of targets) {
           const locator = panel.locator(selector).first();
