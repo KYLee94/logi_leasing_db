@@ -172,6 +172,57 @@ async function main() {
           }
         }
       }
+      if (tab === "tools") {
+        const targets = [
+          ['#tools-apply-button', "metric-modal"],
+          ['[data-testid="action-tools-benchmark-detail"]', "chart-modal"],
+          ['[data-table-scope="tools-selected-assets-table"] [data-detail-key]', "asset-panel"],
+          ['[data-table-scope="tools-selected-companies-table"] [data-detail-key]', "tenant-panel"],
+        ];
+        for (const [selector, expected] of targets) {
+          const locator = panel.locator(selector).first();
+          if (await locator.count()) {
+            const result = await clickAndCloseDrawer(page, locator, 0);
+            surfaceChecks.push({ selector, expected, actual: result.surfaceKind || "", ok: result.surfaceKind === expected });
+          } else {
+            surfaceChecks.push({ selector, expected, actual: "", ok: false });
+          }
+        }
+      }
+      if (tab === "playground") {
+        const targets = [
+          ['#playground-apply-button', "chart-modal"],
+          ['[data-testid="action-playground-chart-detail"]', "chart-modal"],
+          ['[data-testid="action-playground-detail"]', "chart-modal"],
+          ['[data-table-scope="playground-results-table"] [data-detail-key]', "chart-modal"],
+        ];
+        for (const [selector, expected] of targets) {
+          const locator = panel.locator(selector).first();
+          if (await locator.count()) {
+            const result = await clickAndCloseDrawer(page, locator, 0);
+            surfaceChecks.push({ selector, expected, actual: result.surfaceKind || "", ok: result.surfaceKind === expected });
+          } else {
+            surfaceChecks.push({ selector, expected, actual: "", ok: false });
+          }
+        }
+      }
+      if (tab === "quality") {
+        const targets = [
+          ['[data-testid="action-quality-refresh"]', "quality-panel"],
+          ['[data-testid="action-quality-critical"]', "quality-panel"],
+          ['[data-testid="action-quality-edit-queue"]', "quality-panel"],
+          ['[data-table-scope="quality-all-results"] [data-detail-key]', "quality-panel"],
+        ];
+        for (const [selector, expected] of targets) {
+          const locator = panel.locator(selector).first();
+          if (await locator.count()) {
+            const result = await clickAndCloseDrawer(page, locator, 0);
+            surfaceChecks.push({ selector, expected, actual: result.surfaceKind || "", ok: result.surfaceKind === expected });
+          } else {
+            surfaceChecks.push({ selector, expected, actual: "", ok: false });
+          }
+        }
+      }
       const opened = [];
       for (let index = 0; index < Math.min(3, detailCount); index += 1) {
         try {

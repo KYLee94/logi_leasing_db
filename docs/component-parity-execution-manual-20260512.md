@@ -76,6 +76,9 @@
 | Asset surface 분기 | 임차인 현황 표 행은 `tenant-panel`, 자산 지도 버튼은 `map-modal`, 만기 버튼은 `chart-modal`로 열리도록 QA에 고정 |
 | Company surface 분기 | 임차 자산 표 행은 `asset-panel`, 지도 버튼은 `map-modal`, 노출도 버튼은 `chart-modal`로 열리도록 QA에 고정 |
 | Sector surface 분기 | 자산 랭킹 표 행은 `asset-panel`, 임차인 표 행은 `tenant-panel`, 만기 버튼은 `chart-modal`로 열리도록 QA에 고정 |
+| Analysis Tools surface 분기 | 적용 버튼은 `metric-modal`, 벤치마크 버튼은 `chart-modal`, 자산 표 행은 `asset-panel`, 기업 표 행은 `tenant-panel`로 열리도록 QA에 고정 |
+| Data Playground surface 분기 | 집계 적용/차트 원본/원본 표/결과 행은 `chart-modal`로 열리도록 QA에 고정 |
+| Data Quality surface 분기 | 새로고침/중요 이슈/수정 대기/검증 결과 행은 `quality-panel`로 열리도록 QA에 고정 |
 | 데이터 변경 | 없음 |
 | 숫자/계산 변경 | 없음 |
 

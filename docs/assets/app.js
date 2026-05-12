@@ -892,9 +892,9 @@
       <div class="page-stack">
         ${kpiGrid(payload.kpis, "quality_kpi")}
         ${actionStrip([
-          actionButton("새로고침 점검", { "data-quality-refresh": "1" }, { loadedTabs: payload.loadedTabs || [], files: payload.files || [] }, "Data Quality 새로고침 점검"),
-          actionButton("중요 이슈", { "data-quality-critical": "1" }, { files: (payload.files || []).filter((row) => row.status !== "ready"), loadedTabs: payload.loadedTabs || [] }, "Data Quality 중요 이슈"),
-          actionButton("수정 대기", { "data-quality-edit-queue": "1" }, { status: "권한 기반 수정 API 연결 전", loadedTabs: payload.loadedTabs || [] }, "Data Quality 수정 대기"),
+          actionButton("새로고침 점검", { "data-quality-refresh": "1", "data-action": "quality-refresh" }, { loadedTabs: payload.loadedTabs || [], files: payload.files || [] }, "Data Quality 새로고침 점검"),
+          actionButton("중요 이슈", { "data-quality-critical": "1", "data-action": "quality-critical" }, { files: (payload.files || []).filter((row) => row.status !== "ready"), loadedTabs: payload.loadedTabs || [] }, "Data Quality 중요 이슈"),
+          actionButton("수정 대기", { "data-quality-edit-queue": "1", "data-action": "quality-edit-queue" }, { status: "권한 기반 수정 API 연결 전", loadedTabs: payload.loadedTabs || [] }, "Data Quality 수정 대기"),
         ])}
         ${section("스냅샷 파일", "Data Quality", renderQualityInteractiveTable("quality_files", payload.files, ["name", "type", "rows", "status"]))}
         ${section("불러온 Payload", "Data Quality", renderInteractiveTable("quality_loaded", payload.loadedTabs, ["tab", "status", "rows", "source"], 20))}
@@ -1610,10 +1610,11 @@
     const action = String(detail?.row?.__action || "");
     const title = String(detail?.title || "");
     if (/map/i.test(action) || /map/i.test(scope) || /지도|좌표/.test(title)) return "map-modal";
-    if (/rent|chart|expiry|exposure/i.test(action) || /chart|rent|exposure/i.test(scope) || /추이|차트|만기|노출도/.test(title)) return "chart-modal";
+    if (/rent|chart|expiry|exposure|benchmark|playground/i.test(action) || /chart|rent|exposure|benchmark|playground/i.test(scope) || /추이|차트|만기|노출도|벤치마크|데이터 분석|집계/.test(title)) return "chart-modal";
     if (/kpi|snapshot|summary/i.test(action) || /kpi|summary/i.test(scope)) return "metric-modal";
-    if (/home_tenants|home-tenant|home-contract|asset-roster|asset-core-tenants|sector-tenants/i.test(scope)) return "tenant-panel";
+    if (/home_tenants|home-tenant|home-contract|asset-roster|asset-core-tenants|sector-tenants|tools-selected-companies/i.test(scope)) return "tenant-panel";
     if (/home-vacancy|company-assets|company-exposure|sector-assets/i.test(scope)) return "asset-panel";
+    if (/quality|edit-queue|critical|warning|info/i.test(action) || /quality|edit-queue|critical|warning|info/i.test(scope) || /품질|오류|수정|점검|Warning|Critical|Info/.test(title)) return "quality-panel";
     if (/tenant|company/i.test(scope) || /임차인|기업/.test(title)) return "tenant-panel";
     if (/asset|vacancy/i.test(scope) || /자산|공실/.test(title)) return "asset-panel";
     if (/근거/.test(title)) return "metric-modal";
@@ -1625,6 +1626,7 @@
     if (kind === "map-modal") return renderMapSurfaceBody(row);
     if (kind === "chart-modal") return renderChartSurfaceBody(detail);
     if (kind === "metric-modal") return renderMetricSurfaceBody(detail);
+    if (kind === "quality-panel") return renderMetricSurfaceBody(detail);
     return renderDetailBody(row);
   }
 
@@ -1725,7 +1727,7 @@
         assetName: selectedAssetName(),
         tenantMasterName: selectedCompanyName(),
         status: "선택 조건을 화면 상태에 반영했습니다.",
-      }));
+      }), "metric-modal");
     });
     panel.querySelector("#tools-default-button")?.addEventListener("click", (event) => {
       event.preventDefault();
@@ -1782,7 +1784,7 @@
       ${keyValueGrid(query)}
       ${renderBarChart("playground-detail-chart", rows, "dimension", "value", { title: "집계 결과", limit: 20 })}
       ${renderInteractiveTable("playground-detail", rows, ["dimension", "value", "recordCount"], 100)}
-    `);
+    `, "chart-modal");
   }
 
   function aggregatePlaygroundRows(sourceRows, query) {
