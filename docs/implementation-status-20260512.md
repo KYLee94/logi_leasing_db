@@ -118,6 +118,7 @@ Confirmed remaining frontend parity gaps:
 | Tools/Playground/Quality surface split | Local QA now verifies Tools apply/benchmark/asset/company details, Playground apply/chart/detail/results, and Quality refresh/critical/edit/result details; artifact `qa-artifacts/parity-smoke/2026-05-12T04-32-58-568Z` |
 | Live Pages QA after analysis/quality routing | Passed with failure 0, console error 0, HTTP problem 0; artifact `qa-artifacts/github-pages-static/2026-05-12T04-34-27-554Z` |
 | Admin/Admin Data surface split | Local QA now verifies admin server-only drawers for calculation/OpenDART/building/snapshot/perf actions and metric drawers for Admin/Admin Data rows; artifact `qa-artifacts/parity-smoke/2026-05-12T04-40-04-585Z` |
+| Live Pages QA after admin routing | Passed with failure 0, console error 0, HTTP problem 0; artifact `qa-artifacts/github-pages-static/2026-05-12T04-41-39-658Z` |
 
 Newly confirmed remaining blockers:
 
