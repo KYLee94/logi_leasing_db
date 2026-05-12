@@ -112,6 +112,7 @@ Confirmed remaining frontend parity gaps:
 | Execution manual | Added `docs/component-parity-execution-manual-20260512.md` as the current 1:1 restoration control document |
 | Home surface split | Local QA now verifies map/rent/KPI buttons plus tenant row, vacancy row, map marker surface types; artifact `qa-artifacts/parity-smoke/2026-05-12T04-12-40-667Z` |
 | Home data QA | Inserted 3 `ll_data_quality_findings` rows for `docs_home_default` snapshot vs current `ll_*` KPI differences |
+| Live Pages QA after Home row checks | Passed with failure 0; artifact `qa-artifacts/github-pages-static/2026-05-12T04-16-10-754Z` |
 
 Newly confirmed remaining blockers:
 
