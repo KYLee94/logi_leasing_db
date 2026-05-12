@@ -2,7 +2,7 @@ type JsonRecord = Record<string, unknown>;
 
 function corsHeaders(request: Request): Record<string, string> {
   const origin = request.headers.get("origin") || "";
-  const allowed = (Deno.env.get("LL_ALLOWED_ORIGINS") || "https://kylee94.github.io")
+  const allowed = (Deno.env.get("LL_ALLOWED_ORIGINS") || "https://kylee94.github.io,http://127.0.0.1:4173,http://localhost:4173")
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
@@ -151,6 +151,31 @@ async function refreshSnapshot(): Promise<JsonRecord> {
   };
 }
 
+function requireLlTableName(value: unknown): string {
+  const table = String(value || "").trim();
+  if (!/^ll_[a-z0-9_]+$/.test(table)) throw new Error("table_not_allowed");
+  return table;
+}
+
+function buildPendingWriteResponse(kind: string, body: JsonRecord): JsonRecord {
+  const table = body.table ? requireLlTableName(body.table) : "";
+  return {
+    ok: false,
+    status: "schema_pending",
+    kind,
+    table: table || null,
+    message: "Write route is reserved for ll_* only. It will persist after the edit/audit schema is finalized.",
+  };
+}
+
+function clearServerCache(): JsonRecord {
+  return {
+    ok: true,
+    status: "accepted",
+    message: "No mutable edge cache is configured. Browser/session cache is cleared from the frontend only.",
+  };
+}
+
 Deno.serve(async (request) => {
   if (request.method === "OPTIONS") return new Response("ok", { headers: corsHeaders(request) });
   const url = new URL(request.url);
@@ -176,6 +201,18 @@ Deno.serve(async (request) => {
     }
     if (url.pathname.endsWith("/snapshot-refresh")) {
       return json(request, 202, { ok: true, admin, result: await refreshSnapshot() });
+    }
+    if (url.pathname.endsWith("/cache-clear")) {
+      return json(request, 202, { ok: true, admin, result: clearServerCache() });
+    }
+    if (url.pathname.endsWith("/edits/submit")) {
+      return json(request, 202, { ok: true, admin, result: buildPendingWriteResponse("edits.submit", body) });
+    }
+    if (url.pathname.endsWith("/edits/approve")) {
+      return json(request, 202, { ok: true, admin, result: buildPendingWriteResponse("edits.approve", body) });
+    }
+    if (url.pathname.endsWith("/worklogs")) {
+      return json(request, 202, { ok: true, admin, result: buildPendingWriteResponse("worklogs", body) });
     }
     return json(request, 404, { ok: false, error: "not_found" });
   } catch (error) {

@@ -249,6 +249,19 @@ p { color: var(--muted-2); line-height: 1.55; }
   justify-content: flex-end;
 }
 
+.role-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .workspace-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 168px;

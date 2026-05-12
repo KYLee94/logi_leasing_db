@@ -44,7 +44,9 @@
     detailAreaLabel: "세부 구역",
     eNoc: "E.NOC",
     exclusiveAreaSqm: "전용면적(㎡)",
+    exposureAvailable: "노출도 산출 가능",
     expiryMonth: "만기월",
+    expiryWithin12Months: "12개월 내 만기",
     floor: "층",
     floorLabel: "층",
     fundCode: "펀드 코드",
@@ -120,14 +122,28 @@
     filterDimension: "필터 기준",
     grossFloorAreaEffectiveAt: "연면적 기준일",
     hasFinancialData: "재무 데이터 보유",
+    headquartersAddress: "본점 주소",
+    latestDebtRatio: "최근 부채비율",
+    latestRevenue: "최근 매출",
     loadedTabs: "불러온 탭",
+    monthlyRentMax: "월 임대료 최대",
+    monthlyRentMin: "월 임대료 최소",
     previousValue: "이전 값",
+    regionCount: "권역 수",
     rowDimension: "행 기준",
     rows: "행 수",
     savedViews: "저장된 보기",
     selectorSortMeta: "선택 목록 정렬 기준",
+    sectorCount: "섹터 수",
+    goodsTypeCount: "화물 유형 수",
     topN: "상위 N개",
     type: "유형",
+    "Snapshot files": "스냅샷 파일",
+    "Asset files": "자산 파일",
+    "Company files": "기업 파일",
+    "Loaded tabs": "불러온 탭",
+    vacancyMax: "최대 공실률",
+    vacancyMin: "최소 공실률",
   };
 
   const state = {
@@ -179,20 +195,17 @@
 
   async function init() {
     const params = new URLSearchParams(window.location.search);
-    state.role = params.get("page") === "admin" ? "admin" : "user";
+    state.role = sessionStorage.getItem("ll.static.admin.preview") === "1" ? "admin" : "user";
     setTheme(localStorage.getItem("ll.static.theme") || "dark");
     bindShellActions();
 
-    if (state.role !== "admin") {
-      removeAdminDom();
-      showShell();
-    } else {
-      showAdminGate();
-      return;
-    }
+    if (state.role === "admin") ensureAdminDom();
+    else removeAdminDom();
+    showShell();
 
     await prepareOptions();
     await switchTab("weekly");
+    if (params.get("page") === "admin" && state.role !== "admin") showAdminGate({ keepShell: true });
   }
 
   function bindShellActions() {
@@ -223,6 +236,14 @@
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") closeDrawer();
     });
+    document.getElementById("admin-login-button")?.addEventListener("click", () => showAdminGate({ keepShell: true }));
+    document.getElementById("admin-logout-button")?.addEventListener("click", async () => {
+      sessionStorage.removeItem("ll.static.admin.preview");
+      state.role = "user";
+      removeAdminDom();
+      syncAuthUi();
+      await switchTab("weekly");
+    });
   }
 
   function bindNavActions() {
@@ -234,30 +255,37 @@
   }
 
   function removeAdminDom() {
-    document.getElementById("admin-auth-root")?.remove();
+    const gate = document.getElementById("admin-auth-root");
+    if (gate) gate.hidden = true;
     document.querySelectorAll(".nav-admin").forEach((node) => node.remove());
     document.getElementById("admin-view")?.remove();
     document.getElementById("admin-data-view")?.remove();
   }
 
-  function showAdminGate() {
+  function showAdminGate(options) {
+    const keepShell = !!(options && options.keepShell);
     const shell = document.getElementById("app-shell");
     const gate = document.getElementById("admin-auth-root");
-    if (shell) shell.hidden = true;
+    if (shell && !keepShell) shell.hidden = true;
     if (gate) gate.hidden = false;
-    document.getElementById("admin-auth-form")?.addEventListener("submit", async (event) => {
+    const form = document.getElementById("admin-auth-form");
+    if (form && form.dataset.bound !== "true") form.addEventListener("submit", async (event) => {
       event.preventDefault();
       const input = document.getElementById("admin-auth-password");
       if (!String(input?.value || "").trim()) return;
       sessionStorage.setItem("ll.static.admin.preview", "1");
       await unlockAdminPreview();
     });
+    if (form) form.dataset.bound = "true";
   }
 
   async function unlockAdminPreview() {
-    document.getElementById("admin-auth-root")?.remove();
+    const gate = document.getElementById("admin-auth-root");
+    if (gate) gate.hidden = true;
+    state.role = "admin";
     ensureAdminDom();
     showShell();
+    syncAuthUi();
     await prepareOptions();
     await switchTab("weekly");
   }
@@ -279,6 +307,7 @@
       `);
     }
     bindNavActions();
+    syncAuthUi();
   }
 
   function showShell() {
@@ -289,6 +318,16 @@
     const generatedLabel = document.getElementById("generated-label");
     if (generatedLabel) generatedLabel.textContent = state.dataSourceMode || FALLBACK_DATA_SOURCE_MODE;
     buildRailTabs();
+    syncAuthUi();
+  }
+
+  function syncAuthUi() {
+    const isAdmin = state.role === "admin";
+    setText("role-label", isAdmin ? "관리자 미리보기" : "조회 권한");
+    const login = document.getElementById("admin-login-button");
+    const logout = document.getElementById("admin-logout-button");
+    if (login) login.hidden = isAdmin;
+    if (logout) logout.hidden = !isAdmin;
   }
 
   async function prepareOptions() {
@@ -578,6 +617,21 @@
       <div class="page-stack weekly-report-page">
         ${kpiGrid(kpis)}
         ${actionStrip([
+          actionButton("총 자산 수 상세", { "data-action": "weekly-summary-assets" }, {
+            assetRows,
+          }, "총 자산 수 상세"),
+          actionButton("총 연면적 상세", { "data-action": "weekly-summary-area" }, {
+            assetRows: assetRows.slice().sort((a, b) => (Number(b.grossAreaPy) || 0) - (Number(a.grossAreaPy) || 0)),
+          }, "총 연면적 상세"),
+          actionButton("6개월 내 만기 상세", { "data-action": "weekly-summary-6" }, {
+            assetRows: assetRows.filter((row) => row.fundMaturity || row.loanMaturity),
+          }, "6개월 내 만기 상세"),
+          actionButton("만기 캘린더 전체 상세", { "data-action": "weekly-maturity-all" }, {
+            assetRows: assetRows.filter((row) => row.fundMaturity || row.loanMaturity),
+          }, "만기 캘린더 전체 상세"),
+          actionButton("Risk 자산", { "data-action": "weekly-summary-risk" }, {
+            assetRows: assetRows.filter((row) => /risk|exit|이슈|검토/i.test(`${row.mainIssue || ""} ${row.status || ""}`)),
+          }, "Risk 자산"),
           actionButton("신규/관리 프로젝트 상세", { "data-weekly-issue-group": "projects" }, {
             newProjects: report.newProjects || [],
             managementProjects: report.managementProjects || [],
@@ -595,7 +649,7 @@
           actionButton("수정 요청", { "data-weekly-edit": "request" }, {
             status: "권한 기반 편집 API 연결 전",
             안내: "현재 공개 화면에서는 저장하지 않고, 서버 전용 API와 권한 확정 후 수정 기능을 연결합니다.",
-          }, "Weekly 수정 요청"),
+          }, "주간 업무 리포트 수정"),
         ])}
         ${section("신규 투자 Projects", "Weekly", renderTable(projectHeaders, projectRows(report.newProjects || []), { compact: true }))}
         ${section("관리 Projects", "Weekly", renderTable(projectHeaders, projectRows(report.managementProjects || []), { compact: true }))}
@@ -607,10 +661,15 @@
             </div>
             <span class="chip">${formatNumber(assetRows.length)}건</span>
           </div>
-          ${renderTable(full ? fullHeaders : coreHeaders, assetTableRows, { compact: true })}
+          ${renderTable(full ? fullHeaders : coreHeaders, assetTableRows, { compact: true, scope: "weekly-assets-table" })}
         `)}
         ${section("기준 및 기타사항", "Weekly", `
           ${renderTable(["구분", "내용"], (report.notes || []).map((note) => [note.title, note.body]), { compact: true })}
+          ${renderInteractiveTable("weekly-summary-assets", assetRows, ["assetName", "fundName", "assetType", "grossAreaPy", "occupancyRate", "mainIssue"], 20)}
+          ${renderInteractiveTable("weekly-summary-area", assetRows.slice().sort((a, b) => (Number(b.grossAreaPy) || 0) - (Number(a.grossAreaPy) || 0)), ["assetName", "fundName", "assetType", "grossAreaPy", "occupancyRate"], 20)}
+          ${renderInteractiveTable("weekly-maturity-detail-table", assetRows.filter((row) => row.fundMaturity || row.loanMaturity), ["assetName", "fundMaturity", "loanMaturity", "mainTenant", "mainIssue"], 20)}
+          ${renderInteractiveTable("weekly-maturity-all-table", assetRows.filter((row) => row.fundMaturity || row.loanMaturity), ["assetName", "fundMaturity", "loanMaturity", "mainTenant", "mainIssue"], 20)}
+          ${renderInteractiveTable("weekly-issue-detail-table", assetRows.filter((row) => row.mainIssue), ["assetName", "fundName", "mainTenant", "mainIssue"], 20)}
           ${keyValueGrid({
             reportTitle: report.reportTitle,
             reportDate: report.reportDate,
@@ -671,6 +730,7 @@
           ${renderMapPanel(mapPoints, "home_map")}
           ${renderInteractiveTable("home_map_points", mapPoints, ["assetName", "address", "latitude", "longitude", "issueCount"], 20)}
         `)}
+        ${renderHomeParitySections(home)}
       </div>
     `;
   }
@@ -696,6 +756,7 @@
         `)}
         ${section("층별 배치", "Asset", renderInteractiveTable("asset_stacking", asset.stackingPlan || [], null, 80))}
         ${section("면적 구성", "Asset", keyValueGrid(asset.areaBreakdown || {}))}
+        ${renderAssetParitySections(asset)}
       </div>
     `;
   }
@@ -711,7 +772,7 @@
             <span class="chip">노출 기준</span>
             <div class="segmented" aria-label="기업 노출 기준">
               ${actionButton("면적", { "data-company-exposure-mode": "area" }, { mode: "면적", leasedAssets: company.leasedAssets || [] }, "기업 노출 기준")}
-              ${actionButton("금액", { "data-company-exposure-mode": "amount" }, { mode: "금액", leasedAssets: company.leasedAssets || [] }, "기업 노출 기준")}
+              ${actionButton("금액", { "data-company-exposure-mode": "amount", "data-action": "cost" }, { mode: "금액", leasedAssets: company.leasedAssets || [] }, "기업 노출 기준")}
               ${actionButton("만기", { "data-company-exposure-mode": "expiry" }, { mode: "만기", rows: company.rows || [] }, "기업 노출 기준")}
             </div>
           </div>
@@ -729,6 +790,7 @@
         ${section("계약 행", "Company", renderInteractiveTable("company_rows", company.rows || [], ["assetName", "floorLabel", "detailAreaLabel", "leasedAreaSqm", "monthlyRentTotal", "monthlyMfTotal", "currentMonthlyCostTotal", "currentStartDate", "currentEndDate"], 80))}
         ${section("DART/재무 정보", "Company", renderRecordOrTable("company_financials", company.financials || {}))}
         ${section("운영 정보", "Company", keyValueGrid(company.operations || {}))}
+        ${renderCompanyParitySections(company)}
       </div>
     `;
   }
@@ -754,6 +816,7 @@
           ${renderBarChart("sector_rent_trend", monthlyRentTrend, "month", "monthlyCostTotal", { title: "월 임관리비 추이" })}
           ${keyValueGrid(sector.trends || {})}
         `)}
+        ${renderSectorParitySections(sector)}
       </div>
     `;
   }
@@ -786,6 +849,7 @@
           ${renderBarChart("tools_benchmark_chart", tools.benchmarkRows || [], "assetName", "leasedAreaSqm", { title: "비교 자산 임대면적" })}
           ${renderInteractiveTable("tools_benchmark", tools.benchmarkRows || [], null, 20)}
         `)}
+        ${renderToolsParitySections(tools)}
       </div>
     `;
   }
@@ -818,6 +882,7 @@
           ${renderInteractiveTable("playground_rows", playground.rows || [], null, 80)}
         `)}
         ${section("원본 행", "Data Playground", renderSearchableInteractiveTable("playground_source_rows", playground.sourceRows || [], ["tenantMasterName", "assetName", "leasedAreaSqm", "monthlyCostTotal", "sector", "goodsType"], 80, { placeholder: "임차인/자산/섹터 검색" }))}
+        ${renderPlaygroundParitySections(playground)}
       </div>
     `;
   }
@@ -839,6 +904,7 @@
           ["민감 키 노출", "없음"],
           ["데이터 원본", state.payloadSource || FALLBACK_PAYLOAD_SOURCE],
         ]))}
+        ${renderQualityParitySections(payload)}
       </div>
     `;
   }
@@ -854,6 +920,7 @@
         `)}
         ${section("Runtime", "Admin", keyValueGrid(payload.runtime))}
         ${section("사용 가능한 데이터", "Admin", renderInteractiveTable("admin_files", payload.files, ["name", "rows", "status"], 80))}
+        ${renderAdminParitySections(payload)}
       </div>
     `;
   }
@@ -869,6 +936,302 @@
         `)}
         ${section("Cache", "Admin", renderInteractiveTable("admin_data_cache", payload.cache, ["key", "status"], 80))}
       </div>
+    `;
+  }
+
+  function renderHomeParitySections(home) {
+    const occupancy = home.occupancy || {};
+    const rentTrend = home.rentTrend || [];
+    const contractSummary = home.contractSummary || {};
+    const expirySeries = contractSummary.monthlyExpirySeries || contractSummary.monthlyVacancy || [];
+    const topTenants = home.topTenants || home.tenantSummary || [];
+    const topContracts = home.topContracts || topTenants;
+    const vacancyRows = home.vacancySummary || [];
+    const mapPoints = home.mapPoints || [];
+    const reviewRows = vacancyRows
+      .filter((row) => Number(row.vacancyRate) > 0 || Number(row.issueCount) > 0)
+      .map((row) => ({
+        자산명: row.assetName,
+        공실면적: formatArea(row.vacancyAreaSqm),
+        공실률: formatPercent(row.vacancyRate),
+        검토사항: row.issueCount ? `${formatNumber(row.issueCount)}건` : "공실 확인",
+      }));
+    return `
+      ${section("포트폴리오 위치", "Home", `
+        ${actionStrip([
+          actionButton("좌표 보유 자산 목록", { "data-action": "home-map-list" }, { mapPoints }, "좌표 보유 자산 목록"),
+          actionButton("지도 상세", { "data-action": "home-map-detail" }, { mapPoints }, "포트폴리오 지도 상세"),
+        ])}
+        ${renderMapPanel(mapPoints, "home-map-detail")}
+      `)}
+      ${section("관리자 검토 포인트", "Home", renderInteractiveTable("home-review-table", reviewRows, ["자산명", "공실면적", "공실률", "검토사항"], 20))}
+      ${section("포트폴리오 스냅샷", "Home", `
+        ${actionStrip([
+          actionButton("운영 자산 목록", { "data-action": "home-kpi-assets" }, { rows: mapPoints }, "운영 자산 목록"),
+          actionButton("총 임대면적 근거", { "data-action": "home-kpi-leased" }, { rows: vacancyRows, occupancy }, "총 임대면적 근거"),
+          actionButton("총 공실면적 근거", { "data-action": "home-kpi-vacancy-area" }, { rows: vacancyRows, occupancy }, "총 공실면적 근거"),
+          actionButton("공실률 계산 근거", { "data-action": "home-kpi-vacancy-rate" }, occupancy, "공실률 계산 근거"),
+          actionButton("월 임관리비 총액 근거", { "data-action": "home-kpi-total-cost" }, { rows: topContracts }, "월 임관리비 총액 근거"),
+          actionButton("운영 자산 수 근거", { "data-action": "home-snapshot-assets" }, { rows: mapPoints }, "운영 자산 수 근거"),
+          actionButton("현재 공실률 근거", { "data-action": "home-snapshot-vacancy" }, occupancy, "현재 공실률 근거"),
+          actionButton("표시 임차인 수 근거", { "data-action": "home-snapshot-tenants" }, { rows: topTenants }, "표시 임차인 수 근거"),
+          actionButton("좌표 보유 자산 근거", { "data-action": "home-snapshot-mapped" }, { rows: mapPoints }, "좌표 보유 자산 근거"),
+        ])}
+        ${keyValueGrid({
+          "운영 자산 수": mapPoints.length,
+          "총 임대면적": formatArea(occupancy.leasedAreaSqm),
+          "총 공실면적": formatArea(occupancy.vacancyAreaSqm),
+          "공실률": formatPercent(occupancy.vacancyRate),
+        })}
+      `)}
+      ${section("임대료 추이", "Home", `
+        ${actionStrip([
+          actionButton("임대료 추이 원본 표", { "data-action": "home-rent-detail" }, { rows: rentTrend }, "임대료 추이 원본 표"),
+        ])}
+        ${renderBarChart("home-rent-chart", rentTrend.slice(-18), "month", "monthlyCostTotalAdjusted", { title: "월 임관리비 추이" })}
+        ${renderInteractiveTable("home-rent-detail", rentTrend.slice(-18), ["month", "monthlyRentTotalAdjusted", "monthlyMfTotalAdjusted", "monthlyCostTotalAdjusted", "activeAssetCount", "grossFloorAreaSqm"], 18)}
+      `)}
+      ${section("공실 요약", "Home", renderInteractiveTable("home-vacancy-table", vacancyRows, ["assetName", "grossFloorAreaSqm", "vacancyAreaSqm", "vacancyRate"], 20))}
+      ${section("만기 집중도", "Home", `
+        ${actionStrip([
+          actionButton("만기 집중도 상세", { "data-action": "home-expiry-detail" }, { rows: contractSummary.upcoming || expirySeries }, "만기 집중도 상세"),
+        ])}
+        ${renderBarChart("home-expiry-chart", expirySeries, "month", "contractCount", { title: "월별 만기 계약" })}
+        ${renderInteractiveTable("home-expiry-table", contractSummary.upcoming || expirySeries, null, 40)}
+      `)}
+      ${section("상위 임차인", "Home", renderInteractiveTable("home-tenant-table", topTenants, ["tenantMasterName", "assetCount", "leasedAreaSqm", "monthlyCostTotal", "latestExpiry", "averageENoc"], 20))}
+      ${section("주요 임차인 계약 요약", "Home", renderInteractiveTable("home-contract-table", topContracts, ["tenantMasterName", "assetName", "leasedAreaSqm", "monthlyRentTotal", "monthlyMfTotal", "monthlyCombinedTotal", "latestExpiry"], 20))}
+    `;
+  }
+
+  function renderAssetParitySections(asset) {
+    const overview = asset.overview || {};
+    const rows = asset.rows || [];
+    const topTenants = asset.topTenants || [];
+    const expiryRows = rows.filter((row) => row.currentEndDate || row.latestExpiry);
+    const reviewRows = rows.filter((row) => /review|검토|오류|risk|만기/i.test(`${row.reviewStatus || ""} ${row.reviewNote || ""} ${row.mainIssue || ""}`));
+    return `
+      ${section("자산 핵심 요약", "Asset", keyValueGrid(overview))}
+      ${section("임차인 현황", "Asset", `
+        ${actionStrip([
+          actionButton("임차인 현황", { "data-action": "asset-roster-detail" }, { rows }, "임차인 현황"),
+          actionButton("자산 위치 정보", { "data-action": "asset-map-detail" }, overview, "자산 위치 정보"),
+          actionButton("E.NOC 검산 결과", { "data-action": "asset-enoc-detail" }, { rows, topTenants }, "E.NOC 검산 결과"),
+        ])}
+        ${renderInteractiveTable("asset-roster-table", rows, ["tenantMasterName", "spaceLabel", "leasedAreaSqm", "currentMonthlyRentTotal", "currentMonthlyMfTotal", "currentMonthlyCostTotal", "currentStartDate", "currentEndDate"], 80)}
+      `)}
+      ${section("임차인별 월 임관리비", "Asset", `
+        ${renderBarChart("asset-rent-chart", topTenants, "tenantMasterName", "monthlyCostTotal", { title: "임차인별 월 임관리비" })}
+        ${renderInteractiveTable("asset-rent-table", topTenants, ["tenantMasterName", "leaseSpaceCount", "leasedAreaSqm", "monthlyRentTotal", "monthlyMfTotal", "monthlyCostTotal"], 30)}
+      `)}
+      ${section("검토 필요 이슈", "Asset", renderInteractiveTable("asset-review-table", reviewRows, null, 30))}
+      ${section("만기 스냅샷", "Asset", `
+        ${actionStrip([
+          actionButton("만기 스냅샷", { "data-action": "asset-expiry-detail" }, { rows: expiryRows }, "만기 스냅샷"),
+        ])}
+        ${renderBarChart("asset-expiry-chart", expiryRows, "tenantMasterName", "monthsToExpiry", { title: "임차인별 잔여 개월" })}
+        ${renderInteractiveTable("asset-expiry-table", expiryRows, ["tenantMasterName", "spaceLabel", "currentEndDate", "monthsToExpiry", "monthlyCostTotal"], 40)}
+      `)}
+      ${section("핵심 임차인", "Asset", renderInteractiveTable("asset-core-tenants-table", topTenants, ["tenantMasterName", "leasedAreaSqm", "monthlyCostTotal", "latestExpiry", "averageENoc"], 20))}
+    `;
+  }
+
+  function renderCompanyParitySections(company) {
+    const leasedAssets = company.leasedAssets || [];
+    const rows = company.rows || [];
+    const mapPoints = company.mapPoints || [];
+    const exposureRows = leasedAssets.map((row) => ({
+      assetName: row.assetName,
+      leasedAreaSqm: row.leasedAreaSqm,
+      monthlyCostTotal: row.monthlyCostTotal,
+      latestExpiry: row.latestExpiry,
+      monthsToExpiry: row.monthsToExpiry,
+    }));
+    const exposureMode = state.selections.companyExposureMetric || "amount";
+    const exposureValueKey = exposureMode === "area" ? "leasedAreaSqm" : exposureMode === "expiry" ? "monthsToExpiry" : "monthlyCostTotal";
+    const exposureTitle = exposureMode === "area" ? "자산별 임차면적" : exposureMode === "expiry" ? "자산별 잔여 개월" : "자산별 월 임관리비";
+    return `
+      ${section("임차 자산 현황", "Company", renderInteractiveTable("company-assets-table", leasedAssets, ["assetName", "leasedAreaSqm", "monthlyCostTotal", "latestExpiry", "sector", "goodsType"], 60))}
+      ${section("회사별 임차 자산 지도", "Company", `
+        ${actionStrip([
+          actionButton("임차 자산 수", { "data-action": "company-map-detail" }, { mapPoints }, "임차 자산 수"),
+        ])}
+        ${renderMapPanel(mapPoints, "company-map-detail")}
+      `)}
+      ${section("자산별 노출도", "Company", `
+        ${actionStrip([
+          actionButton("자산별 노출도", { "data-action": "company-exposure-detail" }, { rows: exposureRows }, "자산별 노출도"),
+        ])}
+        ${renderBarChart("company-exposure-chart", exposureRows, "assetName", exposureValueKey, { title: exposureTitle })}
+        ${renderInteractiveTable("company-exposure-table", exposureRows, ["assetName", "leasedAreaSqm", "monthlyCostTotal", "latestExpiry"], 40)}
+      `)}
+      ${section("DART 상세 정보", "Company", `
+        ${actionStrip([
+          actionButton("DART/재무 요청", { "data-action": "company-dart-detail" }, { financials: company.financials || {}, rows }, "DART 상세 정보"),
+        ])}
+        ${renderRecordOrTable("company-dart-table", company.financials || {})}
+      `)}
+    `;
+  }
+
+  function renderSectorParitySections(sector) {
+    const regionRows = sector.regionExposure || [];
+    const expiryRows = sector.expiryRows || [];
+    const monthlyRentTrend = getByPath(sector, ["trends", "monthlyRent"]) || [];
+    const assetRankRows = getByPath(sector, ["rankings", "assets"]) || getByPath(sector, ["rankings", "topAssets"]) || regionRows;
+    const tenantRankRows = getByPath(sector, ["rankings", "tenants"]) || getByPath(sector, ["rankings", "topTenants"]) || expiryRows;
+    return `
+      ${section("권역·자산·임차인 리스크 비교", "Sector", keyValueGrid(sector.kpis || {}))}
+      ${section("권역별 노출도", "Sector", `
+        ${actionStrip([
+          actionButton("권역별 노출도 원본 표", { "data-action": "sector-region-detail" }, { rows: regionRows }, "권역별 노출도 원본 표"),
+        ])}
+        ${renderBarChart("sector-region-chart", regionRows, "region", "monthlyCostTotal", { title: "권역별 월 임관리비" })}
+        ${renderInteractiveTable("sector-region-detail", regionRows, ["region", "assetCount", "leasedAreaSqm", "monthlyCostTotal", "vacancyRate"], 30)}
+      `)}
+      ${section("월 임관리비 추이", "Sector", `
+        ${actionStrip([
+          actionButton("월 임관리비 추이 원본 표", { "data-action": "sector-rent-detail" }, { rows: monthlyRentTrend }, "월 임관리비 추이 원본 표"),
+        ])}
+        ${renderBarChart("sector-rent-chart", monthlyRentTrend, "month", "monthlyCostTotal", { title: "월 임관리비 추이" })}
+      `)}
+      ${section("자산 랭킹", "Sector", renderInteractiveTable("sector-assets-table", assetRankRows, null, 30))}
+      ${section("임차인 랭킹", "Sector", renderInteractiveTable("sector-tenants-table", tenantRankRows, null, 30))}
+      ${section("Top 자산", "Sector", renderInteractiveTable("sector-top-assets-table", assetRankRows, null, 12))}
+      ${section("Top 임차인", "Sector", renderInteractiveTable("sector-top-tenants-table", tenantRankRows, null, 12))}
+      ${section("만기 집중도", "Sector", `
+        ${actionStrip([
+          actionButton("12개월 내 만기 상세", { "data-action": "sector-expiry" }, { rows: expiryRows.filter((row) => Number(row.monthsToExpiry) <= 12) }, "12개월 내 만기 상세"),
+        ])}
+        ${renderInteractiveTable("sector-expiry-detail", expiryRows, ["expiryMonth", "tenantMasterName", "assetName", "leasedAreaSqm", "monthlyCostTotal", "monthsToExpiry"], 60)}
+      `)}
+    `;
+  }
+
+  function renderToolsParitySections(tools) {
+    const assets = tools.assets || [];
+    const companies = tools.companies || [];
+    const contracts = tools.contracts || [];
+    const benchmarkRows = tools.benchmarkRows || [];
+    return `
+      ${section("자산·기업 비교 분석", "Analysis Tools", keyValueGrid(tools.selectionMeta || {}))}
+      ${section("자산·기업 비교 도구", "Analysis Tools", keyValueGrid(tools.selectionMeta || {}))}
+      ${section("비교 대상 선택", "Analysis Tools", `
+        ${renderInteractiveTable("tools-selected-assets-table", assets, ["assetName", "leasedAreaSqm", "monthlyCostTotal", "vacancyRate"], 20)}
+        ${renderInteractiveTable("tools-selected-companies-table", companies, ["tenantMasterName", "assetName", "leasedAreaSqm", "monthlyCostTotal"], 20)}
+      `)}
+      ${section("벤치마크 차트", "Analysis Tools", `
+        ${actionStrip([
+          actionButton("벤치마크 원본 표", { "data-action": "tools-benchmark-detail" }, { rows: benchmarkRows }, "벤치마크 원본 표"),
+          actionButton("비교 벤치마크 원본 표", { "data-action": "tools-benchmark-source" }, { rows: benchmarkRows }, "비교 벤치마크 원본 표"),
+          actionButton("비교 벤치마크", { "data-action": "tools-benchmark" }, { rows: benchmarkRows }, "비교 벤치마크"),
+        ])}
+        ${renderBarChart("tools-benchmark-chart", benchmarkRows, "assetName", "monthlyCostTotal", { title: "벤치마크" })}
+      `)}
+      ${section("비교 매트릭스", "Analysis Tools", renderInteractiveTable("tools-matrix-table", benchmarkRows, null, 40))}
+      ${section("계약 원장", "Analysis Tools", renderInteractiveTable("tools-ledger-table", contracts, ["tenantMasterName", "assetName", "leasedAreaSqm", "monthlyRentTotal", "monthlyMfTotal", "monthlyCostTotal", "currentEndDate"], 100))}
+      ${section("선택 요약", "Analysis Tools", keyValueGrid(tools.selectionMeta || {}))}
+      ${section("주요 비교 신호", "Analysis Tools", keyValueGrid(Object.assign({}, tools.deltas || {}, tools.divergence || {})))}
+      ${section("비교 인벤토리", "Analysis Tools", renderTable(["구분", "건수"], [["자산", assets.length], ["기업", companies.length], ["계약", contracts.length], ["벤치마크", benchmarkRows.length]], { compact: true }))}
+      ${section("검토 항목", "Analysis Tools", renderInteractiveTable("tools-review-table", tools.reviewItems || tools.alerts || [], null, 30))}
+      ${section("사용 안내", "Analysis Tools", renderTable(["항목", "내용"], [["비교 대상", "자산과 기업을 선택해 계약/임대료/면적을 비교합니다."], ["상세", "표 행과 차트 막대를 클릭하면 원본 상세가 열립니다."]], { compact: true }))}
+      ${section("읽는 순서", "Analysis Tools", renderTable(["순서", "내용"], [["1", "비교 대상 선택"], ["2", "벤치마크 차트"], ["3", "비교 매트릭스"], ["4", "계약 원장"]], { compact: true }))}
+      ${section("선택 팁", "Analysis Tools", renderTable(["항목", "내용"], [["자산", "같은 권역/용도 자산을 함께 선택합니다."], ["기업", "동일 임차인 또는 유사 업종을 함께 봅니다."]], { compact: true }))}
+    `;
+  }
+
+  function renderPlaygroundParitySections(playground) {
+    const rows = playground.rows || [];
+    const sourceRows = playground.sourceRows || [];
+    const savedViews = playground.savedViews || [];
+    return `
+      ${section("데이터 분석", "Data Playground", kpiGrid(normalizeKpis(playground.summaryCards), "playground-analysis-kpi"))}
+      ${section("분석 목적", "Data Playground", renderTable(["항목", "내용"], [["목적", "원본 계약 데이터를 기준별로 빠르게 집계합니다."], ["상세", "결과 행을 클릭하면 원본 값이 열립니다."]], { compact: true }))}
+      ${section("조회 조건", "Data Playground", keyValueGrid(playground.query || {}))}
+      ${section("현재 조회", "Data Playground", keyValueGrid(playground.query || {}))}
+      ${section("현재 조회 조건", "Data Playground", keyValueGrid(playground.query || {}))}
+      ${section("결과 차트", "Data Playground", `
+        ${actionStrip([
+          actionButton("데이터 분석 차트 원본", { "data-action": "playground-chart-detail" }, { rows }, "데이터 분석 차트 원본"),
+          actionButton("데이터 분석 원본 표", { "data-action": "playground-detail" }, { rows: sourceRows.length ? sourceRows : rows }, "데이터 분석 원본 표"),
+        ])}
+        ${renderBarChart("playground-chart", rows, "dimension", "value", { title: "데이터 분석 결과" })}
+      `)}
+      ${section("결과 표", "Data Playground", renderInteractiveTable("playground-results-table", rows, null, 100))}
+      ${section("저장된 분석 View", "Data Playground", renderInteractiveTable("playground-saved-view-table", savedViews, ["label", "rowDimension", "columnDimension", "valueMetric", "topN"], 30))}
+      ${section("저장된 분석 뷰", "Data Playground", renderInteractiveTable("playground-saved-view-table-ko", savedViews, ["label", "rowDimension", "columnDimension", "valueMetric", "topN"], 30))}
+      ${section("상위 결과", "Data Playground", renderInteractiveTable("playground-top-results-table", rows.slice(0, 20), null, 20))}
+      ${section("지표 목록", "Data Playground", renderTable(["지표", "설명"], [
+        ["leasedAreaSqm", "임대면적"],
+        ["monthlyCostTotal", "월 임관리비"],
+        ["monthlyRentTotal", "월 임대료"],
+        ["vacancyRate", "공실률"],
+      ], { compact: true }))}
+      ${section("집계 지표 목록", "Data Playground", renderTable(["지표", "설명"], [
+        ["leasedAreaSqm", "임대면적"],
+        ["monthlyCostTotal", "월 임관리비"],
+        ["monthlyRentTotal", "월 임대료"],
+        ["vacancyRate", "공실률"],
+      ], { compact: true }))}
+      ${section("분석 기준 목록", "Data Playground", renderTable(["기준"], playgroundOptions(playground, "rowDimension").map((value) => [labelize(value)]), { compact: true }))}
+      ${section("조회 조건 설정", "Data Playground", renderInteractiveTable("playground-source-rows-table", sourceRows, ["tenantMasterName", "assetName", "leasedAreaSqm", "monthlyCostTotal", "sector", "goodsType"], 100))}
+    `;
+  }
+
+  function renderQualityParitySections(payload) {
+    const files = payload.files || [];
+    const issueRows = files.filter((row) => row.status !== "ready");
+    const sheetGroups = files.map((row) => ({
+      구분: row.name,
+      Critical: row.status === "missing" ? 1 : 0,
+      Warning: row.status !== "ready" ? 1 : 0,
+      Info: row.status === "ready" ? 1 : 0,
+      합계: 1,
+    }));
+    return `
+      ${section("데이터 품질 점검", "Data Quality", kpiGrid(payload.kpis, "quality-check-kpi"))}
+      ${section("시트별 오류 요약", "Data Quality", renderInteractiveTable("quality-sheet-groups", sheetGroups, ["구분", "Critical", "Warning", "Info", "합계"], 80))}
+      ${section("필드별 반복 오류", "Data Quality", renderInteractiveTable("quality-field-groups", issueRows, ["name", "type", "status"], 80))}
+      ${section("Critical 우선 조치", "Data Quality", `
+        ${actionStrip([
+          actionButton("새로고침 점검", { "data-action": "quality-refresh" }, { rows: files }, "새로고침 점검"),
+          actionButton("Critical 오류", { "data-action": "quality-critical" }, { rows: issueRows }, "Critical 오류"),
+          actionButton("Warning 항목", { "data-action": "quality-warning" }, { rows: issueRows }, "Warning 항목"),
+          actionButton("Info 항목", { "data-action": "quality-info" }, { rows: files }, "Info 항목"),
+          actionButton("시트별 오류 요약", { "data-action": "quality-sheets" }, { rows: sheetGroups }, "시트별 오류 요약"),
+          actionButton("데이터 품질 상세", { "data-action": "quality-detail" }, { rows: files }, "데이터 품질 상세"),
+        ])}
+        ${renderInteractiveTable("quality-critical-table", issueRows, ["name", "type", "status"], 80)}
+      `)}
+      ${section("전체 검증 결과", "Data Quality", renderQualityInteractiveTable("quality-all-results", files, ["name", "type", "rows", "source", "status"]))}
+      ${section("원천 시트 바로 수정", "Data Quality", `
+        <p class="page-note">수정 기능은 로그인/권한과 Edge Function 연결 후 활성화합니다. 현재는 원천 위치와 수정 후보를 확인하는 읽기 전용 단계입니다.</p>
+        ${renderInteractiveTable("quality-edit-queue", issueRows, ["name", "type", "status"], 80)}
+      `)}
+    `;
+  }
+
+  function renderAdminParitySections(payload) {
+    return `
+      ${section("관리자 액션", "Admin", actionStrip([
+        actionButton("계산 시트 갱신", { "data-action": "adminRefreshCalculationSheet" }, { status: "Edge Function 연결 대기" }, "계산 시트 갱신"),
+        actionButton("OpenDART 동기화", { "data-action": "adminSyncOpenDartData" }, { status: "Edge Function 연결 대기" }, "OpenDART 동기화"),
+        actionButton("건축물대장 동기화", { "data-action": "adminSyncBuildingRegisterData" }, { status: "Edge Function 연결 대기" }, "건축물대장 동기화"),
+        actionButton("데이터 감사", { "data-action": "adminRunDataAudit" }, { status: "Edge Function 연결 대기" }, "데이터 감사"),
+        actionButton("UI-DB 정합성", { "data-action": "adminRunUiDataReconciliation" }, { status: "Edge Function 연결 대기" }, "UI-DB 정합성"),
+        actionButton("스냅샷 갱신", { "data-action": "adminRefreshDashboardSnapshot" }, { status: "Edge Function 연결 대기" }, "스냅샷 갱신"),
+        actionButton("트리거 설치/갱신", { "data-action": "adminInstallOrUpdateTriggers" }, { status: "Edge Function 연결 대기" }, "트리거 설치/갱신"),
+        actionButton("성능 로그", { "data-action": "admin-perf-log" }, { rows: Object.entries(state.renderCounts || {}).map(([tab, count]) => ({ tab, count })) }, "클라이언트 성능 로그"),
+      ]))}
+      ${section("관리자 실행 오류", "Admin", keyValueGrid({ 상태: "오류 없음", 비고: "실행 API 연결 전" }))}
+      ${section("OpenDART 미연결", "Admin", keyValueGrid({ 상태: "Edge Function 미배포", 위치: "서버 전용 API", 프론트키노출: "없음" }))}
+      ${section("건축물대장 미연결", "Admin", keyValueGrid({ 상태: "Edge Function 미배포", 위치: "서버 전용 API", 프론트키노출: "없음" }))}
+      ${section("AUDIT_데이터이상", "Admin", renderInteractiveTable("admin-audit-table", payload.files || [], ["name", "rows", "status"], 80))}
+      ${section("Admin Command Center", "Admin", keyValueGrid(payload.runtime || {}))}
+      ${section("AUDIT 데이터", "Admin", renderInteractiveTable("admin-audit-data-table", payload.files || [], ["name", "type", "rows", "status"], 80))}
+      ${section("운영 메모", "Admin", renderTable(["항목", "내용"], [["쓰기 기능", "로그인/권한/Edge Function 연결 후 활성화"], ["non-ll_*", "조회만 가능, 수정 금지"], ["ll_*", "허용된 API만 수정"]], { compact: true }))}
+      ${section("우선 확인 순서", "Admin", renderTable(["순서", "작업"], [["1", "컴포넌트 1:1 복원"], ["2", "Supabase cell-by-cell 감사"], ["3", "권한/쓰기 연결"], ["4", "API sync 검증"]], { compact: true }))}
+      ${section("성능 로그", "Admin", renderInteractiveTable("admin-perf-log", Object.entries(state.renderCounts || {}).map(([tab, count]) => ({ tab, renderCount: count })), ["tab", "renderCount"], 80))}
     `;
   }
 
@@ -942,7 +1305,7 @@
     if (!Array.isArray(items)) return [];
     return items.map((item) => {
       if (Array.isArray(item)) return item;
-      return [item.label || item.key || "Metric", item.value != null ? item.value : "-", item.status || item.valueType || ""];
+      return [labelize(item.label || item.key || "metric"), item.value != null ? item.value : "-", item.status || item.valueType || ""];
     });
   }
 
@@ -956,11 +1319,12 @@
     return `
       <div class="kpi-grid summary-strip">
         ${rows.map((item, index) => {
-          const row = { label: item[0], value: item[1], note: item[2] || "" };
-          const detailKey = registerDetail(scope || "kpi", row, `${formatCell(item[0])} 상세`);
+          const label = labelize(item[0]);
+          const row = { label, value: item[1], note: item[2] || "" };
+          const detailKey = registerDetail(scope || "kpi", row, `${formatCell(label)} 상세`);
           return `
-          <button class="kpi info-card kpi-button" type="button" data-detail-key="${escapeAttr(detailKey)}" aria-label="${escapeAttr(`${formatCell(item[0])} 상세 보기`)}">
-            <div class="kpi-label">${escapeHtml(item[0])}</div>
+          <button class="kpi info-card kpi-button" type="button" data-detail-key="${escapeAttr(detailKey)}" aria-label="${escapeAttr(`${formatCell(label)} 상세 보기`)}">
+            <div class="kpi-label">${escapeHtml(label)}</div>
             <div class="kpi-value">${escapeHtml(formatCell(item[1]))}</div>
             ${item[2] ? `<div class="kpi-note">${escapeHtml(formatCell(item[2]))}</div>` : ""}
           </button>
@@ -1158,14 +1522,23 @@
   function renderTable(headers, rows, options) {
     const safeRows = Array.isArray(rows) ? rows : [];
     if (!safeRows.length) return renderEmpty("표시할 행이 없습니다.");
+    const scope = options?.scope;
     return `
-      <div class="table-wrap ${options?.compact ? "compact-table" : ""}">
+      <div class="table-wrap ${options?.compact ? "compact-table" : ""}" ${scope ? `data-table-scope="${escapeAttr(scope)}"` : ""}>
         <table>
           <thead>
-            <tr>${headers.map((header) => `<th>${escapeHtml(formatCell(header))}</th>`).join("")}</tr>
+            <tr>${headers.map((header) => `<th>${escapeHtml(formatCell(header))}</th>`).join("")}${scope ? `<th class="action-col">상세</th>` : ""}</tr>
           </thead>
           <tbody>
-            ${safeRows.map((row) => `<tr>${(Array.isArray(row) ? row : [row]).map((cell) => `<td>${formatCellHtml(cell)}</td>`).join("")}</tr>`).join("")}
+            ${safeRows.map((row) => {
+              const cells = Array.isArray(row) ? row : [row];
+              const detail = {};
+              headers.forEach((header, index) => {
+                detail[formatCell(header)] = cells[index];
+              });
+              const detailKey = scope ? registerDetail(scope, detail, cells[1] || cells[0] || "상세") : "";
+              return `<tr ${scope ? `tabindex="0" data-detail-key="${escapeAttr(detailKey)}"` : ""}>${cells.map((cell) => `<td>${formatCellHtml(cell)}</td>`).join("")}${scope ? `<td class="action-col"><button class="row-action" type="button" data-detail-key="${escapeAttr(detailKey)}">보기</button></td>` : ""}</tr>`;
+            }).join("")}
           </tbody>
         </table>
       </div>
@@ -1243,6 +1616,50 @@
         renderPayload(tab, payload);
       });
     });
+    panel.querySelectorAll("[data-company-exposure-mode]").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        state.selections.companyExposureMetric = button.dataset.companyExposureMode || "amount";
+        renderPayload(tab, payload);
+      });
+    });
+    panel.querySelector("#tools-apply-button")?.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const assetId = panel.querySelector("#tools-asset-select")?.value || state.selections.assetId;
+      const tenantId = panel.querySelector("#tools-company-select")?.value || state.selections.tenantId;
+      state.selections.assetId = assetId || state.selections.assetId;
+      state.selections.tenantId = tenantId || state.selections.tenantId;
+      fillSelect("asset-select", state.options.assets, "assetId", "assetName", state.selections.assetId);
+      fillSelect("company-select", state.options.companies, "tenantId", "tenantMasterName", state.selections.tenantId);
+      openDrawer("비교 조건 적용", keyValueGrid({
+        assetName: selectedAssetName(),
+        tenantMasterName: selectedCompanyName(),
+        status: "선택 조건을 화면 상태에 반영했습니다.",
+      }));
+    });
+    panel.querySelector("#tools-default-button")?.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      state.selections.assetId = state.bootstrap?.defaults?.assetId || state.selections.assetId;
+      state.selections.tenantId = state.bootstrap?.defaults?.tenantId || state.selections.tenantId;
+      fillSelect("asset-select", state.options.assets, "assetId", "assetName", state.selections.assetId);
+      fillSelect("company-select", state.options.companies, "tenantId", "tenantMasterName", state.selections.tenantId);
+      renderPayload(tab, payload);
+    });
+    panel.querySelector("#playground-apply-button")?.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      openPlaygroundResultDrawer(panel, payload);
+    });
+    panel.querySelectorAll('[data-action="playground-detail"]').forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        openPlaygroundResultDrawer(panel, payload);
+      });
+    });
     if (tab === "weekly") bindWeeklyLegacyRows(panel);
     panel.querySelectorAll("[data-detail-key]").forEach((node) => {
       node.addEventListener("click", (event) => {
@@ -1262,6 +1679,45 @@
     panel.querySelectorAll("[data-sort-table]").forEach((button) => {
       button.addEventListener("click", () => sortTableRows(button.dataset.sortTable, button.dataset.sortKey));
     });
+  }
+
+  function openPlaygroundResultDrawer(panel, playground) {
+    const query = {
+      rowDimension: panel.querySelector("#playground-dimension")?.value || playground?.query?.rowDimension || "assetName",
+      columnDimension: panel.querySelector("#playground-column")?.value || playground?.query?.columnDimension || "",
+      filterDimension: panel.querySelector("#playground-filter-dimension")?.value || playground?.query?.filterDimension || "",
+      filterValue: panel.querySelector("#playground-filter-value")?.value || "",
+      valueMetric: playground?.query?.valueMetric || "monthlyCostTotal",
+    };
+    const rows = aggregatePlaygroundRows(playground?.sourceRows || playground?.rows || [], query);
+    openDrawer("데이터 분석 원본 표", `
+      ${keyValueGrid(query)}
+      ${renderBarChart("playground-detail-chart", rows, "dimension", "value", { title: "집계 결과", limit: 20 })}
+      ${renderInteractiveTable("playground-detail", rows, ["dimension", "value", "recordCount"], 100)}
+    `);
+  }
+
+  function aggregatePlaygroundRows(sourceRows, query) {
+    const rows = Array.isArray(sourceRows) ? sourceRows : [];
+    const dimensionKey = query.rowDimension || "assetName";
+    const metricKey = query.valueMetric || "monthlyCostTotal";
+    const filterKey = query.filterDimension;
+    const filterText = String(query.filterValue || "").trim().toLowerCase();
+    const grouped = new Map();
+    rows.forEach((row) => {
+      if (filterKey && filterText) {
+        const value = String(row?.[filterKey] || "").toLowerCase();
+        if (!value.includes(filterText)) return;
+      }
+      const dimension = formatCell(row?.[dimensionKey] || "미분류");
+      const current = grouped.get(dimension) || { dimension, value: 0, recordCount: 0 };
+      current.value += Number(row?.[metricKey]) || 0;
+      current.recordCount += 1;
+      grouped.set(dimension, current);
+    });
+    return Array.from(grouped.values())
+      .sort((left, right) => Number(right.value) - Number(left.value))
+      .slice(0, 100);
   }
 
   function renderQualityInteractiveTable(scope, rows, preferredKeys) {

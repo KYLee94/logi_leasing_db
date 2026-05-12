@@ -11,7 +11,7 @@
   <div id="admin-auth-root" class="auth-gate" hidden>
     <form id="admin-auth-form" class="auth-panel">
       <div class="auth-brand">IGIS Logistics Leasing</div>
-      <h1>Admin</h1>
+      <h1>권한 로그인</h1>
       <input id="admin-auth-password" class="input" type="password" autocomplete="current-password" placeholder="관리자 비밀번호">
       <button id="admin-auth-submit" class="action-btn primary" type="submit">확인</button>
     </form>
@@ -60,6 +60,9 @@
           <div class="head-actions">
             <select id="asset-select" class="select scoped-control" hidden></select>
             <select id="company-select" class="select scoped-control" hidden></select>
+            <span id="role-label" class="role-chip">Reader</span>
+            <button id="admin-login-button" class="theme-btn" type="button">권한 로그인</button>
+            <button id="admin-logout-button" class="theme-btn" type="button" hidden>로그아웃</button>
             <button class="theme-btn" type="button" data-theme-choice="dark">어두운 화면</button>
             <button class="theme-btn" type="button" data-theme-choice="light">밝은 화면</button>
           </div>

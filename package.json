@@ -10,6 +10,7 @@
     "qa:perf:apps-script": "node scripts/qa/dashboard-target-runner.cjs apps-script",
     "qa:pages-preflight": "node scripts/qa/github-pages-preflight.cjs",
     "qa:smoke:local-docs": "node scripts/qa/local-docs-server-runner.cjs smoke",
+    "qa:parity-static": "node scripts/qa/static-parity-smoke.cjs",
     "qa:smoke:pages": "node scripts/qa/github-pages-static-qa.cjs",
     "qa:data-contract": "node scripts/qa/dashboard-data-contract-check.cjs",
     "qa:ux-storyline": "node scripts/qa/dashboard-ux-storyline-check.cjs",
