@@ -110,6 +110,7 @@ Confirmed remaining frontend parity gaps:
 | QA selector gate | Weekly legacy selectors now checked in `scripts/qa/static-parity-smoke.cjs`; all 7 checks passed locally |
 | Live Pages QA | First run had transient shell-ready overrun, second run passed with failure 0; artifact `qa-artifacts/github-pages-static/2026-05-12T03-59-17-781Z` |
 | Execution manual | Added `docs/component-parity-execution-manual-20260512.md` as the current 1:1 restoration control document |
+| Home surface split | Local QA now verifies `home-map-detail -> map-modal`, `home-rent-detail -> chart-modal`, `home-kpi-assets -> metric-modal`; artifact `qa-artifacts/parity-smoke/2026-05-12T04-05-26-595Z` |
 
 Newly confirmed remaining blockers:
 

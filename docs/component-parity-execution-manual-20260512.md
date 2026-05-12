@@ -71,6 +71,7 @@
 | Weekly legacy selector | `신규 투자 Projects`, `관리 Projects`, `자산현황`, `기준 및 기타사항` 섹션에 원본 QA용 id/class hook 추가 |
 | 표 selector | `renderInteractiveTable`, `renderTable`에 `id`, `data-table-scope`, `data-testid` 추가 |
 | 버튼 selector | `data-action` 버튼에 `data-testid=action-*` 자동 추가 |
+| Home surface 분기 | `home-map-detail`은 `map-modal`, `home-rent-detail`은 `chart-modal`, `home-kpi-assets`는 `metric-modal`로 열리도록 분리 |
 | 데이터 변경 | 없음 |
 | 숫자/계산 변경 | 없음 |
 
@@ -86,9 +87,9 @@
 
 ## 8. 다음 순서
 
-1. Weekly: 원본 selector 기준 통과, edit/modal 상세 분리.
-2. Home: 지도 modal shell, chart modal shell, KPI 근거 modal 정리.
-3. Asset/Company: 자산·임차인 상세 패널 분기.
+1. Weekly: edit/modal 상세 분리와 저장 API 후보 연결.
+2. Home: 지도 SDK/fallback 실제 구현, chart surface를 Chart.js 또는 동등한 canvas로 승격.
+3. Asset/Company: 자산·임차인 상세 패널 분기와 지도/차트 surface 복원.
 4. Tools/Playground/Quality: 원본 고급 컨트롤과 수정 후보 UI 복원.
 5. Supabase: live Sheets cell-level 추출 경로 확보 후 `source_type='live_google_sheets'` 추가 적재.
 6. API: OpenDART/건축물대장은 프론트 직접 호출 금지, 서버 전용 Edge Function으로만 연결.

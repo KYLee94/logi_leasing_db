@@ -64,8 +64,9 @@ async function clickAndCloseDrawer(page, locator, index) {
   const drawer = page.locator("#drawer-backdrop:not([hidden])");
   await drawer.waitFor({ state: "visible", timeout: 1500 });
   const title = (await page.locator("#drawer-content h2").first().textContent({ timeout: 1500 })).trim();
+  const surfaceKind = await page.locator(".drawer").first().getAttribute("data-surface-kind").catch(() => "");
   await page.keyboard.press("Escape");
-  return title;
+  return { title, surfaceKind };
 }
 
 async function main() {
@@ -95,6 +96,7 @@ async function main() {
       const detailLocator = panel.locator("[data-detail-key]");
       const detailCount = await detailLocator.count();
       const legacySelectorChecks = [];
+      const surfaceChecks = [];
       if (tab === "weekly") {
         for (const selector of LEGACY_WEEKLY_SELECTORS) {
           legacySelectorChecks.push({
@@ -103,12 +105,28 @@ async function main() {
           });
         }
       }
+      if (tab === "home") {
+        const targets = [
+          ['[data-testid="action-home-map-detail"]', "map-modal"],
+          ['[data-testid="action-home-rent-detail"]', "chart-modal"],
+          ['[data-testid="action-home-kpi-assets"]', "metric-modal"],
+        ];
+        for (const [selector, expected] of targets) {
+          const locator = panel.locator(selector).first();
+          if (await locator.count()) {
+            const result = await clickAndCloseDrawer(page, locator, 0);
+            surfaceChecks.push({ selector, expected, actual: result.surfaceKind || "", ok: result.surfaceKind === expected });
+          } else {
+            surfaceChecks.push({ selector, expected, actual: "", ok: false });
+          }
+        }
+      }
       const opened = [];
       for (let index = 0; index < Math.min(3, detailCount); index += 1) {
         try {
           opened.push(await clickAndCloseDrawer(page, detailLocator, index));
         } catch (error) {
-          opened.push(`ERROR:${error.message}`);
+          opened.push({ title: `ERROR:${error.message}`, surfaceKind: "" });
         }
       }
       const text = await panel.textContent();
@@ -118,6 +136,7 @@ async function main() {
         sectionCount,
         detailCount,
         legacySelectorChecks,
+        surfaceChecks,
         opened,
         badText: /\[object Object\]|undefined|NaN/.test(text || ""),
       });
@@ -139,11 +158,14 @@ async function main() {
       adminVisible: await page.locator('[data-tab="admin"]').isVisible(),
       consoleErrors,
       httpErrors,
-      failures: results.flatMap((item) => item.opened.filter((title) => title.startsWith("ERROR:")).map((error) => ({ tab: item.tab, error }))),
+      failures: results.flatMap((item) => item.opened.filter((entry) => entry.title.startsWith("ERROR:")).map((entry) => ({ tab: item.tab, error: entry.title }))),
     };
     summary.failures.push(...results.flatMap((item) => (item.legacySelectorChecks || [])
       .filter((check) => !check.found)
       .map((check) => ({ tab: item.tab, error: `MISSING_LEGACY_SELECTOR:${check.selector}` }))));
+    summary.failures.push(...results.flatMap((item) => (item.surfaceChecks || [])
+      .filter((check) => !check.ok)
+      .map((check) => ({ tab: item.tab, error: `SURFACE_KIND:${check.selector}:${check.actual || "missing"}!=${check.expected}` }))));
     fs.writeFileSync(path.join(outDir, "summary.json"), JSON.stringify(summary, null, 2), "utf8");
     if (summary.consoleErrors.length || summary.httpErrors.length || summary.failures.length || results.some((item) => item.badText || item.sectionCount === 0 || item.detailCount === 0)) {
       console.error(JSON.stringify(summary, null, 2));

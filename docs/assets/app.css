@@ -728,6 +728,22 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   padding: 18px;
   overflow-y: auto;
 }
+.drawer[data-surface-kind="map-modal"],
+.drawer[data-surface-kind="chart-modal"] {
+  width: min(880px, 100vw);
+}
+.drawer[data-surface-kind="metric-modal"],
+.drawer[data-surface-kind="asset-panel"],
+.drawer[data-surface-kind="tenant-panel"] {
+  width: min(720px, 100vw);
+}
+.surface-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 4px 0 12px;
+}
 .drawer-close {
   float: right;
   margin-left: 12px;

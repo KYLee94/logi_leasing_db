@@ -1374,8 +1374,10 @@
   }
 
   function actionButton(label, attrs, detail, title) {
-    const detailKey = registerDetail("action", detail || {}, title || `${label} 상세`);
     const safeAttrs = Object.assign({}, attrs || {});
+    const detailPayload = Object.assign({}, detail || {});
+    if (safeAttrs["data-action"]) detailPayload.__action = safeAttrs["data-action"];
+    const detailKey = registerDetail("action", detailPayload, title || `${label} 상세`);
     if (safeAttrs["data-action"] && !safeAttrs["data-testid"]) {
       safeAttrs["data-testid"] = `action-${safeAttrs["data-action"]}`;
     }
@@ -1587,7 +1589,7 @@
   function registerDetail(scope, row, title) {
     const safeScope = String(scope || "detail").replace(/[^a-z0-9_-]/gi, "_");
     const key = `${DETAIL_PREFIX}${safeScope}_${Object.keys(state.detailStore).length}`;
-    state.detailStore[key] = { title: title || buildDetailTitle(row, safeScope), row };
+    state.detailStore[key] = { title: title || buildDetailTitle(row, safeScope), row, scope: safeScope };
     return key;
   }
 
@@ -1599,7 +1601,76 @@
   function openDetailByKey(key) {
     const detail = state.detailStore[key];
     if (!detail) return;
-    openDrawer(detail.title || "상세", renderDetailBody(detail.row));
+    const kind = getDetailSurfaceKind(detail);
+    openDrawer(detail.title || "상세", renderSurfaceBody(detail, kind), kind);
+  }
+
+  function getDetailSurfaceKind(detail) {
+    const scope = String(detail?.scope || "");
+    const action = String(detail?.row?.__action || "");
+    const title = String(detail?.title || "");
+    if (/map/i.test(action) || /map/i.test(scope) || /지도|좌표/.test(title)) return "map-modal";
+    if (/rent|chart|expiry/i.test(action) || /chart|rent/i.test(scope) || /추이|차트|만기/.test(title)) return "chart-modal";
+    if (/kpi|snapshot|summary/i.test(action) || /kpi|summary/i.test(scope)) return "metric-modal";
+    if (/tenant|company/i.test(scope) || /임차인|기업/.test(title)) return "tenant-panel";
+    if (/asset|vacancy/i.test(scope) || /자산|공실/.test(title)) return "asset-panel";
+    if (/근거/.test(title)) return "metric-modal";
+    return "detail-drawer";
+  }
+
+  function renderSurfaceBody(detail, kind) {
+    const row = detail?.row || {};
+    if (kind === "map-modal") return renderMapSurfaceBody(row);
+    if (kind === "chart-modal") return renderChartSurfaceBody(detail);
+    if (kind === "metric-modal") return renderMetricSurfaceBody(detail);
+    return renderDetailBody(row);
+  }
+
+  function renderMapSurfaceBody(row) {
+    const points = row.mapPoints || row.rows || row.assetRows || [];
+    return `
+      <div class="surface-toolbar">
+        <span class="chip">지도 fallback</span>
+        <span class="page-note">운영 지도 SDK 연결 전까지 동일 좌표를 정적 패널로 표시합니다.</span>
+      </div>
+      ${renderMapPanel(points, "map-modal-points")}
+      ${renderInteractiveTable("map-modal-table", points, ["assetName", "address", "latitude", "longitude", "issueCount"], 80)}
+    `;
+  }
+
+  function renderChartSurfaceBody(detail) {
+    const row = detail?.row || {};
+    const rows = row.rows || row.rentTrend || row.assetRows || [];
+    const valueKey = rows.some((item) => item && item.monthlyCostTotalAdjusted != null) ? "monthlyCostTotalAdjusted"
+      : rows.some((item) => item && item.contractCount != null) ? "contractCount"
+        : rows.some((item) => item && item.value != null) ? "value"
+          : "monthlyCostTotal";
+    const labelKey = rows.some((item) => item && item.month != null) ? "month"
+      : rows.some((item) => item && item.assetName != null) ? "assetName"
+        : rows.some((item) => item && item.tenantMasterName != null) ? "tenantMasterName"
+          : "label";
+    return `
+      <div class="surface-toolbar">
+        <span class="chip">차트 상세</span>
+        <span class="page-note">원본 차트와 같은 데이터 행을 표와 함께 확인합니다.</span>
+      </div>
+      ${renderBarChart("chart-modal-series", rows, labelKey, valueKey, { title: detail?.title || "차트 상세", limit: 30 })}
+      ${renderInteractiveTable("chart-modal-table", rows, null, 120)}
+    `;
+  }
+
+  function renderMetricSurfaceBody(detail) {
+    const row = detail?.row || {};
+    const rows = row.rows || row.assetRows || row.mapPoints || [];
+    const simple = Object.fromEntries(Object.entries(row).filter(([key, value]) => !key.startsWith("__") && !Array.isArray(value) && (!value || typeof value !== "object")));
+    return `
+      <div class="surface-toolbar">
+        <span class="chip">근거 상세</span>
+        <span class="page-note">표시값의 원본 근거와 관련 행을 함께 확인합니다.</span>
+      </div>
+      ${keyValueGrid(simple)}
+      ${rows.length ? renderInteractiveTable("metric-modal-table", rows, null, 120) : ""}
+    `;
   }
 
   function renderDetailBody(row) {
@@ -1607,6 +1678,7 @@
     const simple = {};
     const nested = [];
     Object.entries(row).forEach(([key, value]) => {
+      if (key.startsWith("__")) return;
       if (value && typeof value === "object") nested.push([key, value]);
       else simple[key] = value;
     });
@@ -1963,10 +2035,12 @@
     });
   }
 
-  function openDrawer(title, body) {
+  function openDrawer(title, body, kind) {
     const backdrop = document.getElementById("drawer-backdrop");
     const content = document.getElementById("drawer-content");
+    const drawer = backdrop?.querySelector(".drawer");
     if (!backdrop || !content) return;
+    if (drawer) drawer.dataset.surfaceKind = kind || "detail-drawer";
     content.innerHTML = `<h2>${escapeHtml(title)}</h2>${body || ""}`;
     content.querySelectorAll("[data-detail-key]").forEach((node) => {
       node.addEventListener("click", (event) => {
