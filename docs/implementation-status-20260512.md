@@ -114,6 +114,7 @@ Confirmed remaining frontend parity gaps:
 | Home data QA | Inserted 3 `ll_data_quality_findings` rows for `docs_home_default` snapshot vs current `ll_*` KPI differences |
 | Live Pages QA after Home row checks | Passed with failure 0; artifact `qa-artifacts/github-pages-static/2026-05-12T04-16-10-754Z` |
 | Asset/Company/Sector surface split | Local QA now verifies entity row/detail routing: Asset tenant row/map/expiry, Company asset row/map/exposure, Sector asset row/tenant row/expiry; artifact `qa-artifacts/parity-smoke/2026-05-12T04-20-12-570Z` |
+| Live Pages QA after entity routing | First run had only shell-ready delay; rerun passed with failure 0, console error 0, HTTP problem 0; artifact `qa-artifacts/github-pages-static/2026-05-12T04-27-34-041Z` |
 
 Newly confirmed remaining blockers:
 
