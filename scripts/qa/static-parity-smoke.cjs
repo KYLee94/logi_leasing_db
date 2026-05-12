@@ -251,6 +251,44 @@ async function main() {
     await page.locator('[data-tab="admin"]').click();
     await page.locator("#admin-view:not([hidden])").waitFor({ timeout: 5000 });
     await page.screenshot({ path: path.join(outDir, "admin-unified.png"), fullPage: true });
+    const adminSurfaceChecks = [];
+    const adminPanel = page.locator("#admin-view");
+    const adminTargets = [
+      ['[data-testid="action-adminRefreshCalculationSheet"]', "admin-action-drawer"],
+      ['[data-testid="action-adminSyncOpenDartData"]', "admin-action-drawer"],
+      ['[data-testid="action-adminSyncBuildingRegisterData"]', "admin-action-drawer"],
+      ['[data-testid="action-adminRefreshDashboardSnapshot"]', "admin-action-drawer"],
+      ['[data-testid="action-admin-perf-log"]', "admin-action-drawer"],
+      ['[data-table-scope="admin_files"] [data-detail-key]', "metric-modal"],
+      ['[data-table-scope="admin-audit-table"] [data-detail-key]', "metric-modal"],
+    ];
+    for (const [selector, expected] of adminTargets) {
+      const locator = adminPanel.locator(selector).first();
+      if (await locator.count()) {
+        const result = await clickAndCloseDrawer(page, locator, 0);
+        adminSurfaceChecks.push({ selector, expected, actual: result.surfaceKind || "", ok: result.surfaceKind === expected });
+      } else {
+        adminSurfaceChecks.push({ selector, expected, actual: "", ok: false });
+      }
+    }
+    await page.locator('[data-tab="admin-data"]').click();
+    await page.locator("#admin-data-view:not([hidden])").waitFor({ timeout: 5000 });
+    const adminDataSurfaceChecks = [];
+    const adminDataPanel = page.locator("#admin-data-view");
+    const adminDataTargets = [
+      ['[data-table-scope="admin_data_files"] [data-detail-key]', "metric-modal"],
+      ['[data-table-scope="admin_data_cache"] [data-detail-key]', "metric-modal"],
+    ];
+    for (const [selector, expected] of adminDataTargets) {
+      const locator = adminDataPanel.locator(selector).first();
+      if (await locator.count()) {
+        const result = await clickAndCloseDrawer(page, locator, 0);
+        adminDataSurfaceChecks.push({ selector, expected, actual: result.surfaceKind || "", ok: result.surfaceKind === expected });
+      } else {
+        adminDataSurfaceChecks.push({ selector, expected, actual: "", ok: false });
+      }
+    }
+    await page.screenshot({ path: path.join(outDir, "admin-data-unified.png"), fullPage: true });
     const role = (await page.locator("#role-label").textContent()).trim();
     const summary = {
       url,
@@ -258,6 +296,8 @@ async function main() {
       results,
       role,
       adminVisible: await page.locator('[data-tab="admin"]').isVisible(),
+      adminSurfaceChecks,
+      adminDataSurfaceChecks,
       consoleErrors,
       httpErrors,
       failures: results.flatMap((item) => item.opened.filter((entry) => entry.title.startsWith("ERROR:")).map((entry) => ({ tab: item.tab, error: entry.title }))),
@@ -268,6 +308,12 @@ async function main() {
     summary.failures.push(...results.flatMap((item) => (item.surfaceChecks || [])
       .filter((check) => !check.ok)
       .map((check) => ({ tab: item.tab, error: `SURFACE_KIND:${check.selector}:${check.actual || "missing"}!=${check.expected}` }))));
+    summary.failures.push(...adminSurfaceChecks
+      .filter((check) => !check.ok)
+      .map((check) => ({ tab: "admin", error: `SURFACE_KIND:${check.selector}:${check.actual || "missing"}!=${check.expected}` })));
+    summary.failures.push(...adminDataSurfaceChecks
+      .filter((check) => !check.ok)
+      .map((check) => ({ tab: "admin-data", error: `SURFACE_KIND:${check.selector}:${check.actual || "missing"}!=${check.expected}` })));
     fs.writeFileSync(path.join(outDir, "summary.json"), JSON.stringify(summary, null, 2), "utf8");
     if (summary.consoleErrors.length || summary.httpErrors.length || summary.failures.length || results.some((item) => item.badText || item.sectionCount === 0 || item.detailCount === 0)) {
       console.error(JSON.stringify(summary, null, 2));

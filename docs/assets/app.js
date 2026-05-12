@@ -1611,10 +1611,12 @@
     const title = String(detail?.title || "");
     if (/map/i.test(action) || /map/i.test(scope) || /지도|좌표/.test(title)) return "map-modal";
     if (/rent|chart|expiry|exposure|benchmark|playground/i.test(action) || /chart|rent|exposure|benchmark|playground/i.test(scope) || /추이|차트|만기|노출도|벤치마크|데이터 분석|집계/.test(title)) return "chart-modal";
+    if (/^admin/i.test(action) || /OpenDART|DART|건축물대장|스냅샷 갱신|감사 실행|트리거|계산 시트|UI-DB|성능 로그/.test(title)) return "admin-action-drawer";
     if (/kpi|snapshot|summary/i.test(action) || /kpi|summary/i.test(scope)) return "metric-modal";
     if (/home_tenants|home-tenant|home-contract|asset-roster|asset-core-tenants|sector-tenants|tools-selected-companies/i.test(scope)) return "tenant-panel";
     if (/home-vacancy|company-assets|company-exposure|sector-assets/i.test(scope)) return "asset-panel";
     if (/quality|edit-queue|critical|warning|info/i.test(action) || /quality|edit-queue|critical|warning|info/i.test(scope) || /품질|오류|수정|점검|Warning|Critical|Info/.test(title)) return "quality-panel";
+    if (/admin[_-]?files|admin[_-]?audit|admin[_-]?data/i.test(scope)) return "metric-modal";
     if (/tenant|company/i.test(scope) || /임차인|기업/.test(title)) return "tenant-panel";
     if (/asset|vacancy/i.test(scope) || /자산|공실/.test(title)) return "asset-panel";
     if (/근거/.test(title)) return "metric-modal";
@@ -1627,7 +1629,24 @@
     if (kind === "chart-modal") return renderChartSurfaceBody(detail);
     if (kind === "metric-modal") return renderMetricSurfaceBody(detail);
     if (kind === "quality-panel") return renderMetricSurfaceBody(detail);
+    if (kind === "admin-action-drawer") return renderAdminActionSurfaceBody(detail);
     return renderDetailBody(row);
+  }
+
+  function renderAdminActionSurfaceBody(detail) {
+    const row = detail?.row || {};
+    const simple = Object.fromEntries(Object.entries(row).filter(([key, value]) => !key.startsWith("__") && (!value || typeof value !== "object")));
+    return `
+      <div class="surface-toolbar">
+        <span class="chip">서버 전용 작업</span>
+        <span class="page-note">공개 프론트에는 service role, OpenDART, 건축물대장 키를 넣지 않습니다.</span>
+      </div>
+      ${keyValueGrid(Object.assign({
+        "실행 위치": "Supabase Edge Function 연결 후보",
+        "현재 상태": row.status || "서버 API 연결 대기",
+        "비밀키 노출": "없음",
+      }, simple))}
+    `;
   }
 
   function renderMapSurfaceBody(row) {
