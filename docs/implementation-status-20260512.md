@@ -108,6 +108,7 @@ Confirmed remaining frontend parity gaps:
 | Frontend selector hooks | Added legacy Weekly section hooks, table ids/test ids, and action button test ids without changing data or calculations |
 | Local QA | Passed `node scripts/qa/static-parity-smoke.cjs`; artifact `qa-artifacts/parity-smoke/2026-05-12T03-55-59-545Z` |
 | QA selector gate | Weekly legacy selectors now checked in `scripts/qa/static-parity-smoke.cjs`; all 7 checks passed locally |
+| Live Pages QA | First run had transient shell-ready overrun, second run passed with failure 0; artifact `qa-artifacts/github-pages-static/2026-05-12T03-59-17-781Z` |
 | Execution manual | Added `docs/component-parity-execution-manual-20260512.md` as the current 1:1 restoration control document |
 
 Newly confirmed remaining blockers:
