@@ -96,3 +96,22 @@ Confirmed remaining frontend parity gaps:
 - Home/Asset/Company map is still a static marker panel, not the original map SDK/fallback modal.
 - Chart surfaces are compact CSS bars, not full Chart.js-equivalent charts.
 - Weekly edit, Data Quality edit, and Admin sync/API actions need server write execution through the approved Supabase-only backend path.
+
+## 2026-05-12 KST Parity Rebuild Continuation
+
+| Area | Result |
+|---|---|
+| Checkpoint | Created and pushed `checkpoint/logi-before-component-parity-20260512-1150-KST` at commit `6f66429` |
+| Component audit | Re-ran `node scripts/audit/build-component-parity-audit.cjs`; latest gap score remains `89` because it is a structural backlog, not a completion signal |
+| Supabase readback | Confirmed `ll_payload_snapshots` 107 rows, all `source='supabase_snapshot'` and `user_safe=true`; confirmed xlsx `ll_source_cells` 13,752 cells |
+| Google Sheets read | Google Drive connector can read row samples from live `DB_일반`; script/API extraction is still blocked for full automated 17-tab cell-level preservation |
+| Frontend selector hooks | Added legacy Weekly section hooks, table ids/test ids, and action button test ids without changing data or calculations |
+| Local QA | Passed `node scripts/qa/static-parity-smoke.cjs`; artifact `qa-artifacts/parity-smoke/2026-05-12T03-55-59-545Z` |
+| QA selector gate | Weekly legacy selectors now checked in `scripts/qa/static-parity-smoke.cjs`; all 7 checks passed locally |
+| Execution manual | Added `docs/component-parity-execution-manual-20260512.md` as the current 1:1 restoration control document |
+
+Newly confirmed remaining blockers:
+
+- Live Google Sheets 17-tab cell-level preservation is still not complete.
+- `ll_rent_history` has 6 `unmatched_review_required` rows with null `lease_id`/`lease_space_id`.
+- Map, chart, edit, and Admin execution flows remain parity gaps even though the static screen smoke test passes.

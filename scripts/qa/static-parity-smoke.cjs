@@ -10,6 +10,15 @@ const ROOT = path.resolve(__dirname, "..", "..");
 const DOCS_DIR = path.join(ROOT, "docs");
 const OUT_ROOT = path.join(ROOT, "qa-artifacts", "parity-smoke");
 const TABS = ["weekly", "home", "asset", "company", "sector", "tools", "playground", "quality"];
+const LEGACY_WEEKLY_SELECTORS = [
+  ".summary-strip, .weekly-kpi-strip, [data-action^=\"weekly-summary-\"]",
+  ".weekly-priority-panel, #weekly-priority-table",
+  ".weekly-maturity-panel, #weekly-maturity-chart",
+  ".weekly-main-table-panel, #weekly-assets-table",
+  ".weekly-issue-grid",
+  "#weekly-new-project-detail",
+  "#weekly-management-project-detail",
+];
 const MIME_TYPES = {
   ".css": "text/css; charset=utf-8",
   ".html": "text/html; charset=utf-8",
@@ -85,6 +94,15 @@ async function main() {
       const sectionCount = await panel.locator(".section-card, .iota-section-card, section").count();
       const detailLocator = panel.locator("[data-detail-key]");
       const detailCount = await detailLocator.count();
+      const legacySelectorChecks = [];
+      if (tab === "weekly") {
+        for (const selector of LEGACY_WEEKLY_SELECTORS) {
+          legacySelectorChecks.push({
+            selector,
+            found: await panel.locator(selector).count() > 0,
+          });
+        }
+      }
       const opened = [];
       for (let index = 0; index < Math.min(3, detailCount); index += 1) {
         try {
@@ -99,6 +117,7 @@ async function main() {
         tab,
         sectionCount,
         detailCount,
+        legacySelectorChecks,
         opened,
         badText: /\[object Object\]|undefined|NaN/.test(text || ""),
       });
@@ -122,6 +141,9 @@ async function main() {
       httpErrors,
       failures: results.flatMap((item) => item.opened.filter((title) => title.startsWith("ERROR:")).map((error) => ({ tab: item.tab, error }))),
     };
+    summary.failures.push(...results.flatMap((item) => (item.legacySelectorChecks || [])
+      .filter((check) => !check.found)
+      .map((check) => ({ tab: item.tab, error: `MISSING_LEGACY_SELECTOR:${check.selector}` }))));
     fs.writeFileSync(path.join(outDir, "summary.json"), JSON.stringify(summary, null, 2), "utf8");
     if (summary.consoleErrors.length || summary.httpErrors.length || summary.failures.length || results.some((item) => item.badText || item.sectionCount === 0 || item.detailCount === 0)) {
       console.error(JSON.stringify(summary, null, 2));

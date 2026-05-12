@@ -1334,9 +1334,19 @@
     `;
   }
 
+  const LEGACY_SECTION_HINTS = {
+    "신규 투자 Projects": { id: "weekly-new-project-detail", className: "weekly-priority-panel" },
+    "관리 Projects": { id: "weekly-management-project-detail", className: "weekly-issue-grid" },
+    "자산현황": { className: "weekly-main-table-panel" },
+    "기준 및 기타사항": { className: "weekly-maturity-panel" },
+  };
+
   function section(title, kicker, body) {
+    const hints = LEGACY_SECTION_HINTS[title] || {};
+    const idAttr = hints.id ? ` id="${escapeAttr(hints.id)}"` : "";
+    const classAttr = hints.className ? ` ${escapeAttr(hints.className)}` : "";
     return `
-      <section class="section iota-section-card panel-card" data-section-title="${escapeAttr(title)}">
+      <section${idAttr} class="section iota-section-card panel-card${classAttr}" data-section-title="${escapeAttr(title)}">
         <div class="section-head">
           <div>
             <div class="section-kicker">${escapeHtml(kicker || "")}</div>
@@ -1365,7 +1375,11 @@
 
   function actionButton(label, attrs, detail, title) {
     const detailKey = registerDetail("action", detail || {}, title || `${label} 상세`);
-    const attrHtml = Object.entries(attrs || {})
+    const safeAttrs = Object.assign({}, attrs || {});
+    if (safeAttrs["data-action"] && !safeAttrs["data-testid"]) {
+      safeAttrs["data-testid"] = `action-${safeAttrs["data-action"]}`;
+    }
+    const attrHtml = Object.entries(safeAttrs)
       .map(([key, value]) => `${key}="${escapeAttr(value)}"`)
       .join(" ");
     return `<button class="action-btn compact-action" type="button" ${attrHtml} data-detail-key="${escapeAttr(detailKey)}">${escapeHtml(label)}</button>`;
@@ -1524,7 +1538,7 @@
     if (!safeRows.length) return renderEmpty("표시할 행이 없습니다.");
     const scope = options?.scope;
     return `
-      <div class="table-wrap ${options?.compact ? "compact-table" : ""}" ${scope ? `data-table-scope="${escapeAttr(scope)}"` : ""}>
+      <div ${scope ? `id="${escapeAttr(scope)}"` : ""} class="table-wrap ${options?.compact ? "compact-table" : ""}" ${scope ? `data-table-scope="${escapeAttr(scope)}" data-testid="table-${escapeAttr(scope)}"` : ""}>
         <table>
           <thead>
             <tr>${headers.map((header) => `<th>${escapeHtml(formatCell(header))}</th>`).join("")}${scope ? `<th class="action-col">상세</th>` : ""}</tr>
@@ -1725,7 +1739,7 @@
     if (!list.length) return renderEmpty("표시할 행이 없습니다.");
     const keys = preferredKeys && preferredKeys.length ? preferredKeys : inferKeys(list);
     return `
-      <div class="table-wrap compact-table" data-table-scope="${escapeAttr(scope)}">
+      <div id="${escapeAttr(scope)}" class="table-wrap compact-table" data-table-scope="${escapeAttr(scope)}" data-testid="table-${escapeAttr(scope)}">
         <table>
           <thead>
             <tr>
