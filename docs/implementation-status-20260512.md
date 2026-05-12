@@ -78,3 +78,21 @@ Only single-candidate matches were written. Remaining unmatched rows are left fo
 
 Local browser access to Supabase REST was blocked by the sandbox browser network policy, so Supabase source was verified through Supabase readback. GitHub Pages live source must be checked after push.
 
+## 2026-05-12 KST Continuation
+
+| Area | Result |
+|---|---|
+| GitHub Pages fallback JSON | Re-exported from `ll_payload_snapshots` 107 user-safe rows into `docs/data` plus `initial.json` |
+| Static shell Korean labels | Fixed corrupted Korean labels in `docs/index.html` |
+| Local smoke QA | Passed: `qa-artifacts/parity-smoke/2026-05-12T02-42-58-868Z` |
+| Live Google Sheets cell extraction | Direct Sheets API blocked by Google API 403; Apps Script Execution API blocked by 403 for current OAuth user |
+| Current live Sheets preservation gap | `ll_source_cells` still has xlsx cells only; live Sheets 17-tab cell-by-cell import is pending until an authorized extraction path is available |
+
+The fallback export reads only `public.ll_payload_snapshots` where `source = 'supabase_snapshot'` and `user_safe = true`.
+No non-`ll_*` Supabase table was mutated.
+
+Confirmed remaining frontend parity gaps:
+
+- Home/Asset/Company map is still a static marker panel, not the original map SDK/fallback modal.
+- Chart surfaces are compact CSS bars, not full Chart.js-equivalent charts.
+- Weekly edit, Data Quality edit, and Admin sync/API actions need server write execution through the approved Supabase-only backend path.

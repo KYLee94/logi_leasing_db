@@ -1,988 +1,992 @@
 {
-  "financials": {
-    "operatingIncome": null,
-    "debtRatio": null,
-    "revenue": 87724000000,
-    "emptyStateMessage": "DART 원문 감사보고서 기준 적재(감사보고서 (2025.12), 접수번호 20260330001156)",
-    "fetchedAt": "2026-04-22",
-    "dartLinked": true,
-    "employeeCount": 147
-  },
-  "operations": null,
-  "leasedAssets": [
+  "kpis": [
     {
-      "period": "2025-01-01 ~ 2027-12-31",
-      "monthlyRentTotal": 227321641,
-      "latestExpiry": "2028-03-31",
-      "leasedAreaPy": 9068.96,
-      "monthlyMfTotal": 17897546,
-      "assetName": "에이블로지스물류센터",
-      "leasedAreaSqm": 29980.02,
-      "detailAreaLabels": [],
-      "floorLabels": [
-        "B4~B3, 2",
-        "B2~B1, 1"
-      ],
-      "monthlyCostTotal": 245219187
+      "key": "asset_count",
+      "label": "임차 자산 수",
+      "value": 1,
+      "status": "ok",
+      "valueType": "number"
+    },
+    {
+      "key": "leased_area",
+      "label": "총 임차면적",
+      "value": 29980.02,
+      "status": "ok",
+      "valueType": "area"
+    },
+    {
+      "key": "monthly_rent_total",
+      "label": "월 임대료 총액",
+      "value": 227321641,
+      "status": "ok",
+      "valueType": "currency"
+    },
+    {
+      "key": "monthly_mf_total",
+      "label": "월 관리비 총액",
+      "value": 17897546,
+      "status": "ok",
+      "valueType": "currency"
+    },
+    {
+      "key": "monthly_total_cost",
+      "label": "월 임관리비 총액",
+      "value": 245219187,
+      "status": "ok",
+      "valueType": "currency"
+    },
+    {
+      "key": "latest_expiry",
+      "label": "최근 만기일",
+      "value": "2028-03-31",
+      "status": "ok",
+      "valueType": "date"
     }
   ],
   "meta": {
-    "selection": null,
-    "timing": null,
-    "generatedAt": "2026-04-27T18:27:46",
-    "basisDisplay": {
-      "derivedAt": "",
-      "asOf": "2026-04-22",
-      "generatedAt": "2026-04-27T18:27:46",
-      "refreshedAt": "2026-04-27T18:27:46",
-      "fetchedAt": "2026-04-22",
-      "page": "company",
-      "source": "DB_GENERAL + DB_COMPANY + OpenDART",
-      "fetchedAts": [
-        "2026-04-22"
-      ]
-    },
-    "formulaVersion": null,
     "page": "company",
-    "rowCount": 2,
     "basis": {
-      "rowScope": "selected_company_rows",
       "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
+      "page": "company",
       "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
       "rowUnit": "lease_space_id",
-      "page": "company",
       "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
+      "rowScope": "selected_company_rows",
       "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
-    }
-  },
-  "profile": {
-    "tenantMasterName": "아워박스(주)",
-    "monthlyRentTotal": 227321641,
-    "selectorSortMeta": {
-      "latestExpiry": "2028-03-31",
-      "tenantMasterName": "아워박스(주)",
-      "assetCount": 1,
-      "hasFinancialData": true,
-      "latestRevenue": 87724000000,
-      "exposureAvailable": false,
-      "monthlyCostTotal": 245219187
     },
-    "monthlyMfTotal": 17897546,
-    "leasedAreaSqm": 29980.02,
-    "averageENoc": 25700.92,
-    "monthlyCostTotal": 245219187,
-    "latestExpiry": "2028-03-31",
-    "leaseSpaceCount": 2,
-    "leasedAssets": [
-      {
-        "monthlyRentTotal": 227321641,
-        "period": "2025-01-01 ~ 2027-12-31",
-        "latestExpiry": "2028-03-31",
-        "leasedAreaPy": 9068.96,
-        "monthlyMfTotal": 17897546,
-        "assetName": "에이블로지스물류센터",
-        "leasedAreaSqm": 29980.02,
-        "detailAreaLabels": [],
-        "floorLabels": [
-          "B4~B3, 2",
-          "B2~B1, 1"
-        ],
-        "monthlyCostTotal": 245219187
-      }
-    ],
-    "businessRegistrationNo": null,
-    "tenantId": null,
-    "company": {
-      "latestReceiptNo": "",
-      "tenantMasterName": "아워박스(주)",
-      "latestOperatingIncome": null,
-      "financialStatementType": "OFS_DOC",
-      "fetchedAt": "2026-04-22",
-      "latestRevenue": 87724000000,
-      "hasFinancialData": false,
-      "latestDebtRatio": null,
-      "headquartersAddress": "서울특별시 구로구 디지털로 288 9층 908호(구로동, 대륭포스트타워1차)",
-      "latestFinancialYear": "2025",
-      "dartCorpCode": "01561359",
-      "listedYn": "Y",
-      "industryCode": "75994",
-      "matchStatus": "matched",
-      "latestEmployeeCount": 147,
-      "groupName": "",
-      "businessRegistrationNo": null,
-      "tenantId": null,
-      "corpRegistrationNo": null,
-      "latestReportName": ""
-    },
-    "assetCount": 1,
+    "timing": null,
     "rowCount": 2,
-    "sectorCount": 1,
-    "exposureAvailable": false,
-    "goodsTypeCount": 1
-  },
-  "generatedAt": "2026-04-27T18:27:46",
-  "basisDisplay": {
-    "derivedAt": "",
-    "asOf": "2026-04-22",
+    "selection": null,
     "generatedAt": "2026-04-27T18:27:46",
-    "refreshedAt": "2026-04-27T18:27:46",
-    "fetchedAt": "2026-04-22",
+    "basisDisplay": {
+      "asOf": "2026-04-22",
+      "page": "company",
+      "source": "DB_GENERAL + DB_COMPANY + OpenDART",
+      "derivedAt": "",
+      "fetchedAt": "2026-04-22",
+      "fetchedAts": [
+        "2026-04-22"
+      ],
+      "generatedAt": "2026-04-27T18:27:46",
+      "refreshedAt": "2026-04-27T18:27:46"
+    },
+    "formulaVersion": null
+  },
+  "rows": [
+    {
+      "eNoc": 29107.94,
+      "asset": {
+        "ji": "13",
+        "bun": "767",
+        "bjdongCd": "35023",
+        "platGbCd": "0",
+        "queryKey": "41461|35023|0|0767|0013",
+        "assetCode": "A112527003",
+        "assetName": "에이블로지스물류센터",
+        "fetchedAt": "2026-04-22",
+        "longitude": 127.3889424,
+        "sigunguCd": "41461",
+        "floorCount": "2F / B4",
+        "landAreaSqm": 19604,
+        "approvalDate": "2016-11-04",
+        "buildingName": "에이블로지스물류센터",
+        "geocodeStatus": "ok_naver_geocode",
+        "areaTableStatus": "unknown",
+        "buildingHubStatus": "ok",
+        "firstConfiguredAt": "2021-03-05",
+        "grossFloorAreaSqm": 29980.02,
+        "standardizedAddress": "경기도 용인시 처인구 백암면 죽양대로 956-8"
+      },
+      "is3pl": false,
+      "fundId": "fund_112527",
+      "sector": "물류센터",
+      "company": {
+        "listedYn": "Y",
+        "fetchedAt": "2026-04-22",
+        "groupName": "",
+        "matchStatus": "matched",
+        "dartCorpCode": "01561359",
+        "industryCode": "75994",
+        "latestRevenue": 87724000000,
+        "latestReceiptNo": "",
+        "hasFinancialData": false,
+        "latestReportName": "",
+        "tenantMasterName": "아워박스(주)",
+        "headquartersAddress": "서울특별시 구로구 디지털로 288 9층 908호(구로동, 대륭포스트타워1차)",
+        "latestEmployeeCount": 147,
+        "latestFinancialYear": "2025",
+        "financialStatementType": "OFS_DOC"
+      },
+      "leaseId": "asset_a112527003|tenant_brn_3588100820|20250101|20271231",
+      "manager": {
+        "email": "jhlee@igisam.com",
+        "fundCode": "112527",
+        "fundName": "이지스전문투자형사모부동산투자신탁제404호",
+        "teamName": "로지스틱스매니지먼트",
+        "assetCode": "A112527003",
+        "assetName": "에이블로지스물류센터",
+        "managerName": "이정훈B"
+      },
+      "fundCode": "112527",
+      "fundName": "이지스전문투자형사모부동산투자신탁제404호",
+      "assetCode": "A112527003",
+      "assetName": "에이블로지스물류센터",
+      "goodsType": "공산품",
+      "rowNumber": 48,
+      "floorLabel": "B4~B3, 2",
+      "isPreLeased": false,
+      "firstEndDate": "2027-12-31",
+      "isDelinquent": false,
+      "leaseSpaceId": "asset_a112527003|tenant_brn_3588100820|20250101|20271231|b4~b32|na",
+      "linkedIssues": [
+        {
+          "owner": "",
+          "rawId": "22",
+          "content": "공용부 세부면적 없는 이유 확인 필요",
+          "issueId": "issue_22",
+          "category": "자산별 담당자 확인 필요 사항",
+          "priority": "미정",
+          "resolved": false,
+          "certainty": "",
+          "conclusion": "",
+          "recordedAt": "2026-04-16",
+          "relatedSheet": "전체",
+          "needsDevelopment": "",
+          "relatedAssetLabel": "에이블로지스물류센터"
+        }
+      ],
+      "historyLinked": true,
+      "leasedAreaSqm": 18052.43,
+      "officeAreaSqm": 296.03,
+      "rawTenantName": "아워박스(주)",
+      "sourceRowHash": "A112527003|3588100820|B4~B3, 2||20250101|20271231|18052.43|18052.43",
+      "currentEndDate": "2027-12-31",
+      "currentMfPerPy": 2030,
+      "extensionCount": 0,
+      "firstStartDate": "2025-01-01",
+      "isSingleTenant": true,
+      "coldStorageType": "N",
+      "detailAreaLabel": "",
+      "currentMoneyAsOf": "2026-01-01",
+      "currentRentPerPy": 28420,
+      "currentStartDate": "2025-01-01",
+      "exclusiveAreaSqm": 18052.43,
+      "tenantMasterName": "아워박스(주)",
+      "warehouseAreaSqm": 17756.4,
+      "contractStatusRaw": "Y",
+      "currentMoneyBasis": "latest_linked_history",
+      "firstContractDate": "2025-01-01",
+      "historyCandidates": [
+        {
+          "reason": "상승률 반영",
+          "sector": "물류센터",
+          "mfPerPy": 2030,
+          "baseDate": "2026-01-01",
+          "fundCode": "112527",
+          "fundName": "이지스전문투자형사모부동산투자신탁제404호",
+          "isLatest": true,
+          "assetCode": "A112527003",
+          "assetName": "에이블로지스물류센터",
+          "baseMonth": "2026-01",
+          "rentPerPy": 28420,
+          "rowNumber": 154,
+          "floorLabel": "B4~B3, 2",
+          "leasedAreaSqm": 18052,
+          "rawTenantName": "아워박스(주)",
+          "monthlyMfTotal": 11085546,
+          "coldStorageType": "N",
+          "detailAreaLabel": "",
+          "matchConfidence": "lease_space_id",
+          "exclusiveAreaSqm": 18052,
+          "monthlyRentTotal": 155197641,
+          "tenantMasterName": "아워박스(주)",
+          "linkedLeaseSpaceId": "asset_a112527003|tenant_brn_3588100820|20250101|20271231|b4~b32|na"
+        }
+      ],
+      "historyLatestDate": "2026-01-01",
+      "historyLinkStatus": "lease_space_id",
+      "totalGrossAreaSqm": 29980.02,
+      "currentMoneyStatus": "ok",
+      "currentPeriodYears": 3,
+      "recentContractDate": "2025-01-01",
+      "currentMonthlyMfTotal": 11085546,
+      "historyCandidateCount": 1,
+      "currentMonthlyCostTotal": 166283187,
+      "currentMonthlyRentTotal": 155197641
+    },
+    {
+      "eNoc": 20544.4,
+      "asset": {
+        "ji": "13",
+        "bun": "767",
+        "bjdongCd": "35023",
+        "platGbCd": "0",
+        "queryKey": "41461|35023|0|0767|0013",
+        "assetCode": "A112527003",
+        "assetName": "에이블로지스물류센터",
+        "fetchedAt": "2026-04-22",
+        "longitude": 127.3889424,
+        "sigunguCd": "41461",
+        "floorCount": "2F / B4",
+        "landAreaSqm": 19604,
+        "approvalDate": "2016-11-04",
+        "buildingName": "에이블로지스물류센터",
+        "geocodeStatus": "ok_naver_geocode",
+        "areaTableStatus": "unknown",
+        "buildingHubStatus": "ok",
+        "firstConfiguredAt": "2021-03-05",
+        "grossFloorAreaSqm": 29980.02,
+        "standardizedAddress": "경기도 용인시 처인구 백암면 죽양대로 956-8"
+      },
+      "is3pl": false,
+      "fundId": "fund_112527",
+      "sector": "물류센터",
+      "company": {
+        "listedYn": "Y",
+        "fetchedAt": "2026-04-22",
+        "groupName": "",
+        "matchStatus": "matched",
+        "dartCorpCode": "01561359",
+        "industryCode": "75994",
+        "latestRevenue": 87724000000,
+        "latestReceiptNo": "",
+        "hasFinancialData": false,
+        "latestReportName": "",
+        "tenantMasterName": "아워박스(주)",
+        "headquartersAddress": "서울특별시 구로구 디지털로 288 9층 908호(구로동, 대륭포스트타워1차)",
+        "latestEmployeeCount": 147,
+        "latestFinancialYear": "2025",
+        "financialStatementType": "OFS_DOC"
+      },
+      "leaseId": "asset_a112527003|tenant_brn_3588100820|20250401|20280331",
+      "manager": {
+        "email": "jhlee@igisam.com",
+        "fundCode": "112527",
+        "fundName": "이지스전문투자형사모부동산투자신탁제404호",
+        "teamName": "로지스틱스매니지먼트",
+        "assetCode": "A112527003",
+        "assetName": "에이블로지스물류센터",
+        "managerName": "이정훈B"
+      },
+      "fundCode": "112527",
+      "fundName": "이지스전문투자형사모부동산투자신탁제404호",
+      "assetCode": "A112527003",
+      "assetName": "에이블로지스물류센터",
+      "goodsType": "공산품",
+      "rowNumber": 49,
+      "floorLabel": "B2~B1, 1",
+      "isPreLeased": false,
+      "firstEndDate": "2028-03-31",
+      "isDelinquent": false,
+      "leaseSpaceId": "asset_a112527003|tenant_brn_3588100820|20250401|20280331|b2~b11|na",
+      "linkedIssues": [
+        {
+          "owner": "",
+          "rawId": "22",
+          "content": "공용부 세부면적 없는 이유 확인 필요",
+          "issueId": "issue_22",
+          "category": "자산별 담당자 확인 필요 사항",
+          "priority": "미정",
+          "resolved": false,
+          "certainty": "",
+          "conclusion": "",
+          "recordedAt": "2026-04-16",
+          "relatedSheet": "전체",
+          "needsDevelopment": "",
+          "relatedAssetLabel": "에이블로지스물류센터"
+        }
+      ],
+      "historyLinked": true,
+      "leasedAreaSqm": 11927.59,
+      "officeAreaSqm": 669.22,
+      "rawTenantName": "아워박스(주)",
+      "sourceRowHash": "A112527003|3588100820|B2~B1, 1||20250401|20280331|11927.59|11927.59",
+      "currentEndDate": "2028-03-31",
+      "currentMfPerPy": 1888,
+      "extensionCount": 0,
+      "firstStartDate": "2025-04-01",
+      "isSingleTenant": true,
+      "coldStorageType": "N",
+      "detailAreaLabel": "",
+      "currentMoneyAsOf": "2025-04-01",
+      "currentRentPerPy": 19989,
+      "currentStartDate": "2025-04-01",
+      "exclusiveAreaSqm": 11927.59,
+      "tenantMasterName": "아워박스(주)",
+      "warehouseAreaSqm": 11258.37,
+      "contractStatusRaw": "Y",
+      "currentMoneyBasis": "latest_linked_history",
+      "firstContractDate": "2025-02-18",
+      "historyCandidates": [
+        {
+          "reason": "상승률 반영",
+          "sector": "물류센터",
+          "mfPerPy": 1888,
+          "baseDate": "2025-04-01",
+          "fundCode": "112527",
+          "fundName": "이지스전문투자형사모부동산투자신탁제404호",
+          "isLatest": true,
+          "assetCode": "A112527003",
+          "assetName": "에이블로지스물류센터",
+          "baseMonth": "2025-04",
+          "rentPerPy": 19989,
+          "rowNumber": 155,
+          "floorLabel": "B2~B1, 1",
+          "leasedAreaSqm": 11928,
+          "rawTenantName": "아워박스(주)",
+          "monthlyMfTotal": 6812000,
+          "coldStorageType": "N",
+          "detailAreaLabel": "",
+          "matchConfidence": "lease_space_id",
+          "exclusiveAreaSqm": 11928,
+          "monthlyRentTotal": 72124000,
+          "tenantMasterName": "아워박스(주)",
+          "linkedLeaseSpaceId": "asset_a112527003|tenant_brn_3588100820|20250401|20280331|b2~b11|na"
+        }
+      ],
+      "historyLatestDate": "2025-04-01",
+      "historyLinkStatus": "lease_space_id",
+      "totalGrossAreaSqm": 29980.02,
+      "currentMoneyStatus": "ok",
+      "currentPeriodYears": 3,
+      "recentContractDate": "2025-02-18",
+      "currentMonthlyMfTotal": 6812000,
+      "historyCandidateCount": 1,
+      "currentMonthlyCostTotal": 78936000,
+      "currentMonthlyRentTotal": 72124000
+    }
+  ],
+  "basis": {
+    "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
     "page": "company",
-    "source": "DB_GENERAL + DB_COMPANY + OpenDART",
-    "fetchedAts": [
-      "2026-04-22"
-    ]
+    "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
+    "rowUnit": "lease_space_id",
+    "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
+    "rowScope": "selected_company_rows",
+    "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
   },
   "filters": {
     "companies": [
       {
-        "tenantMasterName": "(주)LG생활건강",
+        "assetCount": 1,
         "latestExpiry": "2027-02-28",
-        "selectorSortMeta": {
-          "latestExpiry": "2027-02-28",
-          "tenantMasterName": "(주)LG생활건강",
-          "latestRevenue": 3040730093373,
-          "assetCount": 1,
-          "hasFinancialData": true,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 83194170
-        },
         "latestRevenue": 3040730093373,
-        "assetCount": 1,
-        "exposureAvailable": false,
-        "monthlyCostTotal": 83194170
-      },
-      {
-        "latestExpiry": "2030-02-28",
-        "tenantMasterName": "(주)버킷플레이스",
+        "monthlyCostTotal": 83194170,
         "selectorSortMeta": {
-          "tenantMasterName": "(주)버킷플레이스",
-          "latestExpiry": "2030-02-28",
+          "assetCount": 1,
+          "latestExpiry": "2027-02-28",
+          "latestRevenue": 3040730093373,
           "hasFinancialData": true,
-          "assetCount": 1,
-          "latestRevenue": 240208000000,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 372226100
-        },
-        "assetCount": 1,
-        "latestRevenue": 240208000000,
-        "exposureAvailable": false,
-        "monthlyCostTotal": 372226100
-      },
-      {
-        "tenantMasterName": "(주)소셜빈",
-        "latestExpiry": "2030-04-30",
-        "selectorSortMeta": {
-          "latestExpiry": "2030-04-30",
-          "tenantMasterName": "(주)소셜빈",
-          "latestRevenue": 70703000000,
-          "assetCount": 1,
-          "hasFinancialData": true,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 73534917
-        },
-        "assetCount": 1,
-        "latestRevenue": 70703000000,
-        "exposureAvailable": false,
-        "monthlyCostTotal": 73534917
-      },
-      {
-        "tenantMasterName": "(주)에이스코리아로지스",
-        "latestExpiry": "2027-05-16",
-        "assetCount": 1,
-        "exposureAvailable": false,
-        "selectorSortMeta": {
-          "latestExpiry": "2027-05-16",
-          "tenantMasterName": "(주)에이스코리아로지스",
-          "assetCount": 1,
-          "hasFinancialData": false,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 207923000
-        },
-        "monthlyCostTotal": 207923000
-      },
-      {
-        "tenantMasterName": "(주)우진글로벌",
-        "latestExpiry": "2029-01-11",
-        "assetCount": 1,
-        "exposureAvailable": false,
-        "selectorSortMeta": {
-          "latestExpiry": "2029-01-11",
-          "tenantMasterName": "(주)우진글로벌",
-          "assetCount": 1,
-          "hasFinancialData": false,
+          "monthlyCostTotal": 83194170,
+          "tenantMasterName": "(주)LG생활건강",
           "exposureAvailable": false
-        }
+        },
+        "tenantMasterName": "(주)LG생활건강",
+        "exposureAvailable": false
       },
       {
-        "latestExpiry": "2031-02-28",
-        "tenantMasterName": "(주)파크랜드",
+        "assetCount": 1,
+        "latestExpiry": "2030-02-28",
+        "latestRevenue": 240208000000,
+        "monthlyCostTotal": 372226100,
         "selectorSortMeta": {
-          "tenantMasterName": "(주)파크랜드",
+          "assetCount": 1,
+          "latestExpiry": "2030-02-28",
+          "latestRevenue": 240208000000,
+          "hasFinancialData": true,
+          "monthlyCostTotal": 372226100,
+          "tenantMasterName": "(주)버킷플레이스",
+          "exposureAvailable": false
+        },
+        "tenantMasterName": "(주)버킷플레이스",
+        "exposureAvailable": false
+      },
+      {
+        "assetCount": 1,
+        "latestExpiry": "2030-04-30",
+        "latestRevenue": 70703000000,
+        "monthlyCostTotal": 73534917,
+        "selectorSortMeta": {
+          "assetCount": 1,
+          "latestExpiry": "2030-04-30",
+          "latestRevenue": 70703000000,
+          "hasFinancialData": true,
+          "monthlyCostTotal": 73534917,
+          "tenantMasterName": "(주)소셜빈",
+          "exposureAvailable": false
+        },
+        "tenantMasterName": "(주)소셜빈",
+        "exposureAvailable": false
+      },
+      {
+        "assetCount": 1,
+        "latestExpiry": "2027-05-16",
+        "monthlyCostTotal": 207923000,
+        "selectorSortMeta": {
+          "assetCount": 1,
+          "latestExpiry": "2027-05-16",
+          "hasFinancialData": false,
+          "monthlyCostTotal": 207923000,
+          "tenantMasterName": "(주)에이스코리아로지스",
+          "exposureAvailable": false
+        },
+        "tenantMasterName": "(주)에이스코리아로지스",
+        "exposureAvailable": false
+      },
+      {
+        "assetCount": 1,
+        "latestExpiry": "2029-01-11",
+        "selectorSortMeta": {
+          "assetCount": 1,
+          "latestExpiry": "2029-01-11",
+          "hasFinancialData": false,
+          "tenantMasterName": "(주)우진글로벌",
+          "exposureAvailable": false
+        },
+        "tenantMasterName": "(주)우진글로벌",
+        "exposureAvailable": false
+      },
+      {
+        "assetCount": 1,
+        "latestExpiry": "2031-02-28",
+        "latestRevenue": 851361000000,
+        "monthlyCostTotal": 109507000,
+        "selectorSortMeta": {
+          "assetCount": 1,
           "latestExpiry": "2031-02-28",
           "latestRevenue": 851361000000,
           "hasFinancialData": true,
-          "assetCount": 1,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 109507000
+          "monthlyCostTotal": 109507000,
+          "tenantMasterName": "(주)파크랜드",
+          "exposureAvailable": false
         },
-        "assetCount": 1,
-        "latestRevenue": 851361000000,
-        "exposureAvailable": false,
-        "monthlyCostTotal": 109507000
+        "tenantMasterName": "(주)파크랜드",
+        "exposureAvailable": false
       },
       {
-        "tenantMasterName": "(주)하나로티앤에스",
+        "assetCount": 1,
         "latestExpiry": "2026-06-30",
-        "selectorSortMeta": {
-          "latestExpiry": "2026-06-30",
-          "tenantMasterName": "(주)하나로티앤에스",
-          "latestRevenue": 520669000000,
-          "assetCount": 1,
-          "hasFinancialData": true,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 93559150
-        },
         "latestRevenue": 520669000000,
-        "assetCount": 1,
-        "exposureAvailable": false,
-        "monthlyCostTotal": 93559150
-      },
-      {
-        "tenantMasterName": "(주)한익스프레스",
-        "latestExpiry": "2026-12-31",
+        "monthlyCostTotal": 93559150,
         "selectorSortMeta": {
-          "latestExpiry": "2026-12-31",
-          "tenantMasterName": "(주)한익스프레스",
           "assetCount": 1,
+          "latestExpiry": "2026-06-30",
+          "latestRevenue": 520669000000,
           "hasFinancialData": true,
-          "latestRevenue": 582739477960,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 155328845
+          "monthlyCostTotal": 93559150,
+          "tenantMasterName": "(주)하나로티앤에스",
+          "exposureAvailable": false
         },
+        "tenantMasterName": "(주)하나로티앤에스",
+        "exposureAvailable": false
+      },
+      {
+        "assetCount": 1,
+        "latestExpiry": "2026-12-31",
         "latestRevenue": 582739477960,
-        "assetCount": 1,
-        "exposureAvailable": false,
-        "monthlyCostTotal": 155328845
-      },
-      {
-        "latestExpiry": "2029-04-17",
-        "tenantMasterName": "(주)한진",
+        "monthlyCostTotal": 155328845,
         "selectorSortMeta": {
-          "tenantMasterName": "(주)한진",
-          "latestExpiry": "2029-04-17",
+          "assetCount": 1,
+          "latestExpiry": "2026-12-31",
+          "latestRevenue": 582739477960,
           "hasFinancialData": true,
-          "assetCount": 2,
-          "latestRevenue": 2389581460829,
-          "exposureAvailable": true,
-          "monthlyCostTotal": 167717600
+          "monthlyCostTotal": 155328845,
+          "tenantMasterName": "(주)한익스프레스",
+          "exposureAvailable": false
         },
-        "assetCount": 2,
-        "latestRevenue": 2389581460829,
-        "exposureAvailable": true,
-        "monthlyCostTotal": 167717600
+        "tenantMasterName": "(주)한익스프레스",
+        "exposureAvailable": false
       },
       {
-        "latestExpiry": "2028-12-31",
-        "tenantMasterName": "(주)휠라선",
-        "assetCount": 1,
-        "latestRevenue": 26145000000,
-        "exposureAvailable": false,
+        "assetCount": 2,
+        "latestExpiry": "2029-04-17",
+        "latestRevenue": 2389581460829,
+        "monthlyCostTotal": 167717600,
         "selectorSortMeta": {
-          "tenantMasterName": "(주)휠라선",
+          "assetCount": 2,
+          "latestExpiry": "2029-04-17",
+          "latestRevenue": 2389581460829,
+          "hasFinancialData": true,
+          "monthlyCostTotal": 167717600,
+          "tenantMasterName": "(주)한진",
+          "exposureAvailable": true
+        },
+        "tenantMasterName": "(주)한진",
+        "exposureAvailable": true
+      },
+      {
+        "assetCount": 1,
+        "latestExpiry": "2028-12-31",
+        "latestRevenue": 26145000000,
+        "selectorSortMeta": {
+          "assetCount": 1,
           "latestExpiry": "2028-12-31",
           "latestRevenue": 26145000000,
           "hasFinancialData": true,
-          "assetCount": 1,
+          "tenantMasterName": "(주)휠라선",
           "exposureAvailable": false
-        }
+        },
+        "tenantMasterName": "(주)휠라선",
+        "exposureAvailable": false
       },
       {
-        "tenantMasterName": "-",
-        "latestExpiry": "",
         "assetCount": 1,
-        "exposureAvailable": false,
+        "latestExpiry": "",
         "selectorSortMeta": {
-          "tenantMasterName": "-",
+          "assetCount": 1,
           "latestExpiry": "",
           "hasFinancialData": false,
-          "assetCount": 1,
+          "tenantMasterName": "-",
           "exposureAvailable": false
-        }
+        },
+        "tenantMasterName": "-",
+        "exposureAvailable": false
       },
       {
+        "assetCount": 1,
         "latestExpiry": "2032-01-31",
-        "tenantMasterName": "INPNP",
-        "assetCount": 1,
-        "exposureAvailable": false,
         "selectorSortMeta": {
+          "assetCount": 1,
           "latestExpiry": "2032-01-31",
+          "hasFinancialData": false,
           "tenantMasterName": "INPNP",
-          "assetCount": 1,
-          "hasFinancialData": false,
           "exposureAvailable": false
-        }
+        },
+        "tenantMasterName": "INPNP",
+        "exposureAvailable": false
       },
       {
-        "latestExpiry": "2031-11-30",
-        "tenantMasterName": "JM 로지스",
         "assetCount": 1,
-        "exposureAvailable": false,
+        "latestExpiry": "2031-11-30",
         "selectorSortMeta": {
-          "latestExpiry": "2031-11-30",
-          "tenantMasterName": "JM 로지스",
           "assetCount": 1,
+          "latestExpiry": "2031-11-30",
           "hasFinancialData": false,
+          "tenantMasterName": "JM 로지스",
           "exposureAvailable": false
-        }
+        },
+        "tenantMasterName": "JM 로지스",
+        "exposureAvailable": false
       },
       {
+        "assetCount": 1,
         "latestExpiry": "2026-12-15",
-        "tenantMasterName": "LG전자(주), ㈜엘엑스판토스",
+        "latestRevenue": 29554826000000,
+        "monthlyCostTotal": 630228000,
         "selectorSortMeta": {
-          "tenantMasterName": "LG전자(주), ㈜엘엑스판토스",
+          "assetCount": 1,
           "latestExpiry": "2026-12-15",
           "latestRevenue": 29554826000000,
           "hasFinancialData": true,
-          "assetCount": 1,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 630228000
+          "monthlyCostTotal": 630228000,
+          "tenantMasterName": "LG전자(주), ㈜엘엑스판토스",
+          "exposureAvailable": false
         },
-        "assetCount": 1,
-        "latestRevenue": 29554826000000,
-        "exposureAvailable": false,
-        "monthlyCostTotal": 630228000
+        "tenantMasterName": "LG전자(주), ㈜엘엑스판토스",
+        "exposureAvailable": false
       },
       {
+        "assetCount": 1,
         "latestExpiry": "2028-09-22",
-        "tenantMasterName": "㈜싸이버로지텍",
-        "selectorSortMeta": {
-          "latestExpiry": "2028-09-22",
-          "tenantMasterName": "㈜싸이버로지텍",
-          "latestRevenue": 107601387938,
-          "assetCount": 1,
-          "hasFinancialData": true,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 21469240
-        },
         "latestRevenue": 107601387938,
-        "assetCount": 1,
-        "exposureAvailable": false,
-        "monthlyCostTotal": 21469240
+        "monthlyCostTotal": 21469240,
+        "selectorSortMeta": {
+          "assetCount": 1,
+          "latestExpiry": "2028-09-22",
+          "latestRevenue": 107601387938,
+          "hasFinancialData": true,
+          "monthlyCostTotal": 21469240,
+          "tenantMasterName": "㈜싸이버로지텍",
+          "exposureAvailable": false
+        },
+        "tenantMasterName": "㈜싸이버로지텍",
+        "exposureAvailable": false
       },
       {
+        "assetCount": 1,
         "latestExpiry": "2028-11-30",
-        "tenantMasterName": "굿앤파트너스(주)",
+        "latestRevenue": 15853000000,
+        "monthlyCostTotal": 159270720,
         "selectorSortMeta": {
-          "tenantMasterName": "굿앤파트너스(주)",
+          "assetCount": 1,
           "latestExpiry": "2028-11-30",
           "latestRevenue": 15853000000,
           "hasFinancialData": true,
-          "assetCount": 1,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 159270720
+          "monthlyCostTotal": 159270720,
+          "tenantMasterName": "굿앤파트너스(주)",
+          "exposureAvailable": false
         },
-        "assetCount": 1,
-        "latestRevenue": 15853000000,
-        "exposureAvailable": false,
-        "monthlyCostTotal": 159270720
+        "tenantMasterName": "굿앤파트너스(주)",
+        "exposureAvailable": false
       },
       {
-        "latestExpiry": "2028-01-14",
-        "tenantMasterName": "뉴성진에이원(주)",
         "assetCount": 1,
-        "exposureAvailable": false,
+        "latestExpiry": "2028-01-14",
+        "monthlyCostTotal": 49536745,
         "selectorSortMeta": {
-          "tenantMasterName": "뉴성진에이원(주)",
+          "assetCount": 1,
           "latestExpiry": "2028-01-14",
           "hasFinancialData": false,
-          "assetCount": 1,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 49536745
-        },
-        "monthlyCostTotal": 49536745
-      },
-      {
-        "latestExpiry": "2028-12-31",
-        "tenantMasterName": "롯데글로벌로지스(주)",
-        "latestRevenue": 3100210134255,
-        "assetCount": 1,
-        "exposureAvailable": false,
-        "selectorSortMeta": {
-          "latestExpiry": "2028-12-31",
-          "tenantMasterName": "롯데글로벌로지스(주)",
-          "assetCount": 1,
-          "hasFinancialData": true,
-          "latestRevenue": 3100210134255,
+          "monthlyCostTotal": 49536745,
+          "tenantMasterName": "뉴성진에이원(주)",
           "exposureAvailable": false
-        }
+        },
+        "tenantMasterName": "뉴성진에이원(주)",
+        "exposureAvailable": false
       },
       {
+        "assetCount": 1,
+        "latestExpiry": "2028-12-31",
+        "latestRevenue": 3100210134255,
+        "selectorSortMeta": {
+          "assetCount": 1,
+          "latestExpiry": "2028-12-31",
+          "latestRevenue": 3100210134255,
+          "hasFinancialData": true,
+          "tenantMasterName": "롯데글로벌로지스(주)",
+          "exposureAvailable": false
+        },
+        "tenantMasterName": "롯데글로벌로지스(주)",
+        "exposureAvailable": false
+      },
+      {
+        "assetCount": 1,
         "latestExpiry": "2027-12-31",
-        "tenantMasterName": "봄날창고",
-        "assetCount": 1,
-        "exposureAvailable": false,
+        "monthlyCostTotal": 48386940,
         "selectorSortMeta": {
+          "assetCount": 1,
           "latestExpiry": "2027-12-31",
-          "tenantMasterName": "봄날창고",
-          "assetCount": 1,
           "hasFinancialData": false,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 48386940
+          "monthlyCostTotal": 48386940,
+          "tenantMasterName": "봄날창고",
+          "exposureAvailable": false
         },
-        "monthlyCostTotal": 48386940
+        "tenantMasterName": "봄날창고",
+        "exposureAvailable": false
       },
       {
-        "tenantMasterName": "삼성전자로지텍(주)",
+        "assetCount": 1,
         "latestExpiry": "",
-        "selectorSortMeta": {
-          "latestExpiry": "",
-          "tenantMasterName": "삼성전자로지텍(주)",
-          "latestRevenue": 1655616000000,
-          "assetCount": 1,
-          "hasFinancialData": true,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 1272556102
-        },
         "latestRevenue": 1655616000000,
-        "assetCount": 1,
-        "exposureAvailable": false,
-        "monthlyCostTotal": 1272556102
-      },
-      {
-        "latestExpiry": "2029-01-11",
-        "tenantMasterName": "송림물류(주)",
+        "monthlyCostTotal": 1272556102,
         "selectorSortMeta": {
-          "tenantMasterName": "송림물류(주)",
-          "latestExpiry": "2029-01-11",
-          "hasFinancialData": true,
           "assetCount": 1,
-          "latestRevenue": 11962000000,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 53160536
+          "latestExpiry": "",
+          "latestRevenue": 1655616000000,
+          "hasFinancialData": true,
+          "monthlyCostTotal": 1272556102,
+          "tenantMasterName": "삼성전자로지텍(주)",
+          "exposureAvailable": false
         },
-        "assetCount": 1,
-        "latestRevenue": 11962000000,
-        "exposureAvailable": false,
-        "monthlyCostTotal": 53160536
+        "tenantMasterName": "삼성전자로지텍(주)",
+        "exposureAvailable": false
       },
       {
-        "tenantMasterName": "씨제이대한통운(주)",
-        "latestExpiry": "2034-02-28",
+        "assetCount": 1,
+        "latestExpiry": "2029-01-11",
+        "latestRevenue": 11962000000,
+        "monthlyCostTotal": 53160536,
         "selectorSortMeta": {
-          "tenantMasterName": "씨제이대한통운(주)",
+          "assetCount": 1,
+          "latestExpiry": "2029-01-11",
+          "latestRevenue": 11962000000,
+          "hasFinancialData": true,
+          "monthlyCostTotal": 53160536,
+          "tenantMasterName": "송림물류(주)",
+          "exposureAvailable": false
+        },
+        "tenantMasterName": "송림물류(주)",
+        "exposureAvailable": false
+      },
+      {
+        "assetCount": 1,
+        "latestExpiry": "2034-02-28",
+        "latestRevenue": 8353852873161,
+        "monthlyCostTotal": 362578428,
+        "selectorSortMeta": {
+          "assetCount": 1,
           "latestExpiry": "2034-02-28",
           "latestRevenue": 8353852873161,
           "hasFinancialData": true,
-          "assetCount": 1,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 362578428
+          "monthlyCostTotal": 362578428,
+          "tenantMasterName": "씨제이대한통운(주)",
+          "exposureAvailable": false
         },
-        "latestRevenue": 8353852873161,
-        "assetCount": 1,
-        "exposureAvailable": false,
-        "monthlyCostTotal": 362578428
+        "tenantMasterName": "씨제이대한통운(주)",
+        "exposureAvailable": false
       },
       {
-        "latestExpiry": "2028-06-30",
-        "tenantMasterName": "아디다스코리아유한책임회사",
         "assetCount": 2,
-        "exposureAvailable": true,
+        "latestExpiry": "2028-06-30",
+        "monthlyCostTotal": 713551000,
         "selectorSortMeta": {
-          "tenantMasterName": "아디다스코리아유한책임회사",
+          "assetCount": 2,
           "latestExpiry": "2028-06-30",
           "hasFinancialData": false,
-          "assetCount": 2,
-          "exposureAvailable": true,
-          "monthlyCostTotal": 713551000
+          "monthlyCostTotal": 713551000,
+          "tenantMasterName": "아디다스코리아유한책임회사",
+          "exposureAvailable": true
         },
-        "monthlyCostTotal": 713551000
+        "tenantMasterName": "아디다스코리아유한책임회사",
+        "exposureAvailable": true
       },
       {
+        "assetCount": 1,
         "latestExpiry": "2028-03-31",
-        "tenantMasterName": "아워박스(주)",
-        "selectorSortMeta": {
-          "latestExpiry": "2028-03-31",
-          "tenantMasterName": "아워박스(주)",
-          "assetCount": 1,
-          "hasFinancialData": true,
-          "latestRevenue": 87724000000,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 245219187
-        },
-        "assetCount": 1,
         "latestRevenue": 87724000000,
-        "exposureAvailable": false,
-        "monthlyCostTotal": 245219187
+        "monthlyCostTotal": 245219187,
+        "selectorSortMeta": {
+          "assetCount": 1,
+          "latestExpiry": "2028-03-31",
+          "latestRevenue": 87724000000,
+          "hasFinancialData": true,
+          "monthlyCostTotal": 245219187,
+          "tenantMasterName": "아워박스(주)",
+          "exposureAvailable": false
+        },
+        "tenantMasterName": "아워박스(주)",
+        "exposureAvailable": false
       },
       {
-        "tenantMasterName": "아이씨비로지스(주)",
+        "assetCount": 1,
         "latestExpiry": "2028-02-29",
-        "assetCount": 1,
-        "exposureAvailable": false,
+        "monthlyCostTotal": 82699790,
         "selectorSortMeta": {
+          "assetCount": 1,
           "latestExpiry": "2028-02-29",
-          "tenantMasterName": "아이씨비로지스(주)",
-          "assetCount": 1,
           "hasFinancialData": false,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 82699790
+          "monthlyCostTotal": 82699790,
+          "tenantMasterName": "아이씨비로지스(주)",
+          "exposureAvailable": false
         },
-        "monthlyCostTotal": 82699790
+        "tenantMasterName": "아이씨비로지스(주)",
+        "exposureAvailable": false
       },
       {
+        "assetCount": 1,
         "latestExpiry": "2027-03-31",
-        "tenantMasterName": "용마로지스(주)",
-        "selectorSortMeta": {
-          "latestExpiry": "2027-03-31",
-          "tenantMasterName": "용마로지스(주)",
-          "latestRevenue": 423830000000,
-          "assetCount": 1,
-          "hasFinancialData": true,
-          "exposureAvailable": true,
-          "monthlyCostTotal": 189633928
-        },
-        "assetCount": 1,
         "latestRevenue": 423830000000,
-        "exposureAvailable": true,
-        "monthlyCostTotal": 189633928
-      },
-      {
-        "tenantMasterName": "쿠팡(주)",
-        "latestExpiry": "2034-06-12",
+        "monthlyCostTotal": 189633928,
         "selectorSortMeta": {
-          "tenantMasterName": "쿠팡(주)",
-          "latestExpiry": "2034-06-12",
-          "hasFinancialData": true,
-          "assetCount": 4,
-          "latestRevenue": 45455513000000,
-          "exposureAvailable": true,
-          "monthlyCostTotal": 4596681041
-        },
-        "assetCount": 4,
-        "latestRevenue": 45455513000000,
-        "exposureAvailable": true,
-        "monthlyCostTotal": 4596681041
-      },
-      {
-        "latestExpiry": "2029-02-14",
-        "tenantMasterName": "한국로지스풀(주)",
-        "selectorSortMeta": {
-          "latestExpiry": "2029-02-14",
-          "tenantMasterName": "한국로지스풀(주)",
-          "latestRevenue": 668265000000,
           "assetCount": 1,
+          "latestExpiry": "2027-03-31",
+          "latestRevenue": 423830000000,
           "hasFinancialData": true,
-          "exposureAvailable": true,
-          "monthlyCostTotal": 176850000
+          "monthlyCostTotal": 189633928,
+          "tenantMasterName": "용마로지스(주)",
+          "exposureAvailable": true
         },
-        "assetCount": 1,
-        "latestRevenue": 668265000000,
-        "exposureAvailable": true,
-        "monthlyCostTotal": 176850000
+        "tenantMasterName": "용마로지스(주)",
+        "exposureAvailable": true
       },
       {
-        "latestExpiry": "2029-07-31",
-        "tenantMasterName": "한국머스크물류서비스(주)",
+        "assetCount": 4,
+        "latestExpiry": "2034-06-12",
+        "latestRevenue": 45455513000000,
+        "monthlyCostTotal": 4596681041,
         "selectorSortMeta": {
-          "tenantMasterName": "한국머스크물류서비스(주)",
+          "assetCount": 4,
+          "latestExpiry": "2034-06-12",
+          "latestRevenue": 45455513000000,
+          "hasFinancialData": true,
+          "monthlyCostTotal": 4596681041,
+          "tenantMasterName": "쿠팡(주)",
+          "exposureAvailable": true
+        },
+        "tenantMasterName": "쿠팡(주)",
+        "exposureAvailable": true
+      },
+      {
+        "assetCount": 1,
+        "latestExpiry": "2029-02-14",
+        "latestRevenue": 668265000000,
+        "monthlyCostTotal": 176850000,
+        "selectorSortMeta": {
+          "assetCount": 1,
+          "latestExpiry": "2029-02-14",
+          "latestRevenue": 668265000000,
+          "hasFinancialData": true,
+          "monthlyCostTotal": 176850000,
+          "tenantMasterName": "한국로지스풀(주)",
+          "exposureAvailable": true
+        },
+        "tenantMasterName": "한국로지스풀(주)",
+        "exposureAvailable": true
+      },
+      {
+        "assetCount": 1,
+        "latestExpiry": "2029-07-31",
+        "latestRevenue": 170614000000,
+        "monthlyCostTotal": 496872603,
+        "selectorSortMeta": {
+          "assetCount": 1,
           "latestExpiry": "2029-07-31",
           "latestRevenue": 170614000000,
           "hasFinancialData": true,
-          "assetCount": 1,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 496872603
+          "monthlyCostTotal": 496872603,
+          "tenantMasterName": "한국머스크물류서비스(주)",
+          "exposureAvailable": false
         },
-        "assetCount": 1,
-        "latestRevenue": 170614000000,
-        "exposureAvailable": false,
-        "monthlyCostTotal": 496872603
+        "tenantMasterName": "한국머스크물류서비스(주)",
+        "exposureAvailable": false
       },
       {
-        "tenantMasterName": "한국일본통운(주)",
+        "assetCount": 1,
         "latestExpiry": "2030-09-30",
-        "selectorSortMeta": {
-          "latestExpiry": "2030-09-30",
-          "tenantMasterName": "한국일본통운(주)",
-          "latestRevenue": 138363000000,
-          "assetCount": 1,
-          "hasFinancialData": true,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 143369000
-        },
         "latestRevenue": 138363000000,
-        "assetCount": 1,
-        "exposureAvailable": false,
-        "monthlyCostTotal": 143369000
+        "monthlyCostTotal": 143369000,
+        "selectorSortMeta": {
+          "assetCount": 1,
+          "latestExpiry": "2030-09-30",
+          "latestRevenue": 138363000000,
+          "hasFinancialData": true,
+          "monthlyCostTotal": 143369000,
+          "tenantMasterName": "한국일본통운(주)",
+          "exposureAvailable": false
+        },
+        "tenantMasterName": "한국일본통운(주)",
+        "exposureAvailable": false
       },
       {
+        "assetCount": 1,
         "latestExpiry": "2032-12-20",
-        "tenantMasterName": "홈플러스(주)",
+        "latestRevenue": 6991966000000,
+        "monthlyCostTotal": 629174800,
         "selectorSortMeta": {
-          "tenantMasterName": "홈플러스(주)",
+          "assetCount": 1,
           "latestExpiry": "2032-12-20",
           "latestRevenue": 6991966000000,
           "hasFinancialData": true,
-          "assetCount": 1,
-          "exposureAvailable": false,
-          "monthlyCostTotal": 629174800
+          "monthlyCostTotal": 629174800,
+          "tenantMasterName": "홈플러스(주)",
+          "exposureAvailable": false
         },
-        "assetCount": 1,
-        "latestRevenue": 6991966000000,
-        "exposureAvailable": false,
-        "monthlyCostTotal": 629174800
+        "tenantMasterName": "홈플러스(주)",
+        "exposureAvailable": false
       }
     ],
-    "selectedTenantId": null,
     "selectorMeta": {
-      "sortOptions": null,
-      "defaultSort": "tenant_name_asc"
-    }
-  },
-  "rows": [
-    {
-      "tenantMasterName": "아워박스(주)",
-      "totalGrossAreaSqm": 29980.02,
-      "currentPeriodYears": 3,
-      "isDelinquent": false,
-      "leaseId": "asset_a112527003|tenant_brn_3588100820|20250101|20271231",
-      "historyCandidateCount": 1,
-      "fundCode": "112527",
-      "recentContractDate": "2025-01-01",
-      "coldStorageType": "N",
-      "currentMoneyBasis": "latest_linked_history",
-      "currentEndDate": "2027-12-31",
-      "historyCandidates": [
-        {
-          "matchConfidence": "lease_space_id",
-          "reason": "상승률 반영",
-          "mfPerPy": 2030,
-          "monthlyRentTotal": 155197641,
-          "tenantMasterName": "아워박스(주)",
-          "baseDate": "2026-01-01",
-          "assetCode": "A112527003",
-          "monthlyMfTotal": 11085546,
-          "leasedAreaSqm": 18052,
-          "rentPerPy": 28420,
-          "linkedLeaseSpaceId": "asset_a112527003|tenant_brn_3588100820|20250101|20271231|b4~b32|na",
-          "isLatest": true,
-          "baseMonth": "2026-01",
-          "fundCode": "112527",
-          "floorLabel": "B4~B3, 2",
-          "rawTenantName": "아워박스(주)",
-          "coldStorageType": "N",
-          "assetName": "에이블로지스물류센터",
-          "rowNumber": 154,
-          "fundName": "이지스전문투자형사모부동산투자신탁제404호",
-          "sector": "물류센터",
-          "detailAreaLabel": "",
-          "exclusiveAreaSqm": 18052
-        }
-      ],
-      "rowNumber": 48,
-      "detailAreaLabel": "",
-      "sector": "물류센터",
-      "exclusiveAreaSqm": 18052.43,
-      "assetCode": "A112527003",
-      "warehouseAreaSqm": 17756.4,
-      "currentMoneyAsOf": "2026-01-01",
-      "currentMonthlyCostTotal": 166283187,
-      "extensionCount": 0,
-      "firstEndDate": "2027-12-31",
-      "sourceRowHash": "A112527003|3588100820|B4~B3, 2||20250101|20271231|18052.43|18052.43",
-      "goodsType": "공산품",
-      "eNoc": 29107.94,
-      "floorLabel": "B4~B3, 2",
-      "historyLinkStatus": "lease_space_id",
-      "fundName": "이지스전문투자형사모부동산투자신탁제404호",
-      "contractStatusRaw": "Y",
-      "historyLinked": true,
-      "historyLatestDate": "2026-01-01",
-      "currentMonthlyRentTotal": 155197641,
-      "firstContractDate": "2025-01-01",
-      "rawTenantName": "아워박스(주)",
-      "currentStartDate": "2025-01-01",
-      "leaseSpaceId": "asset_a112527003|tenant_brn_3588100820|20250101|20271231|b4~b32|na",
-      "company": {
-        "latestReceiptNo": "",
-        "tenantMasterName": "아워박스(주)",
-        "financialStatementType": "OFS_DOC",
-        "fetchedAt": "2026-04-22",
-        "latestRevenue": 87724000000,
-        "hasFinancialData": false,
-        "headquartersAddress": "서울특별시 구로구 디지털로 288 9층 908호(구로동, 대륭포스트타워1차)",
-        "latestFinancialYear": "2025",
-        "listedYn": "Y",
-        "dartCorpCode": "01561359",
-        "industryCode": "75994",
-        "latestEmployeeCount": 147,
-        "groupName": "",
-        "matchStatus": "matched",
-        "latestReportName": ""
-      },
-      "firstStartDate": "2025-01-01",
-      "currentMfPerPy": 2030,
-      "isSingleTenant": true,
-      "manager": {
-        "teamName": "로지스틱스매니지먼트",
-        "assetCode": "A112527003",
-        "fundCode": "112527",
-        "assetName": "에이블로지스물류센터",
-        "fundName": "이지스전문투자형사모부동산투자신탁제404호",
-        "managerName": "이정훈B",
-        "email": "jhlee@igisam.com"
-      },
-      "currentMonthlyMfTotal": 11085546,
-      "leasedAreaSqm": 18052.43,
-      "currentMoneyStatus": "ok",
-      "fundId": "fund_112527",
-      "isPreLeased": false,
-      "officeAreaSqm": 296.03,
-      "is3pl": false,
-      "linkedIssues": [
-        {
-          "owner": "",
-          "issueId": "issue_22",
-          "needsDevelopment": "",
-          "certainty": "",
-          "relatedAssetLabel": "에이블로지스물류센터",
-          "priority": "미정",
-          "content": "공용부 세부면적 없는 이유 확인 필요",
-          "relatedSheet": "전체",
-          "conclusion": "",
-          "recordedAt": "2026-04-16",
-          "rawId": "22",
-          "category": "자산별 담당자 확인 필요 사항",
-          "resolved": false
-        }
-      ],
-      "assetName": "에이블로지스물류센터",
-      "asset": {
-        "queryKey": "41461|35023|0|0767|0013",
-        "assetCode": "A112527003",
-        "approvalDate": "2016-11-04",
-        "platGbCd": "0",
-        "floorCount": "2F / B4",
-        "buildingHubStatus": "ok",
-        "fetchedAt": "2026-04-22",
-        "firstConfiguredAt": "2021-03-05",
-        "bjdongCd": "35023",
-        "buildingName": "에이블로지스물류센터",
-        "landAreaSqm": 19604,
-        "areaTableStatus": "unknown",
-        "geocodeStatus": "ok_naver_geocode",
-        "assetName": "에이블로지스물류센터",
-        "sigunguCd": "41461",
-        "bun": "767",
-        "grossFloorAreaSqm": 29980.02,
-        "standardizedAddress": "경기도 용인시 처인구 백암면 죽양대로 956-8",
-        "ji": "13",
-        "longitude": 127.3889424
-      },
-      "currentRentPerPy": 28420
+      "defaultSort": "tenant_name_asc",
+      "sortOptions": null
     },
-    {
+    "selectedTenantId": null
+  },
+  "profile": {
+    "company": {
+      "listedYn": "Y",
+      "tenantId": null,
+      "fetchedAt": "2026-04-22",
+      "groupName": "",
+      "matchStatus": "matched",
+      "dartCorpCode": "01561359",
+      "industryCode": "75994",
+      "latestRevenue": 87724000000,
+      "latestDebtRatio": null,
+      "latestReceiptNo": "",
+      "hasFinancialData": false,
+      "latestReportName": "",
       "tenantMasterName": "아워박스(주)",
-      "totalGrossAreaSqm": 29980.02,
-      "currentPeriodYears": 3,
-      "isDelinquent": false,
-      "leaseId": "asset_a112527003|tenant_brn_3588100820|20250401|20280331",
-      "historyCandidateCount": 1,
-      "recentContractDate": "2025-02-18",
-      "fundCode": "112527",
-      "currentMoneyBasis": "latest_linked_history",
-      "coldStorageType": "N",
-      "currentEndDate": "2028-03-31",
-      "historyCandidates": [
-        {
-          "matchConfidence": "lease_space_id",
-          "reason": "상승률 반영",
-          "mfPerPy": 1888,
-          "tenantMasterName": "아워박스(주)",
-          "monthlyRentTotal": 72124000,
-          "baseDate": "2025-04-01",
-          "assetCode": "A112527003",
-          "monthlyMfTotal": 6812000,
-          "leasedAreaSqm": 11928,
-          "rentPerPy": 19989,
-          "linkedLeaseSpaceId": "asset_a112527003|tenant_brn_3588100820|20250401|20280331|b2~b11|na",
-          "isLatest": true,
-          "baseMonth": "2025-04",
-          "fundCode": "112527",
-          "floorLabel": "B2~B1, 1",
-          "coldStorageType": "N",
-          "rawTenantName": "아워박스(주)",
-          "assetName": "에이블로지스물류센터",
-          "rowNumber": 155,
-          "fundName": "이지스전문투자형사모부동산투자신탁제404호",
-          "sector": "물류센터",
-          "detailAreaLabel": "",
-          "exclusiveAreaSqm": 11928
-        }
-      ],
-      "rowNumber": 49,
-      "sector": "물류센터",
-      "detailAreaLabel": "",
-      "exclusiveAreaSqm": 11927.59,
-      "assetCode": "A112527003",
-      "warehouseAreaSqm": 11258.37,
-      "currentMonthlyCostTotal": 78936000,
-      "currentMoneyAsOf": "2025-04-01",
-      "extensionCount": 0,
-      "firstEndDate": "2028-03-31",
-      "goodsType": "공산품",
-      "sourceRowHash": "A112527003|3588100820|B2~B1, 1||20250401|20280331|11927.59|11927.59",
-      "eNoc": 20544.4,
-      "floorLabel": "B2~B1, 1",
-      "historyLinkStatus": "lease_space_id",
-      "fundName": "이지스전문투자형사모부동산투자신탁제404호",
-      "contractStatusRaw": "Y",
-      "historyLinked": true,
-      "historyLatestDate": "2025-04-01",
-      "currentMonthlyRentTotal": 72124000,
-      "firstContractDate": "2025-02-18",
-      "rawTenantName": "아워박스(주)",
-      "currentStartDate": "2025-04-01",
-      "leaseSpaceId": "asset_a112527003|tenant_brn_3588100820|20250401|20280331|b2~b11|na",
-      "company": {
-        "latestReceiptNo": "",
-        "tenantMasterName": "아워박스(주)",
-        "financialStatementType": "OFS_DOC",
-        "fetchedAt": "2026-04-22",
-        "hasFinancialData": false,
-        "latestRevenue": 87724000000,
-        "headquartersAddress": "서울특별시 구로구 디지털로 288 9층 908호(구로동, 대륭포스트타워1차)",
-        "latestFinancialYear": "2025",
-        "dartCorpCode": "01561359",
-        "listedYn": "Y",
-        "industryCode": "75994",
-        "matchStatus": "matched",
-        "groupName": "",
-        "latestEmployeeCount": 147,
-        "latestReportName": ""
-      },
-      "firstStartDate": "2025-04-01",
-      "currentMfPerPy": 1888,
-      "isSingleTenant": true,
-      "manager": {
-        "teamName": "로지스틱스매니지먼트",
-        "assetCode": "A112527003",
-        "fundCode": "112527",
+      "corpRegistrationNo": null,
+      "headquartersAddress": "서울특별시 구로구 디지털로 288 9층 908호(구로동, 대륭포스트타워1차)",
+      "latestEmployeeCount": 147,
+      "latestFinancialYear": "2025",
+      "latestOperatingIncome": null,
+      "businessRegistrationNo": null,
+      "financialStatementType": "OFS_DOC"
+    },
+    "rowCount": 2,
+    "tenantId": null,
+    "assetCount": 1,
+    "averageENoc": 25700.92,
+    "sectorCount": 1,
+    "latestExpiry": "2028-03-31",
+    "leasedAssets": [
+      {
+        "period": "2025-01-01 ~ 2027-12-31",
         "assetName": "에이블로지스물류센터",
-        "fundName": "이지스전문투자형사모부동산투자신탁제404호",
-        "managerName": "이정훈B",
-        "email": "jhlee@igisam.com"
-      },
-      "currentMonthlyMfTotal": 6812000,
-      "leasedAreaSqm": 11927.59,
-      "currentMoneyStatus": "ok",
-      "fundId": "fund_112527",
-      "isPreLeased": false,
-      "officeAreaSqm": 669.22,
-      "assetName": "에이블로지스물류센터",
-      "linkedIssues": [
-        {
-          "owner": "",
-          "issueId": "issue_22",
-          "needsDevelopment": "",
-          "certainty": "",
-          "relatedAssetLabel": "에이블로지스물류센터",
-          "priority": "미정",
-          "content": "공용부 세부면적 없는 이유 확인 필요",
-          "relatedSheet": "전체",
-          "conclusion": "",
-          "recordedAt": "2026-04-16",
-          "rawId": "22",
-          "category": "자산별 담당자 확인 필요 사항",
-          "resolved": false
-        }
-      ],
-      "is3pl": false,
-      "currentRentPerPy": 19989,
-      "asset": {
-        "queryKey": "41461|35023|0|0767|0013",
-        "approvalDate": "2016-11-04",
-        "assetCode": "A112527003",
-        "platGbCd": "0",
-        "floorCount": "2F / B4",
-        "buildingHubStatus": "ok",
-        "fetchedAt": "2026-04-22",
-        "firstConfiguredAt": "2021-03-05",
-        "bjdongCd": "35023",
-        "buildingName": "에이블로지스물류센터",
-        "landAreaSqm": 19604,
-        "areaTableStatus": "unknown",
-        "geocodeStatus": "ok_naver_geocode",
-        "sigunguCd": "41461",
-        "assetName": "에이블로지스물류센터",
-        "standardizedAddress": "경기도 용인시 처인구 백암면 죽양대로 956-8",
-        "bun": "767",
-        "grossFloorAreaSqm": 29980.02,
-        "ji": "13",
-        "longitude": 127.3889424
+        "floorLabels": [
+          "B4~B3, 2",
+          "B2~B1, 1"
+        ],
+        "latestExpiry": "2028-03-31",
+        "leasedAreaPy": 9068.96,
+        "leasedAreaSqm": 29980.02,
+        "monthlyMfTotal": 17897546,
+        "detailAreaLabels": [],
+        "monthlyCostTotal": 245219187,
+        "monthlyRentTotal": 227321641
       }
-    }
-  ],
-  "basis": {
-    "rowScope": "selected_company_rows",
-    "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
-    "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
-    "page": "company",
-    "rowUnit": "lease_space_id",
-    "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
-    "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
+    ],
+    "leasedAreaSqm": 29980.02,
+    "goodsTypeCount": 1,
+    "monthlyMfTotal": 17897546,
+    "leaseSpaceCount": 2,
+    "monthlyCostTotal": 245219187,
+    "monthlyRentTotal": 227321641,
+    "selectorSortMeta": {
+      "assetCount": 1,
+      "latestExpiry": "2028-03-31",
+      "latestRevenue": 87724000000,
+      "hasFinancialData": true,
+      "monthlyCostTotal": 245219187,
+      "tenantMasterName": "아워박스(주)",
+      "exposureAvailable": false
+    },
+    "tenantMasterName": "아워박스(주)",
+    "exposureAvailable": false,
+    "businessRegistrationNo": null
   },
-  "kpis": [
-    {
-      "label": "임차 자산 수",
-      "value": 1,
-      "key": "asset_count",
-      "valueType": "number",
-      "status": "ok"
-    },
-    {
-      "label": "총 임차면적",
-      "value": 29980.02,
-      "key": "leased_area",
-      "valueType": "area",
-      "status": "ok"
-    },
-    {
-      "label": "월 임대료 총액",
-      "value": 227321641,
-      "key": "monthly_rent_total",
-      "valueType": "currency",
-      "status": "ok"
-    },
-    {
-      "label": "월 관리비 총액",
-      "value": 17897546,
-      "key": "monthly_mf_total",
-      "valueType": "currency",
-      "status": "ok"
-    },
-    {
-      "label": "월 임관리비 총액",
-      "value": 245219187,
-      "key": "monthly_total_cost",
-      "valueType": "currency",
-      "status": "ok"
-    },
-    {
-      "label": "최근 만기일",
-      "value": "2028-03-31",
-      "key": "latest_expiry",
-      "valueType": "date",
-      "status": "ok"
-    }
-  ],
   "mapPoints": [
     {
-      "assetName": "에이블로지스물류센터",
       "address": "경기도 용인시 처인구 백암면 죽양대로 956-8",
-      "longitude": 127.3889424,
       "assetId": "asset_a112527003",
-      "latitude": 37.1511389
+      "latitude": 37.1511389,
+      "assetName": "에이블로지스물류센터",
+      "longitude": 127.3889424
     }
-  ]
+  ],
+  "financials": {
+    "revenue": 87724000000,
+    "debtRatio": null,
+    "fetchedAt": "2026-04-22",
+    "dartLinked": true,
+    "employeeCount": 147,
+    "operatingIncome": null,
+    "emptyStateMessage": "DART 원문 감사보고서 기준 적재(감사보고서 (2025.12), 접수번호 20260330001156)"
+  },
+  "operations": null,
+  "generatedAt": "2026-04-27T18:27:46",
+  "basisDisplay": {
+    "asOf": "2026-04-22",
+    "page": "company",
+    "source": "DB_GENERAL + DB_COMPANY + OpenDART",
+    "derivedAt": "",
+    "fetchedAt": "2026-04-22",
+    "fetchedAts": [
+      "2026-04-22"
+    ],
+    "generatedAt": "2026-04-27T18:27:46",
+    "refreshedAt": "2026-04-27T18:27:46"
+  },
+  "leasedAssets": [
+    {
+      "period": "2025-01-01 ~ 2027-12-31",
+      "assetName": "에이블로지스물류센터",
+      "floorLabels": [
+        "B4~B3, 2",
+        "B2~B1, 1"
+      ],
+      "latestExpiry": "2028-03-31",
+      "leasedAreaPy": 9068.96,
+      "leasedAreaSqm": 29980.02,
+      "monthlyMfTotal": 17897546,
+      "detailAreaLabels": [],
+      "monthlyCostTotal": 245219187,
+      "monthlyRentTotal": 227321641
+    }
+  ],
+  "schemaVersion": "docs_static_v1",
+  "payloadSource": "supabase_snapshot",
+  "dataSourceMode": "supabase_snapshot",
+  "sourceSystem": "google_sheets"
 }
