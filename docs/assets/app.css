@@ -519,11 +519,6 @@ th {
   color: var(--text);
   outline: none;
 }
-.table-sort-button.is-active::after {
-  content: " " attr(aria-sort);
-  color: var(--accent);
-  font-size: 10px;
-}
 tbody tr:hover { background: rgba(255, 255, 255, .03); }
 tbody tr[data-detail-key] { cursor: pointer; }
 tbody tr[data-detail-key]:focus-visible {
@@ -682,7 +677,8 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 
 .map-panel {
   position: relative;
-  height: 260px;
+  min-height: 500px;
+  height: 500px;
   border: 1px solid var(--line-soft);
   border-radius: var(--radius);
   background: var(--panel-2);
@@ -712,7 +708,8 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   align-items: start;
 }
 .portfolio-map-layout .map-panel {
-  min-height: 340px;
+  min-height: 500px;
+  height: 500px;
 }
 .map-grid {
   position: absolute;
@@ -768,7 +765,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   right: 10px;
   z-index: 4;
   display: grid;
-  gap: 8px;
+  gap: 6px;
 }
 .map-tool-group {
   display: grid;
@@ -780,7 +777,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 }
 .map-tool-btn {
   width: 52px;
-  min-height: 44px;
+  min-height: 36px;
   border: 0;
   border-bottom: 1px solid var(--line-soft);
   background: transparent;
@@ -788,8 +785,8 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   display: grid;
   place-items: center;
   gap: 1px;
-  padding: 5px 3px;
-  font-size: 10px;
+  padding: 4px 3px;
+  font-size: 9px;
   font-weight: 800;
   cursor: pointer;
 }
@@ -801,7 +798,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   background: var(--accent);
 }
 .map-tool-icon {
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1;
 }
 .map-focus-label {
@@ -831,6 +828,96 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   color: var(--text);
   font-size: 12px;
   font-weight: 800;
+}
+.company-asset-status-panel {
+  display: grid;
+  gap: 0;
+}
+.company-asset-status-panel [data-table-scope] table {
+  min-width: 1180px;
+  table-layout: auto;
+}
+.company-asset-status-panel [data-table-scope] th,
+.company-asset-status-panel [data-table-scope] td {
+  white-space: nowrap;
+}
+.company-asset-status-panel [data-table-scope] th:nth-child(1) { min-width: 180px; }
+.company-asset-status-panel [data-table-scope] th:nth-child(8),
+.company-asset-status-panel [data-table-scope] th:nth-child(9) { min-width: 180px; }
+.company-contract-details [data-table-scope] table {
+  min-width: 1280px;
+}
+.table-width-toggle {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-top: 0;
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--panel-3);
+  color: var(--text);
+  font-weight: 900;
+  cursor: pointer;
+}
+.table-width-toggle:hover,
+.table-width-toggle:focus-visible {
+  color: #111;
+  background: var(--accent);
+  outline: none;
+}
+.company-contract-details {
+  margin-top: 12px;
+}
+.floorplan-slot {
+  width: 100%;
+  min-height: 220px;
+  margin-top: 12px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(90deg, transparent 0 24px, color-mix(in srgb, var(--line-soft) 64%, transparent) 24px 25px),
+    linear-gradient(0deg, transparent 0 24px, color-mix(in srgb, var(--line-soft) 64%, transparent) 24px 25px),
+    var(--panel-2);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  gap: 6px;
+  align-content: center;
+  text-align: center;
+  cursor: pointer;
+}
+.floorplan-slot:hover,
+.floorplan-slot:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+.floorplan-slot-label {
+  display: block;
+  font-weight: 900;
+}
+.floorplan-slot-note {
+  display: block;
+  color: var(--muted-2);
+  font-size: 12px;
+}
+.drawer[data-surface-kind="floorplan-modal"] {
+  width: min(1120px, calc(100vw - 32px));
+}
+.floorplan-modal-body {
+  min-height: 620px;
+  display: grid;
+}
+.floorplan-modal-placeholder {
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(90deg, transparent 0 32px, color-mix(in srgb, var(--line-soft) 60%, transparent) 32px 33px),
+    linear-gradient(0deg, transparent 0 32px, color-mix(in srgb, var(--line-soft) 60%, transparent) 32px 33px),
+    var(--panel-2);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  text-align: center;
 }
 .map-marker {
   position: absolute;
@@ -983,7 +1070,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   .portfolio-map-layout { grid-template-columns: 1fr; }
   .map-layer-control { right: 8px; max-width: calc(100% - 16px); }
   .map-tool-rail { top: 82px; right: 8px; }
-  .map-tool-btn { width: 46px; min-height: 40px; font-size: 9px; }
+  .map-tool-btn { width: 46px; min-height: 34px; font-size: 9px; }
   .bar-row { grid-template-columns: minmax(80px, 120px) minmax(100px, 1fr); }
   .bar-value { grid-column: 2; text-align: left; }
   .task-row { grid-template-columns: 1fr; }

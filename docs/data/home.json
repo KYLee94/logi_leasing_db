@@ -138,14 +138,14 @@
     {
       "address": "경기도 성남시 분당구 탄천로 257",
       "assetId": "asset_a190002001",
-      "latitude": null,
+      "latitude": 37.4147613,
       "assetCode": "A190002001",
       "assetName": "분당야탑물류센터",
-      "longitude": null,
+      "longitude": 127.118779,
       "dataStatus": "임대차계약 없음",
       "issueCount": 0,
-      "coordinateNote": "기존 좌표 37.40971,127.12046은 OpenStreetMap 역지오코딩 기준 탄천종합운동장으로 확인되어 핀 표시에서 제외합니다.",
-      "coordinateStatus": "좌표 재확인 필요",
+      "coordinateNote": "Naver 지도 주소 검색 응답 기준 탄천로 257(야탑동 403) 도로명 좌표입니다. 기존 37.40971,127.12046 좌표는 탄천종합운동장 인근으로 확인되어 사용하지 않습니다.",
+      "coordinateStatus": "네이버 주소 검색 보정 좌표",
       "buildingRegisterStatus": "pending_edge_function_lookup"
     },
     {
@@ -3803,7 +3803,7 @@
       }
     ]
   },
-  "generatedAt": "2026-06-11T01:20:32Z",
+  "generatedAt": "2026-06-11T02:22:14Z",
   "basisDisplay": {
     "asOf": "2026-06",
     "page": "home",

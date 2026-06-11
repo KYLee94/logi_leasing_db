@@ -191,8 +191,13 @@ function main() {
     row(
       "COMPANY-01",
       "company tenant asset table is collapsible and sortable",
-      has(app, "renderCompanyAssetStatus") && has(app, "compareCompanyAssetStatusRows") && has(app, "collapsible-panel"),
-      "renderCompanyAssetStatus + sortable header handling present",
+      has(app, "renderCompanyAssetStatus")
+        && has(app, "compareCompanyAssetStatusRows")
+        && has(app, "data-toggle-company-contract-details")
+        && has(app, "table-width-toggle")
+        && has(app, "table-sort-button")
+        && has(app, "sortTableRows"),
+      "renderCompanyAssetStatus + contract detail toggle + sortable header handling present",
     ),
     row(
       "COMPANY-02",

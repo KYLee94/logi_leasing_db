@@ -54,13 +54,13 @@
       "assetId": "asset_a190013001",
       "assetName": "포천정교리물류센터"
     },
-    "generatedAt": "2026-06-11T01:20:32Z",
+    "generatedAt": "2026-06-11T02:22:14Z",
     "basisDisplay": {
       "asOf": "2026-06-11",
       "page": "asset",
       "source": "260513/260520 Excel supplemental",
-      "generatedAt": "2026-06-11T01:20:32Z",
-      "refreshedAt": "2026-06-11T01:20:32Z"
+      "generatedAt": "2026-06-11T02:22:14Z",
+      "refreshedAt": "2026-06-11T02:22:14Z"
     }
   },
   "rows": [],
@@ -304,13 +304,13 @@
     "monthlyCostByTenant": []
   },
   "topTenants": [],
-  "generatedAt": "2026-06-11T01:20:32Z",
+  "generatedAt": "2026-06-11T02:22:14Z",
   "basisDisplay": {
     "asOf": "2026-06-11",
     "page": "asset",
     "source": "260513/260520 Excel supplemental",
-    "generatedAt": "2026-06-11T01:20:32Z",
-    "refreshedAt": "2026-06-11T01:20:32Z"
+    "generatedAt": "2026-06-11T02:22:14Z",
+    "refreshedAt": "2026-06-11T02:22:14Z"
   },
   "fundOverview": {
     "sector": "물류",

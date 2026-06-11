@@ -22,8 +22,6 @@ const NEW_ASSETS = [
 const NEW_STAFF = ["오윤석", "한창형", "류지훈", "양우영"];
 const REQUIRED_COMPANY_COLUMNS = [
   "assetName",
-  "floorLabel",
-  "detailAreaLabel",
   "leasedAreaPy",
   "averageRentPerPy",
   "averageMfPerPy",
@@ -32,6 +30,18 @@ const REQUIRED_COMPANY_COLUMNS = [
   "monthlyCostTotal",
   "areaRatio",
   "monthlyCostRatio",
+];
+const REQUIRED_COMPANY_DETAIL_COLUMNS = [
+  "assetName",
+  "floorLabel",
+  "detailAreaLabel",
+  "leasedAreaPy",
+  "averageRentPerPy",
+  "averageMfPerPy",
+  "monthlyRentTotal",
+  "monthlyMfTotal",
+  "monthlyCostTotal",
+  "latestExpiry",
 ];
 
 const MIME_TYPES = {
@@ -106,13 +116,26 @@ function floorNumber(label) {
   return number ? Number(number[0]) : Number.NEGATIVE_INFINITY;
 }
 
+function compareFloorText(left, right) {
+  const leftNum = floorNumber(left);
+  const rightNum = floorNumber(right);
+  if (Number.isFinite(leftNum) && Number.isFinite(rightNum) && leftNum !== rightNum) return leftNum - rightNum;
+  return String(left || "").localeCompare(String(right || ""), "ko-KR");
+}
+
 function isDefaultCompanySort(rows) {
   const expected = rows.slice().sort((left, right) => {
     const byAsset = String(left.assetName || "").localeCompare(String(right.assetName || ""), "ko-KR");
     if (byAsset) return byAsset;
-    return floorNumber(right.floorLabel) - floorNumber(left.floorLabel);
+    const leftFloor = `${left.floorLabel || ""} ${left.detailAreaLabel || ""}`.trim();
+    const rightFloor = `${right.floorLabel || ""} ${right.detailAreaLabel || ""}`.trim();
+    return compareFloorText(rightFloor, leftFloor);
   });
-  return rows.every((row, index) => row.assetName === expected[index].assetName && row.floorLabel === expected[index].floorLabel);
+  return rows.every((row, index) => (
+    row.assetName === expected[index].assetName
+    && row.floorLabel === expected[index].floorLabel
+    && row.detailAreaLabel === expected[index].detailAreaLabel
+  ));
 }
 
 function isSortedText(values, direction) {
@@ -179,8 +202,10 @@ async function main() {
       const table = document.querySelector('[data-table-scope="home-portfolio-map-points"]');
       const layerButtons = Array.from(document.querySelectorAll('[data-map-layer-scope="home-map-detail"]'));
       const toolButtons = Array.from(document.querySelectorAll('[data-map-tool-scope="home-map-detail"]'));
-      const enabledRow = table?.querySelector('[data-map-focus-scope="home-map-detail"]:not(.is-disabled)');
-      const disabledBundangRow = table?.querySelector('[data-map-focus-id="asset_a190002001"]');
+      const bundangRow = table?.querySelector('[data-map-focus-id="asset_a190002001"]');
+      const enabledRow = bundangRow && !bundangRow.classList.contains("is-disabled")
+        ? bundangRow
+        : table?.querySelector('[data-map-focus-scope="home-map-detail"]:not(.is-disabled)');
       const enabledFocusId = enabledRow?.getAttribute("data-map-focus-id") || "";
       enabledRow?.click();
       await new Promise((resolve) => setTimeout(resolve, 0));
@@ -197,16 +222,17 @@ async function main() {
         focusedId: state.mapFocus?.["home-map-detail"] || "",
         enabledFocusId,
         satelliteLayer: focusedMap?.classList.contains("map-layer-satellite") || false,
+        focusedMarkerCount: focusedMap?.querySelectorAll(".map-marker").length || 0,
         distanceStatus: focusedMap?.querySelector(".map-tool-status")?.textContent.trim() || "",
-        disabledBundang: disabledBundangRow?.classList.contains("is-disabled") || false,
-        disabledBundangText: disabledBundangRow?.textContent || "",
+        bundangEnabled: !!bundangRow && !bundangRow.classList.contains("is-disabled"),
+        bundangText: bundangRow?.textContent || "",
       };
     });
     await waitForPanel(page, "home");
     pushCheck(checks, "home-map-controls-visible", homeMapAudit.mapExists && homeMapAudit.tableExists && homeMapAudit.layerButtonCount === 3 && homeMapAudit.toolButtonCount >= 10, homeMapAudit);
-    pushCheck(checks, "home-map-row-focus", !!homeMapAudit.enabledFocusId && homeMapAudit.focusedId === homeMapAudit.enabledFocusId, homeMapAudit);
+    pushCheck(checks, "home-map-row-focus", !!homeMapAudit.enabledFocusId && homeMapAudit.focusedId === homeMapAudit.enabledFocusId && homeMapAudit.focusedMarkerCount === 1, homeMapAudit);
     pushCheck(checks, "home-map-layer-and-tool-toggle", homeMapAudit.satelliteLayer && /거리|distance/i.test(homeMapAudit.distanceStatus), homeMapAudit);
-    pushCheck(checks, "home-map-bundang-coordinate-disabled", homeMapAudit.disabledBundang && /좌표 재확인 필요/.test(homeMapAudit.disabledBundangText), homeMapAudit);
+    pushCheck(checks, "home-map-bundang-coordinate-enabled", homeMapAudit.bundangEnabled && /네이버 주소 검색 보정 좌표/.test(homeMapAudit.bundangText), homeMapAudit);
 
     for (const asset of NEW_ASSETS) {
       const audit = await page.evaluate(async (assetId) => {
@@ -226,6 +252,7 @@ async function main() {
           text: panel.innerText,
           labels,
           kpiKeys: (payload.kpis || []).map((item) => item.key || item[0] || ""),
+          hasFloorplanSlot: !!panel.querySelector(".floorplan-slot"),
           renderStatus: panel.dataset.renderStatus,
         };
       }, asset.id);
@@ -235,9 +262,10 @@ async function main() {
       const mfLabelCount = audit.labels.filter((label) => label === "평당 관리비 평균").length;
       pushCheck(checks, `asset-kpi-per-py-${asset.id}`, rentLabelCount === 1 && mfLabelCount === 1, { labels: audit.labels, rentLabelCount, mfLabelCount });
       pushCheck(checks, `asset-kpi-no-monthly-total-${asset.id}`, !audit.labels.includes("월 임관리비 총액") && !audit.kpiKeys.includes("monthly_total_cost"), { labels: audit.labels, kpiKeys: audit.kpiKeys });
+      pushCheck(checks, `asset-floorplan-slot-${asset.id}`, audit.hasFloorplanSlot, audit);
     }
 
-    const companyAudit = await page.evaluate(async (requiredColumns) => {
+    const companyAudit = await page.evaluate(async (requirements) => {
       const app = window.dashboardApp;
       const state = app.getState();
       const target = state.options.companies.find((item) => item.tenantMasterName === "쿠팡(주)")
@@ -250,46 +278,62 @@ async function main() {
       await app.refreshTab();
       const table = document.querySelector('[data-table-scope="company_assets"]');
       const exposureTable = document.querySelector('[data-table-scope="company-exposure-table"]');
-      const details = table?.closest("details");
+      const toggle = document.querySelector('[data-toggle-company-contract-details]');
+      const detailScope = toggle?.getAttribute("data-toggle-company-contract-details") || "";
+      const detailContainer = detailScope ? document.querySelector(`[data-company-contract-details="${detailScope}"]`) : null;
       const headers = Array.from(table?.querySelectorAll("[data-sort-key]") || []).map((node) => node.getAttribute("data-sort-key"));
+      const headerTexts = Array.from(table?.querySelectorAll(".table-sort-button") || []).map((node) => node.textContent.trim());
       const exposureHeaders = Array.from(exposureTable?.querySelectorAll("[data-sort-key]") || []).map((node) => node.getAttribute("data-sort-key"));
-      const readRows = () => Array.from(table?.querySelectorAll("tbody tr") || []).map((tr) => {
+      const readSummaryRows = () => Array.from(table?.querySelectorAll("tbody tr") || []).map((tr) => {
+        const cells = Array.from(tr.querySelectorAll("td")).map((td) => td.textContent.trim());
+        return { assetName: cells[0] || "" };
+      });
+      const summaryRows = readSummaryRows();
+      const detailHiddenBefore = detailContainer ? detailContainer.hidden : null;
+      toggle?.click();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      const detailHiddenAfter = detailContainer ? detailContainer.hidden : null;
+      const detailTable = detailScope ? document.querySelector(`[data-table-scope="${detailScope}"]`) : null;
+      const detailHeaders = Array.from(detailTable?.querySelectorAll("[data-sort-key]") || []).map((node) => node.getAttribute("data-sort-key"));
+      const detailRows = Array.from(detailTable?.querySelectorAll("tbody tr") || []).map((tr) => {
         const cells = Array.from(tr.querySelectorAll("td")).map((td) => td.textContent.trim());
         return { assetName: cells[0] || "", floorLabel: cells[1] || "", detailAreaLabel: cells[2] || "" };
       });
-      const rows = readRows();
-      const beforeOpen = details ? details.open : false;
-      if (details) details.open = false;
-      const collapsed = details ? !details.open : false;
-      if (details) details.open = true;
       const assetSortButton = table?.querySelector('[data-sort-key="assetName"]');
       if (assetSortButton) assetSortButton.click();
-      const assetNameAscRows = readRows();
+      const assetNameAscRows = readSummaryRows();
       if (assetSortButton) assetSortButton.click();
-      const assetNameDescRows = readRows();
+      const assetNameDescRows = readSummaryRows();
       return {
         tenantName: target?.tenantMasterName || "",
         tenantId: state.selections.tenantId,
-        rowCount: rows.length,
+        rowCount: summaryRows.length,
+        detailRowCount: detailRows.length,
         headers,
+        headerTexts,
         exposureHeaders,
-        missingColumns: requiredColumns.filter((column) => !headers.includes(column)),
+        missingColumns: requirements.requiredColumns.filter((column) => !headers.includes(column)),
+        missingDetailColumns: requirements.detailColumns.filter((column) => !detailHeaders.includes(column)),
         missingExposureColumns: ["averageRentPerPy", "averageMfPerPy", "areaRatio", "monthlyCostRatio"].filter((column) => !exposureHeaders.includes(column)),
-        detailsTag: details?.tagName || "",
-        beforeOpen,
-        collapsed,
+        toggleText: toggle?.textContent.trim() || "",
+        detailHiddenBefore,
+        detailHiddenAfter,
         hasSortButtons: headers.length > 0,
-        rows,
+        summaryRows,
+        detailRows,
         assetNameAscRows,
         assetNameDescRows,
       };
-    }, REQUIRED_COMPANY_COLUMNS);
+    }, { requiredColumns: REQUIRED_COMPANY_COLUMNS, detailColumns: REQUIRED_COMPANY_DETAIL_COLUMNS });
     await waitForPanel(page, "company");
     pushCheck(checks, "company-main-table-columns", companyAudit.missingColumns.length === 0, companyAudit);
+    pushCheck(checks, "company-contract-detail-columns", companyAudit.missingDetailColumns.length === 0, companyAudit);
     pushCheck(checks, "company-exposure-table-columns", companyAudit.missingExposureColumns.length === 0, companyAudit);
-    pushCheck(checks, "company-main-table-collapsible", companyAudit.detailsTag === "DETAILS" && companyAudit.beforeOpen && companyAudit.collapsed, companyAudit);
+    pushCheck(checks, "company-contract-detail-toggle", companyAudit.toggleText === "계약별 상세 정보 보기" && companyAudit.detailHiddenBefore === true && companyAudit.detailHiddenAfter === false, companyAudit);
+    pushCheck(checks, "company-sort-labels-clean", companyAudit.headerTexts.every((text) => text && !/^\?$|\?/.test(text)), companyAudit);
     pushCheck(checks, "company-main-table-sortable", companyAudit.hasSortButtons && companyAudit.rowCount > 0, companyAudit);
-    pushCheck(checks, "company-main-table-default-sort", companyAudit.rowCount < 2 || isDefaultCompanySort(companyAudit.rows), { rows: companyAudit.rows });
+    pushCheck(checks, "company-main-table-default-sort", companyAudit.rowCount < 2 || isSortedText(companyAudit.summaryRows.map((row) => row.assetName), "asc"), { rows: companyAudit.summaryRows });
+    pushCheck(checks, "company-contract-detail-default-sort", companyAudit.detailRowCount < 2 || isDefaultCompanySort(companyAudit.detailRows), { rows: companyAudit.detailRows });
     pushCheck(checks, "company-main-table-sort-clicks", isSortedText(companyAudit.assetNameAscRows.map((row) => row.assetName), "asc") && isSortedText(companyAudit.assetNameDescRows.map((row) => row.assetName), "desc"), {
       asc: companyAudit.assetNameAscRows.map((row) => row.assetName),
       desc: companyAudit.assetNameDescRows.map((row) => row.assetName),

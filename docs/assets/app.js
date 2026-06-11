@@ -181,6 +181,7 @@
     mapFocus: {},
     mapLayers: {},
     mapTools: {},
+    mapPanelPoints: {},
     detailStore: {},
     renderCounts: {},
     renderSeq: 0,
@@ -453,13 +454,14 @@
     if (!panel) return;
     const renderSeq = ++state.renderSeq;
     const cacheKey = buildCacheKey(tab);
-    if (!force && state.pageCache[cacheKey] && payloadMatchesSelection(tab, state.pageCache[cacheKey])) {
-      state.activePayload = state.pageCache[cacheKey];
-      state.lastSuccessfulPayloads[tab] = state.pageCache[cacheKey];
-      renderPayload(tab, state.pageCache[cacheKey]);
-      return;
+    const cachedPayload = state.pageCache[cacheKey];
+    if (cachedPayload && payloadMatchesSelection(tab, cachedPayload)) {
+      state.activePayload = cachedPayload;
+      state.lastSuccessfulPayloads[tab] = cachedPayload;
+      renderPayload(tab, cachedPayload);
+      if (!force) return;
     }
-    panel.dataset.renderStatus = "rendering";
+    panel.dataset.renderStatus = cachedPayload ? "refreshing" : "rendering";
     try {
       const payload = await loadTabPayload(tab);
       if (renderSeq !== state.renderSeq || state.activeTab !== tab) return;
@@ -753,13 +755,21 @@
       if (!shouldUseSupabaseSnapshots()) {
         throw new Error("supabase snapshot disabled for local static QA");
       }
-      return await fetchSupabaseSnapshot(tab, entityId);
+      return await withTimeout(fetchSupabaseSnapshot(tab, entityId), 2200, `supabase snapshot timeout: ${tab}/${entityId || "default"}`);
     } catch (error) {
       const payload = await fetchJson(fallbackPath);
       const tagged = tagPayload(payload, tab, FALLBACK_PAYLOAD_SOURCE, FALLBACK_DATA_SOURCE_MODE);
       tagged.supabaseFallbackReason = error && error.message ? error.message : String(error);
       return tagged;
     }
+  }
+
+  function withTimeout(promise, timeoutMs, message) {
+    let timerId;
+    const timeout = new Promise((_, reject) => {
+      timerId = window.setTimeout(() => reject(new Error(message || "request timeout")), timeoutMs);
+    });
+    return Promise.race([promise, timeout]).finally(() => window.clearTimeout(timerId));
   }
 
   function shouldUseSupabaseSnapshots() {
@@ -1021,7 +1031,10 @@
           ${renderInteractiveTable("asset_top_tenants", asset.topTenants || [], ["tenantMasterName", "leasedAreaSqm", "monthlyCostTotal", "latestExpiry", "averageENoc"], 20)}
         `)}
         ${section("층별 배치", "Asset", renderInteractiveTable("asset_stacking", asset.stackingPlan || [], null, 80))}
-        ${section("면적 구성", "Asset", keyValueGrid(asset.areaBreakdown || {}))}
+        ${section("면적 구성", "Asset", `
+          ${keyValueGrid(asset.areaBreakdown || {})}
+          ${renderFloorplanSlot(overview)}
+        `)}
         ${renderAssetParitySections(asset)}
       </div>
     `;
@@ -1051,6 +1064,21 @@
       status: weighted.hasArea ? "임대면적 가중평균" : "임대차계약 없음",
     });
     return normalizeKpis(filtered);
+  }
+
+  function renderFloorplanSlot(overview) {
+    const assetName = overview?.assetName || selectedAssetName();
+    const detailKey = registerDetail("asset-floorplan", {
+      __action: "floorplan-placeholder",
+      assetName,
+      status: "이미지 등록 대기",
+    }, `${assetName} 평면도`);
+    return `
+      <button class="floorplan-slot" type="button" data-detail-key="${escapeAttr(detailKey)}" aria-label="${escapeAttr(`${assetName} 평면도 크게 보기`)}">
+        <span class="floorplan-slot-label">평면도 이미지 영역</span>
+        <span class="floorplan-slot-note">PDF 또는 이미지 등록 후 이 영역을 누르면 전체 화면으로 확인합니다.</span>
+      </button>
+    `;
   }
 
   function calculatePerPyAverages(rows) {
@@ -1087,13 +1115,73 @@
     return 0;
   }
 
+  function buildCompanyKpis(company) {
+    const base = normalizeKpis(company?.kpis || []).filter((item) => {
+      const label = String(item?.[0] || "");
+      return !["평당 임대료 평균", "평당 관리비 평균", "E.NOC"].includes(label);
+    });
+    const weighted = calculateCompanyWeightedAverages(company);
+    base.push([
+      "평당 임대료 평균",
+      weighted.hasArea ? weighted.averageRentPerPy : "자료 없음",
+      weighted.hasArea ? "임대면적 가중평균" : "임대차계약 없음",
+    ]);
+    base.push([
+      "평당 관리비 평균",
+      weighted.hasArea ? weighted.averageMfPerPy : "자료 없음",
+      weighted.hasArea ? "임대면적 가중평균" : "임대차계약 없음",
+    ]);
+    base.push([
+      "E.NOC",
+      weighted.hasENoc ? weighted.averageENoc : "자료 없음",
+      weighted.hasENoc ? "임대면적 가중평균" : "E.NOC 원천 없음",
+    ]);
+    return base;
+  }
+
+  function calculateCompanyWeightedAverages(company) {
+    const rows = Array.isArray(company?.rows) && company.rows.length
+      ? company.rows
+      : (Array.isArray(company?.leasedAssets) ? company.leasedAssets : []);
+    const totals = rows.reduce((acc, row) => {
+      const areaPy = leasedAreaPy(row);
+      if (!areaPy) return acc;
+      const rent = moneyValue(row, ["currentMonthlyRentTotal", "monthlyRentTotal"]);
+      const mf = moneyValue(row, ["currentMonthlyMfTotal", "monthlyMfTotal"]);
+      const eNoc = firstFiniteNumber(row?.eNoc, row?.currentENoc, row?.averageENoc);
+      acc.areaPy += areaPy;
+      acc.rent += rent;
+      acc.mf += mf;
+      if (Number.isFinite(eNoc)) {
+        acc.eNocWeighted += eNoc * areaPy;
+        acc.eNocAreaPy += areaPy;
+      }
+      return acc;
+    }, { areaPy: 0, rent: 0, mf: 0, eNocWeighted: 0, eNocAreaPy: 0 });
+    return {
+      hasArea: totals.areaPy > 0,
+      hasENoc: totals.eNocAreaPy > 0,
+      averageRentPerPy: totals.areaPy > 0 ? totals.rent / totals.areaPy : null,
+      averageMfPerPy: totals.areaPy > 0 ? totals.mf / totals.areaPy : null,
+      averageENoc: totals.eNocAreaPy > 0 ? totals.eNocWeighted / totals.eNocAreaPy : null,
+    };
+  }
+
+  function firstFiniteNumber(...values) {
+    for (const value of values) {
+      const number = Number(value);
+      if (Number.isFinite(number)) return number;
+    }
+    return null;
+  }
+
   function renderCompany(company) {
     const profile = company.profile || {};
     const title = profile.tenantMasterName || selectedCompanyName();
     return `
       <div class="page-stack">
         ${section(title, "Company", `
-          ${kpiGrid(normalizeKpis(company.kpis), "company_kpi")}
+          ${kpiGrid(buildCompanyKpis(company), "company_kpi")}
           <div class="toolbar dense-toolbar">
             <span class="chip">노출 기준</span>
             <div class="segmented" aria-label="기업 노출 기준">
@@ -1445,13 +1533,19 @@
   }
 
   function renderCompanyAssetStatus(company, scope) {
-    const rows = buildCompanyAssetRows(company);
-    const columns = ["assetName", "floorLabel", "detailAreaLabel", "leasedAreaPy", "averageRentPerPy", "averageMfPerPy", "monthlyRentTotal", "monthlyMfTotal", "monthlyCostTotal", "areaRatio", "monthlyCostRatio", "latestExpiry"];
+    const summaryRows = buildCompanyExposureRows(company);
+    const detailRows = buildCompanyAssetRows(company);
+    const summaryColumns = ["assetName", "leasedAreaPy", "averageRentPerPy", "averageMfPerPy", "monthlyRentTotal", "monthlyMfTotal", "monthlyCostTotal", "areaRatio", "monthlyCostRatio"];
+    const detailColumns = ["assetName", "floorLabel", "detailAreaLabel", "leasedAreaPy", "averageRentPerPy", "averageMfPerPy", "monthlyRentTotal", "monthlyMfTotal", "monthlyCostTotal", "latestExpiry"];
+    const detailScope = `${scope}_contract_details`;
     return `
-      <details class="collapsible-panel" open>
-        <summary>임차 자산 현황</summary>
-        ${renderSearchableInteractiveTable(scope, rows, columns, 120, { placeholder: "자산명, 층, 구역 검색" })}
-      </details>
+      <div class="company-asset-status-panel">
+        ${renderSearchableInteractiveTable(scope, summaryRows, summaryColumns, 120, { placeholder: "자산명 검색" })}
+        <button class="table-width-toggle" type="button" data-toggle-company-contract-details="${escapeAttr(detailScope)}" aria-expanded="false">계약별 상세 정보 보기</button>
+        <div class="company-contract-details" data-company-contract-details="${escapeAttr(detailScope)}" hidden>
+          ${renderSearchableInteractiveTable(detailScope, detailRows, detailColumns, 120, { placeholder: "자산명, 층, 구역 검색" })}
+        </div>
+      </div>
     `;
   }
 
@@ -1957,7 +2051,9 @@
   }
 
   function renderMapPanel(points, scope) {
-    const list = (Array.isArray(points) ? points : []).filter((point) => point && point.latitude != null && point.longitude != null);
+    const rawList = Array.isArray(points) ? points : [];
+    const list = rawList.filter((point) => point && point.latitude != null && point.longitude != null);
+    state.mapPanelPoints[scope] = rawList.slice();
     if (!list.length) return renderEmpty("표시할 지도 좌표가 없습니다.");
     const lats = list.map((point) => Number(point.latitude)).filter(Number.isFinite);
     const lngs = list.map((point) => Number(point.longitude)).filter(Number.isFinite);
@@ -1969,8 +2065,8 @@
     const focusPoint = focusKey ? list.find((point) => mapPointKey(point) === focusKey) : null;
     const fullLatSpan = Math.max(fullMaxLat - fullMinLat, 0.01);
     const fullLngSpan = Math.max(fullMaxLng - fullMinLng, 0.01);
-    const focusLatSpan = Math.max(fullLatSpan * 0.18, 0.08);
-    const focusLngSpan = Math.max(fullLngSpan * 0.18, 0.08);
+    const focusLatSpan = Math.max(Math.min(fullLatSpan * 0.08, 0.035), 0.012);
+    const focusLngSpan = Math.max(Math.min(fullLngSpan * 0.08, 0.045), 0.012);
     const minLat = focusPoint ? Number(focusPoint.latitude) - focusLatSpan / 2 : fullMinLat;
     const maxLat = focusPoint ? Number(focusPoint.latitude) + focusLatSpan / 2 : fullMaxLat;
     const minLng = focusPoint ? Number(focusPoint.longitude) - focusLngSpan / 2 : fullMinLng;
@@ -1979,21 +2075,23 @@
     const lngSpan = Math.max(maxLng - minLng, 0.01);
     const layer = state.mapLayers?.[scope] || "road";
     const activeTool = state.mapTools?.[scope] || "";
+    const renderList = focusPoint ? [focusPoint] : list;
     return `
-      <div id="${escapeAttr(scope)}" class="map-panel map-layer-${escapeAttr(layer)}${focusPoint ? " is-focused" : ""}" role="group" aria-label="자산 위치 지도" data-map-scope="${escapeAttr(scope)}" data-testid="map-${escapeAttr(scope)}">
+      <div id="${escapeAttr(scope)}" class="map-panel map-layer-${escapeAttr(layer)}${focusPoint ? " is-focused" : ""}" role="group" aria-label="자산 위치 지도" data-map-scope="${escapeAttr(scope)}" data-map-point-count="${escapeAttr(renderList.length)}" data-testid="map-${escapeAttr(scope)}">
         <div class="map-grid"></div>
         ${renderMapControls(scope, layer, activeTool)}
         ${focusPoint ? `<div class="map-focus-label">${escapeHtml(focusPoint.assetName || focusPoint.address || "선택 자산")}</div>` : ""}
         ${activeTool ? `<div class="map-tool-status">${escapeHtml(mapToolLabel(activeTool))}</div>` : ""}
-        ${list.map((point, index) => {
+        ${renderList.map((point) => {
           const left = clamp(((Number(point.longitude) - minLng) / lngSpan) * 86 + 7, 5, 93);
           const top = clamp((1 - ((Number(point.latitude) - minLat) / latSpan)) * 78 + 10, 8, 90);
-          const detailKey = registerDetail(scope, point, point.assetName || `지도 지점 ${index + 1}`);
+          const markerNumber = list.findIndex((item) => mapPointKey(item) === mapPointKey(point)) + 1;
+          const detailKey = registerDetail(scope, point, point.assetName || `지도 지점 ${markerNumber || 1}`);
           const pointKey = mapPointKey(point);
           const focused = focusPoint && pointKey === mapPointKey(focusPoint);
           return `
             <button class="map-marker${focused ? " is-focused" : ""}" type="button" style="left:${left}%;top:${top}%" data-detail-key="${escapeAttr(detailKey)}" data-map-asset-id="${escapeAttr(pointKey)}" aria-label="${escapeAttr(`${point.assetName || "자산"} 상세`)}">
-              <span>${formatNumber(index + 1)}</span>
+              <span>${formatNumber(markerNumber || 1)}</span>
             </button>
           `;
         }).join("")}
@@ -2190,6 +2288,7 @@
     const scope = String(detail?.scope || "");
     const action = String(detail?.row?.__action || "");
     const title = String(detail?.title || "");
+    if (/floorplan/i.test(action) || /floorplan/i.test(scope)) return "floorplan-modal";
     if (/map/i.test(action) || /map/i.test(scope) || /지도|좌표/.test(title)) return "map-modal";
     if (/rent|chart|expiry|exposure|benchmark|playground/i.test(action) || /chart|rent|exposure|benchmark|playground/i.test(scope) || /추이|차트|만기|노출도|벤치마크|데이터 분석|집계/.test(title)) return "chart-modal";
     if (/^admin/i.test(action) || /OpenDART|DART|건축물대장|스냅샷 갱신|감사 실행|트리거|계산 시트|UI-DB|성능 로그/.test(title)) return "admin-action-drawer";
@@ -2206,12 +2305,24 @@
 
   function renderSurfaceBody(detail, kind) {
     const row = detail?.row || {};
+    if (kind === "floorplan-modal") return renderFloorplanSurfaceBody(row);
     if (kind === "map-modal") return renderMapSurfaceBody(row);
     if (kind === "chart-modal") return renderChartSurfaceBody(detail);
     if (kind === "metric-modal") return renderMetricSurfaceBody(detail);
     if (kind === "quality-panel") return renderMetricSurfaceBody(detail);
     if (kind === "admin-action-drawer") return renderAdminActionSurfaceBody(detail);
     return renderDetailBody(row);
+  }
+
+  function renderFloorplanSurfaceBody(row) {
+    return `
+      <div class="floorplan-modal-body">
+        <div class="floorplan-modal-placeholder">
+          <span class="floorplan-slot-label">${escapeHtml(row.assetName || selectedAssetName())}</span>
+          <span class="floorplan-slot-note">평면도 이미지가 등록되면 이 화면에서 크게 표시됩니다.</span>
+        </div>
+      </div>
+    `;
   }
 
   function renderAdminActionSurfaceBody(detail) {
@@ -2231,15 +2342,24 @@
   }
 
   function renderMapSurfaceBody(row) {
-    const points = row.mapPoints || row.rows || row.assetRows || [];
+    const points = normalizeMapSurfacePoints(row);
     return `
       <div class="surface-toolbar">
         <span class="chip">지도 fallback</span>
         <span class="page-note">운영 지도 SDK 연결 전까지 동일 좌표를 정적 패널로 표시합니다.</span>
       </div>
       ${renderMapPanel(points, "map-modal-points")}
-      ${renderInteractiveTable("map-modal-table", points, ["assetName", "address", "latitude", "longitude", "issueCount"], 80)}
+      ${renderMapPointTable("map-modal-table", "map-modal-points", points, ["assetName", "address", "coordinateStatus", "latitude", "longitude", "issueCount"], 80)}
     `;
+  }
+
+  function normalizeMapSurfacePoints(row) {
+    if (Array.isArray(row?.mapPoints)) return row.mapPoints;
+    if (Array.isArray(row?.rows)) return row.rows;
+    if (Array.isArray(row?.assetRows)) return row.assetRows;
+    if (row && row.latitude != null && row.longitude != null) return [row];
+    if (row?.overview && row.overview.latitude != null && row.overview.longitude != null) return [row.overview];
+    return [];
   }
 
   function renderChartSurfaceBody(detail) {
@@ -2312,6 +2432,17 @@
         event.stopImmediatePropagation();
         state.selections.companyExposureMetric = button.dataset.companyExposureMode || "amount";
         renderPayload(tab, payload);
+      });
+    });
+    panel.querySelectorAll("[data-toggle-company-contract-details]").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const targetKey = button.dataset.toggleCompanyContractDetails || "";
+        const target = panel.querySelector(`[data-company-contract-details="${cssEscape(targetKey)}"]`);
+        const expanded = target ? target.hidden : false;
+        if (target) target.hidden = !expanded;
+        button.setAttribute("aria-expanded", expanded ? "true" : "false");
       });
     });
     panel.querySelector("#tools-apply-button")?.addEventListener("click", (event) => {
@@ -2452,7 +2583,7 @@
   }
 
   function downloadMapPoints(scope, payload) {
-    const rows = mapPointsForPayload(payload);
+    const rows = (state.mapPanelPoints?.[scope] || []).length ? state.mapPanelPoints[scope] : mapPointsForPayload(payload);
     const blob = new Blob([JSON.stringify({ scope, generatedAt: new Date().toISOString(), rows }, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
@@ -2605,7 +2736,7 @@
 
   function compareTableCellText(left, right, key) {
     if (key === "floorLabel" || key === "floor") {
-      return compareFloorLabel({ floorLabel: left }, { floorLabel: right });
+      return compareFloorLabel(left, right);
     }
     if (/date|at$/i.test(key) || /Date$/.test(key)) {
       const leftTime = Date.parse(left);
@@ -2801,8 +2932,91 @@
         }
       });
     });
+    bindDrawerMapActions(content);
     backdrop.hidden = false;
     document.getElementById("drawer-close")?.focus({ preventScroll: true });
+  }
+
+  function bindDrawerMapActions(content) {
+    content.querySelectorAll("[data-map-layer]").forEach((button) => {
+      if (button.dataset.drawerBound === "true") return;
+      button.dataset.drawerBound = "true";
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const scope = button.dataset.mapLayerScope || "";
+        if (!scope) return;
+        state.mapLayers[scope] = button.dataset.mapLayer || "road";
+        repaintMapPanelIn(content, scope);
+      });
+    });
+    content.querySelectorAll("[data-map-tool]").forEach((button) => {
+      if (button.dataset.drawerBound === "true") return;
+      button.dataset.drawerBound = "true";
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        handleDrawerMapTool(content, button.dataset.mapToolScope, button.dataset.mapTool);
+      });
+    });
+    content.querySelectorAll("[data-map-focus-id]").forEach((node) => {
+      if (node.dataset.drawerBound === "true") return;
+      node.dataset.drawerBound = "true";
+      const focus = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (node.classList.contains("is-disabled")) return;
+        const scope = node.dataset.mapFocusScope || "";
+        const pointId = node.dataset.mapFocusId || "";
+        if (!scope || !pointId) return;
+        state.mapFocus[scope] = pointId;
+        repaintMapPanelIn(content, scope);
+        content.querySelectorAll(`[data-map-focus-scope="${cssEscape(scope)}"]`).forEach((row) => {
+          row.classList.toggle("is-selected", row.dataset.mapFocusId === pointId);
+          row.setAttribute("aria-selected", row.dataset.mapFocusId === pointId ? "true" : "false");
+        });
+      };
+      node.addEventListener("click", focus);
+      node.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") focus(event);
+      });
+    });
+  }
+
+  function handleDrawerMapTool(content, scope, tool) {
+    if (!scope || !tool) return;
+    if (tool === "theme") {
+      const current = state.mapLayers[scope] || "road";
+      state.mapLayers[scope] = current === "road" ? "satellite" : current === "satellite" ? "cadastral" : "road";
+    } else if (tool === "cadastral") {
+      state.mapLayers[scope] = "cadastral";
+      state.mapTools[scope] = tool;
+    } else if (tool === "print") {
+      state.mapTools[scope] = tool;
+      window.setTimeout(() => window.print(), 80);
+    } else if (tool === "share") {
+      state.mapTools[scope] = tool;
+      copyShareLink();
+    } else if (tool === "download") {
+      state.mapTools[scope] = tool;
+      downloadMapPoints(scope, null);
+    } else {
+      state.mapTools[scope] = state.mapTools[scope] === tool ? "" : tool;
+    }
+    repaintMapPanelIn(content, scope);
+  }
+
+  function repaintMapPanelIn(content, scope) {
+    const panel = content.querySelector(`[data-map-scope="${cssEscape(scope)}"]`);
+    const points = state.mapPanelPoints?.[scope] || [];
+    if (!panel || !points.length) return;
+    panel.outerHTML = renderMapPanel(points, scope);
+    bindDrawerMapActions(content);
+  }
+
+  function cssEscape(value) {
+    if (window.CSS?.escape) return window.CSS.escape(String(value || ""));
+    return String(value || "").replace(/["\\]/g, "\\$&");
   }
 
   function closeDrawer() {

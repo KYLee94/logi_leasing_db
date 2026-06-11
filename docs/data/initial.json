@@ -12,9 +12,9 @@
         "tenantId": "tenant_brn_1078198143"
       },
       "dataVersion": "20260429_198:1",
-      "generatedAt": "2026-06-11T01:20:32Z",
+      "generatedAt": "2026-06-11T02:22:14Z",
       "adminSummary": {
-        "generatedAt": "2026-06-11T01:20:32Z",
+        "generatedAt": "2026-06-11T02:22:14Z",
         "newAssetCodes": [
           "A190002001",
           "A190013001"
@@ -885,10 +885,10 @@
           },
           "fundCode": "190002",
           "fundName": "이지스부동산일반사모투자회사제543호",
-          "latitude": null,
+          "latitude": 37.4147613,
           "assetCode": "A190002001",
           "assetName": "분당야탑물류센터",
-          "longitude": null,
+          "longitude": 127.118779,
           "beneficiaries": [
             {
               "assetId": "asset_a190002001",
@@ -916,8 +916,8 @@
             }
           ],
           "parcelAddress": "경기도 성남시 분당구 야탑동 403",
-          "coordinateNote": "기존 좌표 37.40971,127.12046은 OpenStreetMap 역지오코딩 기준 탄천종합운동장으로 확인되어 핀 표시에서 제외합니다.",
-          "coordinateStatus": "좌표 재확인 필요",
+          "coordinateNote": "Naver 지도 주소 검색 응답 기준 탄천로 257(야탑동 403) 도로명 좌표입니다. 기존 37.40971,127.12046 좌표는 탄천종합운동장 인근으로 확인되어 사용하지 않습니다.",
+          "coordinateStatus": "네이버 주소 검색 보정 좌표",
           "buildingRegisterNote": "성남시 분당구 야탑동 403 기준으로 Edge Function에서 조회합니다.",
           "buildingRegisterQuery": {
             "ji": "0000",
@@ -1149,14 +1149,14 @@
         {
           "address": "경기도 성남시 분당구 탄천로 257",
           "assetId": "asset_a190002001",
-          "latitude": null,
+          "latitude": 37.4147613,
           "assetCode": "A190002001",
           "assetName": "분당야탑물류센터",
-          "longitude": null,
+          "longitude": 127.118779,
           "dataStatus": "임대차계약 없음",
           "issueCount": 0,
-          "coordinateNote": "기존 좌표 37.40971,127.12046은 OpenStreetMap 역지오코딩 기준 탄천종합운동장으로 확인되어 핀 표시에서 제외합니다.",
-          "coordinateStatus": "좌표 재확인 필요",
+          "coordinateNote": "Naver 지도 주소 검색 응답 기준 탄천로 257(야탑동 403) 도로명 좌표입니다. 기존 37.40971,127.12046 좌표는 탄천종합운동장 인근으로 확인되어 사용하지 않습니다.",
+          "coordinateStatus": "네이버 주소 검색 보정 좌표",
           "buildingRegisterStatus": "pending_edge_function_lookup"
         },
         {
@@ -4814,7 +4814,7 @@
           }
         ]
       },
-      "generatedAt": "2026-06-11T01:20:32Z",
+      "generatedAt": "2026-06-11T02:22:14Z",
       "basisDisplay": {
         "asOf": "2026-06",
         "page": "home",
@@ -19754,7 +19754,7 @@
           "tenantMasterName": "삼성전자로지텍(주)"
         }
       ],
-      "generatedAt": "2026-06-11T01:20:32Z",
+      "generatedAt": "2026-06-11T02:22:14Z",
       "basisDisplay": {
         "asOf": "2026-04-30T01:56:33.414Z",
         "page": "playground",
@@ -26089,14 +26089,14 @@
         {
           "address": "경기도 성남시 분당구 탄천로 257",
           "assetId": "asset_a190002001",
-          "latitude": null,
+          "latitude": 37.4147613,
           "assetCode": "A190002001",
           "assetName": "분당야탑물류센터",
-          "longitude": null,
+          "longitude": 127.118779,
           "dataStatus": "임대차계약 없음",
           "issueCount": 0,
-          "coordinateNote": "기존 좌표 37.40971,127.12046은 OpenStreetMap 역지오코딩 기준 탄천종합운동장으로 확인되어 핀 표시에서 제외합니다.",
-          "coordinateStatus": "좌표 재확인 필요"
+          "coordinateNote": "Naver 지도 주소 검색 응답 기준 탄천로 257(야탑동 403) 도로명 좌표입니다. 기존 37.40971,127.12046 좌표는 탄천종합운동장 인근으로 확인되어 사용하지 않습니다.",
+          "coordinateStatus": "네이버 주소 검색 보정 좌표"
         },
         {
           "address": "인천광역시 서구 갑문1로 20, 인천광역시 서구 갑문3로 34",
@@ -26781,7 +26781,7 @@
           "tenantMasterName": "(주)한진"
         }
       ],
-      "generatedAt": "2026-06-11T01:20:32Z",
+      "generatedAt": "2026-06-11T02:22:14Z",
       "basisDisplay": {
         "asOf": "2026-04-30T10:58:51",
         "page": "sector",
@@ -38674,7 +38674,7 @@
           "tenantMasterName": "삼성전자로지텍(주)"
         }
       ],
-      "generatedAt": "2026-06-11T01:20:32Z",
+      "generatedAt": "2026-06-11T02:22:14Z",
       "basisDisplay": {
         "asOf": "2026-04-30T01:56:17.731Z",
         "page": "tools",
@@ -39219,7 +39219,7 @@
       "updatedAt": "",
       "updatedBy": "",
       "reportDate": "2026-04-06",
-      "generatedAt": "2026-06-11T01:20:32Z",
+      "generatedAt": "2026-06-11T02:22:14Z",
       "newProjects": [
         {
           "id": "weekly_new_01",
@@ -39290,5 +39290,5 @@
       "sourceDocumentPath": null
     }
   },
-  "generatedAt": "2026-06-11T01:39:14.744Z"
+  "generatedAt": "2026-06-11T02:42:23.988Z"
 }
