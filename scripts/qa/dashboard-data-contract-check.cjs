@@ -14,7 +14,7 @@ const NEW_ASSETS = [
     docId: "asset_a190002001",
     name: "분당야탑물류센터",
     manager: "류지훈",
-    expectedBuildingStatus: "pending_edge_function_lookup",
+    expectedBuildingStatus: "building_register_api_readback_ok",
   },
   {
     code: "A190013001",

@@ -43,8 +43,8 @@ ASSET_OVERRIDES: dict[str, dict[str, Any]] = {
         "longitude": 127.1187790,
         "coordinateStatus": "네이버 주소 검색 보정 좌표",
         "coordinateNote": "Naver 지도 주소 검색 응답 기준 탄천로 257(야탑동 403) 도로명 좌표입니다. 기존 37.40971,127.12046 좌표는 탄천종합운동장 인근으로 확인되어 사용하지 않습니다.",
-        "buildingRegisterStatus": "pending_edge_function_lookup",
-        "buildingRegisterNote": "성남시 분당구 야탑동 403 기준으로 Edge Function에서 조회합니다.",
+        "buildingRegisterStatus": "building_register_api_readback_ok",
+        "buildingRegisterNote": "성남시 분당구 야탑동 403 기준 건축물대장 API provider 200 및 Supabase ll_cache_entries readback 결과를 반영했습니다.",
         "buildingRegisterQuery": {
             "sigunguCd": "41135",
             "bjdongCd": "10700",
@@ -52,15 +52,43 @@ ASSET_OVERRIDES: dict[str, dict[str, Any]] = {
             "bun": "0403",
             "ji": "0000",
         },
+        "buildingRegister": {
+            "provider": "building-register/summary",
+            "providerStatus": 200,
+            "cacheStatus": "readback_hit",
+            "cacheFetchedAt": "2026-06-10T08:03:39.215Z",
+            "bldName": "분당야탑물류센터",
+            "platPlc": "경기도 성남시 분당구 야탑동 403번지",
+            "newPlatPlc": "경기도 성남시 분당구 탄천로 257 (야탑동)",
+            "mainPurposeName": "창고시설",
+            "etcPurpose": "창고시설(창고)",
+            "structureName": "철골철근콘크리트구조",
+            "roofName": "(철근)콘크리트",
+            "groundFloorCount": 5,
+            "undergroundFloorCount": 3,
+            "floorCount": "5F / B3",
+            "landAreaSqm": 14192.1,
+            "buildingAreaSqm": 9932.09,
+            "grossFloorAreaSqm": 70405.93,
+            "floorAreaForFarSqm": 24562.02,
+            "buildingCoverageRatioPct": 69.98323,
+            "floorAreaRatioPct": 173.06825,
+            "heightM": 39.8,
+            "indoorAutoParkingCount": 93,
+            "outdoorAutoParkingCount": 105,
+            "totalParkingCount": 198,
+            "approvalDate": "2023-10-23",
+            "useAprDay": "20231023",
+        },
     },
     "A190013001": {
         "assetName": "포천정교리물류센터",
         "address": "경기도 포천시 가산면 정교리 272-1",
         "parcelAddress": "경기도 포천시 가산면 정교리 272-1",
-        "latitude": 37.83925,
-        "longitude": 127.18528,
-        "coordinateStatus": "주소 기반 좌표",
-        "coordinateNote": "개발 진행 중 자산으로 건축물대장/지번 기반 추가 검증이 필요합니다.",
+        "latitude": 37.8116318,
+        "longitude": 127.1818612,
+        "coordinateStatus": "네이버 지번주소 검색 좌표",
+        "coordinateNote": "Naver 지도 주소 검색 응답 기준 정교리 272-1 지번 좌표입니다. 개발 진행 중 자산으로 건축물대장 미존재 가능성은 별도 상태로 표시합니다.",
         "buildingRegisterStatus": "development_asset_not_found_expected",
         "buildingRegisterNote": "개발 진행 중 자산으로 건축물대장 미존재 가능성을 정상 상태로 기록합니다.",
         "buildingRegisterQuery": {
@@ -103,6 +131,11 @@ def yes(value: Any) -> bool:
 
 def date_text(value: Any) -> str:
     return clean(value)
+
+
+def building_register_summary(asset: dict[str, Any]) -> dict[str, Any]:
+    register = asset.get("buildingRegister")
+    return register if isinstance(register, dict) else {}
 
 
 def stable_hash(value: Any) -> str:
@@ -382,6 +415,7 @@ def build_new_assets(
 def empty_asset_payload(asset: dict[str, Any], asset_options: list[dict[str, Any]]) -> dict[str, Any]:
     manager = asset.get("manager") or {}
     fund = asset.get("fund") or {}
+    building = building_register_summary(asset)
     overview = {
         "assetId": asset["assetId"],
         "assetCode": asset["assetCode"],
@@ -417,6 +451,26 @@ def empty_asset_payload(asset: dict[str, Any], asset_options: list[dict[str, Any
         "buildingHubStatus": asset.get("buildingRegisterStatus"),
         "buildingRegisterStatus": asset.get("buildingRegisterStatus"),
         "buildingRegisterNote": asset.get("buildingRegisterNote"),
+        "buildingName": building.get("bldName"),
+        "buildingRegisterAddress": building.get("platPlc"),
+        "buildingRegisterRoadAddress": building.get("newPlatPlc"),
+        "mainPurposeName": building.get("mainPurposeName"),
+        "structureName": building.get("structureName"),
+        "roofName": building.get("roofName"),
+        "floorCount": building.get("floorCount"),
+        "groundFloorCount": building.get("groundFloorCount"),
+        "undergroundFloorCount": building.get("undergroundFloorCount"),
+        "landAreaSqm": building.get("landAreaSqm"),
+        "buildingAreaSqm": building.get("buildingAreaSqm"),
+        "grossFloorAreaSqm": building.get("grossFloorAreaSqm"),
+        "buildingCoverageRatioPct": building.get("buildingCoverageRatioPct"),
+        "floorAreaRatioPct": building.get("floorAreaRatioPct"),
+        "heightM": building.get("heightM"),
+        "totalParkingCount": building.get("totalParkingCount"),
+        "approvalDate": building.get("approvalDate"),
+        "buildingRegisterProvider": building.get("provider"),
+        "buildingRegisterProviderStatus": building.get("providerStatus"),
+        "buildingRegisterCacheStatus": building.get("cacheStatus"),
         "investmentOverview": {
             "fundType": fund.get("fundType"),
             "investmentStrategy": fund.get("investmentStrategy"),
@@ -462,10 +516,13 @@ def empty_asset_payload(asset: dict[str, Any], asset_options: list[dict[str, Any
         "stackingPlan": [],
         "areaBreakdown": {
             "leasedAreaSqm": 0,
-            "grossFloorAreaSqm": None,
+            "grossFloorAreaSqm": building.get("grossFloorAreaSqm"),
+            "landAreaSqm": building.get("landAreaSqm"),
+            "buildingAreaSqm": building.get("buildingAreaSqm"),
             "vacancyAreaSqm": None,
             "dataStatus": "임대차계약 없음",
         },
+        "buildingRegister": building,
         "fundOverview": fund,
         "beneficiaries": asset.get("beneficiaries") or [],
         "lenders": asset.get("lenders") or [],
@@ -750,6 +807,8 @@ def build_supplemental_dataset(
     }
 
     for asset in new_assets.values():
+        building = building_register_summary(asset)
+        manager = asset.get("manager") or {}
         fund = asset.get("fund") or {}
         f_id = fund_id(asset.get("fundCode") or asset["assetCode"])
         fund_payload = {**fund, "source": "260520_물류센터 펀드 정보.xlsx"}
@@ -779,6 +838,8 @@ def build_supplemental_dataset(
             "buildingRegisterStatus": asset.get("buildingRegisterStatus"),
             "buildingRegisterNote": asset.get("buildingRegisterNote"),
             "buildingRegisterQuery": asset.get("buildingRegisterQuery"),
+            "buildingRegister": building,
+            "manager": manager,
             "fund": fund,
         }
         tables["ll_assets"].append({
@@ -791,6 +852,13 @@ def build_supplemental_dataset(
             "address": asset.get("address"),
             "latitude": asset.get("latitude"),
             "longitude": asset.get("longitude"),
+            "current_manager_name": manager.get("managerName"),
+            "current_manager_team": manager.get("organization"),
+            "current_manager_email": manager.get("email"),
+            "approval_date": building.get("approvalDate") or None,
+            "gross_floor_area_sqm": building.get("grossFloorAreaSqm"),
+            "land_area_sqm": building.get("landAreaSqm"),
+            "floor_count": building.get("floorCount"),
             "source_system": "google_sheets",
             "source_table": "260520_펀드 정보",
             "source_pk": asset["assetCode"],
@@ -802,15 +870,13 @@ def build_supplemental_dataset(
         })
 
     for manager in managers:
-        if manager["assetCode"] not in NEW_ASSET_CODES:
-            continue
         payload = {**manager, "source": "260513_담당자별 권한 부여_수식 제거.xlsx"}
         tables["ll_asset_managers"].append({
             "asset_manager_id": "asset_manager_" + safe_id(manager["assetCode"]),
             "asset_id": manager["assetId"],
             "asset_code": manager["assetCode"],
             "asset_name": manager["assetName"].strip(),
-            "fund_id": fund_id(manager["fundCode"]),
+            "fund_id": fund_id(manager["fundCode"] or manager["assetCode"]),
             "fund_code": manager["fundCode"],
             "fund_name": manager["fundName"],
             "manager_name": manager["managerName"],
@@ -917,17 +983,6 @@ def build_supplemental_dataset(
             "source_ref": source_ref(row, "대주 정보"),
             "source_row_hash": stable_hash(payload),
             "source_payload": payload,
-        })
-
-    for row in admin_payload["loginHistory"]:
-        tables["ll_login_history"].append({
-            "login_event_id": "login_event_" + stable_hash(row)[:16],
-            "event_at": row["eventAt"],
-            "staff_name": row["staffName"],
-            "email": row["email"],
-            "event_type": row["eventType"],
-            "status": row["status"],
-            "source_payload": row,
         })
 
     return {"generatedAt": GENERATED_AT, "tables": tables}

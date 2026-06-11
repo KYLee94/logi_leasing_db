@@ -153,34 +153,18 @@ async function recordLoginHistory(admin: JsonRecord, request: Request, body: Jso
   const staffName = String(body.staffName || body.staff_name || "");
   const eventType = String(body.eventType || body.event_type || "login");
   const status = String(body.status || "ok");
-  const statusCode = /fail|error|denied|forbidden/i.test(status) ? 500 : 200;
-  const eventPayload = {
+  const row = {
+    logged_at: new Date().toISOString(),
     email,
     auth_email: email,
     staff_name: staffName || email,
-    event_type: eventType,
+    organization: String(body.organization || body.org || ""),
+    logistics_role: String(body.logisticsRole || body.logistics_role || "admin"),
     status,
-    source: "logistics-admin-api",
+    source: "supabase_edge",
+    client_timezone: String(body.clientTimezone || body.client_timezone || ""),
   };
-  const row = {
-    event_type: "auth_login",
-    action: eventType,
-    status_code: statusCode,
-    requested_by: admin.id || null,
-    event_status: status,
-    event_payload: eventPayload,
-    request_payload: {
-      source: "logistics-admin-api",
-      requestedBy: admin.email || "",
-      eventType,
-      status,
-    },
-    metadata: {
-      route: "/login-history/record",
-      userAgent: request.headers.get("user-agent") || "",
-    },
-  };
-  const response = await supabaseServiceFetch("/rest/v1/ll_audit_events", {
+  const response = await supabaseServiceFetch("/rest/v1/ll_login_history", {
     method: "POST",
     headers: {
       prefer: "return=representation",

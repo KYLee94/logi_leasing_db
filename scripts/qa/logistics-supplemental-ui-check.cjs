@@ -290,6 +290,9 @@ async function main() {
           labels,
           kpiKeys: (payload.kpis || []).map((item) => item.key || item[0] || ""),
           hasFloorplanSlot: !!panel.querySelector(".floorplan-slot"),
+          hasSupplementalSections: ["투자개요", "펀드개요", "수익자", "대주"].every((label) => panel.innerText.includes(label)),
+          hasBuildingSection: panel.innerText.includes("건축물대장"),
+          hasBundangBuildingValues: assetId !== "asset_a190002001" || ["분당야탑물류센터", "70,406", "2023-10-23", "5F / B3"].every((value) => panel.innerText.includes(value)),
           renderStatus: panel.dataset.renderStatus,
         };
       }, asset.id);
@@ -300,6 +303,8 @@ async function main() {
       pushCheck(checks, `asset-kpi-per-py-${asset.id}`, rentLabelCount === 1 && mfLabelCount === 1, { labels: audit.labels, rentLabelCount, mfLabelCount });
       pushCheck(checks, `asset-kpi-no-monthly-total-${asset.id}`, !audit.labels.includes("월 임관리비 총액") && !audit.kpiKeys.includes("monthly_total_cost"), { labels: audit.labels, kpiKeys: audit.kpiKeys });
       pushCheck(checks, `asset-floorplan-slot-${asset.id}`, audit.hasFloorplanSlot, audit);
+      pushCheck(checks, `asset-fund-sections-${asset.id}`, audit.hasSupplementalSections, audit);
+      pushCheck(checks, `asset-building-register-section-${asset.id}`, audit.hasBuildingSection && audit.hasBundangBuildingValues, audit);
       const floorplanClickAudit = await page.evaluate(() => {
         const slot = document.querySelector(".floorplan-slot");
         slot?.click();
