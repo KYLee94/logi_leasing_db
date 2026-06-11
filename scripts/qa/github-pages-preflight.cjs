@@ -7,7 +7,7 @@ const REQUIRED_FILES = [
   ".nojekyll",
   "index.html",
   path.join("assets", "app.js"),
-  path.join("assets", "iota.css"),
+  path.join("assets", "app.css"),
   path.join("data", "bootstrap.json"),
   path.join("data", "initial.json"),
 ];
@@ -47,7 +47,7 @@ function main() {
   const indexPath = path.join(DOCS_DIR, "index.html");
   if (fs.existsSync(indexPath)) {
     const html = readText(indexPath);
-    for (const asset of ["./assets/iota.css", "./assets/app.js"]) {
+    for (const asset of ["assets/app.css", "assets/app.js"]) {
       if (!html.includes(asset)) {
         failures.push({ type: "index-reference-missing", path: "docs/index.html", asset });
       }
