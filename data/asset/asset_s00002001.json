@@ -1,0 +1,1320 @@
+{
+  "kpis": [
+    {
+      "key": "occupancy_rate",
+      "label": "임대율",
+      "value": 0.6343043102089945,
+      "status": "ok",
+      "valueType": "percent"
+    },
+    {
+      "key": "leased_area_total",
+      "label": "총 임대면적",
+      "value": 33453,
+      "status": "ok",
+      "valueType": "area"
+    },
+    {
+      "key": "vacancy_area_total",
+      "label": "공실면적",
+      "value": 19286.67,
+      "status": "ok",
+      "valueType": "area"
+    },
+    {
+      "key": "unique_tenant_count",
+      "label": "현재 임차인 수",
+      "value": 3,
+      "status": "ok",
+      "valueType": "number"
+    },
+    {
+      "key": "monthly_total_cost",
+      "label": "월 임관리비 총액",
+      "value": 251987517,
+      "status": "ok",
+      "valueType": "currency"
+    },
+    {
+      "key": "average_e_noc",
+      "label": "E.NOC",
+      "value": 24901.1,
+      "status": "ok",
+      "valueType": "currency"
+    }
+  ],
+  "meta": {
+    "page": "asset",
+    "basis": {
+      "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
+      "page": "asset",
+      "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
+      "rowUnit": "lease_space_id",
+      "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
+      "rowScope": "selected_asset_rows",
+      "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
+    },
+    "timing": {
+      "derivedAt": "",
+      "fetchedAt": "2026-04-22",
+      "fetchedAts": [
+        "2026-04-22"
+      ],
+      "refreshedAt": "2026-04-27T16:07:14"
+    },
+    "rowCount": 3,
+    "selection": {
+      "assetId": "asset_s00002001",
+      "assetName": "양산 유산동 물류센터"
+    },
+    "generatedAt": "2026-04-27T16:07:14",
+    "basisDisplay": {
+      "asOf": "2026-04-17",
+      "page": "asset",
+      "source": "DB_GENERAL + DB_HISTORY + DB_ASSET",
+      "derivedAt": "",
+      "fetchedAt": "2026-04-22",
+      "fetchedAts": [
+        "2026-04-22"
+      ],
+      "generatedAt": "2026-04-27T16:07:14",
+      "refreshedAt": "2026-04-27T16:07:14"
+    },
+    "formulaVersion": "E.NOC_v2"
+  },
+  "rows": [
+    {
+      "eNoc": 17306.6,
+      "asset": {
+        "ji": "0",
+        "bun": "509",
+        "assetId": "asset_s00002001",
+        "bjdongCd": "11100",
+        "latitude": 35.3629266,
+        "platGbCd": "0",
+        "queryKey": "48330|11100|0|0509|0000",
+        "assetCode": "S00002001",
+        "assetName": "양산 유산동 물류센터",
+        "fetchedAt": "2026-04-22",
+        "longitude": 129.0262261,
+        "sigunguCd": "48330",
+        "floorCount": "1F / 0B",
+        "landAreaSqm": 23945.6,
+        "approvalDate": "2024-07-23",
+        "buildingName": "양산 유산동 물류센터",
+        "geocodeStatus": "ok_naver_geocode",
+        "areaTableStatus": "unknown",
+        "buildingHubStatus": "ok",
+        "firstConfiguredAt": "",
+        "grossFloorAreaSqm": 52739.67,
+        "standardizedAddress": "경상남도 양산시 유산공단4길 28-170"
+      },
+      "is3pl": false,
+      "fundId": "fund_s00002",
+      "sector": "물류센터",
+      "assetId": "asset_s00002001",
+      "company": {
+        "listedYn": "Y",
+        "tenantId": "tenant_brn_6158602347",
+        "fetchedAt": "2026-04-22",
+        "groupName": "",
+        "matchStatus": "matched",
+        "dartCorpCode": "01559770",
+        "industryCode": "71511",
+        "latestRevenue": 70703000000,
+        "latestDebtRatio": 83.99,
+        "latestReceiptNo": "",
+        "hasFinancialData": false,
+        "latestReportName": "",
+        "tenantMasterName": "(주)소셜빈",
+        "corpRegistrationNo": "1955110162100",
+        "headquartersAddress": "부산광역시 기장군 장안읍 반룡산단2로 17 (반룡리)",
+        "latestEmployeeCount": 103,
+        "latestFinancialYear": "2025",
+        "latestOperatingIncome": 2129404712,
+        "businessRegistrationNo": "615-86-02347",
+        "financialStatementType": "CFS_DOC"
+      },
+      "leaseId": "asset_s00002001|tenant_brn_6158602347|20250501|20300430",
+      "manager": {
+        "email": "choijt@igisam.com",
+        "fundCode": "S00002",
+        "fundName": "주식회사 석암물류(SPC)",
+        "teamName": "전략투자3파트",
+        "assetCode": "S00002001",
+        "assetName": "양산 유산동 물류센터",
+        "managerName": "최정택"
+      },
+      "foMonths": 3,
+      "fundCode": "S00002",
+      "fundName": "주식회사 석암물류(SPC)",
+      "rfMonths": 15,
+      "tenantId": "tenant_brn_6158602347",
+      "assetCode": "S00002001",
+      "assetName": "양산 유산동 물류센터",
+      "goodsType": "라이프스타일 용품",
+      "rowNumber": 62,
+      "floorLabel": "3",
+      "dockAreaSqm": 1055.74,
+      "isPreLeased": false,
+      "firstEndDate": "2030-04-30",
+      "isDelinquent": false,
+      "leaseSpaceId": "asset_s00002001|tenant_brn_6158602347|20250501|20300430|3|na",
+      "linkedIssues": [],
+      "sourceDocRef": "",
+      "depositAmount": 345290000,
+      "historyLinked": true,
+      "leasedAreaSqm": 10569,
+      "officeAreaSqm": 217.92,
+      "rawTenantName": "(주)소셜빈",
+      "sourceRowHash": "S00002001|6158602347|3||20250501|20300430|10569|10199",
+      "currentEndDate": "2030-04-30",
+      "currentMfPerPy": 2000,
+      "exclusiveRatio": 0.9649500000000001,
+      "extensionCount": 0,
+      "firstStartDate": "2025-05-01",
+      "isSingleTenant": false,
+      "coldStorageType": "N",
+      "detailAreaLabel": "",
+      "floorSplitCount": 1,
+      "floorSplitIndex": 1,
+      "currentMoneyAsOf": "2025-05-01",
+      "currentRentPerPy": 21000,
+      "currentStartDate": "2025-05-01",
+      "exclusiveAreaSqm": 10199,
+      "isContractActive": true,
+      "sourceFloorLabel": "3",
+      "tenantMasterName": "(주)소셜빈",
+      "warehouseAreaSqm": 8924.95,
+      "calculationStatus": "ok",
+      "contractStatusRaw": "Y",
+      "currentMoneyBasis": "latest_linked_history",
+      "exclusiveRatioRaw": 96.495,
+      "firstContractDate": "2024-10-23",
+      "historyCandidates": [
+        {
+          "reason": "최초 계약",
+          "sector": "물류센터",
+          "mfPerPy": 2000,
+          "baseDate": "2025-05-01",
+          "fundCode": "S00002",
+          "fundName": "주식회사 석암물류(SPC)",
+          "isLatest": true,
+          "assetCode": "S00002001",
+          "assetName": "양산 유산동 물류센터",
+          "baseMonth": "2025-05",
+          "rentPerPy": 21000,
+          "rowNumber": 163,
+          "floorLabel": "3",
+          "leasedAreaSqm": 10569.02,
+          "rawTenantName": "(주)소셜빈",
+          "historyEventId": "asset_s00002001|tenant_brn_6158602347|20250501|20300430|3|na|2025-05-01|163",
+          "monthlyMfTotal": 6395000,
+          "coldStorageType": "N",
+          "detailAreaLabel": "",
+          "matchConfidence": "lease_space_id",
+          "exclusiveAreaSqm": 8924.95,
+          "monthlyRentTotal": 67139917,
+          "tenantMasterName": "(주)소셜빈",
+          "isSelectedForMoney": true,
+          "linkedLeaseSpaceId": "asset_s00002001|tenant_brn_6158602347|20250501|20300430|3|na",
+          "businessRegistrationNo": "615-86-02347"
+        }
+      ],
+      "historyLatestDate": "2025-05-01",
+      "historyLinkStatus": "lease_space_id",
+      "totalGrossAreaSqm": 52739.67,
+      "currentMoneyStatus": "ok",
+      "currentPeriodYears": 5,
+      "firstOperationDate": "2025-05-01",
+      "otherCommonAreaSqm": 370.41,
+      "otherSpecialClause": "없음",
+      "recentContractDate": "2024-10-23",
+      "currentMonthlyMfTotal": 6395000,
+      "historyCandidateCount": 1,
+      "businessRegistrationNo": "615-86-02347",
+      "insuranceSpecialClause": "없음",
+      "currentMonthlyCostTotal": 73534917,
+      "currentMonthlyRentTotal": 67139917
+    },
+    {
+      "eNoc": 27153.3,
+      "asset": {
+        "ji": "0",
+        "bun": "509",
+        "assetId": "asset_s00002001",
+        "bjdongCd": "11100",
+        "latitude": 35.3629266,
+        "platGbCd": "0",
+        "queryKey": "48330|11100|0|0509|0000",
+        "assetCode": "S00002001",
+        "assetName": "양산 유산동 물류센터",
+        "fetchedAt": "2026-04-22",
+        "longitude": 129.0262261,
+        "sigunguCd": "48330",
+        "floorCount": "1F / 0B",
+        "landAreaSqm": 23945.6,
+        "approvalDate": "2024-07-23",
+        "buildingName": "양산 유산동 물류센터",
+        "geocodeStatus": "ok_naver_geocode",
+        "areaTableStatus": "unknown",
+        "buildingHubStatus": "ok",
+        "firstConfiguredAt": "",
+        "grossFloorAreaSqm": 52739.67,
+        "standardizedAddress": "경상남도 양산시 유산공단4길 28-170"
+      },
+      "is3pl": false,
+      "fundId": "fund_s00002",
+      "sector": "물류센터",
+      "assetId": "asset_s00002001",
+      "company": {
+        "listedYn": "Y",
+        "tenantId": "tenant_brn_6218105081",
+        "fetchedAt": "2026-04-22",
+        "groupName": "",
+        "matchStatus": "matched",
+        "dartCorpCode": "00154587",
+        "industryCode": "14111",
+        "latestRevenue": 851361000000,
+        "latestDebtRatio": 189.5,
+        "latestReceiptNo": "",
+        "hasFinancialData": false,
+        "latestReportName": "",
+        "tenantMasterName": "(주)파크랜드",
+        "corpRegistrationNo": "1101110266117",
+        "headquartersAddress": "부산광역시 금정구 반송로 365 (서동)",
+        "latestEmployeeCount": 361,
+        "latestFinancialYear": "2024",
+        "latestOperatingIncome": 41312753652,
+        "businessRegistrationNo": "621-81-05081",
+        "financialStatementType": "CFS_DOC"
+      },
+      "leaseId": "asset_s00002001|tenant_brn_6218105081|20260301|20310228",
+      "manager": {
+        "email": "choijt@igisam.com",
+        "fundCode": "S00002",
+        "fundName": "주식회사 석암물류(SPC)",
+        "teamName": "전략투자3파트",
+        "assetCode": "S00002001",
+        "assetName": "양산 유산동 물류센터",
+        "managerName": "최정택"
+      },
+      "foMonths": 5,
+      "fundCode": "S00002",
+      "fundName": "주식회사 석암물류(SPC)",
+      "tenantId": "tenant_brn_6218105081",
+      "assetCode": "S00002001",
+      "assetName": "양산 유산동 물류센터",
+      "goodsType": "의류",
+      "rowNumber": 63,
+      "floorLabel": "1",
+      "dockAreaSqm": 1347.09,
+      "isPreLeased": false,
+      "firstEndDate": "2031-02-28",
+      "isDelinquent": false,
+      "leaseSpaceId": "asset_s00002001|tenant_brn_6218105081|20260301|20310228|1|na",
+      "linkedIssues": [],
+      "sourceDocRef": "",
+      "depositAmount": 927588000,
+      "historyLinked": true,
+      "leasedAreaSqm": 14196,
+      "officeAreaSqm": 160.03,
+      "rawTenantName": "(주)파크랜드",
+      "sourceRowHash": "S00002001|6218105081|1||20260301|20310228|14196|12352",
+      "currentEndDate": "2031-02-28",
+      "currentMfPerPy": 3000,
+      "exclusiveRatio": 0.8700600000000001,
+      "extensionCount": 0,
+      "firstStartDate": "2026-03-01",
+      "isSingleTenant": false,
+      "coldStorageType": "N",
+      "detailAreaLabel": "",
+      "floorSplitCount": 1,
+      "floorSplitIndex": 1,
+      "currentMoneyAsOf": "2026-03-01",
+      "currentRentPerPy": 22500,
+      "currentStartDate": "2026-03-01",
+      "exclusiveAreaSqm": 12352,
+      "isContractActive": true,
+      "sourceFloorLabel": "1",
+      "tenantMasterName": "(주)파크랜드",
+      "warehouseAreaSqm": 10844.51,
+      "calculationStatus": "ok",
+      "contractStatusRaw": "Y",
+      "currentMoneyBasis": "latest_linked_history",
+      "exclusiveRatioRaw": 87.006,
+      "firstContractDate": "2025-08-25",
+      "historyCandidates": [
+        {
+          "reason": "최초 계약",
+          "sector": "물류센터",
+          "mfPerPy": 3000,
+          "baseDate": "2026-03-01",
+          "fundCode": "S00002",
+          "fundName": "주식회사 석암물류(SPC)",
+          "isLatest": true,
+          "assetCode": "S00002001",
+          "assetName": "양산 유산동 물류센터",
+          "baseMonth": "2026-03",
+          "rentPerPy": 22500,
+          "rowNumber": 164,
+          "floorLabel": "1",
+          "leasedAreaSqm": 14196.3,
+          "rawTenantName": "(주)파크랜드",
+          "historyEventId": "asset_s00002001|tenant_brn_6218105081|20260301|20310228|1|na|2026-03-01|164",
+          "monthlyMfTotal": 12883000,
+          "coldStorageType": "N",
+          "detailAreaLabel": "",
+          "matchConfidence": "lease_space_id",
+          "exclusiveAreaSqm": 10844.51,
+          "monthlyRentTotal": 96624000,
+          "tenantMasterName": "(주)파크랜드",
+          "isSelectedForMoney": true,
+          "linkedLeaseSpaceId": "asset_s00002001|tenant_brn_6218105081|20260301|20310228|1|na",
+          "businessRegistrationNo": "621-81-05081"
+        }
+      ],
+      "historyLatestDate": "2026-03-01",
+      "historyLinkStatus": "lease_space_id",
+      "totalGrossAreaSqm": 52739.67,
+      "currentMoneyStatus": "ok",
+      "currentPeriodYears": 5,
+      "firstOperationDate": "2026-03-01",
+      "otherCommonAreaSqm": 1844.66,
+      "otherSpecialClause": "없음",
+      "recentContractDate": "2025-08-25",
+      "currentMonthlyMfTotal": 12883000,
+      "historyCandidateCount": 1,
+      "businessRegistrationNo": "621-81-05081",
+      "insuranceSpecialClause": "없음",
+      "currentMonthlyCostTotal": 109507000,
+      "currentMonthlyRentTotal": 96624000
+    },
+    {
+      "eNoc": 34195.81,
+      "asset": {
+        "ji": "0",
+        "bun": "509",
+        "assetId": "asset_s00002001",
+        "bjdongCd": "11100",
+        "latitude": 35.3629266,
+        "platGbCd": "0",
+        "queryKey": "48330|11100|0|0509|0000",
+        "assetCode": "S00002001",
+        "assetName": "양산 유산동 물류센터",
+        "fetchedAt": "2026-04-22",
+        "longitude": 129.0262261,
+        "sigunguCd": "48330",
+        "floorCount": "1F / 0B",
+        "landAreaSqm": 23945.6,
+        "approvalDate": "2024-07-23",
+        "buildingName": "양산 유산동 물류센터",
+        "geocodeStatus": "ok_naver_geocode",
+        "areaTableStatus": "unknown",
+        "buildingHubStatus": "ok",
+        "firstConfiguredAt": "",
+        "grossFloorAreaSqm": 52739.67,
+        "standardizedAddress": "경상남도 양산시 유산공단4길 28-170"
+      },
+      "is3pl": true,
+      "fundId": "fund_s00002",
+      "sector": "물류센터",
+      "assetId": "asset_s00002001",
+      "company": {
+        "listedYn": "Y",
+        "tenantId": "tenant_brn_2018102823",
+        "fetchedAt": "2026-04-21",
+        "groupName": "",
+        "matchStatus": "matched",
+        "dartCorpCode": "00163512",
+        "industryCode": "49309",
+        "latestRevenue": 2389581460829,
+        "latestDebtRatio": 126.82,
+        "latestReceiptNo": "",
+        "hasFinancialData": false,
+        "latestReportName": "",
+        "tenantMasterName": "(주)한진",
+        "corpRegistrationNo": "1101110003668",
+        "headquartersAddress": "서울특별시 중구 남대문로 63 한진빌딩",
+        "latestEmployeeCount": 1673,
+        "latestFinancialYear": "2025",
+        "latestOperatingIncome": 28829654691,
+        "businessRegistrationNo": "201-81-02823",
+        "financialStatementType": "OFS"
+      },
+      "leaseId": "asset_s00002001|tenant_brn_2018102823|20260417|20290416",
+      "manager": {
+        "email": "choijt@igisam.com",
+        "fundCode": "S00002",
+        "fundName": "주식회사 석암물류(SPC)",
+        "teamName": "전략투자3파트",
+        "assetCode": "S00002001",
+        "assetName": "양산 유산동 물류센터",
+        "managerName": "최정택"
+      },
+      "foMonths": 1,
+      "fundCode": "S00002",
+      "fundName": "주식회사 석암물류(SPC)",
+      "tenantId": "tenant_brn_2018102823",
+      "assetCode": "S00002001",
+      "assetName": "양산 유산동 물류센터",
+      "goodsType": "유제품",
+      "rowNumber": 64,
+      "floorLabel": "B1",
+      "dockAreaSqm": 341.7,
+      "isPreLeased": false,
+      "firstEndDate": "2029-04-16",
+      "isDelinquent": false,
+      "leaseSpaceId": "asset_s00002001|tenant_brn_2018102823|20260417|20290416|b1|na",
+      "linkedIssues": [],
+      "sourceDocRef": "",
+      "depositAmount": 970894000,
+      "historyLinked": true,
+      "leasedAreaSqm": 8688,
+      "officeAreaSqm": 221.82,
+      "rawTenantName": "(주)한진",
+      "sourceRowHash": "S00002001|2018102823|B1||20260417|20290416|8688|6501",
+      "currentEndDate": "2029-04-16",
+      "currentMfPerPy": 3043,
+      "exclusiveRatio": 0.74836,
+      "extensionCount": 0,
+      "firstStartDate": "2026-04-17",
+      "isSingleTenant": false,
+      "coldStorageType": "Y",
+      "detailAreaLabel": "",
+      "floorSplitCount": 1,
+      "floorSplitIndex": 1,
+      "currentMoneyAsOf": "2026-04-17",
+      "currentRentPerPy": 23192,
+      "currentStartDate": "2026-04-17",
+      "exclusiveAreaSqm": 6501,
+      "isContractActive": true,
+      "sourceFloorLabel": "B1",
+      "tenantMasterName": "(주)한진",
+      "warehouseAreaSqm": 5129.7,
+      "calculationStatus": "ok",
+      "contractStatusRaw": "Y",
+      "currentMoneyBasis": "latest_linked_history",
+      "exclusiveRatioRaw": 74.836,
+      "firstContractDate": "2026-04-03",
+      "historyCandidates": [
+        {
+          "reason": "최초 계약",
+          "sector": "물류센터",
+          "mfPerPy": 3043,
+          "baseDate": "2026-04-17",
+          "fundCode": "S00002",
+          "fundName": "주식회사 석암물류(SPC)",
+          "isLatest": true,
+          "assetCode": "S00002001",
+          "assetName": "양산 유산동 물류센터",
+          "baseMonth": "2026-04",
+          "rentPerPy": 23192,
+          "rowNumber": 165,
+          "floorLabel": "B1",
+          "leasedAreaSqm": 8687.6,
+          "rawTenantName": "(주)한진",
+          "historyEventId": "asset_s00002001|tenant_brn_2018102823|20260417|20290416|b1|na|2026-04-17|165",
+          "monthlyMfTotal": 7996000,
+          "coldStorageType": "Y",
+          "detailAreaLabel": "",
+          "matchConfidence": "lease_space_id",
+          "exclusiveAreaSqm": 5222.26,
+          "monthlyRentTotal": 60949600,
+          "tenantMasterName": "(주)한진",
+          "isSelectedForMoney": true,
+          "linkedLeaseSpaceId": "asset_s00002001|tenant_brn_2018102823|20260417|20290416|b1|na",
+          "businessRegistrationNo": "201-81-02823"
+        }
+      ],
+      "historyLatestDate": "2026-04-17",
+      "historyLinkStatus": "lease_space_id",
+      "totalGrossAreaSqm": 52739.67,
+      "currentMoneyStatus": "ok",
+      "currentPeriodYears": 3,
+      "firstOperationDate": "2026-04-17",
+      "otherCommonAreaSqm": 2186.18,
+      "otherSpecialClause": "없음",
+      "recentContractDate": "2026-04-03",
+      "currentMonthlyMfTotal": 7996000,
+      "historyCandidateCount": 1,
+      "otherExclusiveAreaSqm": 808.23,
+      "businessRegistrationNo": "201-81-02823",
+      "insuranceSpecialClause": "없음",
+      "currentMonthlyCostTotal": 68945600,
+      "currentMonthlyRentTotal": 60949600
+    }
+  ],
+  "basis": {
+    "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
+    "page": "asset",
+    "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
+    "rowUnit": "lease_space_id",
+    "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
+    "rowScope": "selected_asset_rows",
+    "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
+  },
+  "filters": {
+    "assets": [
+      {
+        "assetId": "asset_a120085001",
+        "assetName": "경산 쿠팡물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 45996.45,
+        "vacancyRate": 0.22740490773422375,
+        "monthlyCostTotal": 1060724933,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112527001",
+        "assetName": "동산물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 26784.1,
+        "vacancyRate": 0.011449620876710885,
+        "monthlyCostTotal": 435167477,
+        "uniqueTenantCount": 4
+      },
+      {
+        "assetId": "asset_a112755001",
+        "assetName": "두동 LG전자 통합물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 38181.11,
+        "vacancyRate": 0.0008472422420663569,
+        "monthlyCostTotal": 630228000,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112527002",
+        "assetName": "부국물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 27449.95,
+        "vacancyRate": 0,
+        "monthlyCostTotal": 155328845,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112109001",
+        "assetName": "부산송정물류센터",
+        "fetchedAt": "2026-04-22",
+        "vacancyRate": 0.027004153491596173,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112299001",
+        "assetName": "스카이박스1, 스카이박스2",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 37283.28,
+        "vacancyRate": 0.3071110862557777,
+        "monthlyCostTotal": 669324200,
+        "uniqueTenantCount": 6
+      },
+      {
+        "assetId": "asset_a112505001",
+        "assetName": "아레나스안성",
+        "fetchedAt": "2026-04-22",
+        "vacancyRate": 0.7478773512350668,
+        "uniqueTenantCount": 3
+      },
+      {
+        "assetId": "asset_a112127001",
+        "assetName": "아레나스양지물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 6706,
+        "vacancyRate": 0.22161516861964634,
+        "monthlyCostTotal": 552212356,
+        "uniqueTenantCount": 2
+      },
+      {
+        "assetId": "asset_ap00014001",
+        "assetName": "안성 성은지구 물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 24627.67,
+        "vacancyRate": 0.3013357213767869,
+        "monthlyCostTotal": 604357000,
+        "uniqueTenantCount": 4
+      },
+      {
+        "assetId": "asset_a112500003",
+        "assetName": "안성 홈플러스 중부허브 물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 63365.46,
+        "vacancyRate": 0.016556145554103226,
+        "monthlyCostTotal": 629174800,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_s00002001",
+        "assetName": "양산 유산동 물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 24901.1,
+        "vacancyRate": 0.3656956897910055,
+        "monthlyCostTotal": 251987517,
+        "uniqueTenantCount": 3
+      },
+      {
+        "assetId": "asset_a112527003",
+        "assetName": "에이블로지스물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 27039.41,
+        "vacancyRate": 0,
+        "monthlyCostTotal": 245219187,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112606001",
+        "assetName": "여주 본두리 물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 32389.54,
+        "vacancyRate": 0.035098733326698266,
+        "monthlyCostTotal": 1028369423,
+        "uniqueTenantCount": 3
+      },
+      {
+        "assetId": "asset_a112573001",
+        "assetName": "이천 마장면 물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 27884.74,
+        "vacancyRate": 0.030459886244241004,
+        "monthlyCostTotal": 275622000,
+        "uniqueTenantCount": 2
+      },
+      {
+        "assetId": "asset_a112721001",
+        "assetName": "인천석남물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 31632.69,
+        "vacancyRate": 0.00020146451000519652,
+        "monthlyCostTotal": 2863471002,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112500002",
+        "assetName": "평택아디다스물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 28607.48,
+        "vacancyRate": 0,
+        "monthlyCostTotal": 460486000,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112642001",
+        "assetName": "화성 석포리 물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 39312.35,
+        "vacancyRate": 0,
+        "monthlyCostTotal": 1272556102,
+        "uniqueTenantCount": 1
+      }
+    ],
+    "selectorMeta": {
+      "defaultSort": "asset_name_asc",
+      "sortOptions": [
+        {
+          "key": "asset_name_asc",
+          "label": "자산명순"
+        },
+        {
+          "key": "monthly_cost_desc",
+          "label": "월 임관리비 높은순"
+        },
+        {
+          "key": "vacancy_rate_desc",
+          "label": "공실률 높은순"
+        },
+        {
+          "key": "e_noc_desc",
+          "label": "E.NOC 높은순"
+        }
+      ]
+    },
+    "selectedAssetId": "asset_s00002001"
+  },
+  "overview": {
+    "floors": [
+      {
+        "tenants": [
+          {
+            "share": 1,
+            "tenantId": "tenant_brn_2018102823",
+            "leasedAreaSqm": 8688,
+            "detailAreaLabel": "",
+            "tenantMasterName": "(주)한진"
+          }
+        ],
+        "floorLabel": "B1",
+        "totalFloorAreaSqm": 8688
+      },
+      {
+        "tenants": [
+          {
+            "share": 1,
+            "tenantId": "tenant_brn_6158602347",
+            "leasedAreaSqm": 10569,
+            "detailAreaLabel": "",
+            "tenantMasterName": "(주)소셜빈"
+          }
+        ],
+        "floorLabel": "3",
+        "totalFloorAreaSqm": 10569
+      },
+      {
+        "tenants": [
+          {
+            "share": 1,
+            "tenantId": "tenant_brn_6218105081",
+            "leasedAreaSqm": 14196,
+            "detailAreaLabel": "",
+            "tenantMasterName": "(주)파크랜드"
+          }
+        ],
+        "floorLabel": "1",
+        "totalFloorAreaSqm": 14196
+      }
+    ],
+    "sector": "물류센터",
+    "assetId": "asset_s00002001",
+    "manager": {
+      "email": "choijt@igisam.com",
+      "fundCode": "S00002",
+      "fundName": "주식회사 석암물류(SPC)",
+      "teamName": "전략투자3파트",
+      "assetCode": "S00002001",
+      "assetName": "양산 유산동 물류센터",
+      "managerName": "최정택"
+    },
+    "latitude": 35.3629266,
+    "rowCount": 3,
+    "assetCode": "S00002001",
+    "assetName": "양산 유산동 물류센터",
+    "fetchedAt": "2026-04-22",
+    "longitude": 129.0262261,
+    "floorCount": "1F / 0B",
+    "issueCount": 0,
+    "topTenants": [
+      {
+        "tenantId": "tenant_brn_6218105081",
+        "assetCount": 1,
+        "averageENoc": 25500.61,
+        "latestExpiry": "2031-02-28",
+        "leasedAreaSqm": 14196,
+        "earliestExpiry": "2031-02-28",
+        "monthlyMfTotal": 12883000,
+        "leaseSpaceCount": 1,
+        "monthlyCostTotal": 109507000,
+        "monthlyRentTotal": 96624000,
+        "tenantMasterName": "(주)파크랜드",
+        "businessRegistrationNo": "621-81-05081"
+      },
+      {
+        "tenantId": "tenant_brn_6158602347",
+        "assetCount": 1,
+        "averageENoc": 23000.34,
+        "latestExpiry": "2030-04-30",
+        "leasedAreaSqm": 10569,
+        "earliestExpiry": "2030-04-30",
+        "monthlyMfTotal": 6395000,
+        "leaseSpaceCount": 1,
+        "monthlyCostTotal": 73534917,
+        "monthlyRentTotal": 67139917,
+        "tenantMasterName": "(주)소셜빈",
+        "businessRegistrationNo": "615-86-02347"
+      },
+      {
+        "tenantId": "tenant_brn_2018102823",
+        "assetCount": 1,
+        "averageENoc": 26233.81,
+        "latestExpiry": "2029-04-16",
+        "leasedAreaSqm": 8688,
+        "earliestExpiry": "2029-04-16",
+        "monthlyMfTotal": 7996000,
+        "leaseSpaceCount": 1,
+        "monthlyCostTotal": 68945600,
+        "monthlyRentTotal": 60949600,
+        "tenantMasterName": "(주)한진",
+        "businessRegistrationNo": "201-81-02823"
+      }
+    ],
+    "averageENoc": 24901.1,
+    "landAreaSqm": 23945.6,
+    "tenantCount": 3,
+    "vacancyRate": 0.3656956897910055,
+    "approvalDate": "2024-07-23",
+    "leasedAreaSqm": 33453,
+    "monthlyMfTotal": 27274000,
+    "vacancyAreaSqm": 19286.67,
+    "areaTableStatus": "unknown",
+    "leaseSpaceCount": 3,
+    "monthlyCostTotal": 251987517,
+    "monthlyRentTotal": 224713517,
+    "firstConfiguredAt": "",
+    "grossFloorAreaSqm": 52739.67,
+    "uniqueTenantCount": 3,
+    "standardizedAddress": "경상남도 양산시 유산공단4길 28-170",
+    "grossFloorAreaEffectiveAt": "2024-07-23",
+    "grossFloorAreaTimelineRule": "approval_date",
+    "grossFloorAreaTimelineBasis": {
+      "note": "사용승인일 기준으로 총 연면적 시계열에 반영합니다.",
+      "rule": "approval_date",
+      "effectiveAt": "2024-07-23",
+      "approvalDate": "2024-07-23",
+      "effectiveMonth": "2024-07",
+      "firstConfiguredAt": ""
+    },
+    "grossFloorAreaEffectiveMonth": "2024-07"
+  },
+  "analytics": {
+    "rentVsMf": [
+      {
+        "mfPerPy": 2000,
+        "rentPerPy": 21000,
+        "leaseSpaceId": "asset_s00002001|tenant_brn_6158602347|20250501|20300430|3|na",
+        "leasedAreaPy": 3197.12,
+        "monthlyTotal": 73534917,
+        "monthlyMfTotal": 6395000,
+        "monthlyRentTotal": 67139917,
+        "tenantMasterName": "(주)소셜빈"
+      },
+      {
+        "mfPerPy": 3000,
+        "rentPerPy": 22500,
+        "leaseSpaceId": "asset_s00002001|tenant_brn_6218105081|20260301|20310228|1|na",
+        "leasedAreaPy": 4294.29,
+        "monthlyTotal": 109507000,
+        "monthlyMfTotal": 12883000,
+        "monthlyRentTotal": 96624000,
+        "tenantMasterName": "(주)파크랜드"
+      },
+      {
+        "mfPerPy": 3043,
+        "rentPerPy": 23192,
+        "leaseSpaceId": "asset_s00002001|tenant_brn_2018102823|20260417|20290416|b1|na",
+        "leasedAreaPy": 2628.12,
+        "monthlyTotal": 68945600,
+        "monthlyMfTotal": 7996000,
+        "monthlyRentTotal": 60949600,
+        "tenantMasterName": "(주)한진"
+      }
+    ],
+    "eNocAudit": {
+      "rows": [
+        {
+          "mfPerPy": 2000,
+          "foMonths": 3,
+          "rfMonths": 15,
+          "tenantId": "tenant_brn_6158602347",
+          "variance": 0,
+          "rentPerPy": 21000,
+          "storedENoc": 17306.6,
+          "leaseSpaceId": "asset_s00002001|tenant_brn_6158602347|20250501|20300430|3|na",
+          "leasedAreaSqm": 10569,
+          "exclusiveRatio": 0.9649500000000001,
+          "recomputedENoc": 17306.6,
+          "currentMoneyAsOf": "2025-05-01",
+          "exclusiveAreaSqm": 10199,
+          "tenantMasterName": "(주)소셜빈",
+          "calculationStatus": "ok",
+          "currentMoneyBasis": "latest_linked_history",
+          "currentPeriodYears": 5
+        },
+        {
+          "mfPerPy": 3000,
+          "foMonths": 5,
+          "tenantId": "tenant_brn_6218105081",
+          "variance": 0,
+          "rentPerPy": 22500,
+          "storedENoc": 27153.3,
+          "leaseSpaceId": "asset_s00002001|tenant_brn_6218105081|20260301|20310228|1|na",
+          "leasedAreaSqm": 14196,
+          "exclusiveRatio": 0.8700600000000001,
+          "recomputedENoc": 27153.3,
+          "currentMoneyAsOf": "2026-03-01",
+          "exclusiveAreaSqm": 12352,
+          "tenantMasterName": "(주)파크랜드",
+          "calculationStatus": "ok",
+          "currentMoneyBasis": "latest_linked_history",
+          "currentPeriodYears": 5
+        },
+        {
+          "mfPerPy": 3043,
+          "foMonths": 1,
+          "tenantId": "tenant_brn_2018102823",
+          "variance": 0,
+          "rentPerPy": 23192,
+          "storedENoc": 34195.81,
+          "leaseSpaceId": "asset_s00002001|tenant_brn_2018102823|20260417|20290416|b1|na",
+          "leasedAreaSqm": 8688,
+          "exclusiveRatio": 0.74836,
+          "recomputedENoc": 34195.81,
+          "currentMoneyAsOf": "2026-04-17",
+          "exclusiveAreaSqm": 6501,
+          "tenantMasterName": "(주)한진",
+          "calculationStatus": "ok",
+          "currentMoneyBasis": "latest_linked_history",
+          "currentPeriodYears": 3
+        }
+      ],
+      "formula": "((rentPerPy * ((periodYears*12 - rfMonths - foMonths)/(periodYears*12)) + mfPerPy) / exclusiveRatio) - (tiAmount / (exclusiveAreaSqm*0.3025) / (periodYears*12))",
+      "summary": {
+        "rowCount": 3,
+        "computedRowCount": 3,
+        "missingInputCount": 0,
+        "nonZeroVarianceCount": 0
+      }
+    },
+    "coreTenants": [
+      {
+        "tenantId": "tenant_brn_6218105081",
+        "areaShare": 0.4244,
+        "costShare": 0.4346,
+        "assetCount": 1,
+        "averageENoc": 25500.61,
+        "latestExpiry": "2031-02-28",
+        "leasedAreaSqm": 14196,
+        "earliestExpiry": "2031-02-28",
+        "monthlyMfTotal": 12883000,
+        "leaseSpaceCount": 1,
+        "monthlyCostTotal": 109507000,
+        "monthlyRentTotal": 96624000,
+        "tenantMasterName": "(주)파크랜드",
+        "businessRegistrationNo": "621-81-05081"
+      },
+      {
+        "tenantId": "tenant_brn_6158602347",
+        "areaShare": 0.3159,
+        "costShare": 0.2918,
+        "assetCount": 1,
+        "averageENoc": 23000.34,
+        "latestExpiry": "2030-04-30",
+        "leasedAreaSqm": 10569,
+        "earliestExpiry": "2030-04-30",
+        "monthlyMfTotal": 6395000,
+        "leaseSpaceCount": 1,
+        "monthlyCostTotal": 73534917,
+        "monthlyRentTotal": 67139917,
+        "tenantMasterName": "(주)소셜빈",
+        "businessRegistrationNo": "615-86-02347"
+      },
+      {
+        "tenantId": "tenant_brn_2018102823",
+        "areaShare": 0.2597,
+        "costShare": 0.2736,
+        "assetCount": 1,
+        "averageENoc": 26233.81,
+        "latestExpiry": "2029-04-16",
+        "leasedAreaSqm": 8688,
+        "earliestExpiry": "2029-04-16",
+        "monthlyMfTotal": 7996000,
+        "leaseSpaceCount": 1,
+        "monthlyCostTotal": 68945600,
+        "monthlyRentTotal": 60949600,
+        "tenantMasterName": "(주)한진",
+        "businessRegistrationNo": "201-81-02823"
+      }
+    ],
+    "goodsTypeMix": [
+      {
+        "label": "의류",
+        "value": 14196,
+        "recordCount": 1
+      },
+      {
+        "label": "라이프스타일 용품",
+        "value": 10569,
+        "recordCount": 1
+      },
+      {
+        "label": "유제품",
+        "value": 8688,
+        "recordCount": 1
+      }
+    ],
+    "uniqueTenants": [
+      {
+        "tenantId": "tenant_brn_6218105081",
+        "assetCount": 1,
+        "averageENoc": 25500.61,
+        "latestExpiry": "2031-02-28",
+        "leasedAreaSqm": 14196,
+        "earliestExpiry": "2031-02-28",
+        "monthlyMfTotal": 12883000,
+        "leaseSpaceCount": 1,
+        "monthlyCostTotal": 109507000,
+        "monthlyRentTotal": 96624000,
+        "tenantMasterName": "(주)파크랜드",
+        "businessRegistrationNo": "621-81-05081"
+      },
+      {
+        "tenantId": "tenant_brn_6158602347",
+        "assetCount": 1,
+        "averageENoc": 23000.34,
+        "latestExpiry": "2030-04-30",
+        "leasedAreaSqm": 10569,
+        "earliestExpiry": "2030-04-30",
+        "monthlyMfTotal": 6395000,
+        "leaseSpaceCount": 1,
+        "monthlyCostTotal": 73534917,
+        "monthlyRentTotal": 67139917,
+        "tenantMasterName": "(주)소셜빈",
+        "businessRegistrationNo": "615-86-02347"
+      },
+      {
+        "tenantId": "tenant_brn_2018102823",
+        "assetCount": 1,
+        "averageENoc": 26233.81,
+        "latestExpiry": "2029-04-16",
+        "leasedAreaSqm": 8688,
+        "earliestExpiry": "2029-04-16",
+        "monthlyMfTotal": 7996000,
+        "leaseSpaceCount": 1,
+        "monthlyCostTotal": 68945600,
+        "monthlyRentTotal": 60949600,
+        "tenantMasterName": "(주)한진",
+        "businessRegistrationNo": "201-81-02823"
+      }
+    ],
+    "contractExpiry": [
+      {
+        "floorLabel": "3",
+        "spaceLabel": "3",
+        "leaseSpaceId": "asset_s00002001|tenant_brn_6158602347|20250501|20300430|3|na",
+        "currentEndDate": "2030-04-30",
+        "monthsToExpiry": 48,
+        "detailAreaLabel": "",
+        "tenantMasterName": "(주)소셜빈"
+      },
+      {
+        "floorLabel": "1",
+        "spaceLabel": "1",
+        "leaseSpaceId": "asset_s00002001|tenant_brn_6218105081|20260301|20310228|1|na",
+        "currentEndDate": "2031-02-28",
+        "monthsToExpiry": 58,
+        "detailAreaLabel": "",
+        "tenantMasterName": "(주)파크랜드"
+      },
+      {
+        "floorLabel": "B1",
+        "spaceLabel": "B1",
+        "leaseSpaceId": "asset_s00002001|tenant_brn_2018102823|20260417|20290416|b1|na",
+        "currentEndDate": "2029-04-16",
+        "monthsToExpiry": 36,
+        "detailAreaLabel": "",
+        "tenantMasterName": "(주)한진"
+      }
+    ],
+    "expirySnapshot": {
+      "entries": [
+        {
+          "tenantId": "tenant_brn_2018102823",
+          "floorLabel": "B1",
+          "spaceLabel": "B1",
+          "latestExpiry": "2029-04-16",
+          "leaseSpaceId": "asset_s00002001|tenant_brn_2018102823|20260417|20290416|b1|na",
+          "leasedAreaSqm": 8688,
+          "currentEndDate": "2029-04-16",
+          "earliestExpiry": "2029-04-16",
+          "monthsToExpiry": 36,
+          "detailAreaLabel": "",
+          "monthlyCostTotal": 68945600,
+          "tenantMasterName": "(주)한진",
+          "monthlyCombinedTotal": 68945600
+        },
+        {
+          "tenantId": "tenant_brn_6158602347",
+          "floorLabel": "3",
+          "spaceLabel": "3",
+          "latestExpiry": "2030-04-30",
+          "leaseSpaceId": "asset_s00002001|tenant_brn_6158602347|20250501|20300430|3|na",
+          "leasedAreaSqm": 10569,
+          "currentEndDate": "2030-04-30",
+          "earliestExpiry": "2030-04-30",
+          "monthsToExpiry": 48,
+          "detailAreaLabel": "",
+          "monthlyCostTotal": 73534917,
+          "tenantMasterName": "(주)소셜빈",
+          "monthlyCombinedTotal": 73534917
+        },
+        {
+          "tenantId": "tenant_brn_6218105081",
+          "floorLabel": "1",
+          "spaceLabel": "1",
+          "latestExpiry": "2031-02-28",
+          "leaseSpaceId": "asset_s00002001|tenant_brn_6218105081|20260301|20310228|1|na",
+          "leasedAreaSqm": 14196,
+          "currentEndDate": "2031-02-28",
+          "earliestExpiry": "2031-02-28",
+          "monthsToExpiry": 58,
+          "detailAreaLabel": "",
+          "monthlyCostTotal": 109507000,
+          "tenantMasterName": "(주)파크랜드",
+          "monthlyCombinedTotal": 109507000
+        }
+      ],
+      "byBucket": [
+        {
+          "count": 0,
+          "label": "0-3 months"
+        },
+        {
+          "count": 0,
+          "label": "4-6 months"
+        },
+        {
+          "count": 0,
+          "label": "7-12 months"
+        },
+        {
+          "count": 3,
+          "label": "12+ months"
+        }
+      ]
+    },
+    "monthlyCostByTenant": [
+      {
+        "tenantId": "tenant_brn_6218105081",
+        "leasedAreaSqm": 14196,
+        "monthlyMfTotal": 12883000,
+        "leaseSpaceCount": 1,
+        "monthlyCostTotal": 109507000,
+        "monthlyRentTotal": 96624000,
+        "tenantMasterName": "(주)파크랜드"
+      },
+      {
+        "tenantId": "tenant_brn_6158602347",
+        "leasedAreaSqm": 10569,
+        "monthlyMfTotal": 6395000,
+        "leaseSpaceCount": 1,
+        "monthlyCostTotal": 73534917,
+        "monthlyRentTotal": 67139917,
+        "tenantMasterName": "(주)소셜빈"
+      },
+      {
+        "tenantId": "tenant_brn_2018102823",
+        "leasedAreaSqm": 8688,
+        "monthlyMfTotal": 7996000,
+        "leaseSpaceCount": 1,
+        "monthlyCostTotal": 68945600,
+        "monthlyRentTotal": 60949600,
+        "tenantMasterName": "(주)한진"
+      }
+    ]
+  },
+  "topTenants": [
+    {
+      "tenantId": "tenant_brn_6218105081",
+      "assetCount": 1,
+      "averageENoc": 25500.61,
+      "latestExpiry": "2031-02-28",
+      "leasedAreaSqm": 14196,
+      "earliestExpiry": "2031-02-28",
+      "monthlyMfTotal": 12883000,
+      "leaseSpaceCount": 1,
+      "monthlyCostTotal": 109507000,
+      "monthlyRentTotal": 96624000,
+      "tenantMasterName": "(주)파크랜드",
+      "businessRegistrationNo": "621-81-05081"
+    },
+    {
+      "tenantId": "tenant_brn_6158602347",
+      "assetCount": 1,
+      "averageENoc": 23000.34,
+      "latestExpiry": "2030-04-30",
+      "leasedAreaSqm": 10569,
+      "earliestExpiry": "2030-04-30",
+      "monthlyMfTotal": 6395000,
+      "leaseSpaceCount": 1,
+      "monthlyCostTotal": 73534917,
+      "monthlyRentTotal": 67139917,
+      "tenantMasterName": "(주)소셜빈",
+      "businessRegistrationNo": "615-86-02347"
+    },
+    {
+      "tenantId": "tenant_brn_2018102823",
+      "assetCount": 1,
+      "averageENoc": 26233.81,
+      "latestExpiry": "2029-04-16",
+      "leasedAreaSqm": 8688,
+      "earliestExpiry": "2029-04-16",
+      "monthlyMfTotal": 7996000,
+      "leaseSpaceCount": 1,
+      "monthlyCostTotal": 68945600,
+      "monthlyRentTotal": 60949600,
+      "tenantMasterName": "(주)한진",
+      "businessRegistrationNo": "201-81-02823"
+    }
+  ],
+  "generatedAt": "2026-04-27T16:07:14",
+  "basisDisplay": {
+    "asOf": "2026-04-17",
+    "page": "asset",
+    "source": "DB_GENERAL + DB_HISTORY + DB_ASSET",
+    "derivedAt": "",
+    "fetchedAt": "2026-04-22",
+    "fetchedAts": [
+      "2026-04-22"
+    ],
+    "generatedAt": "2026-04-27T16:07:14",
+    "refreshedAt": "2026-04-27T16:07:14"
+  },
+  "sourceSystem": "google_sheets",
+  "stackingPlan": [
+    {
+      "tenants": [
+        {
+          "share": 1,
+          "tenantId": "tenant_brn_2018102823",
+          "leasedAreaSqm": 8688,
+          "detailAreaLabel": "",
+          "tenantMasterName": "(주)한진"
+        }
+      ],
+      "floorLabel": "B1",
+      "totalFloorAreaSqm": 8688
+    },
+    {
+      "tenants": [
+        {
+          "share": 1,
+          "tenantId": "tenant_brn_6158602347",
+          "leasedAreaSqm": 10569,
+          "detailAreaLabel": "",
+          "tenantMasterName": "(주)소셜빈"
+        }
+      ],
+      "floorLabel": "3",
+      "totalFloorAreaSqm": 10569
+    },
+    {
+      "tenants": [
+        {
+          "share": 1,
+          "tenantId": "tenant_brn_6218105081",
+          "leasedAreaSqm": 14196,
+          "detailAreaLabel": "",
+          "tenantMasterName": "(주)파크랜드"
+        }
+      ],
+      "floorLabel": "1",
+      "totalFloorAreaSqm": 14196
+    }
+  ],
+  "areaBreakdown": {
+    "coreAreaSqm": null,
+    "dockAreaSqm": 2744.5299999999997,
+    "rampAreaSqm": null,
+    "leasedAreaSqm": 33453,
+    "officeAreaSqm": 599.77,
+    "exclusiveRatio": 0.8684422921711057,
+    "parkingAreaSqm": null,
+    "vacancyAreaSqm": 19286.67,
+    "corridorAreaSqm": null,
+    "exclusiveAreaSqm": 29052,
+    "warehouseAreaSqm": 24899.16,
+    "grossFloorAreaSqm": 52739.67,
+    "mechanicalAreaSqm": null,
+    "otherCommonAreaSqm": 4401.25,
+    "otherExclusiveAreaSqm": 808.23
+  },
+  "payloadSource": "supabase_snapshot",
+  "schemaVersion": "docs_static_v1",
+  "dataSourceMode": "supabase_snapshot"
+}

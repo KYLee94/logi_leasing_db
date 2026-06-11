@@ -1,0 +1,13 @@
+node_modules/
+qa-artifacts/
+_cleanup_quarantine_20260424/
+.clasp.json
+npm-debug.log*
+*.tmp
+supabase/functions/.env
+supabase/functions/.env.*
+supabase/.temp/
+*.xlsx
+.clasp.*.json
+.qa-tmp/
+_cleanup_quarantine_*/

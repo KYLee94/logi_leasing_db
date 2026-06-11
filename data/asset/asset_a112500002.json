@@ -1,0 +1,1495 @@
+{
+  "kpis": [
+    {
+      "key": "occupancy_rate",
+      "label": "임대율",
+      "value": 1.3516342890817092,
+      "status": "ok",
+      "valueType": "percent"
+    },
+    {
+      "key": "leased_area_total",
+      "label": "총 임대면적",
+      "value": 53212.22,
+      "status": "ok",
+      "valueType": "area"
+    },
+    {
+      "key": "vacancy_area_total",
+      "label": "공실면적",
+      "value": 0,
+      "status": "ok",
+      "valueType": "area"
+    },
+    {
+      "key": "unique_tenant_count",
+      "label": "현재 임차인 수",
+      "value": 1,
+      "status": "ok",
+      "valueType": "number"
+    },
+    {
+      "key": "monthly_total_cost",
+      "label": "월 임관리비 총액",
+      "value": 460486000,
+      "status": "review_required",
+      "valueType": "currency"
+    },
+    {
+      "key": "average_e_noc",
+      "label": "E.NOC",
+      "value": 28607.48,
+      "status": "ok",
+      "valueType": "currency"
+    }
+  ],
+  "meta": {
+    "page": "asset",
+    "basis": {
+      "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
+      "page": "asset",
+      "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
+      "rowUnit": "lease_space_id",
+      "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
+      "rowScope": "selected_asset_rows",
+      "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
+    },
+    "timing": {
+      "derivedAt": "",
+      "fetchedAt": "2026-04-22",
+      "fetchedAts": [
+        "2026-04-22"
+      ],
+      "refreshedAt": "2026-04-27T16:07:14"
+    },
+    "rowCount": 1,
+    "selection": {
+      "assetId": "asset_a112500002",
+      "assetName": "평택아디다스물류센터"
+    },
+    "generatedAt": "2026-04-27T16:07:14",
+    "basisDisplay": {
+      "asOf": "2025-09-01",
+      "page": "asset",
+      "source": "DB_GENERAL + DB_HISTORY + DB_ASSET",
+      "derivedAt": "",
+      "fetchedAt": "2026-04-22",
+      "fetchedAts": [
+        "2026-04-22"
+      ],
+      "generatedAt": "2026-04-27T16:07:14",
+      "refreshedAt": "2026-04-27T16:07:14"
+    },
+    "formulaVersion": "E.NOC_v2"
+  },
+  "rows": [
+    {
+      "asset": {
+        "ji": "3",
+        "bun": "1175",
+        "assetId": "asset_a112500002",
+        "bjdongCd": "10600",
+        "latitude": 37.0384465,
+        "platGbCd": "0",
+        "queryKey": "41220|10600|0|1175|0003",
+        "assetCode": "A112500002",
+        "assetName": "평택아디다스물류센터",
+        "fetchedAt": "2026-04-22",
+        "longitude": 127.105842,
+        "sigunguCd": "41220",
+        "floorCount": "4F / 0B",
+        "landAreaSqm": 63516.7,
+        "approvalDate": "2012-05-23",
+        "buildingName": "평택아디다스물류센터",
+        "geocodeStatus": "ok_naver_geocode",
+        "areaTableStatus": "unknown",
+        "buildingHubStatus": "ok",
+        "firstConfiguredAt": "2021-10-29",
+        "grossFloorAreaSqm": 39368.8,
+        "standardizedAddress": "경기도 평택시 도일유통길 64"
+      },
+      "is3pl": false,
+      "fundId": "fund_112604",
+      "sector": "물류센터",
+      "assetId": "asset_a112500002",
+      "company": {
+        "listedYn": "Y",
+        "tenantId": "tenant_brn_2148107412",
+        "fetchedAt": "2026-04-22",
+        "groupName": "",
+        "matchStatus": "matched",
+        "dartCorpCode": "00148133",
+        "industryCode": "46420",
+        "latestReceiptNo": "",
+        "hasFinancialData": false,
+        "latestReportName": "",
+        "tenantMasterName": "아디다스코리아유한책임회사",
+        "corpRegistrationNo": "1101110337054",
+        "headquartersAddress": "서울특별시 서초구 서초대로74길 4 서초동, 삼성생명서초타워 23층",
+        "latestFinancialYear": "",
+        "businessRegistrationNo": "214-81-07412",
+        "financialStatementType": ""
+      },
+      "leaseId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831",
+      "manager": {
+        "email": "oce@igisam.com",
+        "fundCode": "112604",
+        "fundName": "이지스인컴앤그로스일반사모부동산자투자신탁제2-2호",
+        "teamName": "로지스틱스매니지먼트",
+        "assetCode": "A112500002",
+        "assetName": "평택아디다스물류센터",
+        "managerName": "오채은"
+      },
+      "foMonths": 3,
+      "fundCode": "112604",
+      "fundName": "이지스인컴앤그로스일반사모부동산자투자신탁제2-2호",
+      "rfMonths": 4,
+      "tenantId": "tenant_brn_2148107412",
+      "assetCode": "A112500002",
+      "assetName": "평택아디다스물류센터",
+      "goodsType": "어패럴",
+      "rowNumber": 33,
+      "floorLabel": "1",
+      "dockAreaSqm": 101,
+      "isPreLeased": true,
+      "firstEndDate": "2022-08-31",
+      "isDelinquent": false,
+      "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+      "linkedIssues": [
+        {
+          "owner": "",
+          "rawId": "15",
+          "assetId": "asset_a112500002",
+          "content": "단일 임차인이 전체 면적 사용하는 경우라도, 자산 자체를 파악하기 위함이라 전용면적은 현재 시트 로직에 맞춰 분리 필요",
+          "issueId": "issue_15",
+          "category": "자산별 담당자 확인 필요 사항",
+          "priority": "미정",
+          "resolved": false,
+          "certainty": "",
+          "conclusion": "",
+          "recordedAt": "2026-04-16",
+          "relatedSheet": "전체",
+          "managerQuestion": "",
+          "needsDevelopment": "",
+          "relatedAssetLabel": "평택아디다스물류센터"
+        },
+        {
+          "owner": "",
+          "rawId": "28",
+          "assetId": "asset_a112500002",
+          "content": "- 현재 계약 개시일이 최근 계약일보다 빠름: 전체",
+          "issueId": "issue_28",
+          "category": "자산별 담당자 확인 필요 사항",
+          "priority": "미정",
+          "resolved": false,
+          "certainty": "",
+          "conclusion": "",
+          "recordedAt": "2026-04-16",
+          "relatedSheet": "DB_일반",
+          "managerQuestion": "",
+          "needsDevelopment": "",
+          "relatedAssetLabel": "평택아디다스물류센터"
+        }
+      ],
+      "sourceDocRef": "",
+      "depositAmount": 4274510000,
+      "historyLinked": true,
+      "leasedAreaSqm": 13303.06,
+      "officeAreaSqm": 657.66,
+      "rawTenantName": "아디다스코리아유한책임회사",
+      "sourceRowHash": "A112500002|2148107412|1~4||20120901|20270831|53212.22|53212.22",
+      "currentEndDate": "2027-08-31",
+      "exclusiveRatio": 1,
+      "extensionCount": 1,
+      "firstStartDate": "2012-09-01",
+      "isSingleTenant": true,
+      "machineAreaSqm": 656.69,
+      "coldStorageType": "N",
+      "detailAreaLabel": "",
+      "floorSplitCount": 4,
+      "floorSplitIndex": 1,
+      "currentMoneyAsOf": "2025-09-01",
+      "currentRentPerPy": 28608,
+      "currentStartDate": "2012-09-01",
+      "exclusiveAreaSqm": 13303.06,
+      "isContractActive": true,
+      "sourceFloorLabel": "1~4",
+      "tenantMasterName": "아디다스코리아유한책임회사",
+      "warehouseAreaSqm": 12372.88,
+      "calculationStatus": "review_required",
+      "contractStatusRaw": "Y",
+      "currentMoneyBasis": "latest_linked_history",
+      "exclusiveRatioRaw": 100,
+      "firstContractDate": "2011-08-19",
+      "historyCandidates": [
+        {
+          "reason": "상승률 반영",
+          "sector": "물류센터",
+          "baseDate": "2025-09-01",
+          "fundCode": "112604",
+          "fundName": "이지스인컴앤그로스일반사모부동산자투자신탁제2-2호",
+          "isLatest": true,
+          "assetCode": "A112500002",
+          "assetName": "평택아디다스물류센터",
+          "baseMonth": "2025-09",
+          "rentPerPy": 28608,
+          "rowNumber": 138,
+          "floorLabel": "1~4",
+          "leasedAreaSqm": 53212,
+          "rawTenantName": "아디다스코리아유한책임회사",
+          "historyEventId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na|2025-09-01|138",
+          "coldStorageType": "N",
+          "detailAreaLabel": "",
+          "matchConfidence": "lease_space_id",
+          "exclusiveAreaSqm": 53212,
+          "monthlyRentTotal": 460486000,
+          "tenantMasterName": "아디다스코리아유한책임회사",
+          "isSelectedForMoney": true,
+          "linkedLeaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+          "businessRegistrationNo": "214-81-07412"
+        }
+      ],
+      "historyLatestDate": "2025-09-01",
+      "historyLinkStatus": "lease_space_id",
+      "mechanicalAreaSqm": 164.17,
+      "totalGrossAreaSqm": 50825.88,
+      "currentMoneyStatus": "latest_history_money_missing",
+      "currentPeriodYears": 15,
+      "firstOperationDate": "2012-09-01",
+      "otherCommonAreaSqm": 7.35,
+      "otherSpecialClause": "없음",
+      "recentContractDate": "2021-03-30",
+      "historyCandidateCount": 1,
+      "businessRegistrationNo": "214-81-07412",
+      "insuranceSpecialClause": "없음",
+      "currentMonthlyCostTotal": 115121500,
+      "currentMonthlyRentTotal": 115121500
+    },
+    {
+      "asset": {
+        "ji": "3",
+        "bun": "1175",
+        "assetId": "asset_a112500002",
+        "bjdongCd": "10600",
+        "latitude": 37.0384465,
+        "platGbCd": "0",
+        "queryKey": "41220|10600|0|1175|0003",
+        "assetCode": "A112500002",
+        "assetName": "평택아디다스물류센터",
+        "fetchedAt": "2026-04-22",
+        "longitude": 127.105842,
+        "sigunguCd": "41220",
+        "floorCount": "4F / 0B",
+        "landAreaSqm": 63516.7,
+        "approvalDate": "2012-05-23",
+        "buildingName": "평택아디다스물류센터",
+        "geocodeStatus": "ok_naver_geocode",
+        "areaTableStatus": "unknown",
+        "buildingHubStatus": "ok",
+        "firstConfiguredAt": "2021-10-29",
+        "grossFloorAreaSqm": 39368.8,
+        "standardizedAddress": "경기도 평택시 도일유통길 64"
+      },
+      "is3pl": false,
+      "fundId": "fund_112604",
+      "sector": "물류센터",
+      "assetId": "asset_a112500002",
+      "company": {
+        "listedYn": "Y",
+        "tenantId": "tenant_brn_2148107412",
+        "fetchedAt": "2026-04-22",
+        "groupName": "",
+        "matchStatus": "matched",
+        "dartCorpCode": "00148133",
+        "industryCode": "46420",
+        "latestReceiptNo": "",
+        "hasFinancialData": false,
+        "latestReportName": "",
+        "tenantMasterName": "아디다스코리아유한책임회사",
+        "corpRegistrationNo": "1101110337054",
+        "headquartersAddress": "서울특별시 서초구 서초대로74길 4 서초동, 삼성생명서초타워 23층",
+        "latestFinancialYear": "",
+        "businessRegistrationNo": "214-81-07412",
+        "financialStatementType": ""
+      },
+      "leaseId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831",
+      "manager": {
+        "email": "oce@igisam.com",
+        "fundCode": "112604",
+        "fundName": "이지스인컴앤그로스일반사모부동산자투자신탁제2-2호",
+        "teamName": "로지스틱스매니지먼트",
+        "assetCode": "A112500002",
+        "assetName": "평택아디다스물류센터",
+        "managerName": "오채은"
+      },
+      "foMonths": 3,
+      "fundCode": "112604",
+      "fundName": "이지스인컴앤그로스일반사모부동산자투자신탁제2-2호",
+      "rfMonths": 4,
+      "tenantId": "tenant_brn_2148107412",
+      "assetCode": "A112500002",
+      "assetName": "평택아디다스물류센터",
+      "goodsType": "어패럴",
+      "rowNumber": 33,
+      "floorLabel": "2",
+      "dockAreaSqm": 101,
+      "isPreLeased": true,
+      "firstEndDate": "2022-08-31",
+      "isDelinquent": false,
+      "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+      "linkedIssues": [
+        {
+          "owner": "",
+          "rawId": "15",
+          "assetId": "asset_a112500002",
+          "content": "단일 임차인이 전체 면적 사용하는 경우라도, 자산 자체를 파악하기 위함이라 전용면적은 현재 시트 로직에 맞춰 분리 필요",
+          "issueId": "issue_15",
+          "category": "자산별 담당자 확인 필요 사항",
+          "priority": "미정",
+          "resolved": false,
+          "certainty": "",
+          "conclusion": "",
+          "recordedAt": "2026-04-16",
+          "relatedSheet": "전체",
+          "managerQuestion": "",
+          "needsDevelopment": "",
+          "relatedAssetLabel": "평택아디다스물류센터"
+        },
+        {
+          "owner": "",
+          "rawId": "28",
+          "assetId": "asset_a112500002",
+          "content": "- 현재 계약 개시일이 최근 계약일보다 빠름: 전체",
+          "issueId": "issue_28",
+          "category": "자산별 담당자 확인 필요 사항",
+          "priority": "미정",
+          "resolved": false,
+          "certainty": "",
+          "conclusion": "",
+          "recordedAt": "2026-04-16",
+          "relatedSheet": "DB_일반",
+          "managerQuestion": "",
+          "needsDevelopment": "",
+          "relatedAssetLabel": "평택아디다스물류센터"
+        }
+      ],
+      "sourceDocRef": "",
+      "depositAmount": 4274510000,
+      "historyLinked": true,
+      "leasedAreaSqm": 13303.06,
+      "officeAreaSqm": 657.66,
+      "rawTenantName": "아디다스코리아유한책임회사",
+      "sourceRowHash": "A112500002|2148107412|1~4||20120901|20270831|53212.22|53212.22",
+      "currentEndDate": "2027-08-31",
+      "exclusiveRatio": 1,
+      "extensionCount": 1,
+      "firstStartDate": "2012-09-01",
+      "isSingleTenant": true,
+      "machineAreaSqm": 656.69,
+      "coldStorageType": "N",
+      "detailAreaLabel": "",
+      "floorSplitCount": 4,
+      "floorSplitIndex": 2,
+      "currentMoneyAsOf": "2025-09-01",
+      "currentRentPerPy": 28608,
+      "currentStartDate": "2012-09-01",
+      "exclusiveAreaSqm": 13303.06,
+      "isContractActive": true,
+      "sourceFloorLabel": "1~4",
+      "tenantMasterName": "아디다스코리아유한책임회사",
+      "warehouseAreaSqm": 12372.88,
+      "calculationStatus": "review_required",
+      "contractStatusRaw": "Y",
+      "currentMoneyBasis": "latest_linked_history",
+      "exclusiveRatioRaw": 100,
+      "firstContractDate": "2011-08-19",
+      "historyCandidates": [
+        {
+          "reason": "상승률 반영",
+          "sector": "물류센터",
+          "baseDate": "2025-09-01",
+          "fundCode": "112604",
+          "fundName": "이지스인컴앤그로스일반사모부동산자투자신탁제2-2호",
+          "isLatest": true,
+          "assetCode": "A112500002",
+          "assetName": "평택아디다스물류센터",
+          "baseMonth": "2025-09",
+          "rentPerPy": 28608,
+          "rowNumber": 138,
+          "floorLabel": "1~4",
+          "leasedAreaSqm": 53212,
+          "rawTenantName": "아디다스코리아유한책임회사",
+          "historyEventId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na|2025-09-01|138",
+          "coldStorageType": "N",
+          "detailAreaLabel": "",
+          "matchConfidence": "lease_space_id",
+          "exclusiveAreaSqm": 53212,
+          "monthlyRentTotal": 460486000,
+          "tenantMasterName": "아디다스코리아유한책임회사",
+          "isSelectedForMoney": true,
+          "linkedLeaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+          "businessRegistrationNo": "214-81-07412"
+        }
+      ],
+      "historyLatestDate": "2025-09-01",
+      "historyLinkStatus": "lease_space_id",
+      "mechanicalAreaSqm": 164.17,
+      "totalGrossAreaSqm": 50825.88,
+      "currentMoneyStatus": "latest_history_money_missing",
+      "currentPeriodYears": 15,
+      "firstOperationDate": "2012-09-01",
+      "otherCommonAreaSqm": 7.35,
+      "otherSpecialClause": "없음",
+      "recentContractDate": "2021-03-30",
+      "historyCandidateCount": 1,
+      "businessRegistrationNo": "214-81-07412",
+      "insuranceSpecialClause": "없음",
+      "currentMonthlyCostTotal": 115121500,
+      "currentMonthlyRentTotal": 115121500
+    },
+    {
+      "asset": {
+        "ji": "3",
+        "bun": "1175",
+        "assetId": "asset_a112500002",
+        "bjdongCd": "10600",
+        "latitude": 37.0384465,
+        "platGbCd": "0",
+        "queryKey": "41220|10600|0|1175|0003",
+        "assetCode": "A112500002",
+        "assetName": "평택아디다스물류센터",
+        "fetchedAt": "2026-04-22",
+        "longitude": 127.105842,
+        "sigunguCd": "41220",
+        "floorCount": "4F / 0B",
+        "landAreaSqm": 63516.7,
+        "approvalDate": "2012-05-23",
+        "buildingName": "평택아디다스물류센터",
+        "geocodeStatus": "ok_naver_geocode",
+        "areaTableStatus": "unknown",
+        "buildingHubStatus": "ok",
+        "firstConfiguredAt": "2021-10-29",
+        "grossFloorAreaSqm": 39368.8,
+        "standardizedAddress": "경기도 평택시 도일유통길 64"
+      },
+      "is3pl": false,
+      "fundId": "fund_112604",
+      "sector": "물류센터",
+      "assetId": "asset_a112500002",
+      "company": {
+        "listedYn": "Y",
+        "tenantId": "tenant_brn_2148107412",
+        "fetchedAt": "2026-04-22",
+        "groupName": "",
+        "matchStatus": "matched",
+        "dartCorpCode": "00148133",
+        "industryCode": "46420",
+        "latestReceiptNo": "",
+        "hasFinancialData": false,
+        "latestReportName": "",
+        "tenantMasterName": "아디다스코리아유한책임회사",
+        "corpRegistrationNo": "1101110337054",
+        "headquartersAddress": "서울특별시 서초구 서초대로74길 4 서초동, 삼성생명서초타워 23층",
+        "latestFinancialYear": "",
+        "businessRegistrationNo": "214-81-07412",
+        "financialStatementType": ""
+      },
+      "leaseId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831",
+      "manager": {
+        "email": "oce@igisam.com",
+        "fundCode": "112604",
+        "fundName": "이지스인컴앤그로스일반사모부동산자투자신탁제2-2호",
+        "teamName": "로지스틱스매니지먼트",
+        "assetCode": "A112500002",
+        "assetName": "평택아디다스물류센터",
+        "managerName": "오채은"
+      },
+      "foMonths": 3,
+      "fundCode": "112604",
+      "fundName": "이지스인컴앤그로스일반사모부동산자투자신탁제2-2호",
+      "rfMonths": 4,
+      "tenantId": "tenant_brn_2148107412",
+      "assetCode": "A112500002",
+      "assetName": "평택아디다스물류센터",
+      "goodsType": "어패럴",
+      "rowNumber": 33,
+      "floorLabel": "3",
+      "dockAreaSqm": 101,
+      "isPreLeased": true,
+      "firstEndDate": "2022-08-31",
+      "isDelinquent": false,
+      "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+      "linkedIssues": [
+        {
+          "owner": "",
+          "rawId": "15",
+          "assetId": "asset_a112500002",
+          "content": "단일 임차인이 전체 면적 사용하는 경우라도, 자산 자체를 파악하기 위함이라 전용면적은 현재 시트 로직에 맞춰 분리 필요",
+          "issueId": "issue_15",
+          "category": "자산별 담당자 확인 필요 사항",
+          "priority": "미정",
+          "resolved": false,
+          "certainty": "",
+          "conclusion": "",
+          "recordedAt": "2026-04-16",
+          "relatedSheet": "전체",
+          "managerQuestion": "",
+          "needsDevelopment": "",
+          "relatedAssetLabel": "평택아디다스물류센터"
+        },
+        {
+          "owner": "",
+          "rawId": "28",
+          "assetId": "asset_a112500002",
+          "content": "- 현재 계약 개시일이 최근 계약일보다 빠름: 전체",
+          "issueId": "issue_28",
+          "category": "자산별 담당자 확인 필요 사항",
+          "priority": "미정",
+          "resolved": false,
+          "certainty": "",
+          "conclusion": "",
+          "recordedAt": "2026-04-16",
+          "relatedSheet": "DB_일반",
+          "managerQuestion": "",
+          "needsDevelopment": "",
+          "relatedAssetLabel": "평택아디다스물류센터"
+        }
+      ],
+      "sourceDocRef": "",
+      "depositAmount": 4274510000,
+      "historyLinked": true,
+      "leasedAreaSqm": 13303.06,
+      "officeAreaSqm": 657.66,
+      "rawTenantName": "아디다스코리아유한책임회사",
+      "sourceRowHash": "A112500002|2148107412|1~4||20120901|20270831|53212.22|53212.22",
+      "currentEndDate": "2027-08-31",
+      "exclusiveRatio": 1,
+      "extensionCount": 1,
+      "firstStartDate": "2012-09-01",
+      "isSingleTenant": true,
+      "machineAreaSqm": 656.69,
+      "coldStorageType": "N",
+      "detailAreaLabel": "",
+      "floorSplitCount": 4,
+      "floorSplitIndex": 3,
+      "currentMoneyAsOf": "2025-09-01",
+      "currentRentPerPy": 28608,
+      "currentStartDate": "2012-09-01",
+      "exclusiveAreaSqm": 13303.06,
+      "isContractActive": true,
+      "sourceFloorLabel": "1~4",
+      "tenantMasterName": "아디다스코리아유한책임회사",
+      "warehouseAreaSqm": 12372.88,
+      "calculationStatus": "review_required",
+      "contractStatusRaw": "Y",
+      "currentMoneyBasis": "latest_linked_history",
+      "exclusiveRatioRaw": 100,
+      "firstContractDate": "2011-08-19",
+      "historyCandidates": [
+        {
+          "reason": "상승률 반영",
+          "sector": "물류센터",
+          "baseDate": "2025-09-01",
+          "fundCode": "112604",
+          "fundName": "이지스인컴앤그로스일반사모부동산자투자신탁제2-2호",
+          "isLatest": true,
+          "assetCode": "A112500002",
+          "assetName": "평택아디다스물류센터",
+          "baseMonth": "2025-09",
+          "rentPerPy": 28608,
+          "rowNumber": 138,
+          "floorLabel": "1~4",
+          "leasedAreaSqm": 53212,
+          "rawTenantName": "아디다스코리아유한책임회사",
+          "historyEventId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na|2025-09-01|138",
+          "coldStorageType": "N",
+          "detailAreaLabel": "",
+          "matchConfidence": "lease_space_id",
+          "exclusiveAreaSqm": 53212,
+          "monthlyRentTotal": 460486000,
+          "tenantMasterName": "아디다스코리아유한책임회사",
+          "isSelectedForMoney": true,
+          "linkedLeaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+          "businessRegistrationNo": "214-81-07412"
+        }
+      ],
+      "historyLatestDate": "2025-09-01",
+      "historyLinkStatus": "lease_space_id",
+      "mechanicalAreaSqm": 164.17,
+      "totalGrossAreaSqm": 50825.88,
+      "currentMoneyStatus": "latest_history_money_missing",
+      "currentPeriodYears": 15,
+      "firstOperationDate": "2012-09-01",
+      "otherCommonAreaSqm": 7.35,
+      "otherSpecialClause": "없음",
+      "recentContractDate": "2021-03-30",
+      "historyCandidateCount": 1,
+      "businessRegistrationNo": "214-81-07412",
+      "insuranceSpecialClause": "없음",
+      "currentMonthlyCostTotal": 115121500,
+      "currentMonthlyRentTotal": 115121500
+    },
+    {
+      "asset": {
+        "ji": "3",
+        "bun": "1175",
+        "assetId": "asset_a112500002",
+        "bjdongCd": "10600",
+        "latitude": 37.0384465,
+        "platGbCd": "0",
+        "queryKey": "41220|10600|0|1175|0003",
+        "assetCode": "A112500002",
+        "assetName": "평택아디다스물류센터",
+        "fetchedAt": "2026-04-22",
+        "longitude": 127.105842,
+        "sigunguCd": "41220",
+        "floorCount": "4F / 0B",
+        "landAreaSqm": 63516.7,
+        "approvalDate": "2012-05-23",
+        "buildingName": "평택아디다스물류센터",
+        "geocodeStatus": "ok_naver_geocode",
+        "areaTableStatus": "unknown",
+        "buildingHubStatus": "ok",
+        "firstConfiguredAt": "2021-10-29",
+        "grossFloorAreaSqm": 39368.8,
+        "standardizedAddress": "경기도 평택시 도일유통길 64"
+      },
+      "is3pl": false,
+      "fundId": "fund_112604",
+      "sector": "물류센터",
+      "assetId": "asset_a112500002",
+      "company": {
+        "listedYn": "Y",
+        "tenantId": "tenant_brn_2148107412",
+        "fetchedAt": "2026-04-22",
+        "groupName": "",
+        "matchStatus": "matched",
+        "dartCorpCode": "00148133",
+        "industryCode": "46420",
+        "latestReceiptNo": "",
+        "hasFinancialData": false,
+        "latestReportName": "",
+        "tenantMasterName": "아디다스코리아유한책임회사",
+        "corpRegistrationNo": "1101110337054",
+        "headquartersAddress": "서울특별시 서초구 서초대로74길 4 서초동, 삼성생명서초타워 23층",
+        "latestFinancialYear": "",
+        "businessRegistrationNo": "214-81-07412",
+        "financialStatementType": ""
+      },
+      "leaseId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831",
+      "manager": {
+        "email": "oce@igisam.com",
+        "fundCode": "112604",
+        "fundName": "이지스인컴앤그로스일반사모부동산자투자신탁제2-2호",
+        "teamName": "로지스틱스매니지먼트",
+        "assetCode": "A112500002",
+        "assetName": "평택아디다스물류센터",
+        "managerName": "오채은"
+      },
+      "foMonths": 3,
+      "fundCode": "112604",
+      "fundName": "이지스인컴앤그로스일반사모부동산자투자신탁제2-2호",
+      "rfMonths": 4,
+      "tenantId": "tenant_brn_2148107412",
+      "assetCode": "A112500002",
+      "assetName": "평택아디다스물류센터",
+      "goodsType": "어패럴",
+      "rowNumber": 33,
+      "floorLabel": "4",
+      "dockAreaSqm": 101,
+      "isPreLeased": true,
+      "firstEndDate": "2022-08-31",
+      "isDelinquent": false,
+      "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+      "linkedIssues": [
+        {
+          "owner": "",
+          "rawId": "15",
+          "assetId": "asset_a112500002",
+          "content": "단일 임차인이 전체 면적 사용하는 경우라도, 자산 자체를 파악하기 위함이라 전용면적은 현재 시트 로직에 맞춰 분리 필요",
+          "issueId": "issue_15",
+          "category": "자산별 담당자 확인 필요 사항",
+          "priority": "미정",
+          "resolved": false,
+          "certainty": "",
+          "conclusion": "",
+          "recordedAt": "2026-04-16",
+          "relatedSheet": "전체",
+          "managerQuestion": "",
+          "needsDevelopment": "",
+          "relatedAssetLabel": "평택아디다스물류센터"
+        },
+        {
+          "owner": "",
+          "rawId": "28",
+          "assetId": "asset_a112500002",
+          "content": "- 현재 계약 개시일이 최근 계약일보다 빠름: 전체",
+          "issueId": "issue_28",
+          "category": "자산별 담당자 확인 필요 사항",
+          "priority": "미정",
+          "resolved": false,
+          "certainty": "",
+          "conclusion": "",
+          "recordedAt": "2026-04-16",
+          "relatedSheet": "DB_일반",
+          "managerQuestion": "",
+          "needsDevelopment": "",
+          "relatedAssetLabel": "평택아디다스물류센터"
+        }
+      ],
+      "sourceDocRef": "",
+      "depositAmount": 4274510000,
+      "historyLinked": true,
+      "leasedAreaSqm": 13303.06,
+      "officeAreaSqm": 657.66,
+      "rawTenantName": "아디다스코리아유한책임회사",
+      "sourceRowHash": "A112500002|2148107412|1~4||20120901|20270831|53212.22|53212.22",
+      "currentEndDate": "2027-08-31",
+      "exclusiveRatio": 1,
+      "extensionCount": 1,
+      "firstStartDate": "2012-09-01",
+      "isSingleTenant": true,
+      "machineAreaSqm": 656.69,
+      "coldStorageType": "N",
+      "detailAreaLabel": "",
+      "floorSplitCount": 4,
+      "floorSplitIndex": 4,
+      "currentMoneyAsOf": "2025-09-01",
+      "currentRentPerPy": 28608,
+      "currentStartDate": "2012-09-01",
+      "exclusiveAreaSqm": 13303.06,
+      "isContractActive": true,
+      "sourceFloorLabel": "1~4",
+      "tenantMasterName": "아디다스코리아유한책임회사",
+      "warehouseAreaSqm": 12372.88,
+      "calculationStatus": "review_required",
+      "contractStatusRaw": "Y",
+      "currentMoneyBasis": "latest_linked_history",
+      "exclusiveRatioRaw": 100,
+      "firstContractDate": "2011-08-19",
+      "historyCandidates": [
+        {
+          "reason": "상승률 반영",
+          "sector": "물류센터",
+          "baseDate": "2025-09-01",
+          "fundCode": "112604",
+          "fundName": "이지스인컴앤그로스일반사모부동산자투자신탁제2-2호",
+          "isLatest": true,
+          "assetCode": "A112500002",
+          "assetName": "평택아디다스물류센터",
+          "baseMonth": "2025-09",
+          "rentPerPy": 28608,
+          "rowNumber": 138,
+          "floorLabel": "1~4",
+          "leasedAreaSqm": 53212,
+          "rawTenantName": "아디다스코리아유한책임회사",
+          "historyEventId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na|2025-09-01|138",
+          "coldStorageType": "N",
+          "detailAreaLabel": "",
+          "matchConfidence": "lease_space_id",
+          "exclusiveAreaSqm": 53212,
+          "monthlyRentTotal": 460486000,
+          "tenantMasterName": "아디다스코리아유한책임회사",
+          "isSelectedForMoney": true,
+          "linkedLeaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+          "businessRegistrationNo": "214-81-07412"
+        }
+      ],
+      "historyLatestDate": "2025-09-01",
+      "historyLinkStatus": "lease_space_id",
+      "mechanicalAreaSqm": 164.17,
+      "totalGrossAreaSqm": 50825.88,
+      "currentMoneyStatus": "latest_history_money_missing",
+      "currentPeriodYears": 15,
+      "firstOperationDate": "2012-09-01",
+      "otherCommonAreaSqm": 7.35,
+      "otherSpecialClause": "없음",
+      "recentContractDate": "2021-03-30",
+      "historyCandidateCount": 1,
+      "businessRegistrationNo": "214-81-07412",
+      "insuranceSpecialClause": "없음",
+      "currentMonthlyCostTotal": 115121500,
+      "currentMonthlyRentTotal": 115121500
+    }
+  ],
+  "basis": {
+    "eNoc": "rent_per_py + mf_per_py, adjusted by RF/FO/TI and exclusive ratio",
+    "page": "asset",
+    "rentMf": "latest linked history row per lease_space_id; no older monetary fallback",
+    "rowUnit": "lease_space_id",
+    "vacancy": "asset gross floor area if available, otherwise max totalGrossAreaSqm in current rows",
+    "rowScope": "selected_asset_rows",
+    "nullPolicy": "detail values stay null when source is missing; aggregates sum only known values; missingCounts reports omissions"
+  },
+  "filters": {
+    "assets": [
+      {
+        "assetId": "asset_a120085001",
+        "assetName": "경산 쿠팡물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 45996.45,
+        "vacancyRate": 0.22740490773422375,
+        "monthlyCostTotal": 1060724933,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112527001",
+        "assetName": "동산물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 26784.1,
+        "vacancyRate": 0.011449620876710885,
+        "monthlyCostTotal": 435167477,
+        "uniqueTenantCount": 4
+      },
+      {
+        "assetId": "asset_a112755001",
+        "assetName": "두동 LG전자 통합물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 38181.11,
+        "vacancyRate": 0.0008472422420663569,
+        "monthlyCostTotal": 630228000,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112527002",
+        "assetName": "부국물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 27449.95,
+        "vacancyRate": 0,
+        "monthlyCostTotal": 155328845,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112109001",
+        "assetName": "부산송정물류센터",
+        "fetchedAt": "2026-04-22",
+        "vacancyRate": 0.027004153491596173,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112299001",
+        "assetName": "스카이박스1, 스카이박스2",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 37283.28,
+        "vacancyRate": 0.3071110862557777,
+        "monthlyCostTotal": 669324200,
+        "uniqueTenantCount": 6
+      },
+      {
+        "assetId": "asset_a112505001",
+        "assetName": "아레나스안성",
+        "fetchedAt": "2026-04-22",
+        "vacancyRate": 0.7478773512350668,
+        "uniqueTenantCount": 3
+      },
+      {
+        "assetId": "asset_a112127001",
+        "assetName": "아레나스양지물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 6706,
+        "vacancyRate": 0.22161516861964634,
+        "monthlyCostTotal": 552212356,
+        "uniqueTenantCount": 2
+      },
+      {
+        "assetId": "asset_ap00014001",
+        "assetName": "안성 성은지구 물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 24627.67,
+        "vacancyRate": 0.3013357213767869,
+        "monthlyCostTotal": 604357000,
+        "uniqueTenantCount": 4
+      },
+      {
+        "assetId": "asset_a112500003",
+        "assetName": "안성 홈플러스 중부허브 물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 63365.46,
+        "vacancyRate": 0.016556145554103226,
+        "monthlyCostTotal": 629174800,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_s00002001",
+        "assetName": "양산 유산동 물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 24901.1,
+        "vacancyRate": 0.3656956897910055,
+        "monthlyCostTotal": 251987517,
+        "uniqueTenantCount": 3
+      },
+      {
+        "assetId": "asset_a112527003",
+        "assetName": "에이블로지스물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 27039.41,
+        "vacancyRate": 0,
+        "monthlyCostTotal": 245219187,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112606001",
+        "assetName": "여주 본두리 물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 32389.54,
+        "vacancyRate": 0.035098733326698266,
+        "monthlyCostTotal": 1028369423,
+        "uniqueTenantCount": 3
+      },
+      {
+        "assetId": "asset_a112573001",
+        "assetName": "이천 마장면 물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 27884.74,
+        "vacancyRate": 0.030459886244241004,
+        "monthlyCostTotal": 275622000,
+        "uniqueTenantCount": 2
+      },
+      {
+        "assetId": "asset_a112721001",
+        "assetName": "인천석남물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 31632.69,
+        "vacancyRate": 0.00020146451000519652,
+        "monthlyCostTotal": 2863471002,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112500002",
+        "assetName": "평택아디다스물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 28607.48,
+        "vacancyRate": 0,
+        "monthlyCostTotal": 460486000,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112642001",
+        "assetName": "화성 석포리 물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 39312.35,
+        "vacancyRate": 0,
+        "monthlyCostTotal": 1272556102,
+        "uniqueTenantCount": 1
+      }
+    ],
+    "selectorMeta": {
+      "defaultSort": "asset_name_asc",
+      "sortOptions": [
+        {
+          "key": "asset_name_asc",
+          "label": "자산명순"
+        },
+        {
+          "key": "monthly_cost_desc",
+          "label": "월 임관리비 높은순"
+        },
+        {
+          "key": "vacancy_rate_desc",
+          "label": "공실률 높은순"
+        },
+        {
+          "key": "e_noc_desc",
+          "label": "E.NOC 높은순"
+        }
+      ]
+    },
+    "selectedAssetId": "asset_a112500002"
+  },
+  "overview": {
+    "floors": [
+      {
+        "tenants": [
+          {
+            "share": 1,
+            "tenantId": "tenant_brn_2148107412",
+            "leasedAreaSqm": 13303.06,
+            "detailAreaLabel": "",
+            "tenantMasterName": "아디다스코리아유한책임회사"
+          }
+        ],
+        "floorLabel": "4",
+        "totalFloorAreaSqm": 13303.06
+      },
+      {
+        "tenants": [
+          {
+            "share": 1,
+            "tenantId": "tenant_brn_2148107412",
+            "leasedAreaSqm": 13303.06,
+            "detailAreaLabel": "",
+            "tenantMasterName": "아디다스코리아유한책임회사"
+          }
+        ],
+        "floorLabel": "3",
+        "totalFloorAreaSqm": 13303.06
+      },
+      {
+        "tenants": [
+          {
+            "share": 1,
+            "tenantId": "tenant_brn_2148107412",
+            "leasedAreaSqm": 13303.06,
+            "detailAreaLabel": "",
+            "tenantMasterName": "아디다스코리아유한책임회사"
+          }
+        ],
+        "floorLabel": "2",
+        "totalFloorAreaSqm": 13303.06
+      },
+      {
+        "tenants": [
+          {
+            "share": 1,
+            "tenantId": "tenant_brn_2148107412",
+            "leasedAreaSqm": 13303.06,
+            "detailAreaLabel": "",
+            "tenantMasterName": "아디다스코리아유한책임회사"
+          }
+        ],
+        "floorLabel": "1",
+        "totalFloorAreaSqm": 13303.06
+      }
+    ],
+    "sector": "물류센터",
+    "assetId": "asset_a112500002",
+    "manager": {
+      "email": "oce@igisam.com",
+      "fundCode": "112604",
+      "fundName": "이지스인컴앤그로스일반사모부동산자투자신탁제2-2호",
+      "teamName": "로지스틱스매니지먼트",
+      "assetCode": "A112500002",
+      "assetName": "평택아디다스물류센터",
+      "managerName": "오채은"
+    },
+    "latitude": 37.0384465,
+    "rowCount": 1,
+    "assetCode": "A112500002",
+    "assetName": "평택아디다스물류센터",
+    "fetchedAt": "2026-04-22",
+    "longitude": 127.105842,
+    "floorCount": "4F / 0B",
+    "issueCount": 2,
+    "topTenants": [
+      {
+        "tenantId": "tenant_brn_2148107412",
+        "assetCount": 1,
+        "averageENoc": 28607.48,
+        "latestExpiry": "2027-08-31",
+        "leasedAreaSqm": 53212.22,
+        "earliestExpiry": "2027-08-31",
+        "leaseSpaceCount": 1,
+        "monthlyCostTotal": 460486000,
+        "monthlyRentTotal": 460486000,
+        "tenantMasterName": "아디다스코리아유한책임회사",
+        "businessRegistrationNo": "214-81-07412"
+      }
+    ],
+    "averageENoc": 28607.48,
+    "landAreaSqm": 63516.7,
+    "tenantCount": 1,
+    "vacancyRate": 0,
+    "approvalDate": "2012-05-23",
+    "leasedAreaSqm": 53212.22,
+    "monthlyMfTotal": null,
+    "vacancyAreaSqm": 0,
+    "areaTableStatus": "unknown",
+    "leaseSpaceCount": 1,
+    "monthlyCostTotal": 460486000,
+    "monthlyRentTotal": 460486000,
+    "firstConfiguredAt": "2021-10-29",
+    "grossFloorAreaSqm": 39368.8,
+    "uniqueTenantCount": 1,
+    "standardizedAddress": "경기도 평택시 도일유통길 64",
+    "grossFloorAreaEffectiveAt": "2021-10-29",
+    "grossFloorAreaTimelineRule": "later_of_first_configured_at_and_approval_date",
+    "grossFloorAreaTimelineBasis": {
+      "note": "최초 설정일과 사용승인일 중 더 늦은 날짜부터 총 연면적 시계열에 반영합니다.",
+      "rule": "later_of_first_configured_at_and_approval_date",
+      "effectiveAt": "2021-10-29",
+      "approvalDate": "2012-05-23",
+      "effectiveMonth": "2021-10",
+      "firstConfiguredAt": "2021-10-29"
+    },
+    "grossFloorAreaEffectiveMonth": "2021-10"
+  },
+  "analytics": {
+    "rentVsMf": [
+      {
+        "rentPerPy": 28608,
+        "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+        "leasedAreaPy": 4024.18,
+        "monthlyTotal": 115121500,
+        "monthlyRentTotal": 115121500,
+        "tenantMasterName": "아디다스코리아유한책임회사"
+      },
+      {
+        "rentPerPy": 28608,
+        "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+        "leasedAreaPy": 4024.18,
+        "monthlyTotal": 115121500,
+        "monthlyRentTotal": 115121500,
+        "tenantMasterName": "아디다스코리아유한책임회사"
+      },
+      {
+        "rentPerPy": 28608,
+        "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+        "leasedAreaPy": 4024.18,
+        "monthlyTotal": 115121500,
+        "monthlyRentTotal": 115121500,
+        "tenantMasterName": "아디다스코리아유한책임회사"
+      },
+      {
+        "rentPerPy": 28608,
+        "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+        "leasedAreaPy": 4024.18,
+        "monthlyTotal": 115121500,
+        "monthlyRentTotal": 115121500,
+        "tenantMasterName": "아디다스코리아유한책임회사"
+      }
+    ],
+    "eNocAudit": {
+      "rows": [
+        {
+          "foMonths": 3,
+          "rfMonths": 4,
+          "tenantId": "tenant_brn_2148107412",
+          "rentPerPy": 28608,
+          "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+          "leasedAreaSqm": 13303.06,
+          "exclusiveRatio": 1,
+          "currentMoneyAsOf": "2025-09-01",
+          "exclusiveAreaSqm": 13303.06,
+          "tenantMasterName": "아디다스코리아유한책임회사",
+          "calculationStatus": "review_required",
+          "currentMoneyBasis": "latest_linked_history",
+          "currentPeriodYears": 15
+        },
+        {
+          "foMonths": 3,
+          "rfMonths": 4,
+          "tenantId": "tenant_brn_2148107412",
+          "rentPerPy": 28608,
+          "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+          "leasedAreaSqm": 13303.06,
+          "exclusiveRatio": 1,
+          "currentMoneyAsOf": "2025-09-01",
+          "exclusiveAreaSqm": 13303.06,
+          "tenantMasterName": "아디다스코리아유한책임회사",
+          "calculationStatus": "review_required",
+          "currentMoneyBasis": "latest_linked_history",
+          "currentPeriodYears": 15
+        },
+        {
+          "foMonths": 3,
+          "rfMonths": 4,
+          "tenantId": "tenant_brn_2148107412",
+          "rentPerPy": 28608,
+          "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+          "leasedAreaSqm": 13303.06,
+          "exclusiveRatio": 1,
+          "currentMoneyAsOf": "2025-09-01",
+          "exclusiveAreaSqm": 13303.06,
+          "tenantMasterName": "아디다스코리아유한책임회사",
+          "calculationStatus": "review_required",
+          "currentMoneyBasis": "latest_linked_history",
+          "currentPeriodYears": 15
+        },
+        {
+          "foMonths": 3,
+          "rfMonths": 4,
+          "tenantId": "tenant_brn_2148107412",
+          "rentPerPy": 28608,
+          "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+          "leasedAreaSqm": 13303.06,
+          "exclusiveRatio": 1,
+          "currentMoneyAsOf": "2025-09-01",
+          "exclusiveAreaSqm": 13303.06,
+          "tenantMasterName": "아디다스코리아유한책임회사",
+          "calculationStatus": "review_required",
+          "currentMoneyBasis": "latest_linked_history",
+          "currentPeriodYears": 15
+        }
+      ],
+      "formula": "((rentPerPy * ((periodYears*12 - rfMonths - foMonths)/(periodYears*12)) + mfPerPy) / exclusiveRatio) - (tiAmount / (exclusiveAreaSqm*0.3025) / (periodYears*12))",
+      "summary": {
+        "rowCount": 4,
+        "computedRowCount": 0,
+        "missingInputCount": 4,
+        "nonZeroVarianceCount": 0
+      }
+    },
+    "coreTenants": [
+      {
+        "tenantId": "tenant_brn_2148107412",
+        "areaShare": 1,
+        "costShare": 1,
+        "assetCount": 1,
+        "averageENoc": 28607.48,
+        "latestExpiry": "2027-08-31",
+        "leasedAreaSqm": 53212.22,
+        "earliestExpiry": "2027-08-31",
+        "leaseSpaceCount": 1,
+        "monthlyCostTotal": 460486000,
+        "monthlyRentTotal": 460486000,
+        "tenantMasterName": "아디다스코리아유한책임회사",
+        "businessRegistrationNo": "214-81-07412"
+      }
+    ],
+    "goodsTypeMix": [
+      {
+        "label": "어패럴",
+        "value": 53212.24,
+        "recordCount": 4
+      }
+    ],
+    "uniqueTenants": [
+      {
+        "tenantId": "tenant_brn_2148107412",
+        "assetCount": 1,
+        "averageENoc": 28607.48,
+        "latestExpiry": "2027-08-31",
+        "leasedAreaSqm": 53212.22,
+        "earliestExpiry": "2027-08-31",
+        "leaseSpaceCount": 1,
+        "monthlyCostTotal": 460486000,
+        "monthlyRentTotal": 460486000,
+        "tenantMasterName": "아디다스코리아유한책임회사",
+        "businessRegistrationNo": "214-81-07412"
+      }
+    ],
+    "contractExpiry": [
+      {
+        "floorLabel": "1",
+        "spaceLabel": "1",
+        "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+        "currentEndDate": "2027-08-31",
+        "monthsToExpiry": 16,
+        "detailAreaLabel": "",
+        "tenantMasterName": "아디다스코리아유한책임회사"
+      },
+      {
+        "floorLabel": "2",
+        "spaceLabel": "2",
+        "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+        "currentEndDate": "2027-08-31",
+        "monthsToExpiry": 16,
+        "detailAreaLabel": "",
+        "tenantMasterName": "아디다스코리아유한책임회사"
+      },
+      {
+        "floorLabel": "3",
+        "spaceLabel": "3",
+        "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+        "currentEndDate": "2027-08-31",
+        "monthsToExpiry": 16,
+        "detailAreaLabel": "",
+        "tenantMasterName": "아디다스코리아유한책임회사"
+      },
+      {
+        "floorLabel": "4",
+        "spaceLabel": "4",
+        "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+        "currentEndDate": "2027-08-31",
+        "monthsToExpiry": 16,
+        "detailAreaLabel": "",
+        "tenantMasterName": "아디다스코리아유한책임회사"
+      }
+    ],
+    "expirySnapshot": {
+      "entries": [
+        {
+          "tenantId": "tenant_brn_2148107412",
+          "floorLabel": "1",
+          "spaceLabel": "1",
+          "latestExpiry": "2027-08-31",
+          "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+          "leasedAreaSqm": 13303.06,
+          "currentEndDate": "2027-08-31",
+          "earliestExpiry": "2027-08-31",
+          "monthsToExpiry": 16,
+          "detailAreaLabel": "",
+          "monthlyCostTotal": 115121500,
+          "tenantMasterName": "아디다스코리아유한책임회사",
+          "monthlyCombinedTotal": 115121500
+        },
+        {
+          "tenantId": "tenant_brn_2148107412",
+          "floorLabel": "2",
+          "spaceLabel": "2",
+          "latestExpiry": "2027-08-31",
+          "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+          "leasedAreaSqm": 13303.06,
+          "currentEndDate": "2027-08-31",
+          "earliestExpiry": "2027-08-31",
+          "monthsToExpiry": 16,
+          "detailAreaLabel": "",
+          "monthlyCostTotal": 115121500,
+          "tenantMasterName": "아디다스코리아유한책임회사",
+          "monthlyCombinedTotal": 115121500
+        },
+        {
+          "tenantId": "tenant_brn_2148107412",
+          "floorLabel": "3",
+          "spaceLabel": "3",
+          "latestExpiry": "2027-08-31",
+          "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+          "leasedAreaSqm": 13303.06,
+          "currentEndDate": "2027-08-31",
+          "earliestExpiry": "2027-08-31",
+          "monthsToExpiry": 16,
+          "detailAreaLabel": "",
+          "monthlyCostTotal": 115121500,
+          "tenantMasterName": "아디다스코리아유한책임회사",
+          "monthlyCombinedTotal": 115121500
+        },
+        {
+          "tenantId": "tenant_brn_2148107412",
+          "floorLabel": "4",
+          "spaceLabel": "4",
+          "latestExpiry": "2027-08-31",
+          "leaseSpaceId": "asset_a112500002|tenant_brn_2148107412|20120901|20270831|1~4|na",
+          "leasedAreaSqm": 13303.06,
+          "currentEndDate": "2027-08-31",
+          "earliestExpiry": "2027-08-31",
+          "monthsToExpiry": 16,
+          "detailAreaLabel": "",
+          "monthlyCostTotal": 115121500,
+          "tenantMasterName": "아디다스코리아유한책임회사",
+          "monthlyCombinedTotal": 115121500
+        }
+      ],
+      "byBucket": [
+        {
+          "count": 0,
+          "label": "0-3 months"
+        },
+        {
+          "count": 0,
+          "label": "4-6 months"
+        },
+        {
+          "count": 0,
+          "label": "7-12 months"
+        },
+        {
+          "count": 4,
+          "label": "12+ months"
+        }
+      ]
+    },
+    "monthlyCostByTenant": [
+      {
+        "tenantId": "tenant_brn_2148107412",
+        "leasedAreaSqm": 53212.22,
+        "leaseSpaceCount": 1,
+        "monthlyCostTotal": 460486000,
+        "monthlyRentTotal": 460486000,
+        "tenantMasterName": "아디다스코리아유한책임회사"
+      }
+    ]
+  },
+  "topTenants": [
+    {
+      "tenantId": "tenant_brn_2148107412",
+      "assetCount": 1,
+      "averageENoc": 28607.48,
+      "latestExpiry": "2027-08-31",
+      "leasedAreaSqm": 53212.22,
+      "earliestExpiry": "2027-08-31",
+      "leaseSpaceCount": 1,
+      "monthlyCostTotal": 460486000,
+      "monthlyRentTotal": 460486000,
+      "tenantMasterName": "아디다스코리아유한책임회사",
+      "businessRegistrationNo": "214-81-07412"
+    }
+  ],
+  "generatedAt": "2026-04-27T16:07:14",
+  "basisDisplay": {
+    "asOf": "2025-09-01",
+    "page": "asset",
+    "source": "DB_GENERAL + DB_HISTORY + DB_ASSET",
+    "derivedAt": "",
+    "fetchedAt": "2026-04-22",
+    "fetchedAts": [
+      "2026-04-22"
+    ],
+    "generatedAt": "2026-04-27T16:07:14",
+    "refreshedAt": "2026-04-27T16:07:14"
+  },
+  "sourceSystem": "google_sheets",
+  "stackingPlan": [
+    {
+      "tenants": [
+        {
+          "share": 1,
+          "tenantId": "tenant_brn_2148107412",
+          "leasedAreaSqm": 13303.06,
+          "detailAreaLabel": "",
+          "tenantMasterName": "아디다스코리아유한책임회사"
+        }
+      ],
+      "floorLabel": "4",
+      "totalFloorAreaSqm": 13303.06
+    },
+    {
+      "tenants": [
+        {
+          "share": 1,
+          "tenantId": "tenant_brn_2148107412",
+          "leasedAreaSqm": 13303.06,
+          "detailAreaLabel": "",
+          "tenantMasterName": "아디다스코리아유한책임회사"
+        }
+      ],
+      "floorLabel": "3",
+      "totalFloorAreaSqm": 13303.06
+    },
+    {
+      "tenants": [
+        {
+          "share": 1,
+          "tenantId": "tenant_brn_2148107412",
+          "leasedAreaSqm": 13303.06,
+          "detailAreaLabel": "",
+          "tenantMasterName": "아디다스코리아유한책임회사"
+        }
+      ],
+      "floorLabel": "2",
+      "totalFloorAreaSqm": 13303.06
+    },
+    {
+      "tenants": [
+        {
+          "share": 1,
+          "tenantId": "tenant_brn_2148107412",
+          "leasedAreaSqm": 13303.06,
+          "detailAreaLabel": "",
+          "tenantMasterName": "아디다스코리아유한책임회사"
+        }
+      ],
+      "floorLabel": "1",
+      "totalFloorAreaSqm": 13303.06
+    }
+  ],
+  "areaBreakdown": {
+    "coreAreaSqm": null,
+    "dockAreaSqm": 404,
+    "rampAreaSqm": null,
+    "leasedAreaSqm": 53212.24,
+    "officeAreaSqm": 2630.64,
+    "exclusiveRatio": 1,
+    "parkingAreaSqm": null,
+    "vacancyAreaSqm": 0,
+    "corridorAreaSqm": null,
+    "exclusiveAreaSqm": 53212.24,
+    "warehouseAreaSqm": 49491.52,
+    "grossFloorAreaSqm": 39368.8,
+    "mechanicalAreaSqm": 656.68,
+    "otherCommonAreaSqm": 29.4,
+    "otherExclusiveAreaSqm": null
+  },
+  "payloadSource": "supabase_snapshot",
+  "schemaVersion": "docs_static_v1",
+  "dataSourceMode": "supabase_snapshot"
+}

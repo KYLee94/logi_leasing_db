@@ -1,0 +1,104 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IGIS Logistics Leasing Dashboard</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/app.css?v=20260611-4">
+</head>
+<body id="app-body" data-theme="dark" data-theme-resolved="dark">
+  <div id="admin-auth-root" class="auth-gate" hidden>
+    <form id="admin-auth-form" class="auth-panel">
+      <div class="auth-brand">IGIS Logistics Leasing</div>
+      <h1>권한 로그인</h1>
+      <input id="admin-auth-password" class="input" type="password" autocomplete="current-password" placeholder="관리자 비밀번호">
+      <button id="admin-auth-submit" class="action-btn primary" type="submit">확인</button>
+    </form>
+  </div>
+
+  <div id="app-shell" class="app-shell" hidden>
+    <aside class="sidebar" aria-label="대시보드 탐색">
+      <div class="brand">
+        <div class="brand-mark">LL</div>
+        <div class="brand-text">
+          <strong>Logistics Leasing</strong>
+          <span>Real Asset Dashboard</span>
+        </div>
+        <button id="sidebar-toggle" class="icon-btn" type="button" aria-label="사이드바 접기/펼치기">≡</button>
+      </div>
+
+      <nav class="nav">
+        <div class="nav-group">업무</div>
+        <button class="nav-item active" type="button" data-tab="weekly"><span>W</span><b>Weekly</b></button>
+        <button class="nav-item" type="button" data-tab="home"><span>H</span><b>Home</b></button>
+        <button class="nav-item" type="button" data-tab="asset"><span>A</span><b>Asset</b></button>
+        <button class="nav-item" type="button" data-tab="company"><span>C</span><b>Company</b></button>
+        <button class="nav-item" type="button" data-tab="sector"><span>S</span><b>Sector</b></button>
+        <div class="nav-group">분석</div>
+        <button class="nav-item" type="button" data-tab="tools"><span>T</span><b>Analysis Tools</b></button>
+        <button class="nav-item" type="button" data-tab="playground"><span>P</span><b>Data Playground</b></button>
+        <button class="nav-item" type="button" data-tab="quality"><span>Q</span><b>Data Quality</b></button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="avatar">IG</div>
+        <div class="footer-text">
+          <strong id="source-label">github_snapshot</strong>
+          <span id="generated-label">static frontend</span>
+        </div>
+      </div>
+    </aside>
+
+    <main id="canvas" class="canvas">
+      <div class="content">
+        <header class="page-head">
+          <div>
+            <div class="eyebrow" id="page-eyebrow">Workspace</div>
+            <h1 id="page-title">Weekly</h1>
+          </div>
+          <div class="head-actions">
+            <select id="asset-select" class="select scoped-control" hidden></select>
+            <select id="company-select" class="select scoped-control" hidden></select>
+            <span id="role-label" class="role-chip">Reader</span>
+            <button id="admin-login-button" class="theme-btn" type="button">권한 로그인</button>
+            <button id="admin-logout-button" class="theme-btn" type="button" hidden>로그아웃</button>
+            <button class="theme-btn" type="button" data-theme-choice="dark">어두운 화면</button>
+            <button class="theme-btn" type="button" data-theme-choice="light">밝은 화면</button>
+          </div>
+        </header>
+
+        <section class="workspace-layout iota-workspace-layout">
+          <div class="workspace-main">
+            <div id="weekly-view" class="tab-panel is-active" data-panel="weekly" data-render-status="skeleton"></div>
+            <div id="home-view" class="tab-panel" data-panel="home" data-render-status="skeleton" hidden></div>
+            <div id="asset-view" class="tab-panel" data-panel="asset" data-render-status="skeleton" hidden></div>
+            <div id="company-view" class="tab-panel" data-panel="company" data-render-status="skeleton" hidden></div>
+            <div id="sector-view" class="tab-panel" data-panel="sector" data-render-status="skeleton" hidden></div>
+            <div id="tools-view" class="tab-panel" data-panel="tools" data-render-status="skeleton" hidden></div>
+            <div id="playground-view" class="tab-panel" data-panel="playground" data-render-status="skeleton" hidden></div>
+            <div id="quality-view" class="tab-panel" data-panel="quality" data-render-status="skeleton" hidden></div>
+          </div>
+          <aside class="project-rail">
+            <div class="rail-label">화면</div>
+            <div id="rail-tabs" class="rail-tabs"></div>
+            <div class="rail-divider"></div>
+            <div class="rail-label">섹션</div>
+            <div id="rail-index" class="rail-index"></div>
+          </aside>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div id="drawer-backdrop" class="drawer-backdrop" hidden>
+    <aside class="drawer" role="dialog" aria-modal="true">
+      <button id="drawer-close" class="icon-btn drawer-close" type="button" aria-label="닫기">×</button>
+      <div id="drawer-content"></div>
+    </aside>
+  </div>
+
+  <script src="assets/app.js?v=20260611-4"></script>
+</body>
+</html>
+

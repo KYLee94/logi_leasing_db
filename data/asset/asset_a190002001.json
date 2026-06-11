@@ -1,0 +1,453 @@
+{
+  "kpis": [
+    {
+      "key": "occupancy_rate",
+      "label": "임대율",
+      "value": null,
+      "status": "임대차계약 없음",
+      "valueType": "percent"
+    },
+    {
+      "key": "leased_area_total",
+      "label": "총 임대면적",
+      "value": 0,
+      "status": "임대차계약 없음",
+      "valueType": "area"
+    },
+    {
+      "key": "vacancy_area_total",
+      "label": "공실면적",
+      "value": 0,
+      "status": "자료 없음",
+      "valueType": "area"
+    },
+    {
+      "key": "unique_tenant_count",
+      "label": "현재 임차인 수",
+      "value": 0,
+      "status": "임대차계약 없음",
+      "valueType": "number"
+    },
+    {
+      "key": "average_rent_per_py",
+      "label": "평당 임대료 평균",
+      "value": "자료 없음",
+      "status": "임대차계약 없음"
+    },
+    {
+      "key": "average_mf_per_py",
+      "label": "평당 관리비 평균",
+      "value": "자료 없음",
+      "status": "임대차계약 없음"
+    },
+    {
+      "key": "average_e_noc",
+      "label": "E.NOC",
+      "value": "자료 없음",
+      "status": "임대차계약 없음"
+    }
+  ],
+  "meta": {
+    "page": "asset",
+    "rowCount": 0,
+    "selection": {
+      "assetId": "asset_a190002001",
+      "assetName": "분당야탑물류센터"
+    },
+    "generatedAt": "2026-06-11T02:22:14Z",
+    "basisDisplay": {
+      "asOf": "2026-06-11",
+      "page": "asset",
+      "source": "260513/260520 Excel supplemental",
+      "generatedAt": "2026-06-11T02:22:14Z",
+      "refreshedAt": "2026-06-11T02:22:14Z"
+    }
+  },
+  "rows": [],
+  "basis": {
+    "page": "asset",
+    "rowScope": "supplemental_new_asset_without_lease",
+    "nullPolicy": "신규 자산의 임대차계약 데이터가 없으면 금액/면적 평균은 자료 없음으로 표시합니다."
+  },
+  "filters": {
+    "assets": [
+      {
+        "assetId": "asset_a120085001",
+        "assetName": "경산 쿠팡물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 598840.95,
+        "vacancyRate": 0.22740490773422375,
+        "monthlyCostTotal": 1060724933,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112527001",
+        "assetName": "동산물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 30240.58,
+        "vacancyRate": 0.011449620876710885,
+        "monthlyCostTotal": 435167477,
+        "uniqueTenantCount": 4
+      },
+      {
+        "assetId": "asset_a112755001",
+        "assetName": "두동 LG전자 통합물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 35317.14,
+        "vacancyRate": 0.0008472422420663569,
+        "monthlyCostTotal": 630228000,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112527002",
+        "assetName": "부국물류센터",
+        "fetchedAt": "2026-04-22",
+        "vacancyRate": 0,
+        "monthlyCostTotal": 155328845,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112109001",
+        "assetName": "부산송정물류센터",
+        "fetchedAt": "2026-04-22",
+        "vacancyRate": 0.027004153491596173,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a190002001",
+        "assetName": "분당야탑물류센터",
+        "fetchedAt": "2026-06-11",
+        "dataStatus": "임대차계약 없음",
+        "averageENoc": null,
+        "vacancyRate": null,
+        "monthlyCostTotal": 0,
+        "uniqueTenantCount": 0
+      },
+      {
+        "assetId": "asset_a112299001",
+        "assetName": "스카이박스1, 스카이박스2",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 69040.1,
+        "vacancyRate": 0.3071110862557777,
+        "monthlyCostTotal": 669324200,
+        "uniqueTenantCount": 6
+      },
+      {
+        "assetId": "asset_a112505001",
+        "assetName": "아레나스안성",
+        "fetchedAt": "2026-04-22",
+        "vacancyRate": 0.7478773512350668,
+        "uniqueTenantCount": 3
+      },
+      {
+        "assetId": "asset_a112127001",
+        "assetName": "아레나스양지물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 43823.51,
+        "vacancyRate": 0.22161516861964634,
+        "monthlyCostTotal": 552212356,
+        "uniqueTenantCount": 2
+      },
+      {
+        "assetId": "asset_ap00014001",
+        "assetName": "안성 성은지구 물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 33304.78,
+        "vacancyRate": 0.3013357213767869,
+        "monthlyCostTotal": 604357000,
+        "uniqueTenantCount": 4
+      },
+      {
+        "assetId": "asset_a112500003",
+        "assetName": "안성 홈플러스 중부허브 물류센터",
+        "fetchedAt": "2026-04-22",
+        "vacancyRate": 0.016556145554103226,
+        "monthlyCostTotal": 629174800,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_s00002001",
+        "assetName": "양산 유산동 물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 25871.37,
+        "vacancyRate": 0.3656956897910055,
+        "monthlyCostTotal": 251987517,
+        "uniqueTenantCount": 3
+      },
+      {
+        "assetId": "asset_a112527003",
+        "assetName": "에이블로지스물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 25700.92,
+        "vacancyRate": 0,
+        "monthlyCostTotal": 245219187,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112606001",
+        "assetName": "여주 본두리 물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 34391.92,
+        "vacancyRate": 0.035098733326698266,
+        "monthlyCostTotal": 1028369423,
+        "uniqueTenantCount": 3
+      },
+      {
+        "assetId": "asset_a112573001",
+        "assetName": "이천 마장면 물류센터",
+        "fetchedAt": "2026-04-22",
+        "averageENoc": 28184.45,
+        "vacancyRate": 0.030459886244241004,
+        "monthlyCostTotal": 275622000,
+        "uniqueTenantCount": 2
+      },
+      {
+        "assetId": "asset_a112721001",
+        "assetName": "인천석남물류센터",
+        "fetchedAt": "2026-04-22",
+        "vacancyRate": 0.00020146451000519652,
+        "monthlyCostTotal": 2863471002,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a112500002",
+        "assetName": "평택아디다스물류센터",
+        "fetchedAt": "2026-04-22",
+        "vacancyRate": 0,
+        "monthlyCostTotal": 460486000,
+        "uniqueTenantCount": 1
+      },
+      {
+        "assetId": "asset_a190013001",
+        "assetName": "포천정교리물류센터",
+        "fetchedAt": "2026-06-11",
+        "dataStatus": "임대차계약 없음",
+        "averageENoc": null,
+        "vacancyRate": null,
+        "monthlyCostTotal": 0,
+        "uniqueTenantCount": 0
+      },
+      {
+        "assetId": "asset_a112642001",
+        "assetName": "화성 석포리 물류센터",
+        "fetchedAt": "2026-04-22",
+        "vacancyRate": 0,
+        "monthlyCostTotal": 1272556102,
+        "uniqueTenantCount": 1
+      }
+    ],
+    "selectedAssetId": "asset_a190002001"
+  },
+  "lenders": [
+    {
+      "assetId": "asset_a190002001",
+      "drawnAt": "2024-08-02",
+      "tranche": "Tr. A",
+      "allInPct": null,
+      "fundCode": "190002",
+      "fundName": "이지스부동산일반사모투자회사제543호",
+      "loanType": "담보",
+      "assetCode": "A190002001",
+      "assetName": "분당야탑물류센터",
+      "sourceRow": 55,
+      "feeRatePct": null,
+      "lenderName": "농협은행",
+      "maturityAt": "2027-08-02",
+      "baseRatePct": null,
+      "loanRatePct": 4.9,
+      "interestType": "고정금리",
+      "spreadRatePct": null,
+      "drawnAmountKrw": 24400000000,
+      "sourceWorkbook": "260520_물류센터 펀드 정보.xlsx"
+    },
+    {
+      "assetId": "asset_a190002001",
+      "drawnAt": "2024-08-02",
+      "tranche": "Tr. A",
+      "allInPct": null,
+      "fundCode": "190002",
+      "fundName": "이지스부동산일반사모투자회사제543호",
+      "loanType": "담보",
+      "assetCode": "A190002001",
+      "assetName": "분당야탑물류센터",
+      "sourceRow": 56,
+      "feeRatePct": null,
+      "lenderName": "중소기업은행",
+      "maturityAt": "2027-08-02",
+      "baseRatePct": null,
+      "loanRatePct": 4.9,
+      "interestType": "고정금리",
+      "spreadRatePct": null,
+      "drawnAmountKrw": 54000000000,
+      "sourceWorkbook": "260520_물류센터 펀드 정보.xlsx"
+    },
+    {
+      "assetId": "asset_a190002001",
+      "drawnAt": "2024-08-02",
+      "tranche": "Tr. A",
+      "allInPct": null,
+      "fundCode": "190002",
+      "fundName": "이지스부동산일반사모투자회사제543호",
+      "loanType": "담보",
+      "assetCode": "A190002001",
+      "assetName": "분당야탑물류센터",
+      "sourceRow": 57,
+      "feeRatePct": null,
+      "lenderName": "케이디비산업은행",
+      "maturityAt": "2027-08-02",
+      "baseRatePct": null,
+      "loanRatePct": 4.9,
+      "interestType": "고정금리",
+      "spreadRatePct": null,
+      "drawnAmountKrw": 54000000000,
+      "sourceWorkbook": "260520_물류센터 펀드 정보.xlsx"
+    },
+    {
+      "assetId": "asset_a190002001",
+      "drawnAt": "2024-08-02",
+      "tranche": "Tr. A",
+      "allInPct": null,
+      "fundCode": "190002",
+      "fundName": "이지스부동산일반사모투자회사제543호",
+      "loanType": "담보",
+      "assetCode": "A190002001",
+      "assetName": "분당야탑물류센터",
+      "sourceRow": 58,
+      "feeRatePct": null,
+      "lenderName": "하나은행",
+      "maturityAt": "2027-08-02",
+      "baseRatePct": null,
+      "loanRatePct": 4.9,
+      "interestType": "고정금리",
+      "spreadRatePct": null,
+      "drawnAmountKrw": 30000000000,
+      "sourceWorkbook": "260520_물류센터 펀드 정보.xlsx"
+    }
+  ],
+  "overview": {
+    "sector": "물류",
+    "address": "경기도 성남시 분당구 탄천로 257",
+    "assetId": "asset_a190002001",
+    "manager": {
+      "email": "jh.ryu@igisam.com",
+      "fundCode": "190002",
+      "fundName": "이지스부동산일반사모투자회사제543호",
+      "teamName": "스페셜시츄에이션그룹1파트",
+      "assetCode": "A190002001",
+      "assetName": "분당야탑물류센터",
+      "managerName": "류지훈",
+      "organization": "스페셜시츄에이션그룹1파트"
+    },
+    "fundCode": "190002",
+    "fundName": "이지스부동산일반사모투자회사제543호",
+    "latitude": 37.4147613,
+    "assetCode": "A190002001",
+    "assetName": "분당야탑물류센터",
+    "longitude": 127.118779,
+    "dataStatus": "임대차계약 없음",
+    "lenderCount": 4,
+    "tenantCount": 0,
+    "fundOverview": {
+      "sector": "물류",
+      "assetId": "asset_a190002001",
+      "fundCode": "190002",
+      "fundName": "이지스부동산일반사모투자회사제543호",
+      "fundType": "실물형",
+      "assetCode": "A190002001",
+      "assetName": "분당야탑물류센터",
+      "legalForm": "투자회사",
+      "setupDate": "2024-05-24",
+      "shortName": "543호",
+      "sourceRow": 21,
+      "maturityDate": "2027-08-25",
+      "sourceWorkbook": "260520_물류센터 펀드 정보.xlsx",
+      "investmentStrategy": "Core+"
+    },
+    "leasedAreaSqm": 0,
+    "parcelAddress": "경기도 성남시 분당구 야탑동 403",
+    "coordinateNote": "Naver 지도 주소 검색 응답 기준 탄천로 257(야탑동 403) 도로명 좌표입니다. 기존 37.40971,127.12046 좌표는 탄천종합운동장 인근으로 확인되어 사용하지 않습니다.",
+    "monthlyMfTotal": 0,
+    "leaseSpaceCount": 0,
+    "beneficiaryCount": 2,
+    "coordinateStatus": "네이버 주소 검색 보정 좌표",
+    "monthlyCostTotal": 0,
+    "monthlyRentTotal": 0,
+    "buildingHubStatus": "pending_edge_function_lookup",
+    "uniqueTenantCount": 0,
+    "investmentOverview": {
+      "fundType": "실물형",
+      "legalForm": "투자회사",
+      "investmentStrategy": "Core+"
+    },
+    "standardizedAddress": "경기도 성남시 분당구 탄천로 257",
+    "buildingRegisterNote": "성남시 분당구 야탑동 403 기준으로 Edge Function에서 조회합니다.",
+    "buildingRegisterStatus": "pending_edge_function_lookup"
+  },
+  "analytics": {
+    "coreTenants": [],
+    "contractExpiry": [],
+    "monthlyCostByTenant": []
+  },
+  "topTenants": [],
+  "generatedAt": "2026-06-11T02:22:14Z",
+  "basisDisplay": {
+    "asOf": "2026-06-11",
+    "page": "asset",
+    "source": "260513/260520 Excel supplemental",
+    "generatedAt": "2026-06-11T02:22:14Z",
+    "refreshedAt": "2026-06-11T02:22:14Z"
+  },
+  "fundOverview": {
+    "sector": "물류",
+    "assetId": "asset_a190002001",
+    "fundCode": "190002",
+    "fundName": "이지스부동산일반사모투자회사제543호",
+    "fundType": "실물형",
+    "assetCode": "A190002001",
+    "assetName": "분당야탑물류센터",
+    "legalForm": "투자회사",
+    "setupDate": "2024-05-24",
+    "shortName": "543호",
+    "sourceRow": 21,
+    "maturityDate": "2027-08-25",
+    "sourceWorkbook": "260520_물류센터 펀드 정보.xlsx",
+    "investmentStrategy": "Core+"
+  },
+  "sourceSystem": "google_sheets",
+  "stackingPlan": [],
+  "areaBreakdown": {
+    "dataStatus": "임대차계약 없음",
+    "leasedAreaSqm": 0,
+    "vacancyAreaSqm": null,
+    "grossFloorAreaSqm": null
+  },
+  "beneficiaries": [
+    {
+      "assetId": "asset_a190002001",
+      "tranche": "",
+      "fundCode": "190002",
+      "fundName": "이지스부동산일반사모투자회사제543호",
+      "assetCode": "A190002001",
+      "assetName": "분당야탑물류센터",
+      "sourceRow": 56,
+      "sourceWorkbook": "260520_물류센터 펀드 정보.xlsx",
+      "beneficiaryName": "쿠팡",
+      "investmentAmountKrw": 99574318540
+    },
+    {
+      "assetId": "asset_a190002001",
+      "tranche": "",
+      "fundCode": "190002",
+      "fundName": "이지스부동산일반사모투자회사제543호",
+      "assetCode": "A190002001",
+      "assetName": "분당야탑물류센터",
+      "sourceRow": 57,
+      "sourceWorkbook": "260520_물류센터 펀드 정보.xlsx",
+      "beneficiaryName": "쿠팡로지스틱스",
+      "investmentAmountKrw": 500373460
+    }
+  ],
+  "payloadSource": "supabase_snapshot",
+  "schemaVersion": "docs_static_supplemental_v1",
+  "dataSourceMode": "supabase_snapshot"
+}
