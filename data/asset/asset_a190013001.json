@@ -54,13 +54,13 @@
       "assetId": "asset_a190013001",
       "assetName": "포천정교리물류센터"
     },
-    "generatedAt": "2026-06-11T02:22:14Z",
+    "generatedAt": "2026-06-11T05:18:52Z",
     "basisDisplay": {
       "asOf": "2026-06-11",
       "page": "asset",
       "source": "260513/260520 Excel supplemental",
-      "generatedAt": "2026-06-11T02:22:14Z",
-      "refreshedAt": "2026-06-11T02:22:14Z"
+      "generatedAt": "2026-06-11T05:18:52Z",
+      "refreshedAt": "2026-06-11T05:18:52Z"
     }
   },
   "rows": [],
@@ -74,229 +74,248 @@
       {
         "assetId": "asset_a120085001",
         "assetName": "경산 쿠팡물류센터",
+        "uniqueTenantCount": 1,
         "fetchedAt": "2026-04-22",
         "averageENoc": 598840.95,
         "vacancyRate": 0.22740490773422375,
-        "monthlyCostTotal": 1060724933,
-        "uniqueTenantCount": 1
+        "monthlyCostTotal": 1060724933
       },
       {
         "assetId": "asset_a112527001",
         "assetName": "동산물류센터",
+        "uniqueTenantCount": 4,
         "fetchedAt": "2026-04-22",
         "averageENoc": 30240.58,
         "vacancyRate": 0.011449620876710885,
-        "monthlyCostTotal": 435167477,
-        "uniqueTenantCount": 4
+        "monthlyCostTotal": 435167477
       },
       {
         "assetId": "asset_a112755001",
         "assetName": "두동 LG전자 통합물류센터",
         "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 1,
         "averageENoc": 35317.14,
-        "vacancyRate": 0.0008472422420663569,
         "monthlyCostTotal": 630228000,
-        "uniqueTenantCount": 1
+        "vacancyRate": 0.0008472422420663569
       },
       {
-        "assetId": "asset_a112527002",
         "assetName": "부국물류센터",
+        "uniqueTenantCount": 1,
         "fetchedAt": "2026-04-22",
+        "assetId": "asset_a112527002",
         "vacancyRate": 0,
-        "monthlyCostTotal": 155328845,
-        "uniqueTenantCount": 1
+        "monthlyCostTotal": 155328845
       },
       {
-        "assetId": "asset_a112109001",
         "assetName": "부산송정물류센터",
+        "uniqueTenantCount": 1,
         "fetchedAt": "2026-04-22",
-        "vacancyRate": 0.027004153491596173,
-        "uniqueTenantCount": 1
+        "assetId": "asset_a112109001",
+        "vacancyRate": 0.027004153491596173
       },
       {
         "assetId": "asset_a190002001",
         "assetName": "분당야탑물류센터",
+        "uniqueTenantCount": 0,
         "fetchedAt": "2026-06-11",
-        "dataStatus": "임대차계약 없음",
         "averageENoc": null,
         "vacancyRate": null,
         "monthlyCostTotal": 0,
-        "uniqueTenantCount": 0
+        "dataStatus": "임대차계약 없음"
       },
       {
         "assetId": "asset_a112299001",
         "assetName": "스카이박스1, 스카이박스2",
         "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 6,
         "averageENoc": 69040.1,
-        "vacancyRate": 0.3071110862557777,
         "monthlyCostTotal": 669324200,
-        "uniqueTenantCount": 6
+        "vacancyRate": 0.3071110862557777
       },
       {
-        "assetId": "asset_a112505001",
         "assetName": "아레나스안성",
         "fetchedAt": "2026-04-22",
-        "vacancyRate": 0.7478773512350668,
-        "uniqueTenantCount": 3
+        "uniqueTenantCount": 3,
+        "assetId": "asset_a112505001",
+        "vacancyRate": 0.7478773512350668
       },
       {
         "assetId": "asset_a112127001",
         "assetName": "아레나스양지물류센터",
+        "uniqueTenantCount": 2,
         "fetchedAt": "2026-04-22",
         "averageENoc": 43823.51,
         "vacancyRate": 0.22161516861964634,
-        "monthlyCostTotal": 552212356,
-        "uniqueTenantCount": 2
+        "monthlyCostTotal": 552212356
       },
       {
         "assetId": "asset_ap00014001",
         "assetName": "안성 성은지구 물류센터",
+        "uniqueTenantCount": 4,
         "fetchedAt": "2026-04-22",
         "averageENoc": 33304.78,
         "vacancyRate": 0.3013357213767869,
-        "monthlyCostTotal": 604357000,
-        "uniqueTenantCount": 4
+        "monthlyCostTotal": 604357000
       },
       {
-        "assetId": "asset_a112500003",
         "assetName": "안성 홈플러스 중부허브 물류센터",
+        "uniqueTenantCount": 1,
         "fetchedAt": "2026-04-22",
+        "assetId": "asset_a112500003",
         "vacancyRate": 0.016556145554103226,
-        "monthlyCostTotal": 629174800,
-        "uniqueTenantCount": 1
+        "monthlyCostTotal": 629174800
       },
       {
         "assetId": "asset_s00002001",
         "assetName": "양산 유산동 물류센터",
+        "uniqueTenantCount": 3,
         "fetchedAt": "2026-04-22",
         "averageENoc": 25871.37,
         "vacancyRate": 0.3656956897910055,
-        "monthlyCostTotal": 251987517,
-        "uniqueTenantCount": 3
+        "monthlyCostTotal": 251987517
       },
       {
         "assetId": "asset_a112527003",
         "assetName": "에이블로지스물류센터",
+        "uniqueTenantCount": 1,
         "fetchedAt": "2026-04-22",
         "averageENoc": 25700.92,
         "vacancyRate": 0,
-        "monthlyCostTotal": 245219187,
-        "uniqueTenantCount": 1
+        "monthlyCostTotal": 245219187
       },
       {
         "assetId": "asset_a112606001",
         "assetName": "여주 본두리 물류센터",
+        "uniqueTenantCount": 3,
         "fetchedAt": "2026-04-22",
         "averageENoc": 34391.92,
         "vacancyRate": 0.035098733326698266,
-        "monthlyCostTotal": 1028369423,
-        "uniqueTenantCount": 3
+        "monthlyCostTotal": 1028369423
       },
       {
         "assetId": "asset_a112573001",
         "assetName": "이천 마장면 물류센터",
         "fetchedAt": "2026-04-22",
+        "uniqueTenantCount": 2,
         "averageENoc": 28184.45,
-        "vacancyRate": 0.030459886244241004,
         "monthlyCostTotal": 275622000,
-        "uniqueTenantCount": 2
+        "vacancyRate": 0.030459886244241004
       },
       {
-        "assetId": "asset_a112721001",
         "assetName": "인천석남물류센터",
         "fetchedAt": "2026-04-22",
-        "vacancyRate": 0.00020146451000519652,
+        "uniqueTenantCount": 1,
+        "assetId": "asset_a112721001",
         "monthlyCostTotal": 2863471002,
-        "uniqueTenantCount": 1
+        "vacancyRate": 0.00020146451000519652
       },
       {
-        "assetId": "asset_a112500002",
         "assetName": "평택아디다스물류센터",
+        "uniqueTenantCount": 1,
         "fetchedAt": "2026-04-22",
+        "assetId": "asset_a112500002",
         "vacancyRate": 0,
-        "monthlyCostTotal": 460486000,
-        "uniqueTenantCount": 1
+        "monthlyCostTotal": 460486000
       },
       {
         "assetId": "asset_a190013001",
         "assetName": "포천정교리물류센터",
+        "uniqueTenantCount": 0,
         "fetchedAt": "2026-06-11",
-        "dataStatus": "임대차계약 없음",
         "averageENoc": null,
         "vacancyRate": null,
         "monthlyCostTotal": 0,
-        "uniqueTenantCount": 0
+        "dataStatus": "임대차계약 없음"
       },
       {
-        "assetId": "asset_a112642001",
         "assetName": "화성 석포리 물류센터",
         "fetchedAt": "2026-04-22",
-        "vacancyRate": 0,
+        "uniqueTenantCount": 1,
+        "assetId": "asset_a112642001",
         "monthlyCostTotal": 1272556102,
-        "uniqueTenantCount": 1
+        "vacancyRate": 0
       }
     ],
     "selectedAssetId": "asset_a190013001"
   },
-  "lenders": [],
   "overview": {
-    "sector": "물류",
-    "address": "경기도 포천시 가산면 정교리 272-1",
     "assetId": "asset_a190013001",
-    "manager": {
-      "email": "uyeong.yang@igisam.com",
-      "fundCode": "190013",
-      "fundName": "이지스제560호부동산일반사모투자회사",
-      "teamName": "스페셜시츄에이션그룹1파트",
-      "assetCode": "A190013001",
-      "assetName": "포천정교리물류센터",
-      "managerName": "양우영",
-      "organization": "스페셜시츄에이션그룹1파트"
-    },
-    "fundCode": "190013",
-    "fundName": "이지스제560호부동산일반사모투자회사",
-    "latitude": 37.83925,
     "assetCode": "A190013001",
     "assetName": "포천정교리물류센터",
-    "longitude": 127.18528,
-    "dataStatus": "임대차계약 없음",
-    "lenderCount": 0,
-    "tenantCount": 0,
-    "fundOverview": {
-      "sector": "물류",
-      "assetId": "asset_a190013001",
-      "fundCode": "190013",
-      "fundName": "이지스제560호부동산일반사모투자회사",
-      "fundType": "개발(펀드)형",
+    "sector": "물류",
+    "fundCode": "190013",
+    "fundName": "이지스제560호부동산일반사모투자회사",
+    "address": "경기도 포천시 가산면 정교리 272-1",
+    "standardizedAddress": "경기도 포천시 가산면 정교리 272-1",
+    "parcelAddress": "경기도 포천시 가산면 정교리 272-1",
+    "latitude": 37.8116318,
+    "longitude": 127.1818612,
+    "coordinateStatus": "네이버 지번주소 검색 좌표",
+    "coordinateNote": "Naver 지도 주소 검색 응답 기준 정교리 272-1 지번 좌표입니다. 개발 진행 중 자산으로 건축물대장 미존재 가능성은 별도 상태로 표시합니다.",
+    "manager": {
+      "managerName": "양우영",
+      "teamName": "스페셜시츄에이션그룹1파트",
+      "organization": "스페셜시츄에이션그룹1파트",
+      "email": "uyeong.yang@igisam.com",
       "assetCode": "A190013001",
       "assetName": "포천정교리물류센터",
-      "legalForm": "투자회사",
-      "setupDate": "2025-02-27",
-      "shortName": "560호",
-      "sourceRow": 22,
-      "maturityDate": "2030-02-07",
-      "sourceWorkbook": "260520_물류센터 펀드 정보.xlsx",
-      "investmentStrategy": "Opportunistic"
+      "fundCode": "190013",
+      "fundName": "이지스제560호부동산일반사모투자회사"
     },
-    "leasedAreaSqm": 0,
-    "parcelAddress": "경기도 포천시 가산면 정교리 272-1",
-    "coordinateNote": "개발 진행 중 자산으로 건축물대장/지번 기반 추가 검증이 필요합니다.",
-    "monthlyMfTotal": 0,
-    "leaseSpaceCount": 0,
-    "beneficiaryCount": 2,
-    "coordinateStatus": "주소 기반 좌표",
-    "monthlyCostTotal": 0,
-    "monthlyRentTotal": 0,
-    "buildingHubStatus": "development_asset_not_found_expected",
+    "tenantCount": 0,
     "uniqueTenantCount": 0,
+    "leaseSpaceCount": 0,
+    "leasedAreaSqm": 0,
+    "monthlyRentTotal": 0,
+    "monthlyMfTotal": 0,
+    "monthlyCostTotal": 0,
+    "dataStatus": "임대차계약 없음",
+    "buildingHubStatus": "development_asset_not_found_expected",
+    "buildingRegisterStatus": "development_asset_not_found_expected",
+    "buildingRegisterNote": "개발 진행 중 자산으로 건축물대장 미존재 가능성을 정상 상태로 기록합니다.",
+    "buildingName": null,
+    "buildingRegisterAddress": null,
+    "buildingRegisterRoadAddress": null,
+    "mainPurposeName": null,
+    "structureName": null,
+    "roofName": null,
+    "floorCount": null,
+    "groundFloorCount": null,
+    "undergroundFloorCount": null,
+    "landAreaSqm": null,
+    "buildingAreaSqm": null,
+    "grossFloorAreaSqm": null,
+    "buildingCoverageRatioPct": null,
+    "floorAreaRatioPct": null,
+    "heightM": null,
+    "totalParkingCount": null,
+    "approvalDate": null,
+    "buildingRegisterProvider": null,
+    "buildingRegisterProviderStatus": null,
+    "buildingRegisterCacheStatus": null,
     "investmentOverview": {
       "fundType": "개발(펀드)형",
-      "legalForm": "투자회사",
-      "investmentStrategy": "Opportunistic"
+      "investmentStrategy": "Opportunistic",
+      "legalForm": "투자회사"
     },
-    "standardizedAddress": "경기도 포천시 가산면 정교리 272-1",
-    "buildingRegisterNote": "개발 진행 중 자산으로 건축물대장 미존재 가능성을 정상 상태로 기록합니다.",
-    "buildingRegisterStatus": "development_asset_not_found_expected"
+    "fundOverview": {
+      "sourceWorkbook": "260520_물류센터 펀드 정보.xlsx",
+      "sourceRow": 22,
+      "assetCode": "A190013001",
+      "assetId": "asset_a190013001",
+      "assetName": "포천정교리물류센터",
+      "fundCode": "190013",
+      "fundName": "이지스제560호부동산일반사모투자회사",
+      "shortName": "560호",
+      "legalForm": "투자회사",
+      "sector": "물류",
+      "fundType": "개발(펀드)형",
+      "investmentStrategy": "Opportunistic",
+      "setupDate": "2025-02-27",
+      "maturityDate": "2030-02-07"
+    },
+    "beneficiaryCount": 2,
+    "lenderCount": 0
   },
   "analytics": {
     "coreTenants": [],
@@ -304,65 +323,69 @@
     "monthlyCostByTenant": []
   },
   "topTenants": [],
-  "generatedAt": "2026-06-11T02:22:14Z",
+  "stackingPlan": [],
+  "areaBreakdown": {
+    "leasedAreaSqm": 0,
+    "grossFloorAreaSqm": null,
+    "landAreaSqm": null,
+    "buildingAreaSqm": null,
+    "vacancyAreaSqm": null,
+    "dataStatus": "임대차계약 없음"
+  },
+  "buildingRegister": {},
+  "fundOverview": {
+    "sourceWorkbook": "260520_물류센터 펀드 정보.xlsx",
+    "sourceRow": 22,
+    "assetCode": "A190013001",
+    "assetId": "asset_a190013001",
+    "assetName": "포천정교리물류센터",
+    "fundCode": "190013",
+    "fundName": "이지스제560호부동산일반사모투자회사",
+    "shortName": "560호",
+    "legalForm": "투자회사",
+    "sector": "물류",
+    "fundType": "개발(펀드)형",
+    "investmentStrategy": "Opportunistic",
+    "setupDate": "2025-02-27",
+    "maturityDate": "2030-02-07"
+  },
+  "beneficiaries": [
+    {
+      "sourceWorkbook": "260520_물류센터 펀드 정보.xlsx",
+      "sourceRow": 58,
+      "assetCode": "A190013001",
+      "assetId": "asset_a190013001",
+      "assetName": "포천정교리물류센터",
+      "fundCode": "190013",
+      "fundName": "이지스제560호부동산일반사모투자회사",
+      "tranche": "",
+      "beneficiaryName": "비공개(쿠팡 계열)",
+      "investmentAmountKrw": 33847096725.0
+    },
+    {
+      "sourceWorkbook": "260520_물류센터 펀드 정보.xlsx",
+      "sourceRow": 59,
+      "assetCode": "A190013001",
+      "assetId": "asset_a190013001",
+      "assetName": "포천정교리물류센터",
+      "fundCode": "190013",
+      "fundName": "이지스제560호부동산일반사모투자회사",
+      "tranche": "",
+      "beneficiaryName": "비공개(쿠팡 계열)",
+      "investmentAmountKrw": 867874275.0
+    }
+  ],
+  "lenders": [],
+  "generatedAt": "2026-06-11T05:18:52Z",
   "basisDisplay": {
     "asOf": "2026-06-11",
     "page": "asset",
     "source": "260513/260520 Excel supplemental",
-    "generatedAt": "2026-06-11T02:22:14Z",
-    "refreshedAt": "2026-06-11T02:22:14Z"
+    "generatedAt": "2026-06-11T05:18:52Z",
+    "refreshedAt": "2026-06-11T05:18:52Z"
   },
-  "fundOverview": {
-    "sector": "물류",
-    "assetId": "asset_a190013001",
-    "fundCode": "190013",
-    "fundName": "이지스제560호부동산일반사모투자회사",
-    "fundType": "개발(펀드)형",
-    "assetCode": "A190013001",
-    "assetName": "포천정교리물류센터",
-    "legalForm": "투자회사",
-    "setupDate": "2025-02-27",
-    "shortName": "560호",
-    "sourceRow": 22,
-    "maturityDate": "2030-02-07",
-    "sourceWorkbook": "260520_물류센터 펀드 정보.xlsx",
-    "investmentStrategy": "Opportunistic"
-  },
-  "sourceSystem": "google_sheets",
-  "stackingPlan": [],
-  "areaBreakdown": {
-    "dataStatus": "임대차계약 없음",
-    "leasedAreaSqm": 0,
-    "vacancyAreaSqm": null,
-    "grossFloorAreaSqm": null
-  },
-  "beneficiaries": [
-    {
-      "assetId": "asset_a190013001",
-      "tranche": "",
-      "fundCode": "190013",
-      "fundName": "이지스제560호부동산일반사모투자회사",
-      "assetCode": "A190013001",
-      "assetName": "포천정교리물류센터",
-      "sourceRow": 58,
-      "sourceWorkbook": "260520_물류센터 펀드 정보.xlsx",
-      "beneficiaryName": "비공개(쿠팡 계열)",
-      "investmentAmountKrw": 33847096725
-    },
-    {
-      "assetId": "asset_a190013001",
-      "tranche": "",
-      "fundCode": "190013",
-      "fundName": "이지스제560호부동산일반사모투자회사",
-      "assetCode": "A190013001",
-      "assetName": "포천정교리물류센터",
-      "sourceRow": 59,
-      "sourceWorkbook": "260520_물류센터 펀드 정보.xlsx",
-      "beneficiaryName": "비공개(쿠팡 계열)",
-      "investmentAmountKrw": 867874275
-    }
-  ],
-  "payloadSource": "supabase_snapshot",
   "schemaVersion": "docs_static_supplemental_v1",
-  "dataSourceMode": "supabase_snapshot"
+  "payloadSource": "supabase_snapshot",
+  "dataSourceMode": "supabase_snapshot",
+  "sourceSystem": "excel_supplemental"
 }

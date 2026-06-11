@@ -8,7 +8,7 @@
   const SUPABASE_URL = "https://qvegpozwrcmspdvjokiz.supabase.co";
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Eb3TAC7BPbFrv8Odwwjc1g_Vv81Nf4P";
   const ADMIN_API_URL = `${SUPABASE_URL}/functions/v1/logistics-admin-api`;
-  const APP_VERSION = "20260611-4";
+  const APP_VERSION = "20260611-5";
   const CACHE_PREFIX = `ll.static.cache:v${APP_VERSION}:`;
   const DETAIL_PREFIX = "detail_";
 
@@ -77,6 +77,55 @@
     averageMfPerPy: "평당 관리비 평균",
     areaRatio: "임대면적 기준 비율",
     monthlyCostRatio: "월 임관리비 기준 비율",
+    approvalDate: "사용승인일",
+    bldName: "건축물명",
+    buildingAreaSqm: "건축면적(㎡)",
+    buildingCoverageRatioPct: "건폐율(%)",
+    buildingName: "건축물명",
+    buildingRegisterAddress: "건축물대장 지번주소",
+    buildingRegisterCacheStatus: "건축물대장 캐시 상태",
+    buildingRegisterNote: "건축물대장 메모",
+    buildingRegisterProvider: "건축물대장 API",
+    buildingRegisterProviderStatus: "건축물대장 API 상태",
+    buildingRegisterRoadAddress: "건축물대장 도로명주소",
+    buildingRegisterStatus: "건축물대장 상태",
+    cacheFetchedAt: "캐시 저장 시각",
+    cacheStatus: "캐시 상태",
+    drawnAmountKrw: "인출금액(원)",
+    drawnAt: "인출시점",
+    etcPurpose: "기타 용도",
+    feeRatePct: "수수료율(%)",
+    floorAreaForFarSqm: "용적률 산정 연면적(㎡)",
+    floorAreaRatioPct: "용적률(%)",
+    floorCount: "층수",
+    fundType: "펀드 유형",
+    groundFloorCount: "지상층수",
+    heightM: "높이(m)",
+    indoorAutoParkingCount: "옥내 자주식 주차",
+    interestType: "이자유형",
+    investmentAmountKrw: "투입금액(원)",
+    investmentStrategy: "투자전략",
+    landAreaSqm: "대지면적(㎡)",
+    legalForm: "법적 형태",
+    lenderName: "대주",
+    loanRatePct: "대출금리(%)",
+    loanType: "대출유형",
+    mainPurposeName: "주용도",
+    maturityAt: "만기시점",
+    maturityDate: "만기일",
+    newPlatPlc: "도로명주소",
+    outdoorAutoParkingCount: "옥외 자주식 주차",
+    platPlc: "지번주소",
+    provider: "API 제공자",
+    providerStatus: "API 상태",
+    roofName: "지붕",
+    setupDate: "최초설정일",
+    shortName: "약칭",
+    spreadRatePct: "가산금리(%)",
+    structureName: "구조",
+    totalParkingCount: "총 주차대수",
+    tranche: "Tranche",
+    undergroundFloorCount: "지하층수",
     assignedRead: "담당 읽기",
     assignedCreate: "담당 추가",
     assignedUpdate: "담당 수정",
@@ -126,6 +175,9 @@
     ok: "정상",
     ready: "준비됨",
     review_required: "확인 필요",
+    building_register_api_readback_ok: "건축물대장 API 조회 완료",
+    development_asset_not_found_expected: "개발 중 자산 - 건축물대장 없음 예상",
+    readback_hit: "Supabase 캐시 재조회 확인",
     "client cache": "클라이언트 캐시",
     "docs/data": "공개 fallback JSON",
     "not visited": "미방문",
@@ -749,11 +801,11 @@
     if (!row || typeof row !== "object") return null;
     const sourcePayload = row.source_payload || row.sourcePayload || {};
     return {
-      loginEventId: row.loginEventId || row.login_event_id || `${row.event_at || row.eventAt || ""}:${row.email || ""}:${row.event_type || row.eventType || ""}`,
-      eventAt: row.eventAt || row.event_at || "",
+      loginEventId: row.loginEventId || row.login_event_id || row.id || `${row.logged_at || row.event_at || row.eventAt || ""}:${row.email || ""}:${row.event_type || row.eventType || ""}`,
+      eventAt: row.eventAt || row.event_at || row.logged_at || "",
       staffName: row.staffName || row.staff_name || "",
       email: row.email || "",
-      eventType: row.eventType || row.event_type || "",
+      eventType: row.eventType || row.event_type || "login",
       status: row.status || "",
       source: row.source || sourcePayload.source || "supabase_edge",
     };
@@ -1053,6 +1105,7 @@
           ])}
           ${keyValueGrid(overview)}
         `)}
+        ${renderAssetSupplementalSections(asset)}
         ${section("임대차 현황", "Asset", renderSearchableInteractiveTable("asset_leases", asset.rows || [], ["tenantMasterName", "floorLabel", "detailAreaLabel", "leasedAreaSqm", "monthlyRentTotal", "monthlyMfTotal", "currentMonthlyCostTotal", "currentStartDate", "currentEndDate"], 80, { placeholder: "임차인, 층, 구역 검색" }))}
         ${section("주요 임차인", "Asset", `
           ${renderBarChart("asset_top_tenants_chart", asset.topTenants || [], "tenantMasterName", "leasedAreaSqm", { title: "임차인별 임대면적" })}
@@ -1107,6 +1160,76 @@
         <span class="floorplan-slot-note">PDF 또는 이미지 등록 후 이 영역을 누르면 전체 화면으로 확인합니다.</span>
       </button>
     `;
+  }
+
+  function renderAssetSupplementalSections(asset) {
+    const overview = asset?.overview || {};
+    const fundOverview = asset?.fundOverview || overview.fundOverview || {};
+    const investmentOverview = asset?.investmentOverview || overview.investmentOverview || {
+      fundType: fundOverview.fundType,
+      investmentStrategy: fundOverview.investmentStrategy,
+      legalForm: fundOverview.legalForm,
+    };
+    const building = buildAssetBuildingRegisterRecord(asset);
+    const beneficiaries = Array.isArray(asset?.beneficiaries) ? asset.beneficiaries : [];
+    const lenders = Array.isArray(asset?.lenders) ? asset.lenders : [];
+    const hasFundData = hasDisplayValues(fundOverview) || hasDisplayValues(investmentOverview) || beneficiaries.length || lenders.length;
+    const blocks = [];
+    if (hasDisplayValues(building)) {
+      blocks.push(section("건축물대장", "Asset", keyValueGrid(building)));
+    }
+    if (hasFundData) {
+      blocks.push(section("투자개요", "Asset", keyValueGrid(investmentOverview)));
+      blocks.push(section("펀드개요", "Asset", keyValueGrid(fundOverview)));
+      blocks.push(section("수익자", "Asset", renderInteractiveTable("asset_beneficiaries", beneficiaries, ["beneficiaryName", "investmentAmountKrw", "tranche", "fundName"], 80)));
+      blocks.push(section("대주", "Asset", renderInteractiveTable("asset_lenders", lenders, ["lenderName", "loanType", "tranche", "drawnAmountKrw", "drawnAt", "maturityAt", "interestType", "loanRatePct", "allInPct"], 80)));
+    }
+    return blocks.join("");
+  }
+
+  function buildAssetBuildingRegisterRecord(asset) {
+    const overview = asset?.overview || {};
+    const register = asset?.buildingRegister || overview.buildingRegister || {};
+    return pickDisplayRecord({
+      buildingRegisterStatus: overview.buildingRegisterStatus || overview.buildingHubStatus,
+      buildingRegisterNote: overview.buildingRegisterNote,
+      buildingName: overview.buildingName || register.bldName,
+      buildingRegisterAddress: overview.buildingRegisterAddress || register.platPlc,
+      buildingRegisterRoadAddress: overview.buildingRegisterRoadAddress || register.newPlatPlc,
+      mainPurposeName: overview.mainPurposeName || register.mainPurposeName,
+      structureName: overview.structureName || register.structureName,
+      roofName: overview.roofName || register.roofName,
+      floorCount: overview.floorCount || register.floorCount,
+      groundFloorCount: overview.groundFloorCount || register.groundFloorCount,
+      undergroundFloorCount: overview.undergroundFloorCount || register.undergroundFloorCount,
+      landAreaSqm: overview.landAreaSqm || register.landAreaSqm,
+      buildingAreaSqm: overview.buildingAreaSqm || register.buildingAreaSqm,
+      grossFloorAreaSqm: overview.grossFloorAreaSqm || register.grossFloorAreaSqm,
+      buildingCoverageRatioPct: overview.buildingCoverageRatioPct || register.buildingCoverageRatioPct,
+      floorAreaRatioPct: overview.floorAreaRatioPct || register.floorAreaRatioPct,
+      heightM: overview.heightM || register.heightM,
+      totalParkingCount: overview.totalParkingCount || register.totalParkingCount,
+      approvalDate: overview.approvalDate || register.approvalDate,
+      buildingRegisterProvider: overview.buildingRegisterProvider || register.provider,
+      buildingRegisterProviderStatus: overview.buildingRegisterProviderStatus || register.providerStatus,
+      buildingRegisterCacheStatus: overview.buildingRegisterCacheStatus || register.cacheStatus,
+      cacheFetchedAt: register.cacheFetchedAt,
+    });
+  }
+
+  function pickDisplayRecord(record) {
+    return Object.fromEntries(Object.entries(record || {}).filter(([, value]) => isDisplayValue(value)));
+  }
+
+  function hasDisplayValues(record) {
+    return Object.values(record || {}).some((value) => isDisplayValue(value));
+  }
+
+  function isDisplayValue(value) {
+    if (value === null || value === undefined || value === "") return false;
+    if (Array.isArray(value)) return value.length > 0;
+    if (typeof value === "object") return Object.values(value).some((child) => isDisplayValue(child));
+    return true;
   }
 
   function calculatePerPyAverages(rows) {
@@ -1383,7 +1506,7 @@
     return `
       <div class="page-stack admin-data-workspace">
         ${section("Admin Data", "Admin", `
-          <p class="page-note admin-data-api-note">현재는 GitHub Pages 정적 JSON과 Supabase snapshot 전환 상태를 읽기전용으로 표시합니다. 쓰기 작업은 서버 전용 API 확정 후 연결합니다.</p>
+          <p class="page-note admin-data-api-note">운영 원본은 Supabase ll_* 테이블입니다. GitHub Pages JSON은 장애 대응용 fallback이며, 화면 snapshot은 Supabase에서 먼저 읽습니다.</p>
           <div id="admin-data-table">
             ${renderInteractiveTable("admin_data_files", payload.files, ["name", "type", "rows", "source", "status"], 120)}
           </div>

@@ -108,17 +108,17 @@
     {
       "id": "asset_a190002001",
       "no": 901,
-      "assetId": "asset_a190002001",
       "category": "신규 자산",
-      "fundName": "이지스부동산일반사모투자회사제543호",
+      "assetId": "asset_a190002001",
       "assetCode": "A190002001",
       "assetName": "분당야탑물류센터",
-      "mainIssue": "성남시 분당구 야탑동 403 기준으로 Edge Function에서 조회합니다.",
-      "completion": "",
-      "mainTenant": "임대차계약 없음",
-      "managerName": "류지훈",
+      "fundName": "이지스부동산일반사모투자회사제543호",
       "fundMaturity": "2027-08-25",
-      "loanMaturity": "2027-08-02"
+      "loanMaturity": "2027-08-02",
+      "mainTenant": "임대차계약 없음",
+      "mainIssue": "성남시 분당구 야탑동 403 기준 건축물대장 API provider 200 및 Supabase ll_cache_entries readback 결과를 반영했습니다.",
+      "completion": "",
+      "managerName": "류지훈"
     },
     {
       "id": "weekly_asset_05",
@@ -423,17 +423,17 @@
     {
       "id": "asset_a190013001",
       "no": 902,
-      "assetId": "asset_a190013001",
       "category": "신규 자산",
-      "fundName": "이지스제560호부동산일반사모투자회사",
+      "assetId": "asset_a190013001",
       "assetCode": "A190013001",
       "assetName": "포천정교리물류센터",
+      "fundName": "이지스제560호부동산일반사모투자회사",
+      "fundMaturity": "2030-02-07",
+      "loanMaturity": "",
+      "mainTenant": "임대차계약 없음",
       "mainIssue": "개발 진행 중 자산으로 건축물대장 미존재 가능성을 정상 상태로 기록합니다.",
       "completion": "개발 중",
-      "mainTenant": "임대차계약 없음",
-      "managerName": "양우영",
-      "fundMaturity": "2030-02-07",
-      "loanMaturity": ""
+      "managerName": "양우영"
     },
     {
       "id": "weekly_asset_03",
@@ -459,7 +459,7 @@
   "updatedAt": "",
   "updatedBy": "",
   "reportDate": "2026-04-06",
-  "generatedAt": "2026-06-11T02:22:14Z",
+  "generatedAt": "2026-06-11T05:18:52Z",
   "newProjects": [
     {
       "id": "weekly_new_01",

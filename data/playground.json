@@ -10805,18 +10805,18 @@
     {
       "sector": "물류",
       "assetId": "asset_a190002001",
+      "assetCode": "A190002001",
       "fundCode": "190002",
       "fundName": "이지스부동산일반사모투자회사제543호",
       "tenantId": "",
-      "assetCode": "A190002001",
+      "tenantMasterName": "임대차계약 없음",
       "assetName": "분당야탑물류센터",
-      "dataStatus": "임대차계약 없음",
-      "leasedAreaPy": 0,
       "leasedAreaSqm": 0,
+      "leasedAreaPy": 0,
+      "monthlyRentTotal": 0,
       "monthlyMfTotal": 0,
       "monthlyCostTotal": 0,
-      "monthlyRentTotal": 0,
-      "tenantMasterName": "임대차계약 없음"
+      "dataStatus": "임대차계약 없음"
     },
     {
       "sector": "물류센터",
@@ -11289,18 +11289,18 @@
     {
       "sector": "물류",
       "assetId": "asset_a190013001",
+      "assetCode": "A190013001",
       "fundCode": "190013",
       "fundName": "이지스제560호부동산일반사모투자회사",
       "tenantId": "",
-      "assetCode": "A190013001",
+      "tenantMasterName": "임대차계약 없음",
       "assetName": "포천정교리물류센터",
-      "dataStatus": "임대차계약 없음",
-      "leasedAreaPy": 0,
       "leasedAreaSqm": 0,
+      "leasedAreaPy": 0,
+      "monthlyRentTotal": 0,
       "monthlyMfTotal": 0,
       "monthlyCostTotal": 0,
-      "monthlyRentTotal": 0,
-      "tenantMasterName": "임대차계약 없음"
+      "dataStatus": "임대차계약 없음"
     },
     {
       "sector": "물류센터",
@@ -11315,7 +11315,7 @@
       "tenantMasterName": "삼성전자로지텍(주)"
     }
   ],
-  "generatedAt": "2026-06-11T02:22:14Z",
+  "generatedAt": "2026-06-11T05:18:52Z",
   "basisDisplay": {
     "asOf": "2026-04-30T01:56:33.414Z",
     "page": "playground",
