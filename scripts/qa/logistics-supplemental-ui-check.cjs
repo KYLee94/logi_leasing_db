@@ -43,6 +43,8 @@ const REQUIRED_COMPANY_DETAIL_COLUMNS = [
   "monthlyCostTotal",
   "latestExpiry",
 ];
+const APPROVED_MAP_LAYER_LABELS = ["일반지도", "위성지도"];
+const APPROVED_MAP_TOOL_LABELS = ["지적편집도", "거리뷰", "반경", "면적", "거리"];
 
 const MIME_TYPES = {
   ".css": "text/css; charset=utf-8",
@@ -193,46 +195,81 @@ async function main() {
     }, NEW_ASSETS);
     pushCheck(checks, "new-assets-in-selector-options", optionAudit.assets.every((asset) => asset.inOptions), optionAudit);
 
-    const homeMapAudit = await page.evaluate(async () => {
+    const homeMapAudit = await page.evaluate(async ({ layerLabels, toolLabels }) => {
       const app = window.dashboardApp;
       await app.switchTab("home");
       await app.refreshTab();
       const state = app.getState();
-      const map = document.querySelector('[data-map-scope="home-map-detail"]');
-      const table = document.querySelector('[data-table-scope="home-portfolio-map-points"]');
-      const layerButtons = Array.from(document.querySelectorAll('[data-map-layer-scope="home-map-detail"]'));
-      const toolButtons = Array.from(document.querySelectorAll('[data-map-tool-scope="home-map-detail"]'));
-      const bundangRow = table?.querySelector('[data-map-focus-id="asset_a190002001"]');
-      const enabledRow = bundangRow && !bundangRow.classList.contains("is-disabled")
-        ? bundangRow
-        : table?.querySelector('[data-map-focus-scope="home-map-detail"]:not(.is-disabled)');
-      const enabledFocusId = enabledRow?.getAttribute("data-map-focus-id") || "";
-      enabledRow?.click();
-      await new Promise((resolve) => setTimeout(resolve, 0));
-      document.querySelector('[data-map-layer-scope="home-map-detail"][data-map-layer="satellite"]')?.click();
-      await new Promise((resolve) => setTimeout(resolve, 0));
-      document.querySelector('[data-map-tool-scope="home-map-detail"][data-map-tool="distance"]')?.click();
-      await new Promise((resolve) => setTimeout(resolve, 0));
-      const focusedMap = document.querySelector('[data-map-scope="home-map-detail"]');
-      return {
-        mapExists: !!map,
-        tableExists: !!table,
-        layerButtonCount: layerButtons.length,
-        toolButtonCount: toolButtons.length,
-        focusedId: state.mapFocus?.["home-map-detail"] || "",
-        enabledFocusId,
-        satelliteLayer: focusedMap?.classList.contains("map-layer-satellite") || false,
-        focusedMarkerCount: focusedMap?.querySelectorAll(".map-marker").length || 0,
-        distanceStatus: focusedMap?.querySelector(".map-tool-status")?.textContent.trim() || "",
-        bundangEnabled: !!bundangRow && !bundangRow.classList.contains("is-disabled"),
-        bundangText: bundangRow?.textContent || "",
+      const sleep = () => new Promise((resolve) => setTimeout(resolve, 0));
+      const auditScope = async (scope, tableScope) => {
+        const map = document.querySelector(`[data-map-scope="${scope}"]`);
+        const table = document.querySelector(`[data-table-scope="${tableScope}"]`);
+        const layerButtons = Array.from(document.querySelectorAll(`[data-map-layer-scope="${scope}"]`));
+        const toolButtons = Array.from(document.querySelectorAll(`[data-map-tool-scope="${scope}"]`));
+        const bundangRow = table?.querySelector('[data-map-focus-id="asset_a190002001"]');
+        const enabledRow = bundangRow && !bundangRow.classList.contains("is-disabled")
+          ? bundangRow
+          : table?.querySelector(`[data-map-focus-scope="${scope}"]:not(.is-disabled)`);
+        const enabledFocusId = enabledRow?.getAttribute("data-map-focus-id") || "";
+        enabledRow?.click();
+        await sleep();
+        document.querySelector(`[data-map-layer-scope="${scope}"][data-map-layer="satellite"]`)?.click();
+        await sleep();
+        const toolAudit = {};
+        for (const tool of ["cadastral", "roadview", "radius", "area", "distance"]) {
+          document.querySelector(`[data-map-tool-scope="${scope}"][data-map-tool="${tool}"]`)?.click();
+          await sleep();
+          const activeMap = document.querySelector(`[data-map-scope="${scope}"]`);
+          toolAudit[tool] = {
+            activeTool: activeMap?.getAttribute("data-map-active-tool") || "",
+            status: activeMap?.querySelector(".map-tool-status")?.textContent.trim() || "",
+            hasOverlay: !!activeMap?.querySelector(`.map-${tool}-overlay, .map-${tool}-circle, .map-measure-label`),
+          };
+          document.querySelector(`[data-map-tool-scope="${scope}"][data-map-tool="${tool}"]`)?.click();
+          await sleep();
+        }
+        document.querySelector(`[data-map-tool-scope="${scope}"][data-map-tool="distance"]`)?.click();
+        await sleep();
+        const focusedMap = document.querySelector(`[data-map-scope="${scope}"]`);
+        return {
+          scope,
+          mapExists: !!map,
+          tableExists: !!table,
+          layerButtonCount: layerButtons.length,
+          toolButtonCount: toolButtons.length,
+          layerLabels: layerButtons.map((button) => button.querySelector("span:last-child")?.textContent.trim() || button.textContent.trim()),
+          toolLabels: toolButtons.map((button) => button.querySelector("span:last-child")?.textContent.trim() || button.textContent.trim()),
+          approvedLayerLabels: layerButtons.map((button) => button.querySelector("span:last-child")?.textContent.trim() || button.textContent.trim()).join("|") === layerLabels.join("|"),
+          approvedToolLabels: toolButtons.map((button) => button.querySelector("span:last-child")?.textContent.trim() || button.textContent.trim()).join("|") === toolLabels.join("|"),
+          focusedId: state.mapFocus?.[scope] || "",
+          enabledFocusId,
+          satelliteLayer: focusedMap?.classList.contains("map-layer-satellite") || false,
+          focusedMarkerCount: focusedMap?.querySelectorAll(".map-marker").length || 0,
+          distanceStatus: focusedMap?.querySelector(".map-tool-status")?.textContent.trim() || "",
+          distanceOverlay: !!focusedMap?.querySelector(".map-distance-overlay"),
+          bundangEnabled: !!bundangRow && !bundangRow.classList.contains("is-disabled"),
+          bundangText: bundangRow?.textContent || "",
+          toolAudit,
+        };
       };
-    });
+      const scopes = [
+        await auditScope("home_map", "home_map_points"),
+        await auditScope("home-map-detail", "home-portfolio-map-points"),
+      ];
+      return {
+        scopes,
+        allControlsApproved: scopes.every((item) => item.mapExists && item.tableExists && item.layerButtonCount === 2 && item.toolButtonCount === 5 && item.approvedLayerLabels && item.approvedToolLabels),
+        allRowsFocus: scopes.every((item) => !!item.enabledFocusId && item.focusedId === item.enabledFocusId && item.focusedMarkerCount === 1),
+        allLayerAndToolToggles: scopes.every((item) => item.satelliteLayer && /거리|distance/i.test(item.distanceStatus) && item.distanceOverlay),
+        allToolsHaveOverlays: scopes.every((item) => Object.values(item.toolAudit).every((tool) => tool.activeTool && tool.hasOverlay)),
+        bundangEnabledEverywhere: scopes.every((item) => item.bundangEnabled && /네이버 주소 검색 보정 좌표/.test(item.bundangText)),
+      };
+    }, { layerLabels: APPROVED_MAP_LAYER_LABELS, toolLabels: APPROVED_MAP_TOOL_LABELS });
     await waitForPanel(page, "home");
-    pushCheck(checks, "home-map-controls-visible", homeMapAudit.mapExists && homeMapAudit.tableExists && homeMapAudit.layerButtonCount === 3 && homeMapAudit.toolButtonCount >= 10, homeMapAudit);
-    pushCheck(checks, "home-map-row-focus", !!homeMapAudit.enabledFocusId && homeMapAudit.focusedId === homeMapAudit.enabledFocusId && homeMapAudit.focusedMarkerCount === 1, homeMapAudit);
-    pushCheck(checks, "home-map-layer-and-tool-toggle", homeMapAudit.satelliteLayer && /거리|distance/i.test(homeMapAudit.distanceStatus), homeMapAudit);
-    pushCheck(checks, "home-map-bundang-coordinate-enabled", homeMapAudit.bundangEnabled && /네이버 주소 검색 보정 좌표/.test(homeMapAudit.bundangText), homeMapAudit);
+    pushCheck(checks, "home-map-controls-approved-seven-buttons", homeMapAudit.allControlsApproved, homeMapAudit);
+    pushCheck(checks, "home-map-row-focus", homeMapAudit.allRowsFocus, homeMapAudit);
+    pushCheck(checks, "home-map-layer-and-tool-toggle", homeMapAudit.allLayerAndToolToggles && homeMapAudit.allToolsHaveOverlays, homeMapAudit);
+    pushCheck(checks, "home-map-bundang-coordinate-enabled", homeMapAudit.bundangEnabledEverywhere, homeMapAudit);
 
     for (const asset of NEW_ASSETS) {
       const audit = await page.evaluate(async (assetId) => {
@@ -263,6 +300,18 @@ async function main() {
       pushCheck(checks, `asset-kpi-per-py-${asset.id}`, rentLabelCount === 1 && mfLabelCount === 1, { labels: audit.labels, rentLabelCount, mfLabelCount });
       pushCheck(checks, `asset-kpi-no-monthly-total-${asset.id}`, !audit.labels.includes("월 임관리비 총액") && !audit.kpiKeys.includes("monthly_total_cost"), { labels: audit.labels, kpiKeys: audit.kpiKeys });
       pushCheck(checks, `asset-floorplan-slot-${asset.id}`, audit.hasFloorplanSlot, audit);
+      const floorplanClickAudit = await page.evaluate(() => {
+        const slot = document.querySelector(".floorplan-slot");
+        slot?.click();
+        const backdrop = document.getElementById("drawer-backdrop");
+        const drawer = backdrop?.querySelector(".drawer");
+        const visible = !!backdrop && backdrop.hidden === false;
+        const surfaceKind = drawer?.getAttribute("data-surface-kind") || "";
+        const title = document.querySelector("#drawer-content h2")?.textContent.trim() || "";
+        document.getElementById("drawer-close")?.click();
+        return { hasSlot: !!slot, visible, surfaceKind, title };
+      });
+      pushCheck(checks, `asset-floorplan-popup-${asset.id}`, floorplanClickAudit.hasSlot && floorplanClickAudit.visible && floorplanClickAudit.surfaceKind === "floorplan-modal", floorplanClickAudit);
     }
 
     const companyAudit = await page.evaluate(async (requirements) => {
@@ -276,11 +325,13 @@ async function main() {
       if (select) select.value = state.selections.tenantId;
       await app.switchTab("company");
       await app.refreshTab();
+      const panel = document.querySelector('[data-panel="company"]');
       const table = document.querySelector('[data-table-scope="company_assets"]');
       const exposureTable = document.querySelector('[data-table-scope="company-exposure-table"]');
       const toggle = document.querySelector('[data-toggle-company-contract-details]');
       const detailScope = toggle?.getAttribute("data-toggle-company-contract-details") || "";
       const detailContainer = detailScope ? document.querySelector(`[data-company-contract-details="${detailScope}"]`) : null;
+      const kpiLabels = Array.from(panel?.querySelectorAll(".kpi-label") || []).map((node) => node.textContent.trim());
       const headers = Array.from(table?.querySelectorAll("[data-sort-key]") || []).map((node) => node.getAttribute("data-sort-key"));
       const headerTexts = Array.from(table?.querySelectorAll(".table-sort-button") || []).map((node) => node.textContent.trim());
       const exposureHeaders = Array.from(exposureTable?.querySelectorAll("[data-sort-key]") || []).map((node) => node.getAttribute("data-sort-key"));
@@ -312,6 +363,10 @@ async function main() {
         headers,
         headerTexts,
         exposureHeaders,
+        kpiLabels,
+        missingKpiLabels: ["평당 임대료 평균", "평당 관리비 평균", "E.NOC"].filter((label) => !kpiLabels.includes(label)),
+        staleTopContractButtons: panel?.querySelectorAll("[data-company-contract-detail]").length || 0,
+        toggleFollowsMainTable: !!toggle && !!table && toggle.previousElementSibling === table,
         missingColumns: requirements.requiredColumns.filter((column) => !headers.includes(column)),
         missingDetailColumns: requirements.detailColumns.filter((column) => !detailHeaders.includes(column)),
         missingExposureColumns: ["averageRentPerPy", "averageMfPerPy", "areaRatio", "monthlyCostRatio"].filter((column) => !exposureHeaders.includes(column)),
@@ -326,10 +381,12 @@ async function main() {
       };
     }, { requiredColumns: REQUIRED_COMPANY_COLUMNS, detailColumns: REQUIRED_COMPANY_DETAIL_COLUMNS });
     await waitForPanel(page, "company");
+    pushCheck(checks, "company-top-kpi-weighted-averages", companyAudit.missingKpiLabels.length === 0, companyAudit);
     pushCheck(checks, "company-main-table-columns", companyAudit.missingColumns.length === 0, companyAudit);
     pushCheck(checks, "company-contract-detail-columns", companyAudit.missingDetailColumns.length === 0, companyAudit);
     pushCheck(checks, "company-exposure-table-columns", companyAudit.missingExposureColumns.length === 0, companyAudit);
     pushCheck(checks, "company-contract-detail-toggle", companyAudit.toggleText === "계약별 상세 정보 보기" && companyAudit.detailHiddenBefore === true && companyAudit.detailHiddenAfter === false, companyAudit);
+    pushCheck(checks, "company-contract-detail-button-location", companyAudit.staleTopContractButtons === 0 && companyAudit.toggleFollowsMainTable === true, companyAudit);
     pushCheck(checks, "company-sort-labels-clean", companyAudit.headerTexts.every((text) => text && !/^\?$|\?/.test(text)), companyAudit);
     pushCheck(checks, "company-main-table-sortable", companyAudit.hasSortButtons && companyAudit.rowCount > 0, companyAudit);
     pushCheck(checks, "company-main-table-default-sort", companyAudit.rowCount < 2 || isSortedText(companyAudit.summaryRows.map((row) => row.assetName), "asc"), { rows: companyAudit.summaryRows });
@@ -338,6 +395,46 @@ async function main() {
       asc: companyAudit.assetNameAscRows.map((row) => row.assetName),
       desc: companyAudit.assetNameDescRows.map((row) => row.assetName),
     });
+
+    const mapPopupAudit = await page.evaluate(async ({ assetId, layerLabels, toolLabels }) => {
+      const app = window.dashboardApp;
+      const sleep = () => new Promise((resolve) => setTimeout(resolve, 0));
+      const auditOpenPopup = async (selector) => {
+        const button = document.querySelector(selector);
+        button?.click();
+        await sleep();
+        const drawer = document.querySelector("#drawer-backdrop .drawer");
+        const map = document.querySelector('#drawer-content [data-map-scope="map-modal-points"]');
+        const layerButtons = Array.from(document.querySelectorAll('#drawer-content [data-map-layer-scope="map-modal-points"]'));
+        const toolButtons = Array.from(document.querySelectorAll('#drawer-content [data-map-tool-scope="map-modal-points"]'));
+        const result = {
+          buttonExists: !!button,
+          surfaceKind: drawer?.getAttribute("data-surface-kind") || "",
+          mapExists: !!map,
+          layerButtonCount: layerButtons.length,
+          toolButtonCount: toolButtons.length,
+          layerLabels: layerButtons.map((item) => item.querySelector("span:last-child")?.textContent.trim() || item.textContent.trim()),
+          toolLabels: toolButtons.map((item) => item.querySelector("span:last-child")?.textContent.trim() || item.textContent.trim()),
+          approvedLayerLabels: layerButtons.map((item) => item.querySelector("span:last-child")?.textContent.trim() || item.textContent.trim()).join("|") === layerLabels.join("|"),
+          approvedToolLabels: toolButtons.map((item) => item.querySelector("span:last-child")?.textContent.trim() || item.textContent.trim()).join("|") === toolLabels.join("|"),
+        };
+        document.getElementById("drawer-close")?.click();
+        await sleep();
+        return result;
+      };
+      const state = app.getState();
+      state.selections.assetId = assetId;
+      const assetSelect = document.getElementById("asset-select");
+      if (assetSelect) assetSelect.value = assetId;
+      await app.switchTab("asset");
+      await app.refreshTab();
+      const asset = await auditOpenPopup('[data-action="asset-map-detail"]');
+      await app.switchTab("company");
+      await app.refreshTab();
+      const company = await auditOpenPopup('[data-action="company-map-detail"], [data-company-map-detail]');
+      return { asset, company };
+    }, { assetId: "asset_a190002001", layerLabels: APPROVED_MAP_LAYER_LABELS, toolLabels: APPROVED_MAP_TOOL_LABELS });
+    pushCheck(checks, "asset-company-map-popup-controls-approved", [mapPopupAudit.asset, mapPopupAudit.company].every((item) => item.buttonExists && item.surfaceKind === "map-modal" && item.mapExists && item.layerButtonCount === 2 && item.toolButtonCount === 5 && item.approvedLayerLabels && item.approvedToolLabels), mapPopupAudit);
 
     const raceAudit = await page.evaluate(async () => {
       const app = window.dashboardApp;

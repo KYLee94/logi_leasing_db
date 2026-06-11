@@ -8,7 +8,8 @@
   const SUPABASE_URL = "https://qvegpozwrcmspdvjokiz.supabase.co";
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Eb3TAC7BPbFrv8Odwwjc1g_Vv81Nf4P";
   const ADMIN_API_URL = `${SUPABASE_URL}/functions/v1/logistics-admin-api`;
-  const CACHE_PREFIX = "ll.static.cache:v20260610:";
+  const APP_VERSION = "20260611-4";
+  const CACHE_PREFIX = `ll.static.cache:v${APP_VERSION}:`;
   const DETAIL_PREFIX = "detail_";
 
   const TAB_ORDER = ["weekly", "home", "asset", "company", "sector", "tools", "playground", "quality", "admin", "admin-data"];
@@ -226,6 +227,8 @@
     setTheme(localStorage.getItem("ll.static.theme") || "dark");
     bindShellActions();
 
+    await hydrateInitialPayloads();
+
     if (state.role === "admin") ensureAdminDom();
     else removeAdminDom();
     showShell();
@@ -248,12 +251,12 @@
 
     document.getElementById("asset-select")?.addEventListener("change", async (event) => {
       state.selections.assetId = event.target.value || state.selections.assetId;
-      await renderCurrentTab(true);
+      await renderCurrentTab(false);
     });
 
     document.getElementById("company-select")?.addEventListener("change", async (event) => {
       state.selections.tenantId = event.target.value || state.selections.tenantId;
-      await renderCurrentTab(true);
+      await renderCurrentTab(false);
     });
 
     document.getElementById("drawer-close")?.addEventListener("click", closeDrawer);
@@ -360,7 +363,8 @@
   }
 
   async function prepareOptions() {
-    const bootstrap = await loadSnapshotWithFallback("bootstrap", "shell", "data/bootstrap.json").catch(() => ({}));
+    const cachedBootstrap = state.pageCache["page:bootstrap:default"] || state.pageCache.bootstrap;
+    const bootstrap = cachedBootstrap || await loadSnapshotWithFallback("bootstrap", "shell", "data/bootstrap.json").catch(() => ({}));
     const bootstrapAssets = Array.isArray(bootstrap.assetOptions) && bootstrap.assetOptions.length ? bootstrap.assetOptions : null;
     const bootstrapCompanies = Array.isArray(bootstrap.companyOptions) && bootstrap.companyOptions.length ? bootstrap.companyOptions : null;
     const [assets, companies] = await Promise.all([
@@ -389,6 +393,30 @@
 
     fillSelect("asset-select", state.options.assets, "assetId", "assetName", state.selections.assetId);
     fillSelect("company-select", state.options.companies, "tenantId", "tenantMasterName", state.selections.tenantId);
+  }
+
+  async function hydrateInitialPayloads() {
+    const initial = await fetchJson("data/initial.json").catch(() => null);
+    const tabPayloads = initial?.tabPayloads && typeof initial.tabPayloads === "object" ? initial.tabPayloads : {};
+    Object.entries(tabPayloads).forEach(([tab, payload]) => cacheInitialTabPayload(tab, payload));
+    const bootstrap = tabPayloads.bootstrap || {};
+    cacheInitialEntityPayload("asset", bootstrap.defaultAssetPayload, getByPath(bootstrap, ["defaultAssetPayload", "overview", "assetId"]));
+    cacheInitialEntityPayload("company", bootstrap.defaultCompanyPayload, getByPath(bootstrap, ["defaultCompanyPayload", "profile", "tenantId"]));
+  }
+
+  function cacheInitialTabPayload(tab, payload) {
+    if (!tab || !payload || typeof payload !== "object") return;
+    const tagged = tagPayload(payload, tab, payload.payloadSource || FALLBACK_PAYLOAD_SOURCE, payload.dataSourceMode || FALLBACK_DATA_SOURCE_MODE);
+    state.pageCache[`page:${tab}:default`] = tagged;
+    state.pageCache[tab] = tagged;
+    state.lastSuccessfulPayloads[tab] = tagged;
+    if (tab === "bootstrap") state.bootstrap = tagged;
+  }
+
+  function cacheInitialEntityPayload(tab, payload, entityId) {
+    if (!tab || !payload || typeof payload !== "object" || !entityId) return;
+    const tagged = tagPayload(payload, tab, payload.payloadSource || FALLBACK_PAYLOAD_SOURCE, payload.dataSourceMode || FALLBACK_DATA_SOURCE_MODE);
+    state.pageCache[`page:${tab}:${entityId}`] = tagged;
   }
 
   function fillSelect(id, options, valueKey, labelKey, selected) {
@@ -1158,12 +1186,18 @@
       }
       return acc;
     }, { areaPy: 0, rent: 0, mf: 0, eNocWeighted: 0, eNocAreaPy: 0 });
+    const profileENoc = firstFiniteNumber(
+      company?.profile?.averageENoc,
+      company?.profile?.eNoc,
+      company?.averageENoc,
+      company?.summary?.averageENoc,
+    );
     return {
       hasArea: totals.areaPy > 0,
-      hasENoc: totals.eNocAreaPy > 0,
+      hasENoc: totals.eNocAreaPy > 0 || Number.isFinite(profileENoc),
       averageRentPerPy: totals.areaPy > 0 ? totals.rent / totals.areaPy : null,
       averageMfPerPy: totals.areaPy > 0 ? totals.mf / totals.areaPy : null,
-      averageENoc: totals.eNocAreaPy > 0 ? totals.eNocWeighted / totals.eNocAreaPy : null,
+      averageENoc: totals.eNocAreaPy > 0 ? totals.eNocWeighted / totals.eNocAreaPy : profileENoc,
     };
   }
 
@@ -1192,7 +1226,6 @@
           </div>
           ${actionStrip([
             actionButton("임차 자산 지도", { "data-company-map-detail": "1" }, { mapPoints: company.mapPoints || [] }, "Company 지도 상세"),
-            actionButton("계약 상세", { "data-company-contract-detail": "1" }, { rows: company.rows || [] }, "Company 계약 상세"),
             actionButton("DART/재무 요청", { "data-company-dart-detail": "1" }, { financials: company.financials || {}, status: "서버 전용 API 연결 필요" }, "Company DART/재무 정보"),
           ])}
           ${keyValueGrid(profile)}
@@ -2076,12 +2109,24 @@
     const layer = state.mapLayers?.[scope] || "road";
     const activeTool = state.mapTools?.[scope] || "";
     const renderList = focusPoint ? [focusPoint] : list;
+    const positionedPoints = renderList.map((point) => {
+      const left = clamp(((Number(point.longitude) - minLng) / lngSpan) * 86 + 7, 5, 93);
+      const top = clamp((1 - ((Number(point.latitude) - minLat) / latSpan)) * 78 + 10, 8, 90);
+      return {
+        point,
+        left,
+        top,
+        pointKey: mapPointKey(point),
+      };
+    });
+    const toolClass = activeTool ? ` map-tool-${String(activeTool).replace(/[^a-z0-9_-]/gi, "")}` : "";
     return `
-      <div id="${escapeAttr(scope)}" class="map-panel map-layer-${escapeAttr(layer)}${focusPoint ? " is-focused" : ""}" role="group" aria-label="자산 위치 지도" data-map-scope="${escapeAttr(scope)}" data-map-point-count="${escapeAttr(renderList.length)}" data-testid="map-${escapeAttr(scope)}">
+      <div id="${escapeAttr(scope)}" class="map-panel map-layer-${escapeAttr(layer)}${focusPoint ? " is-focused" : ""}${toolClass}" role="group" aria-label="자산 위치 지도" data-map-scope="${escapeAttr(scope)}" data-map-point-count="${escapeAttr(renderList.length)}" data-map-active-tool="${escapeAttr(activeTool)}" data-testid="map-${escapeAttr(scope)}">
         <div class="map-grid"></div>
-        ${renderMapControls(scope, layer, activeTool)}
+        ${renderApprovedMapControls(scope, layer, activeTool)}
         ${focusPoint ? `<div class="map-focus-label">${escapeHtml(focusPoint.assetName || focusPoint.address || "선택 자산")}</div>` : ""}
-        ${activeTool ? `<div class="map-tool-status">${escapeHtml(mapToolLabel(activeTool))}</div>` : ""}
+        ${activeTool ? `<div class="map-tool-status">${escapeHtml(approvedMapToolLabel(activeTool))}</div>` : ""}
+        ${renderMapToolOverlay(activeTool, positionedPoints)}
         ${renderList.map((point) => {
           const left = clamp(((Number(point.longitude) - minLng) / lngSpan) * 86 + 7, 5, 93);
           const top = clamp((1 - ((Number(point.latitude) - minLat) / latSpan)) * 78 + 10, 8, 90);
@@ -2160,6 +2205,163 @@
       share: "공유 링크 복사",
     };
     return labels[tool] || "";
+  }
+
+  function renderApprovedMapControls(scope, layer, activeTool) {
+    const layerButtons = [
+      ["road", "일반지도"],
+      ["satellite", "위성지도"],
+    ];
+    const toolGroups = [
+      [
+        ["cadastral", "▦", "지적편집도"],
+        ["roadview", "◇", "거리뷰"],
+      ],
+      [
+        ["radius", "⊙", "반경"],
+        ["area", "▣", "면적"],
+        ["distance", "↔", "거리"],
+      ],
+    ];
+    return `
+      <div class="map-layer-control" aria-label="지도 종류">
+        ${layerButtons.map(([value, label]) => `
+          <button class="map-layer-btn${layer === value ? " is-active" : ""}" type="button" data-map-layer-scope="${escapeAttr(scope)}" data-map-layer="${escapeAttr(value)}" aria-pressed="${layer === value ? "true" : "false"}">
+            <span class="map-layer-thumb" aria-hidden="true"></span>
+            <span>${escapeHtml(label)}</span>
+          </button>
+        `).join("")}
+      </div>
+      <div class="map-tool-rail" aria-label="지도 도구">
+        ${toolGroups.map((group) => `
+          <div class="map-tool-group">
+            ${group.map(([value, icon, label]) => `
+              <button class="map-tool-btn${activeTool === value ? " is-active" : ""}" type="button" data-map-tool-scope="${escapeAttr(scope)}" data-map-tool="${escapeAttr(value)}" aria-pressed="${activeTool === value ? "true" : "false"}" title="${escapeAttr(label)}">
+                <span class="map-tool-icon" aria-hidden="true">${escapeHtml(icon)}</span>
+                <span>${escapeHtml(label)}</span>
+              </button>
+            `).join("")}
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  function approvedMapToolLabel(tool) {
+    const labels = {
+      cadastral: "지적편집도 표시",
+      roadview: "거리뷰 모드",
+      radius: "반경 측정 모드",
+      area: "면적 측정 모드",
+      distance: "거리 측정 모드",
+    };
+    return labels[tool] || "";
+  }
+
+  function renderMapToolOverlay(tool, positionedPoints) {
+    const points = Array.isArray(positionedPoints) ? positionedPoints : [];
+    if (tool === "cadastral") {
+      return `
+        <div class="map-overlay-layer map-cadastral-overlay" aria-hidden="true">
+          <span class="map-overlay-label">지적편집도</span>
+        </div>
+      `;
+    }
+    if (tool === "roadview") {
+      return `
+        <div class="map-overlay-layer map-roadview-overlay" aria-hidden="true">
+          <span class="roadview-strip strip-a"></span>
+          <span class="roadview-strip strip-b"></span>
+          <span class="map-overlay-label">거리뷰</span>
+        </div>
+      `;
+    }
+    if (tool === "radius") return renderRadiusOverlay(points);
+    if (tool === "area") return renderAreaOverlay(points);
+    if (tool === "distance") return renderDistanceOverlay(points);
+    return "";
+  }
+
+  function renderRadiusOverlay(positionedPoints) {
+    const center = mapOverlayPoint(positionedPoints, 0, { left: 50, top: 50 });
+    return `
+      <div class="map-overlay-layer" aria-hidden="true">
+        <span class="map-radius-circle" style="left:${center.left}%;top:${center.top}%"></span>
+        <span class="map-measure-label" style="left:${clamp(center.left + 10, 8, 88)}%;top:${clamp(center.top - 11, 8, 88)}%">반경 1km</span>
+      </div>
+    `;
+  }
+
+  function renderAreaOverlay(positionedPoints) {
+    const selected = positionedPoints.length >= 3
+      ? positionedPoints.slice(0, 5)
+      : [
+        mapOverlayPoint(positionedPoints, 0, { left: 42, top: 42 }),
+        { left: clamp(mapOverlayPoint(positionedPoints, 0, { left: 42, top: 42 }).left + 16, 8, 92), top: clamp(mapOverlayPoint(positionedPoints, 0, { left: 42, top: 42 }).top - 6, 8, 92) },
+        { left: clamp(mapOverlayPoint(positionedPoints, 0, { left: 42, top: 42 }).left + 20, 8, 92), top: clamp(mapOverlayPoint(positionedPoints, 0, { left: 42, top: 42 }).top + 12, 8, 92) },
+        { left: clamp(mapOverlayPoint(positionedPoints, 0, { left: 42, top: 42 }).left - 8, 8, 92), top: clamp(mapOverlayPoint(positionedPoints, 0, { left: 42, top: 42 }).top + 16, 8, 92) },
+      ];
+    const polygon = selected.map((point) => `${point.left},${point.top}`).join(" ");
+    const labelPoint = selected[0] || { left: 50, top: 50 };
+    return `
+      <svg class="map-overlay-svg map-area-overlay" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <polygon points="${escapeAttr(polygon)}"></polygon>
+      </svg>
+      <div class="map-overlay-layer" aria-hidden="true">
+        <span class="map-measure-label" style="left:${clamp(labelPoint.left + 4, 8, 88)}%;top:${clamp(labelPoint.top + 4, 8, 88)}%">면적 측정</span>
+      </div>
+    `;
+  }
+
+  function renderDistanceOverlay(positionedPoints) {
+    const start = mapOverlayPoint(positionedPoints, 0, { left: 36, top: 56 });
+    const end = positionedPoints.length > 1
+      ? mapOverlayPoint(positionedPoints, 1, { left: 64, top: 42 })
+      : { left: clamp(start.left + 24, 8, 92), top: clamp(start.top - 14, 8, 92), point: null };
+    const midLeft = (start.left + end.left) / 2;
+    const midTop = (start.top + end.top) / 2;
+    const km = start.point && end.point ? distanceKm(start.point, end.point) : 1;
+    return `
+      <svg class="map-overlay-svg map-distance-overlay" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <line x1="${escapeAttr(start.left)}" y1="${escapeAttr(start.top)}" x2="${escapeAttr(end.left)}" y2="${escapeAttr(end.top)}"></line>
+        <circle cx="${escapeAttr(start.left)}" cy="${escapeAttr(start.top)}" r="1.4"></circle>
+        <circle cx="${escapeAttr(end.left)}" cy="${escapeAttr(end.top)}" r="1.4"></circle>
+      </svg>
+      <div class="map-overlay-layer" aria-hidden="true">
+        <span class="map-measure-label" style="left:${clamp(midLeft + 2, 8, 88)}%;top:${clamp(midTop - 3, 8, 88)}%">${escapeHtml(formatKm(km))}</span>
+      </div>
+    `;
+  }
+
+  function mapOverlayPoint(positionedPoints, index, fallback) {
+    const item = positionedPoints[index];
+    if (!item) return Object.assign({ point: null }, fallback);
+    return {
+      left: Number.isFinite(item.left) ? item.left : fallback.left,
+      top: Number.isFinite(item.top) ? item.top : fallback.top,
+      point: item.point || null,
+    };
+  }
+
+  function distanceKm(left, right) {
+    const lat1 = Number(left?.latitude);
+    const lon1 = Number(left?.longitude);
+    const lat2 = Number(right?.latitude);
+    const lon2 = Number(right?.longitude);
+    if (![lat1, lon1, lat2, lon2].every(Number.isFinite)) return NaN;
+    const toRad = (value) => value * Math.PI / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) ** 2
+      + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+    return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function formatKm(value) {
+    const km = Number(value);
+    if (!Number.isFinite(km)) return "거리 측정";
+    if (km < 1) return `${Math.round(km * 1000).toLocaleString("ko-KR")}m`;
+    return `${km.toLocaleString("ko-KR", { maximumFractionDigits: 1 })}km`;
   }
 
   function mapPointKey(point) {
@@ -2485,7 +2687,7 @@
     panel.querySelectorAll("[data-map-layer]").forEach((button) => {
       button.addEventListener("click", (event) => {
         event.preventDefault();
-        event.stopPropagation();
+        event.stopImmediatePropagation();
         const scope = button.dataset.mapLayerScope || "";
         if (!scope) return;
         state.mapLayers[scope] = button.dataset.mapLayer || "road";
@@ -2495,14 +2697,14 @@
     panel.querySelectorAll("[data-map-tool]").forEach((button) => {
       button.addEventListener("click", (event) => {
         event.preventDefault();
-        event.stopPropagation();
+        event.stopImmediatePropagation();
         handleMapTool(button.dataset.mapToolScope, button.dataset.mapTool, tab, payload);
       });
     });
     panel.querySelectorAll("[data-map-focus-id]").forEach((node) => {
       node.addEventListener("click", (event) => {
         event.preventDefault();
-        event.stopPropagation();
+        event.stopImmediatePropagation();
         if (node.classList.contains("is-disabled")) return;
         focusMapPoint(node.dataset.mapFocusScope, node.dataset.mapFocusId, tab, payload);
       });
@@ -2542,36 +2744,6 @@
 
   function handleMapTool(scope, tool, tab, payload) {
     if (!scope || !tool) return;
-    if (tool === "theme") {
-      const current = state.mapLayers[scope] || "road";
-      state.mapLayers[scope] = current === "road" ? "satellite" : current === "satellite" ? "cadastral" : "road";
-      renderPayload(tab, payload);
-      return;
-    }
-    if (tool === "cadastral") {
-      state.mapLayers[scope] = "cadastral";
-      state.mapTools[scope] = tool;
-      renderPayload(tab, payload);
-      return;
-    }
-    if (tool === "print") {
-      state.mapTools[scope] = tool;
-      renderPayload(tab, payload);
-      window.setTimeout(() => window.print(), 80);
-      return;
-    }
-    if (tool === "share") {
-      state.mapTools[scope] = tool;
-      copyShareLink();
-      renderPayload(tab, payload);
-      return;
-    }
-    if (tool === "download") {
-      state.mapTools[scope] = tool;
-      downloadMapPoints(scope, payload);
-      renderPayload(tab, payload);
-      return;
-    }
     state.mapTools[scope] = state.mapTools[scope] === tool ? "" : tool;
     renderPayload(tab, payload);
   }
@@ -2943,7 +3115,7 @@
       button.dataset.drawerBound = "true";
       button.addEventListener("click", (event) => {
         event.preventDefault();
-        event.stopPropagation();
+        event.stopImmediatePropagation();
         const scope = button.dataset.mapLayerScope || "";
         if (!scope) return;
         state.mapLayers[scope] = button.dataset.mapLayer || "road";
@@ -2955,7 +3127,7 @@
       button.dataset.drawerBound = "true";
       button.addEventListener("click", (event) => {
         event.preventDefault();
-        event.stopPropagation();
+        event.stopImmediatePropagation();
         handleDrawerMapTool(content, button.dataset.mapToolScope, button.dataset.mapTool);
       });
     });
@@ -2964,7 +3136,7 @@
       node.dataset.drawerBound = "true";
       const focus = (event) => {
         event.preventDefault();
-        event.stopPropagation();
+        event.stopImmediatePropagation();
         if (node.classList.contains("is-disabled")) return;
         const scope = node.dataset.mapFocusScope || "";
         const pointId = node.dataset.mapFocusId || "";
@@ -2985,24 +3157,7 @@
 
   function handleDrawerMapTool(content, scope, tool) {
     if (!scope || !tool) return;
-    if (tool === "theme") {
-      const current = state.mapLayers[scope] || "road";
-      state.mapLayers[scope] = current === "road" ? "satellite" : current === "satellite" ? "cadastral" : "road";
-    } else if (tool === "cadastral") {
-      state.mapLayers[scope] = "cadastral";
-      state.mapTools[scope] = tool;
-    } else if (tool === "print") {
-      state.mapTools[scope] = tool;
-      window.setTimeout(() => window.print(), 80);
-    } else if (tool === "share") {
-      state.mapTools[scope] = tool;
-      copyShareLink();
-    } else if (tool === "download") {
-      state.mapTools[scope] = tool;
-      downloadMapPoints(scope, null);
-    } else {
-      state.mapTools[scope] = state.mapTools[scope] === tool ? "" : tool;
-    }
+    state.mapTools[scope] = state.mapTools[scope] === tool ? "" : tool;
     repaintMapPanelIn(content, scope);
   }
 
