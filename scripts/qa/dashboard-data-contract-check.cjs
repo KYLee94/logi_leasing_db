@@ -1,12 +1,43 @@
-const fs = require("fs");
-const path = require("path");
+#!/usr/bin/env node
+"use strict";
+
+const fs = require("node:fs");
+const path = require("node:path");
 
 const ROOT = path.resolve(__dirname, "..", "..");
 const RUN_STAMP = new Date().toISOString().replace(/[:.]/g, "-");
 const OUTPUT_DIR = path.join(ROOT, "qa-artifacts", "data-contract", RUN_STAMP);
 
-function read(file) {
-  return fs.readFileSync(path.join(ROOT, file), "utf8");
+const NEW_ASSETS = [
+  {
+    code: "A190002001",
+    docId: "asset_a190002001",
+    name: "분당야탑물류센터",
+    manager: "류지훈",
+    expectedBuildingStatus: "pending_edge_function_lookup",
+  },
+  {
+    code: "A190013001",
+    docId: "asset_a190013001",
+    name: "포천정교리물류센터",
+    manager: "양우영",
+    expectedBuildingStatus: "development_asset_not_found_expected",
+  },
+];
+
+const NEW_STAFF = ["오윤석", "한창형", "류지훈", "양우영"];
+const EXISTING_STAFF_WITH_NEW_ASSETS = ["이철승", "이관용", "전기영", "이승훈", "이시정", "윤관식"];
+
+function readText(relativePath) {
+  return fs.readFileSync(path.join(ROOT, relativePath), "utf8");
+}
+
+function readJson(relativePath) {
+  return JSON.parse(readText(relativePath));
+}
+
+function exists(relativePath) {
+  return fs.existsSync(path.join(ROOT, relativePath));
 }
 
 function ensureDir(dir) {
@@ -17,98 +48,201 @@ function has(source, pattern) {
   return pattern instanceof RegExp ? pattern.test(source) : source.includes(pattern);
 }
 
-function row(id, title, ok, evidence, action) {
-  return { id, title, status: ok ? "PASS" : "REVIEW", evidence, action: action || "" };
+function row(id, title, ok, evidence, action = "") {
+  return { id, title, status: ok ? "PASS" : "REVIEW", evidence, action };
 }
 
 function renderTable(rows) {
   return [
-    "| ID | 상태 | 항목 | 근거 | 조치/메모 |",
+    "| ID | Status | Check | Evidence | Action |",
     "| --- | --- | --- | --- | --- |",
-    ...rows.map((item) => `| ${item.id} | ${item.status} | ${item.title} | ${item.evidence} | ${item.action || "-"} |`),
+    ...rows.map((item) => `| ${item.id} | ${item.status} | ${item.title} | ${String(item.evidence).replace(/\|/g, "/")} | ${item.action || "-"} |`),
   ].join("\n");
+}
+
+function assetFile(asset) {
+  return readJson(`docs/data/asset/${asset.docId}.json`);
+}
+
+function assetPayload(asset) {
+  const payload = assetFile(asset);
+  return payload.asset || payload;
+}
+
+function assetNameOf(payload) {
+  return payload.name || payload.assetName || payload.overview?.assetName || payload.meta?.selection?.assetName || "";
+}
+
+function assetBuildingStatusOf(payload) {
+  return payload.buildingRegister?.status || payload.overview?.buildingRegisterStatus || payload.overview?.buildingHubStatus || "";
+}
+
+function includesAll(values, expected) {
+  const set = new Set(values || []);
+  return expected.every((value) => set.has(value));
 }
 
 function main() {
   ensureDir(OUTPUT_DIR);
 
-  const client = read("Client.html");
-  const metrics = read("Metrics.gs");
-  const runtime = read("RuntimeServices.gs");
-  const server = read("Server.gs");
-  const index = read("Index.html");
-  const idd = read("260205_IDD_v1.0.html");
+  const app = readText("docs/assets/app.js");
+  const pkg = readJson("package.json");
+  const assetOptions = readJson("docs/data/asset-options.json");
+  const admin = readJson("docs/data/admin.json");
+  const snapshots = exists("qa-artifacts/supabase/ll-rich-snapshots-from-docs.json")
+    ? readJson("qa-artifacts/supabase/ll-rich-snapshots-from-docs.json")
+    : { tables: { ll_payload_snapshots: [] } };
+  const snapshotRows = snapshots.tables?.ll_payload_snapshots || [];
+  const edge = readText("supabase/functions/logistics-admin-api/index.ts");
+  const schema = readText("scripts/supabase/public-ll-schema.sql");
 
-  const sheetPayloadRows = [
+  const runtimeRows = [
     row(
-      "DATA-01",
-      "Home KPI가 Google Sheet 기반 model에서 생성됨",
-      has(metrics, "function buildHomePayload_") && has(metrics, "attachPayloadMeta_(payload, 'home'") && has(client, "renderHome(home)"),
-      "buildHomePayload_ -> getHomeData -> renderHome 흐름 확인",
-      "실제 숫자 대조는 Apps Script 런타임에서 getHomeData() 결과와 시트 합계를 함께 export해야 합니다."
+      "RUN-01",
+      "docs app reads Supabase snapshot first",
+      has(app, "ll_payload_snapshots") && has(app, "fetchSupabaseSnapshot"),
+      "docs/assets/app.js contains ll_payload_snapshots + fetchSupabaseSnapshot",
     ),
     row(
-      "DATA-02",
-      "Asset KPI/표가 DB_일반, DB_자산, DB_계산 기준 payload를 사용함",
-      has(metrics, "function buildAssetPayload_") && has(metrics, "eNocAudit") && has(client, "asset-roster-table"),
-      "Asset payload에 areaBreakdown, eNocAudit, contractExpiry 포함",
-      ""
+      "RUN-02",
+      "GitHub JSON remains fallback, not primary server",
+      has(app, "fetchJson") && has(app, "data/asset-options.json"),
+      "static docs JSON fallback loader exists",
     ),
     row(
-      "DATA-03",
-      "Company payload가 DB_기업/OpenDART 상태를 함께 전달함",
-      has(metrics, "function buildCompanyPayload_") && has(metrics, "dartLinked") && has(metrics, "basisSource: 'DB_GENERAL + DB_COMPANY + OpenDART'"),
-      "Company payload에 financials.dartLinked와 basisSource 확인",
-      ""
+      "RUN-03",
+      "runtime has no Apps Script calls",
+      !has(app, "google.script.run") && !has(app, "script.google.com"),
+      "google.script.run/script.google.com not found in docs app",
     ),
     row(
-      "DATA-04",
-      "Sector 만기/랭킹/추이 payload와 화면 사용 필드가 맞음",
-      has(metrics, "expiryRows: contractSummary.upcoming") && has(metrics, "rankings") && has(client, "sector-expiry"),
-      "Sector render가 expiryRows, rankings.assetsByRent, rankings.tenantsByRent, trends.monthlyRent 사용",
-      ""
-    ),
-    row(
-      "DATA-05",
-      "Tools 기본 선택값과 화면 체크 상태가 payload selection을 따름",
-      has(client, "activeToolAssetIds") && has(client, "activeToolCompanyIds") && has(client, '["meta", "selection", "assetIds"]') && has(metrics, "cacheKey: buildKeyedPayloadKey_('tools', normalized)"),
-      "Tools render에서 meta.selection.assetIds/companyIds를 우선 사용",
-      ""
-    ),
-    row(
-      "DATA-06",
-      "시트 직접 대조 자동화가 아직 없음",
-      false,
-      "로컬 Node 환경에는 SpreadsheetApp이 없어 Google Sheet 값 직접 조회 불가",
-      "Apps Script 함수로 payload와 시트 집계 차이를 JSON으로 반환하는 admin 전용 진단 엔드포인트를 추가하는 것이 다음 수정 지점입니다."
+      "RUN-04",
+      "package default QA avoids Apps Script path",
+      Object.entries(pkg.scripts || {}).every(([name, command]) => {
+        if (/^legacy:/.test(name) || /legacy-apps-script/i.test(name)) return true;
+        return !/clasp|script\.google\.com|export-public-snapshots\.cjs|selector-switch-check|search-routing-check|admin-live-check|dashboard-perf-check\.cjs/.test(command);
+      }),
+      "non-legacy package scripts do not reference clasp or legacy Apps Script QA",
     ),
   ];
 
-  const componentRows = [
-    row("IDD-01", "Home 지도", has(idd, "initHomeMap") && has(client, "home-map"), "IDD initHomeMap / 현재 home-map", ""),
-    row("IDD-02", "Home KPI 5종", has(idd, "운영 자산 수") && has(client, "운영 자산 수") && has(client, "총 임대면적"), "운영 자산/임차인/면적/공실 KPI 확인", ""),
-    row("IDD-03", "월간 임대료 추이", has(idd, "homeRentChart") && has(client, "home-rent-chart"), "IDD homeRentChart / 현재 home-rent-chart", ""),
-    row("IDD-04", "구성비 차트 3종", has(idd, "pieArea") && has(client, "home-area-chart") && has(client, "home-cold-chart") && has(client, "home-sector-chart"), "현재는 면적/저온/섹터 구성 차트로 재구성", "IDD의 임대료/임차인 수 구성비와 정확히 1:1은 아닙니다."),
-    row("IDD-05", "계약/임차인 상세 리스트", has(idd, "openFullListModal") && has(client, "home-contract-table") && has(client, "home-tenant-table"), "현재 Home 표와 모달 액션으로 대체", ""),
-    row("IDD-06", "Asset 지도", has(idd, "initAssetMap") && has(client, "asset-map"), "현재 asset map preview 사용", ""),
-    row("IDD-07", "Asset 재무 및 구성 분석 콤보 차트", has(idd, "comboChart") && has(client, "asset-rent-chart") && has(client, "asset-expiry-chart"), "현재는 임차인별 임관리비/만기 차트로 분해", "IDD의 업종별 누적 콤보 차트는 직접 대응 컴포넌트가 없습니다."),
-    row("IDD-08", "Company 재무 추이", has(idd, "compFinChart") && has(client, "company-financials"), "현재 DART 상세 표와 KPI 중심", "5개년 재무 차트는 현재 표 중심이라 시각화 누락 후보입니다."),
-    row("IDD-09", "Company 인력 입퇴사 차트", has(idd, "compHRChart") && has(client, "employeeCount"), "현재 employeeCount 단일 지표만 확인", "3/6/12개월 입퇴사율 차트는 현재 누락 후보입니다."),
-    row("IDD-10", "Sector 지도", has(idd, "initSectorMap") && has(client, "sector-region-chart"), "현재 Sector는 지도 대신 지역별 노출도 차트", "지도형 컴포넌트는 MVP에서 축약된 것으로 보입니다."),
-    row("IDD-11", "Sector 임대료 수취 추이", has(idd, "sectorTrendChart") && has(client, "sector-rent-chart"), "현재 sector-rent-chart 대응", ""),
-    row("IDD-12", "Analysis Tools 비교 차트", has(idd, "toolCompChart") && has(client, "tools-benchmark-chart"), "현재 benchmark chart 대응", ""),
-    row("IDD-13", "Analysis Tools 자산 비교 차트", has(idd, "toolAssetChart") && has(client, "tools-matrix-table"), "현재 matrix table 중심", "두 번째 차트는 현재 표로 대체되어 시각화 누락 후보입니다."),
+  const dataRows = [];
+  for (const asset of NEW_ASSETS) {
+    const option = assetOptions.find((item) => item.assetId === asset.docId);
+    const payload = assetPayload(asset);
+    dataRows.push(row(
+      `DATA-${asset.code}`,
+      `${asset.name} is in docs asset options and asset payload`,
+      Boolean(option) && assetNameOf(payload) === asset.name,
+      `option=${option?.assetName || "missing"}, payload=${assetNameOf(payload) || "missing"}`,
+    ));
+    dataRows.push(row(
+      `FUND-${asset.code}`,
+      `${asset.name} has fund/investment/asset overview`,
+      Boolean(payload.fundOverview?.fundName && (payload.investmentOverview || payload.overview?.investmentOverview) && payload.overview),
+      `fund=${payload.fundOverview?.fundName || "missing"}`,
+    ));
+    dataRows.push(row(
+      `BREG-${asset.code}`,
+      `${asset.name} has server-side building-register status`,
+      assetBuildingStatusOf(payload) === asset.expectedBuildingStatus,
+      `status=${assetBuildingStatusOf(payload) || "missing"}`,
+    ));
+  }
+
+  const staffRows = [];
+  const permissionRows = admin.userPermissions || [];
+  const staffNames = permissionRows.map((item) => item.staffName);
+  const sortedStaffNames = [...staffNames].sort((left, right) => String(left).localeCompare(String(right), "ko-KR"));
+  staffRows.push(row(
+    "PERM-01",
+    "feature permissions are sorted by Korean staff name",
+    staffNames.every((name, index) => name === sortedStaffNames[index]),
+    `first=${staffNames.slice(0, 5).join(", ")}, count=${staffNames.length}`,
+  ));
+
+  for (const name of NEW_STAFF) {
+    const person = permissionRows.find((item) => item.staffName === name);
+    staffRows.push(row(
+      `PERM-${name}`,
+      `${name} exists in permissions and has a staff photo`,
+      Boolean(person && person.photoUrl && exists(`docs/${person.photoUrl}`)),
+      `assets=${(person?.assetNames || []).join(", ") || "missing"}, photo=${person?.photoUrl || "missing"}`,
+    ));
+  }
+
+  for (const name of EXISTING_STAFF_WITH_NEW_ASSETS) {
+    const person = permissionRows.find((item) => item.staffName === name);
+    staffRows.push(row(
+      `PERM-ASSET-${name}`,
+      `${name} has both new asset permissions`,
+      Boolean(person && includesAll(person.assetCodes, NEW_ASSETS.map((asset) => asset.code))),
+      `assetCodes=${(person?.assetCodes || []).filter((code) => code.startsWith("A1900")).join(", ") || "missing"}`,
+    ));
+  }
+
+  const uiRows = [
+    row(
+      "ASSET-01",
+      "ASSET KPI strip replaces monthly total cost with per-pyeong averages",
+      has(app, "buildAssetKpis") && has(app, "averageRentPerPy") && has(app, "averageMfPerPy") && has(app, "key !== \"monthly_total_cost\"") && has(app, "label !== \"월 임관리비 총액\""),
+      "buildAssetKpis filters monthly total and appends average rent/maintenance per py",
+    ),
+    row(
+      "COMPANY-01",
+      "company tenant asset table is collapsible and sortable",
+      has(app, "renderCompanyAssetStatus") && has(app, "compareCompanyAssetStatusRows") && has(app, "collapsible-panel"),
+      "renderCompanyAssetStatus + sortable header handling present",
+    ),
+    row(
+      "COMPANY-02",
+      "company table includes average rent/maintenance and split ratios",
+      has(app, "averageRentPerPy") && has(app, "averageMfPerPy") && has(app, "areaRatio") && has(app, "monthlyCostRatio"),
+      "averageRentPerPy/averageMfPerPy/areaRatio/monthlyCostRatio fields present",
+    ),
+    row(
+      "TAB-01",
+      "tab switching guards stale payload races",
+      has(app, "renderSeq") && has(app, "payloadMatchesSelection") && has(app, "refreshTab"),
+      "render sequence and payload selection guard present",
+    ),
   ];
 
-  const apiRows = [
-    row("API-01", "OpenDART blocker 판정 로직", has(runtime, "function buildOpenDartBlocker_") && has(runtime, "missing_api_key") && has(runtime, "authorization_required") && has(runtime, "match_backlog"), "missing key/auth/backlog/clear 상태 확인", ""),
-    row("API-02", "건축물대장 blocker 판정 로직", has(runtime, "function buildBuildingHubBlocker_") && has(runtime, "query_mapping_required") && has(runtime, "not_found_backlog"), "missing key/auth/query/not_found/clear 상태 확인", ""),
-    row("API-03", "지도 API blocker 판정 로직", has(runtime, "function buildNaverMapsIntegrationStatus_") && has(runtime, "missing_client_id") && has(runtime, "missing_client_secret"), "NAVER client id/secret 상태 확인", ""),
-    row("API-04", "관리자 payload에 integration 상태 포함", has(server, "integrations: getIntegrationStatusFromModel_(model)") || has(server, "integrations:"), "getAdminDashboardData.integrations 확인", ""),
-    row("API-05", "관리자 화면에서 blocker 상세 표시", has(client, "integration-diagnostics") && has(client, "renderIntegrationDiagnosticCard_"), "Admin diagnostic panel 확인", "없으면 관리자 화면에서 blocker 원인이 보이지 않습니다."),
+  const adminRows = [
+    row(
+      "ADMIN-01",
+      "admin data JSON contains beneficiary/lender data for new assets",
+      (admin.fundBeneficiaries || []).filter((item) => NEW_ASSETS.some((asset) => asset.docId === item.assetId)).length === 4
+        && (admin.fundLenders || []).filter((item) => item.assetId === "asset_a190002001").length === 4,
+      `beneficiaries=${(admin.fundBeneficiaries || []).length}, lenders=${(admin.fundLenders || []).length}`,
+    ),
+    row(
+      "ADMIN-02",
+      "login history routes are backed by Supabase Edge Function",
+      has(edge, "/login-history/list") && has(edge, "/login-history/record") && has(edge, "ll_login_history") && has(app, "/login-history/list") && has(app, "/login-history/record"),
+      "login-history/list and login-history/record routes present in Edge Function and called by docs app",
+    ),
+    row(
+      "ADMIN-03",
+      "building-register lookup is routed through Edge Function",
+      has(edge, "/building-register/summary") && has(edge, "apis.data.go.kr/1613000/BldRgstService_v2/getBrTitleInfo"),
+      "building-register route and public data endpoint present in Edge Function only",
+    ),
+    row(
+      "ADMIN-04",
+      "admin snapshots are not marked user_safe",
+      snapshotRows.filter((item) => item.page === "admin" || item.page === "admin-data").every((item) => item.user_safe === false),
+      `adminSnapshots=${snapshotRows.filter((item) => item.page === "admin" || item.page === "admin-data").map((item) => `${item.page}:${item.user_safe}`).join(", ")}`,
+    ),
+    row(
+      "SCHEMA-01",
+      "new Supabase tables exist in public schema",
+      ["ll_staff_profiles", "ll_fund_beneficiaries", "ll_fund_lenders", "ll_login_history"].every((table) => has(schema, `create table if not exists public.${table}`)),
+      "staff, beneficiary, lender, login-history tables present",
+    ),
   ];
 
-  const allRows = [...sheetPayloadRows, ...componentRows, ...apiRows];
+  const allRows = [...runtimeRows, ...dataRows, ...staffRows, ...uiRows, ...adminRows];
   const summary = {
     generatedAt: new Date().toISOString(),
     counts: {
@@ -116,32 +250,34 @@ function main() {
       review: allRows.filter((item) => item.status === "REVIEW").length,
       total: allRows.length,
     },
-    sheetPayloadRows,
-    componentRows,
-    apiRows,
+    runtimeRows,
+    dataRows,
+    staffRows,
+    uiRows,
+    adminRows,
   };
 
   const markdown = [
-    "# Dashboard Data/QA Checklist",
+    "# Dashboard Data Contract Check",
     "",
-    `생성 시각: ${summary.generatedAt}`,
+    `Generated at: ${summary.generatedAt}`,
     "",
-    `요약: PASS ${summary.counts.pass} / REVIEW ${summary.counts.review} / TOTAL ${summary.counts.total}`,
+    `Summary: PASS ${summary.counts.pass} / REVIEW ${summary.counts.review} / TOTAL ${summary.counts.total}`,
     "",
-    "## Google Sheet 기준 숫자와 화면 payload 정합성",
-    renderTable(sheetPayloadRows),
+    "## Runtime",
+    renderTable(runtimeRows),
     "",
-    "## 260205_IDD_v1.0.html 대비 컴포넌트",
-    renderTable(componentRows),
+    "## New Asset Data",
+    renderTable(dataRows),
     "",
-    "## OpenDART / 건축물대장 / 지도 API blocker",
-    renderTable(apiRows),
+    "## Permissions And Staff",
+    renderTable(staffRows),
     "",
-    "## 남은 blocker",
+    "## UI Contracts",
+    renderTable(uiRows),
     "",
-    "- 실제 Google Sheet 숫자와 payload 숫자의 값 대조는 로컬 Node가 아닌 Apps Script 런타임에서 수행해야 합니다.",
-    "- IDD의 Company 5개년 재무 차트, Company HR 입퇴사율 차트, Tools 두 번째 자산 비교 차트, Sector 지도는 현재 구현에서 표/요약/차트로 축약되었거나 직접 대응이 약합니다.",
-    "- OpenDART/건축물대장/지도 API의 실제 상태는 관리자 payload의 `integrations`와 Script Properties, 마지막 실행 상태를 함께 확인해야 합니다.",
+    "## Admin And Supabase",
+    renderTable(adminRows),
   ].join("\n");
 
   const mdPath = path.join(OUTPUT_DIR, "checklist.md");
@@ -150,6 +286,7 @@ function main() {
   fs.writeFileSync(jsonPath, JSON.stringify(summary, null, 2), "utf8");
 
   console.log(JSON.stringify({ outputDir: OUTPUT_DIR, markdown: mdPath, json: jsonPath, summary: summary.counts }, null, 2));
+  if (summary.counts.review > 0) process.exit(1);
 }
 
 main();

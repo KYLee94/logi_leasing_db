@@ -71,6 +71,7 @@ async function fetchAllRows() {
 function outputPathFor(row) {
   const page = row.page;
   const entityId = row.entity_id || "default";
+  if (page === "admin" || page === "admin-data") return "";
   if (ROOT_FILE_BY_PAGE[page] && ROOT_FILE_BY_PAGE[page][0] === entityId) {
     return path.join(DOCS_DATA, ROOT_FILE_BY_PAGE[page][1]);
   }

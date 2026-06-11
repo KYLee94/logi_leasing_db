@@ -42,6 +42,16 @@
     "vacancyRate": 0.027004153491596173
   },
   {
+    "assetId": "asset_a190002001",
+    "assetName": "분당야탑물류센터",
+    "uniqueTenantCount": 0,
+    "fetchedAt": "2026-06-11",
+    "averageENoc": null,
+    "vacancyRate": null,
+    "monthlyCostTotal": 0,
+    "dataStatus": "임대차계약 없음"
+  },
+  {
     "assetId": "asset_a112299001",
     "assetName": "스카이박스1, 스카이박스2",
     "fetchedAt": "2026-04-22",
@@ -134,6 +144,16 @@
     "assetId": "asset_a112500002",
     "vacancyRate": 0,
     "monthlyCostTotal": 460486000
+  },
+  {
+    "assetId": "asset_a190013001",
+    "assetName": "포천정교리물류센터",
+    "uniqueTenantCount": 0,
+    "fetchedAt": "2026-06-11",
+    "averageENoc": null,
+    "vacancyRate": null,
+    "monthlyCostTotal": 0,
+    "dataStatus": "임대차계약 없음"
   },
   {
     "assetName": "화성 석포리 물류센터",

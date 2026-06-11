@@ -1,5 +1,8 @@
 type JsonRecord = Record<string, unknown>;
 
+const BUILDING_REGISTER_TITLE_ENDPOINT =
+  "https://apis.data.go.kr/1613000/BldRgstService_v2/getBrTitleInfo";
+
 function corsHeaders(request: Request): Record<string, string> {
   const origin = request.headers.get("origin") || "";
   const allowed = (Deno.env.get("LL_ALLOWED_ORIGINS") || "https://kylee94.github.io,http://127.0.0.1:4173,http://localhost:4173")
@@ -97,6 +100,101 @@ async function assertAdmin(request: Request): Promise<JsonRecord> {
   return { id: user.id, email, role };
 }
 
+async function supabaseServiceFetch(path: string, init: RequestInit = {}): Promise<Response> {
+  const supabaseUrl = requiredSecret("SUPABASE_URL").replace(/\/+$/, "");
+  const serviceRoleKey = requiredSecret("SUPABASE_SERVICE_ROLE_KEY");
+  const headers = new Headers(init.headers || {});
+  headers.set("apikey", serviceRoleKey);
+  headers.set("authorization", `Bearer ${serviceRoleKey}`);
+  if (!headers.has("content-type") && init.body) headers.set("content-type", "application/json");
+  return fetch(`${supabaseUrl}${path}`, {
+    ...init,
+    headers,
+  });
+}
+
+async function readLoginHistory(body: JsonRecord): Promise<JsonRecord> {
+  const limit = Math.min(Math.max(Number(body.limit || 80), 1), 200);
+  const params = new URLSearchParams({
+    select: "id,logged_at,staff_name,email,status,source,client_timezone",
+    order: "logged_at.desc",
+    limit: String(limit),
+  });
+  const response = await supabaseServiceFetch(`/rest/v1/ll_login_history?${params.toString()}`);
+  const rows = await response.json().catch(() => []) as unknown;
+  return {
+    ok: response.ok,
+    status: response.status,
+    rows: Array.isArray(rows) ? rows.map(normalizeLoginHistoryRow) : [],
+  };
+}
+
+function normalizeLoginHistoryRow(row: JsonRecord): JsonRecord {
+  const eventPayload = row.event_payload && typeof row.event_payload === "object" && !Array.isArray(row.event_payload)
+    ? row.event_payload as JsonRecord
+    : {};
+  const requestPayload = row.request_payload && typeof row.request_payload === "object" && !Array.isArray(row.request_payload)
+    ? row.request_payload as JsonRecord
+    : {};
+  const email = String(row.email || eventPayload.email || requestPayload.email || "").toLowerCase();
+  return {
+    login_event_id: String(row.login_event_id || row.id || crypto.randomUUID()),
+    event_at: String(row.event_at || row.logged_at || row.created_at || new Date().toISOString()),
+    staff_name: String(row.staff_name || eventPayload.staff_name || requestPayload.staff_name || ""),
+    email,
+    event_type: String(row.event_type || eventPayload.event_type || requestPayload.eventType || "auth_login"),
+    status: String(row.status || row.event_status || eventPayload.status || requestPayload.status || ""),
+    source: String(row.source || eventPayload.source || requestPayload.source || "supabase_edge"),
+  };
+}
+
+async function recordLoginHistory(admin: JsonRecord, request: Request, body: JsonRecord): Promise<JsonRecord> {
+  const email = String(body.email || admin.email || "").toLowerCase();
+  const staffName = String(body.staffName || body.staff_name || "");
+  const eventType = String(body.eventType || body.event_type || "login");
+  const status = String(body.status || "ok");
+  const statusCode = /fail|error|denied|forbidden/i.test(status) ? 500 : 200;
+  const eventPayload = {
+    email,
+    auth_email: email,
+    staff_name: staffName || email,
+    event_type: eventType,
+    status,
+    source: "logistics-admin-api",
+  };
+  const row = {
+    event_type: "auth_login",
+    action: eventType,
+    status_code: statusCode,
+    requested_by: admin.id || null,
+    event_status: status,
+    event_payload: eventPayload,
+    request_payload: {
+      source: "logistics-admin-api",
+      requestedBy: admin.email || "",
+      eventType,
+      status,
+    },
+    metadata: {
+      route: "/login-history/record",
+      userAgent: request.headers.get("user-agent") || "",
+    },
+  };
+  const response = await supabaseServiceFetch("/rest/v1/ll_audit_events", {
+    method: "POST",
+    headers: {
+      prefer: "return=representation",
+    },
+    body: JSON.stringify(row),
+  });
+  const payload = await response.json().catch(() => null) as unknown;
+  return {
+    ok: response.ok,
+    status: response.status,
+    row: normalizeLoginHistoryRow((Array.isArray(payload) ? payload[0] : payload || {}) as JsonRecord),
+  };
+}
+
 async function fetchOpenDart(body: JsonRecord): Promise<JsonRecord> {
   const apiKey = requiredSecret("OPENDART_API_KEY");
   const corpCode = String(body.corpCode || "").trim();
@@ -121,8 +219,7 @@ async function fetchOpenDart(body: JsonRecord): Promise<JsonRecord> {
 async function fetchBuildingRegister(body: JsonRecord): Promise<JsonRecord> {
   const apiKey = readSecret("BUILDING_REGISTER_API_KEY_ENCODED") || readSecret("BUILDING_REGISTER_API_KEY");
   if (!apiKey) throw new Error("missing_secret:BUILDING_REGISTER_API_KEY");
-  const endpoint = String(body.endpoint || "").trim();
-  if (!endpoint.startsWith("https://")) throw new Error("missing_https_endpoint");
+  const endpoint = BUILDING_REGISTER_TITLE_ENDPOINT;
   const params = new URLSearchParams();
   const inputParams = body.params && typeof body.params === "object" && !Array.isArray(body.params)
     ? body.params as JsonRecord
@@ -135,10 +232,17 @@ async function fetchBuildingRegister(body: JsonRecord): Promise<JsonRecord> {
   const url = `${endpoint}${endpoint.includes("?") ? "&" : "?"}${params.toString()}`;
   const response = await fetch(url);
   const payload = await response.json().catch(() => ({})) as JsonRecord;
+  const responseBody = payload.response && typeof payload.response === "object" ? payload.response as JsonRecord : {};
+  const header = responseBody.header && typeof responseBody.header === "object" ? responseBody.header as JsonRecord : {};
+  const resultCode = String(header.resultCode || payload.resultCode || "");
+  const resultMsg = String(header.resultMsg || payload.resultMsg || "");
+  const apiOk = !resultCode || resultCode === "00" || resultCode === "000";
   return {
     provider: "building-register",
-    ok: response.ok,
-    status: response.status,
+    ok: response.ok && apiOk,
+    status: resultCode || response.status,
+    message: resultMsg,
+    endpoint,
     payload,
   };
 }
@@ -198,6 +302,12 @@ Deno.serve(async (request) => {
     }
     if (url.pathname.endsWith("/building-register/summary")) {
       return json(request, 200, { ok: true, admin, result: await fetchBuildingRegister(body) });
+    }
+    if (url.pathname.endsWith("/login-history/list")) {
+      return json(request, 200, { ok: true, admin, result: await readLoginHistory(body) });
+    }
+    if (url.pathname.endsWith("/login-history/record")) {
+      return json(request, 200, { ok: true, admin, result: await recordLoginHistory(admin || {}, request, body) });
     }
     if (url.pathname.endsWith("/snapshot-refresh")) {
       return json(request, 202, { ok: true, admin, result: await refreshSnapshot() });

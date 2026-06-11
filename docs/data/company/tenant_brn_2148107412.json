@@ -1044,8 +1044,8 @@
       "monthlyRentTotal": 231374000
     }
   ],
-  "schemaVersion": "docs_static_v1",
+  "sourceSystem": "google_sheets",
   "payloadSource": "supabase_snapshot",
-  "dataSourceMode": "supabase_snapshot",
-  "sourceSystem": "google_sheets"
+  "schemaVersion": "docs_static_v1",
+  "dataSourceMode": "supabase_snapshot"
 }

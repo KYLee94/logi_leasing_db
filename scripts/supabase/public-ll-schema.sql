@@ -88,7 +88,7 @@ create table if not exists public.ll_funds (
   updated_at timestamptz not null default now(),
   constraint ll_funds_google_sheets_source_ck check (
     source_system = 'google_sheets'
-    and source_table = 'DB_일반'
+    and source_table in ('DB_일반', '260520_펀드 정보')
     and source_pk is not null
     and source_ref is not null
     and source_row_hash is not null
@@ -125,7 +125,7 @@ create table if not exists public.ll_assets (
   updated_at timestamptz not null default now(),
   constraint ll_assets_google_sheets_source_ck check (
     source_system = 'google_sheets'
-    and source_table in ('DB_자산', 'DB_일반')
+    and source_table in ('DB_자산', 'DB_일반', '260520_펀드 정보')
     and source_pk is not null
     and source_ref is not null
     and source_row_hash is not null
@@ -271,6 +271,61 @@ create table if not exists public.ll_rent_history (
   )
 );
 
+create table if not exists public.ll_area_breakdowns (
+  area_breakdown_id text primary key,
+  lease_space_id text,
+  lease_id text,
+  asset_id text,
+  tenant_id text,
+  area_type text,
+  area_label text,
+  area_sqm numeric,
+  area_py numeric,
+  source_system text not null default 'google_sheets',
+  source_table text not null,
+  source_pk text not null,
+  source_ref text not null,
+  source_row_hash text not null,
+  source_payload jsonb not null default '{}'::jsonb,
+  last_etl_run_id text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint ll_area_breakdowns_google_sheets_source_ck check (
+    source_system = 'google_sheets'
+    and source_table = 'DB_일반'
+    and source_pk is not null
+    and source_ref is not null
+    and source_row_hash is not null
+  )
+);
+
+create table if not exists public.ll_field_dictionary (
+  field_id text primary key,
+  field_no text,
+  field_name text,
+  data_type text,
+  unit text,
+  is_time_series boolean,
+  sample_value text,
+  description text,
+  last_etl_run_id text,
+  source_system text not null default 'google_sheets',
+  source_table text not null,
+  source_pk text not null,
+  source_ref text not null,
+  source_row_hash text not null,
+  source_payload jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint ll_field_dictionary_google_sheets_source_ck check (
+    source_system = 'google_sheets'
+    and source_table = 'Meta_데이터 항목 설명'
+    and source_pk is not null
+    and source_ref is not null
+    and source_row_hash is not null
+  )
+);
+
 create table if not exists public.ll_issues (
   issue_id text primary key,
   entity_type text,
@@ -400,8 +455,112 @@ create table if not exists public.ll_user_permissions (
   can_delete boolean not null default false,
   source_system text not null default 'google_sheets',
   created_by text,
+  source_payload jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
+);
+
+create table if not exists public.ll_asset_managers (
+  asset_manager_id text primary key,
+  asset_id text,
+  asset_code text,
+  asset_name text,
+  fund_id text,
+  fund_code text,
+  fund_name text,
+  manager_name text,
+  organization text,
+  email text,
+  source_system text not null default 'google_sheets',
+  source_table text not null,
+  source_pk text not null,
+  source_ref text not null,
+  source_row_hash text not null,
+  source_payload jsonb not null default '{}'::jsonb,
+  last_etl_run_id text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint ll_asset_managers_google_sheets_ck check (source_system = 'google_sheets')
+);
+
+create table if not exists public.ll_staff_profiles (
+  staff_id text primary key,
+  staff_name text not null,
+  email text,
+  organization text,
+  photo_url text,
+  source_system text not null default 'google_sheets',
+  source_table text,
+  source_pk text,
+  source_ref text,
+  source_row_hash text,
+  source_payload jsonb not null default '{}'::jsonb,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.ll_fund_beneficiaries (
+  beneficiary_id text primary key,
+  asset_id text,
+  asset_code text,
+  fund_id text,
+  fund_code text,
+  fund_name text,
+  tranche text,
+  beneficiary_name text not null,
+  investment_amount_krw numeric,
+  source_system text not null default 'google_sheets',
+  source_table text,
+  source_pk text,
+  source_ref text,
+  source_row_hash text,
+  source_payload jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.ll_fund_lenders (
+  lender_id text primary key,
+  asset_id text,
+  asset_code text,
+  fund_id text,
+  fund_code text,
+  fund_name text,
+  loan_type text,
+  tranche text,
+  lender_name text not null,
+  drawn_amount_krw numeric,
+  drawn_at date,
+  maturity_at date,
+  interest_type text,
+  base_rate_pct numeric,
+  spread_rate_pct numeric,
+  loan_rate_pct numeric,
+  fee_rate_pct numeric,
+  all_in_pct numeric,
+  source_system text not null default 'google_sheets',
+  source_table text,
+  source_pk text,
+  source_ref text,
+  source_row_hash text,
+  source_payload jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.ll_login_history (
+  login_event_id text primary key,
+  user_id uuid,
+  staff_name text,
+  email text,
+  event_type text not null default 'login',
+  status text not null default 'ok',
+  ip_hash text,
+  user_agent text,
+  event_at timestamptz not null default now(),
+  source_payload jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
 );
 
 create table if not exists public.ll_edit_sessions (
@@ -614,8 +773,29 @@ alter table public.ll_user_permissions add column if not exists can_write boolea
 alter table public.ll_user_permissions add column if not exists can_delete boolean not null default false;
 alter table public.ll_user_permissions add column if not exists source_system text not null default 'google_sheets';
 alter table public.ll_user_permissions add column if not exists created_by text;
+alter table public.ll_user_permissions add column if not exists source_payload jsonb not null default '{}'::jsonb;
 alter table public.ll_user_permissions add column if not exists created_at timestamptz not null default now();
 alter table public.ll_user_permissions add column if not exists updated_at timestamptz not null default now();
+
+alter table public.ll_asset_managers add column if not exists asset_manager_id text;
+alter table public.ll_asset_managers add column if not exists asset_id text;
+alter table public.ll_asset_managers add column if not exists asset_code text;
+alter table public.ll_asset_managers add column if not exists asset_name text;
+alter table public.ll_asset_managers add column if not exists fund_id text;
+alter table public.ll_asset_managers add column if not exists fund_code text;
+alter table public.ll_asset_managers add column if not exists fund_name text;
+alter table public.ll_asset_managers add column if not exists manager_name text;
+alter table public.ll_asset_managers add column if not exists organization text;
+alter table public.ll_asset_managers add column if not exists email text;
+alter table public.ll_asset_managers add column if not exists source_system text not null default 'google_sheets';
+alter table public.ll_asset_managers add column if not exists source_table text;
+alter table public.ll_asset_managers add column if not exists source_pk text;
+alter table public.ll_asset_managers add column if not exists source_ref text;
+alter table public.ll_asset_managers add column if not exists source_row_hash text;
+alter table public.ll_asset_managers add column if not exists source_payload jsonb not null default '{}'::jsonb;
+alter table public.ll_asset_managers add column if not exists last_etl_run_id text;
+alter table public.ll_asset_managers add column if not exists created_at timestamptz not null default now();
+alter table public.ll_asset_managers add column if not exists updated_at timestamptz not null default now();
 
 alter table public.ll_edit_sessions add column if not exists principal_id text;
 alter table public.ll_edit_sessions add column if not exists status text not null default 'draft';
@@ -675,7 +855,7 @@ alter table public.ll_funds add constraint ll_funds_google_sheets_source_ck
   check (
     source_system is not null
     and source_system = 'google_sheets'
-    and source_table in ('DB_일반')
+    and source_table in ('DB_일반', '260520_펀드 정보')
     and source_pk is not null
     and source_ref is not null
     and source_row_hash is not null
@@ -686,7 +866,7 @@ alter table public.ll_assets add constraint ll_assets_google_sheets_source_ck
   check (
     source_system is not null
     and source_system = 'google_sheets'
-    and source_table in ('DB_자산', 'DB_일반')
+    and source_table in ('DB_자산', 'DB_일반', '260520_펀드 정보')
     and source_pk is not null
     and source_ref is not null
     and source_row_hash is not null
@@ -731,6 +911,28 @@ alter table public.ll_rent_history add constraint ll_rent_history_google_sheets_
     source_system is not null
     and source_system = 'google_sheets'
     and source_table in ('DB_히스토리 누적')
+    and source_pk is not null
+    and source_ref is not null
+    and source_row_hash is not null
+  ) not valid;
+
+alter table public.ll_area_breakdowns drop constraint if exists ll_area_breakdowns_google_sheets_source_ck;
+alter table public.ll_area_breakdowns add constraint ll_area_breakdowns_google_sheets_source_ck
+  check (
+    source_system is not null
+    and source_system = 'google_sheets'
+    and source_table in ('DB_일반')
+    and source_pk is not null
+    and source_ref is not null
+    and source_row_hash is not null
+  ) not valid;
+
+alter table public.ll_field_dictionary drop constraint if exists ll_field_dictionary_google_sheets_source_ck;
+alter table public.ll_field_dictionary add constraint ll_field_dictionary_google_sheets_source_ck
+  check (
+    source_system is not null
+    and source_system = 'google_sheets'
+    and source_table in ('Meta_데이터 항목 설명')
     and source_pk is not null
     and source_ref is not null
     and source_row_hash is not null
@@ -813,6 +1015,11 @@ create index if not exists ll_rent_history_lease_space_id_idx on public.ll_rent_
 create index if not exists ll_rent_history_asset_id_idx on public.ll_rent_history (asset_id);
 create index if not exists ll_rent_history_tenant_id_idx on public.ll_rent_history (tenant_id);
 create index if not exists ll_rent_history_source_lookup_idx on public.ll_rent_history (source_system, source_table, source_pk);
+create index if not exists ll_area_breakdowns_lease_space_idx on public.ll_area_breakdowns (lease_space_id);
+create index if not exists ll_area_breakdowns_asset_idx on public.ll_area_breakdowns (asset_id);
+create index if not exists ll_area_breakdowns_source_lookup_idx on public.ll_area_breakdowns (source_system, source_table, source_pk);
+create index if not exists ll_field_dictionary_name_idx on public.ll_field_dictionary (field_name);
+create index if not exists ll_field_dictionary_source_lookup_idx on public.ll_field_dictionary (source_system, source_table, source_pk);
 create index if not exists ll_issues_entity_idx on public.ll_issues (entity_type, entity_id);
 create index if not exists ll_issues_asset_id_idx on public.ll_issues (asset_id);
 create index if not exists ll_issues_source_lookup_idx on public.ll_issues (source_system, source_table, source_pk);
@@ -825,6 +1032,14 @@ create index if not exists ll_normalization_links_source_row_idx on public.ll_no
 create index if not exists ll_normalization_links_target_idx on public.ll_normalization_links (target_table, target_pk);
 create index if not exists ll_user_permissions_principal_idx on public.ll_user_permissions (principal_type, principal_id);
 create index if not exists ll_user_permissions_scope_idx on public.ll_user_permissions (scope_type, scope_id);
+create index if not exists ll_asset_managers_asset_idx on public.ll_asset_managers (asset_id, asset_code);
+create index if not exists ll_asset_managers_manager_idx on public.ll_asset_managers (manager_name, email);
+create index if not exists ll_staff_profiles_name_idx on public.ll_staff_profiles (staff_name);
+create index if not exists ll_staff_profiles_email_idx on public.ll_staff_profiles (email);
+create index if not exists ll_fund_beneficiaries_asset_idx on public.ll_fund_beneficiaries (asset_id, asset_code);
+create index if not exists ll_fund_lenders_asset_idx on public.ll_fund_lenders (asset_id, asset_code);
+create index if not exists ll_login_history_event_at_idx on public.ll_login_history (event_at desc);
+create index if not exists ll_login_history_email_idx on public.ll_login_history (email);
 create index if not exists ll_cell_edits_session_idx on public.ll_cell_edits (edit_session_id);
 create index if not exists ll_cell_edits_source_cell_idx on public.ll_cell_edits (source_row_uid, column_uid);
 create index if not exists ll_cell_edits_target_idx on public.ll_cell_edits (target_table, target_pk, target_column);
@@ -838,12 +1053,19 @@ alter table public.ll_tenants enable row level security;
 alter table public.ll_leases enable row level security;
 alter table public.ll_lease_spaces enable row level security;
 alter table public.ll_rent_history enable row level security;
+alter table public.ll_area_breakdowns enable row level security;
+alter table public.ll_field_dictionary enable row level security;
 alter table public.ll_issues enable row level security;
 alter table public.ll_source_sheets enable row level security;
 alter table public.ll_source_columns enable row level security;
 alter table public.ll_source_rows enable row level security;
 alter table public.ll_normalization_links enable row level security;
 alter table public.ll_user_permissions enable row level security;
+alter table public.ll_asset_managers enable row level security;
+alter table public.ll_staff_profiles enable row level security;
+alter table public.ll_fund_beneficiaries enable row level security;
+alter table public.ll_fund_lenders enable row level security;
+alter table public.ll_login_history enable row level security;
 alter table public.ll_edit_sessions enable row level security;
 alter table public.ll_cell_edits enable row level security;
 alter table public.ll_payload_snapshots enable row level security;

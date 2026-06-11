@@ -5709,6 +5709,18 @@
       "issueCount": 0
     },
     {
+      "address": "경기도 성남시 분당구 탄천로 257",
+      "assetId": "asset_a190002001",
+      "latitude": null,
+      "assetCode": "A190002001",
+      "assetName": "분당야탑물류센터",
+      "longitude": null,
+      "dataStatus": "임대차계약 없음",
+      "issueCount": 0,
+      "coordinateNote": "기존 좌표 37.40971,127.12046은 OpenStreetMap 역지오코딩 기준 탄천종합운동장으로 확인되어 핀 표시에서 제외합니다.",
+      "coordinateStatus": "좌표 재확인 필요"
+    },
+    {
       "address": "인천광역시 서구 갑문1로 20, 인천광역시 서구 갑문3로 34",
       "assetId": "asset_a112299001",
       "latitude": 37.5637998,
@@ -5795,6 +5807,18 @@
       "assetName": "평택아디다스물류센터",
       "longitude": 127.105842,
       "issueCount": 2
+    },
+    {
+      "address": "경기도 포천시 가산면 정교리 272-1",
+      "assetId": "asset_a190013001",
+      "latitude": 37.83925,
+      "assetCode": "A190013001",
+      "assetName": "포천정교리물류센터",
+      "longitude": 127.18528,
+      "dataStatus": "임대차계약 없음",
+      "issueCount": 0,
+      "coordinateNote": "개발 진행 중 자산으로 건축물대장/지번 기반 추가 검증이 필요합니다.",
+      "coordinateStatus": "주소 기반 좌표"
     },
     {
       "address": "경기도 화성시 장안면 북부마을길 42",
@@ -6379,7 +6403,7 @@
       "tenantMasterName": "(주)한진"
     }
   ],
-  "generatedAt": "2026-04-30T10:58:51",
+  "generatedAt": "2026-06-11T01:20:32Z",
   "basisDisplay": {
     "asOf": "2026-04-30T10:58:51",
     "page": "sector",
@@ -6390,6 +6414,7 @@
     "generatedAt": "2026-04-30T10:58:51",
     "refreshedAt": "2026-04-30T10:58:51"
   },
+  "sourceSystem": "google_sheets",
   "expiryBuckets": [
     {
       "count": 1,
@@ -6404,6 +6429,9 @@
       "label": "0-12 months"
     }
   ],
+  "payloadSource": "supabase_snapshot",
+  "schemaVersion": "docs_static_v1",
+  "dataSourceMode": "supabase_snapshot",
   "regionExposure": [
     {
       "label": "Gyeonggi",
@@ -6445,9 +6473,5 @@
       "monthlyCostTotal": 0,
       "grossFloorAreaSqm": 24387.915
     }
-  ],
-  "schemaVersion": "docs_static_v1",
-  "payloadSource": "supabase_snapshot",
-  "dataSourceMode": "supabase_snapshot",
-  "sourceSystem": "google_sheets"
+  ]
 }

@@ -10,15 +10,16 @@ This function keeps secret keys out of GitHub Pages. Public frontend code must n
 |---|---|---|
 | `GET /health` | Confirms function and secret presence without exposing values | none returned |
 | `POST /opendart/company` | Calls OpenDART financial statement API | `OPENDART_API_KEY` |
-| `POST /building-register/summary` | Calls a provided HTTPS building-register endpoint | `BUILDING_REGISTER_API_KEY_ENCODED` or `BUILDING_REGISTER_API_KEY` |
+| `POST /building-register/summary` | Calls the fixed building-register title endpoint from the server only | `BUILDING_REGISTER_API_KEY_ENCODED` or `BUILDING_REGISTER_API_KEY` |
+| `POST /login-history/list` | Reads recent `ll_login_history` rows for the admin screen | `SUPABASE_SERVICE_ROLE_KEY` |
+| `POST /login-history/record` | Writes a login/admin event to `ll_audit_events`; `ll_login_history` is the read view | `SUPABASE_SERVICE_ROLE_KEY` |
 | `POST /snapshot-refresh` | Reserved for approved snapshot refresh job | Supabase service role later |
 | `POST /cache-clear` | Reserved cache clear endpoint for admin workflow | none |
 | `POST /edits/submit` | Reserved ll_* edit submission endpoint | Supabase service role later |
 | `POST /edits/approve` | Reserved ll_* edit approval endpoint | Supabase service role later |
 | `POST /worklogs` | Reserved work-log endpoint for the work platform | Supabase service role later |
 
-All non-health routes require a Supabase user JWT. Access is allowed when the user email is listed in `LL_ADMIN_EMAILS` or `app_metadata.role` is `admin` / `logistics_admin`.
-The function body performs its own authorization for non-health routes, so deployment can use `verify_jwt=false` only for the public health check and CORS preflight path.
+All routes are deployed with Supabase Gateway JWT verification enabled. The function body also performs its own authorization for non-health routes. Access is allowed when the user email is listed in `LL_ADMIN_EMAILS` or `app_metadata.role` is `admin` / `logistics_admin`.
 
 ## Required secrets
 

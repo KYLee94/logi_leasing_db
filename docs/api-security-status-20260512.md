@@ -1,6 +1,7 @@
 # API/보안 상태
 
-생성일: 2026-05-12 KST
+생성: 2026-05-12 KST  
+갱신: 2026-06-11 KST
 
 ## Supabase Edge Function
 
@@ -9,40 +10,43 @@
 | 프로젝트 | `qvegpozwrcmspdvjokiz` |
 | Function | `logistics-admin-api` |
 | 배포 상태 | ACTIVE |
-| version | 1 |
+| 최근 확인 version | 18 |
 | function id | `6a10d450-463b-4312-8a27-094c1f47cda6` |
-| verify_jwt | false |
-| 판단 | health/CORS 공개 확인을 위해 gateway JWT는 끄고, non-health route는 함수 내부에서 Supabase JWT와 관리자 role/email을 검사 |
+| verify_jwt | true |
 
 ## Route 상태
 
 | Route | 상태 | 비고 |
 |---|---|---|
-| `/health` | 응답 확인 | secret 존재 여부만 boolean으로 반환, 값 노출 없음 |
-| `/opendart/company` | route 배포 | `OPENDART_API_KEY` secret 필요 |
-| `/building-register/summary` | route 배포 | `BUILDING_REGISTER_API_KEY_ENCODED` 또는 `BUILDING_REGISTER_API_KEY` 필요 |
-| `/snapshot-refresh` | route 배포 | write contract 확정 전 placeholder |
-| `/cache-clear` | route 배포 | 서버 캐시 없음, 프론트 캐시 클리어용으로 연결 예정 |
-| `/edits/submit` | route 배포 | `ll_*` table allowlist 검증만 반영, 저장은 edit schema 확정 후 |
-| `/edits/approve` | route 배포 | `ll_*` table allowlist 검증만 반영, 저장은 edit schema 확정 후 |
-| `/worklogs` | route 배포 | 업무 로그 schema 확정 후 연결 |
+| `/health` | 인증 필요 | Supabase Gateway JWT 검사를 켠 상태라 인증 없이 401 반환 |
+| `/opendart/company` | route 배포 | OpenDART API key는 Edge Function secret에서만 읽음 |
+| `/building-register/summary` | route 배포 | 건축물대장 API key는 Edge Function secret에서만 읽음 |
+| `/login-history/list` | route 배포 | `ll_login_history` view read, 관리자 JWT 필요 |
+| `/login-history/record` | route 배포 | `ll_audit_events`에 `auth_login` 이벤트 저장, 관리자 JWT 필요 |
+| `/snapshot-refresh` | placeholder | write contract 확정 후 연결 |
+| `/cache-clear` | route 배포 | 서버 mutable cache 없음 |
+| `/edits/submit` | placeholder | `ll_*` allowlist 검증만 반영 |
+| `/edits/approve` | placeholder | `ll_*` allowlist 검증만 반영 |
+| `/worklogs` | placeholder | 업무 로그 schema 확정 후 연결 |
 
-## Health readback
+## Secret readback
+
+2026-06-11 배포 전 health readback에서 secret 존재 여부는 값 노출 없이 다음처럼 확인했습니다.
 
 ```json
 {
   "ok": true,
   "service": "logistics-admin-api",
   "secrets": {
-    "opendart": false,
-    "buildingRegister": false,
+    "opendart": true,
+    "buildingRegister": true,
     "supabase": true
   }
 }
 ```
 
-판정: Supabase service key는 서버에 존재하지만, OpenDART/건축물대장 secret은 아직 Supabase Edge Function 환경에 설정되어 있지 않습니다. 프론트에는 어떤 비밀키도 넣지 않습니다.
+현재 배포는 `verify_jwt=true`라 공개 health 호출도 인증 없이 401로 차단됩니다. 프론트엔드에는 OpenDART, 건축물대장, Supabase service-role secret 값을 넣지 않습니다.
 
-## non-ll_* RLS 경고
+## 공개 번들 스캔
 
-Supabase advisor가 public schema의 여러 non-`ll_*` 테이블 RLS 미적용을 경고했습니다. 사용자 지시에 따라 이번 작업에서는 non-`ll_*` 테이블의 RLS/정책/데이터를 변경하지 않고, 보안 리스크로만 기록합니다.
+`npm run qa:secret-scan`으로 공개될 수 있는 텍스트 파일을 검사합니다. Supabase `sb_publishable_*`는 public client key라 허용하지만, `sb_secret_*`, service-role key, JWT-like token, Google/OpenAI/GitHub token, private key block은 실패로 처리합니다.

@@ -28,6 +28,10 @@ const PRIMARY_KEYS = Object.freeze({
   ll_source_diffs: 'diff_id',
   ll_normalization_links: 'link_id',
   ll_user_permissions: 'permission_id',
+  ll_staff_profiles: 'staff_id',
+  ll_fund_beneficiaries: 'beneficiary_id',
+  ll_fund_lenders: 'lender_id',
+  ll_login_history: 'login_event_id',
   ll_edit_sessions: 'edit_session_id',
   ll_cell_edits: 'edit_id',
   ll_delete_markers: 'delete_marker_id',
@@ -43,6 +47,10 @@ const SOURCE_PAYLOAD_TABLES = new Set([
   'll_area_breakdowns',
   'll_rent_history',
   'll_asset_managers',
+  'll_staff_profiles',
+  'll_fund_beneficiaries',
+  'll_fund_lenders',
+  'll_login_history',
   'll_field_dictionary',
   'll_issues',
   'll_quality_checks',
@@ -166,6 +174,11 @@ const RESET_ORDER = Object.freeze([
   'll_cell_edits',
   'll_edit_sessions',
   'll_user_permissions',
+  'll_asset_managers',
+  'll_staff_profiles',
+  'll_fund_beneficiaries',
+  'll_fund_lenders',
+  'll_login_history',
   'll_delete_markers',
   'll_normalization_links',
   'll_quality_checks',
@@ -174,7 +187,6 @@ const RESET_ORDER = Object.freeze([
   'll_area_breakdowns',
   'll_lease_spaces',
   'll_leases',
-  'll_asset_managers',
   'll_field_dictionary',
   'll_tenants',
   'll_assets',
@@ -183,10 +195,11 @@ const RESET_ORDER = Object.freeze([
 ]);
 
 function parseArgs(argv) {
-  const args = { input: DEFAULT_INPUT, table: '', reset: false, chunkSize: 0, chunkIndex: null, listChunks: false, base64: false, compact: false, values: false };
+  const args = { input: DEFAULT_INPUT, table: '', reset: false, chunkSize: 0, chunkIndex: null, listChunks: false, base64: false, compact: false, values: false, help: false };
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
-    if (arg === '--input') args.input = argv[++index] || args.input;
+    if (arg === '--help' || arg === '-h') args.help = true;
+    else if (arg === '--input') args.input = argv[++index] || args.input;
     else if (arg.startsWith('--input=')) args.input = arg.slice('--input='.length);
     else if (arg === '--table') args.table = argv[++index] || '';
     else if (arg.startsWith('--table=')) args.table = arg.slice('--table='.length);
@@ -208,6 +221,18 @@ function parseArgs(argv) {
     throw new Error('--chunk-index must be a zero-based integer.');
   }
   return args;
+}
+
+function usage() {
+  return [
+    'Usage:',
+    '  node scripts/data/build-ll-table-sql.cjs --table <table> [--input <json>] [--compact] [--values]',
+    '  node scripts/data/build-ll-table-sql.cjs --table <table> --list-chunks --chunk-size <rows> [--input <json>]',
+    '  node scripts/data/build-ll-table-sql.cjs --table <table> --chunk-size <rows> --chunk-index <zero-based> [--input <json>]',
+    '  node scripts/data/build-ll-table-sql.cjs --reset',
+    '',
+    'The generated SQL is upsert-oriented unless --reset is explicitly passed.',
+  ].join('\n') + '\n';
 }
 
 function quoteIdent(value) {
@@ -413,6 +438,10 @@ function applyDuplicateLeaseSpaceIds(tables) {
 
 function main() {
   const args = parseArgs(process.argv.slice(2));
+  if (args.help) {
+    process.stdout.write(usage());
+    return;
+  }
   if (args.reset) {
     process.stdout.write(resetSql());
     return;

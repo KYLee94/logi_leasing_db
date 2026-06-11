@@ -15,7 +15,10 @@ const ROOT_PAGE_FILES = Object.freeze([
   ['sector', 'default', 'sector.json'],
   ['tools', 'default', 'tools.json'],
   ['playground', 'default', 'playground.json'],
+  ['admin', 'shell', 'admin.json'],
+  ['admin-data', 'shell', 'admin.json'],
 ]);
+const PRIVATE_PAGES = new Set(['admin', 'admin-data']);
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -47,7 +50,7 @@ function makeSnapshot(page, entityId, payload) {
     page,
     entity_id: entityId,
     payload: cleanPublicPayload(payload),
-    user_safe: true,
+    user_safe: !PRIVATE_PAGES.has(page),
     generated_at: GENERATED_AT,
     schema_version: 'docs_static_v1',
     source: 'supabase_snapshot',

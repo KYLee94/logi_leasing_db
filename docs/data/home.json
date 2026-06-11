@@ -136,6 +136,19 @@
       "issueCount": 0
     },
     {
+      "address": "경기도 성남시 분당구 탄천로 257",
+      "assetId": "asset_a190002001",
+      "latitude": null,
+      "assetCode": "A190002001",
+      "assetName": "분당야탑물류센터",
+      "longitude": null,
+      "dataStatus": "임대차계약 없음",
+      "issueCount": 0,
+      "coordinateNote": "기존 좌표 37.40971,127.12046은 OpenStreetMap 역지오코딩 기준 탄천종합운동장으로 확인되어 핀 표시에서 제외합니다.",
+      "coordinateStatus": "좌표 재확인 필요",
+      "buildingRegisterStatus": "pending_edge_function_lookup"
+    },
+    {
       "address": "인천광역시 서구 갑문1로 20, 인천광역시 서구 갑문3로 34",
       "assetId": "asset_a112299001",
       "latitude": 37.5637998,
@@ -222,6 +235,19 @@
       "assetName": "평택아디다스물류센터",
       "longitude": 127.105842,
       "issueCount": 2
+    },
+    {
+      "address": "경기도 포천시 가산면 정교리 272-1",
+      "assetId": "asset_a190013001",
+      "latitude": 37.83925,
+      "assetCode": "A190013001",
+      "assetName": "포천정교리물류센터",
+      "longitude": 127.18528,
+      "dataStatus": "임대차계약 없음",
+      "issueCount": 0,
+      "coordinateNote": "개발 진행 중 자산으로 건축물대장/지번 기반 추가 검증이 필요합니다.",
+      "coordinateStatus": "주소 기반 좌표",
+      "buildingRegisterStatus": "development_asset_not_found_expected"
     },
     {
       "address": "경기도 화성시 장안면 북부마을길 42",
@@ -3777,7 +3803,7 @@
       }
     ]
   },
-  "generatedAt": "2026-04-30T10:29:23",
+  "generatedAt": "2026-06-11T01:20:32Z",
   "basisDisplay": {
     "asOf": "2026-06",
     "page": "home",
@@ -3788,6 +3814,7 @@
     "generatedAt": "2026-04-30T10:29:23",
     "refreshedAt": "2026-04-30T10:29:23"
   },
+  "sourceSystem": "google_sheets",
   "topContracts": [
     {
       "tenantId": "tenant_brn_1208800767",
@@ -3913,6 +3940,8 @@
       "tenantMasterName": "(주)에이스코리아로지스"
     }
   ],
+  "payloadSource": "supabase_snapshot",
+  "schemaVersion": "docs_static_v1",
   "tenantSummary": [
     {
       "company": {
@@ -4633,6 +4662,7 @@
       "businessRegistrationNo": "312-86-20956"
     }
   ],
+  "dataSourceMode": "supabase_snapshot",
   "rentTrendBasis": {
     "assetRows": [
       {
@@ -4828,18 +4858,26 @@
   },
   "vacancySummary": [
     {
-      "assetId": "asset_a112505001",
-      "assetName": "아레나스안성",
-      "vacancyRate": 0.7478773512350668,
-      "vacancyAreaSqm": 93109.93,
-      "grossFloorAreaSqm": 124498.93
+      "assetId": "asset_a120085001",
+      "assetName": "경산 쿠팡물류센터",
+      "vacancyRate": 0.22740490773422375,
+      "vacancyAreaSqm": 22438.87000000001,
+      "grossFloorAreaSqm": 98673.64
     },
     {
-      "assetId": "asset_s00002001",
-      "assetName": "양산 유산동 물류센터",
-      "vacancyRate": 0.3656956897910055,
-      "vacancyAreaSqm": 19286.67,
-      "grossFloorAreaSqm": 52739.67
+      "assetId": "asset_a112109001",
+      "assetName": "부산송정물류센터",
+      "vacancyRate": 0.027004153491596173,
+      "vacancyAreaSqm": 658.5750000000007,
+      "grossFloorAreaSqm": 24387.915
+    },
+    {
+      "assetId": "asset_a190002001",
+      "assetName": "분당야탑물류센터",
+      "dataStatus": "임대차계약 없음",
+      "vacancyRate": null,
+      "vacancyAreaSqm": null,
+      "grossFloorAreaSqm": null
     },
     {
       "assetId": "asset_a112299001",
@@ -4849,18 +4887,11 @@
       "grossFloorAreaSqm": 85651.19
     },
     {
-      "assetId": "asset_ap00014001",
-      "assetName": "안성 성은지구 물류센터",
-      "vacancyRate": 0.3013357213767869,
-      "vacancyAreaSqm": 34988.62999999999,
-      "grossFloorAreaSqm": 116111.79
-    },
-    {
-      "assetId": "asset_a120085001",
-      "assetName": "경산 쿠팡물류센터",
-      "vacancyRate": 0.22740490773422375,
-      "vacancyAreaSqm": 22438.87000000001,
-      "grossFloorAreaSqm": 98673.64
+      "assetId": "asset_a112505001",
+      "assetName": "아레나스안성",
+      "vacancyRate": 0.7478773512350668,
+      "vacancyAreaSqm": 93109.93,
+      "grossFloorAreaSqm": 124498.93
     },
     {
       "assetId": "asset_a112127001",
@@ -4868,6 +4899,27 @@
       "vacancyRate": 0.22161516861964634,
       "vacancyAreaSqm": 77503.69999999995,
       "grossFloorAreaSqm": 349722
+    },
+    {
+      "assetId": "asset_ap00014001",
+      "assetName": "안성 성은지구 물류센터",
+      "vacancyRate": 0.3013357213767869,
+      "vacancyAreaSqm": 34988.62999999999,
+      "grossFloorAreaSqm": 116111.79
+    },
+    {
+      "assetId": "asset_a112500003",
+      "assetName": "안성 홈플러스 중부허브 물류센터",
+      "vacancyRate": 0.016556145554103226,
+      "vacancyAreaSqm": 552.5900000000038,
+      "grossFloorAreaSqm": 33376.73
+    },
+    {
+      "assetId": "asset_s00002001",
+      "assetName": "양산 유산동 물류센터",
+      "vacancyRate": 0.3656956897910055,
+      "vacancyAreaSqm": 19286.67,
+      "grossFloorAreaSqm": 52739.67
     },
     {
       "assetId": "asset_a112606001",
@@ -4884,18 +4936,12 @@
       "grossFloorAreaSqm": 33702.03
     },
     {
-      "assetId": "asset_a112109001",
-      "assetName": "부산송정물류센터",
-      "vacancyRate": 0.027004153491596173,
-      "vacancyAreaSqm": 658.5750000000007,
-      "grossFloorAreaSqm": 24387.915
-    },
-    {
-      "assetId": "asset_a112500003",
-      "assetName": "안성 홈플러스 중부허브 물류센터",
-      "vacancyRate": 0.016556145554103226,
-      "vacancyAreaSqm": 552.5900000000038,
-      "grossFloorAreaSqm": 33376.73
+      "assetId": "asset_a190013001",
+      "assetName": "포천정교리물류센터",
+      "dataStatus": "임대차계약 없음",
+      "vacancyRate": null,
+      "vacancyAreaSqm": null,
+      "grossFloorAreaSqm": null
     }
   ],
   "contractSummary": {
@@ -7378,9 +7424,5 @@
     "latestGrossFloorAreaSqm": 1630957.9109999998,
     "latestGrossFloorAreaAppliedAssetCount": 17,
     "latestGrossFloorAreaPendingAssetCount": 0
-  },
-  "schemaVersion": "docs_static_v1",
-  "payloadSource": "supabase_snapshot",
-  "dataSourceMode": "supabase_snapshot",
-  "sourceSystem": "google_sheets"
+  }
 }

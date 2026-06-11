@@ -7,7 +7,8 @@
   const FALLBACK_DATA_SOURCE_MODE = "static";
   const SUPABASE_URL = "https://qvegpozwrcmspdvjokiz.supabase.co";
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Eb3TAC7BPbFrv8Odwwjc1g_Vv81Nf4P";
-  const CACHE_PREFIX = "ll.static.cache:";
+  const ADMIN_API_URL = `${SUPABASE_URL}/functions/v1/logistics-admin-api`;
+  const CACHE_PREFIX = "ll.static.cache:v20260610:";
   const DETAIL_PREFIX = "detail_";
 
   const TAB_ORDER = ["weekly", "home", "asset", "company", "sector", "tools", "playground", "quality", "admin", "admin-data"];
@@ -28,6 +29,8 @@
   const LABELS = {
     activeAssetCount: "운영 자산 수",
     address: "주소",
+    coordinateStatus: "좌표 상태",
+    coordinateNote: "좌표 메모",
     assetCount: "자산 수",
     assetId: "자산 ID",
     assetName: "자산명",
@@ -69,6 +72,23 @@
     monthlyMfTotal: "월 관리비",
     monthlyRentTotal: "월 임대료",
     monthlyRentTotalAdjusted: "월 임대료(RF/FO 반영)",
+    averageRentPerPy: "평당 임대료 평균",
+    averageMfPerPy: "평당 관리비 평균",
+    areaRatio: "임대면적 기준 비율",
+    monthlyCostRatio: "월 임관리비 기준 비율",
+    assignedRead: "담당 읽기",
+    assignedCreate: "담당 추가",
+    assignedUpdate: "담당 수정",
+    assignedDelete: "담당 삭제",
+    otherRead: "기타 읽기",
+    otherCreate: "기타 추가",
+    otherUpdate: "기타 수정",
+    otherDelete: "기타 삭제",
+    staffName: "이름",
+    organization: "소속",
+    assetNames: "접근 가능 자산",
+    assetCount: "자산 수",
+    photoUrl: "사진",
     monthsToExpiry: "잔여 개월",
     no: "No.",
     occupancyRate: "임대율",
@@ -158,8 +178,13 @@
       tenantId: "",
       weeklyAssetView: "core",
     },
+    mapFocus: {},
+    mapLayers: {},
+    mapTools: {},
     detailStore: {},
     renderCounts: {},
+    renderSeq: 0,
+    loginHistoryOverrides: [],
     dataSourceMode: FALLBACK_DATA_SOURCE_MODE,
     payloadSource: FALLBACK_PAYLOAD_SOURCE,
   };
@@ -179,6 +204,7 @@
   window.dashboardApp = {
     getState: () => state,
     switchTab: (tab) => switchTab(tab),
+    refreshTab: () => renderCurrentTab(true),
     setThemePreference: (theme) => setTheme(theme),
     closeSurface: () => closeDrawer(),
     openSupport: () => openDrawer("지원/문의", `
@@ -238,6 +264,7 @@
     });
     document.getElementById("admin-login-button")?.addEventListener("click", () => showAdminGate({ keepShell: true }));
     document.getElementById("admin-logout-button")?.addEventListener("click", async () => {
+      recordAdminEvent("logout", "ok").catch(() => {});
       sessionStorage.removeItem("ll.static.admin.preview");
       state.role = "user";
       removeAdminDom();
@@ -287,6 +314,7 @@
     showShell();
     syncAuthUi();
     await prepareOptions();
+    recordAdminEvent("login", "ok").catch(() => {});
     await switchTab("weekly");
   }
 
@@ -423,14 +451,18 @@
     const tab = state.activeTab;
     const panel = getPanel(tab);
     if (!panel) return;
+    const renderSeq = ++state.renderSeq;
     const cacheKey = buildCacheKey(tab);
-    if (!force && state.pageCache[cacheKey]) {
+    if (!force && state.pageCache[cacheKey] && payloadMatchesSelection(tab, state.pageCache[cacheKey])) {
+      state.activePayload = state.pageCache[cacheKey];
+      state.lastSuccessfulPayloads[tab] = state.pageCache[cacheKey];
       renderPayload(tab, state.pageCache[cacheKey]);
       return;
     }
     panel.dataset.renderStatus = "rendering";
     try {
       const payload = await loadTabPayload(tab);
+      if (renderSeq !== state.renderSeq || state.activeTab !== tab) return;
       state.pageCache[cacheKey] = payload;
       state.pageCache[tab] = payload;
       state.lastSuccessfulPayloads[tab] = payload;
@@ -438,9 +470,25 @@
       state.renderCounts[tab] = (state.renderCounts[tab] || 0) + 1;
       renderPayload(tab, payload);
     } catch (error) {
+      if (renderSeq !== state.renderSeq || state.activeTab !== tab) return;
       panel.innerHTML = renderSourceLine() + renderEmpty(`화면 데이터를 읽지 못했습니다: ${escapeHtml(error.message || String(error))}`);
       panel.dataset.renderStatus = "error";
     }
+  }
+
+  function payloadMatchesSelection(tab, payload) {
+    if (!payload || typeof payload !== "object") return false;
+    if (tab === "asset") {
+      const expected = state.selections.assetId || "";
+      const actual = getByPath(payload, ["overview", "assetId"]) || getByPath(payload, ["meta", "selection", "assetId"]) || "";
+      return !expected || !actual || String(expected) === String(actual);
+    }
+    if (tab === "company") {
+      const expected = state.selections.tenantId || "";
+      const actual = getByPath(payload, ["profile", "tenantId"]) || getByPath(payload, ["meta", "selection", "tenantId"]) || "";
+      return !expected || !actual || String(expected) === String(actual);
+    }
+    return true;
   }
 
   function renderPayload(tab, payload) {
@@ -477,9 +525,227 @@
       return loadSnapshotWithFallback(tab, tenantId, `data/company/${encodeURIComponent(tenantId)}.json`);
     }
     if (tab === "quality") return buildQualityPayload();
-    if (tab === "admin") return buildAdminPayload();
-    if (tab === "admin-data") return buildAdminDataPayload();
+    if (tab === "admin") return loadAdminPayload();
+    if (tab === "admin-data") return loadAdminDataPayload();
     return loadSnapshotWithFallback(tab, "default", TAB_META[tab].file);
+  }
+
+  async function loadAdminPayload() {
+    const base = buildAdminPayload();
+    try {
+      const payload = await loadSnapshotWithFallback("admin", "shell", "data/admin.json");
+      return await attachLoginHistory(mergePayload(base, payload));
+    } catch (_error) {
+      return await attachLoginHistory(base);
+    }
+  }
+
+  async function loadAdminDataPayload() {
+    const base = buildAdminDataPayload();
+    try {
+      const payload = await loadSnapshotWithFallback("admin-data", "shell", "data/admin.json");
+      return await attachLoginHistory(mergePayload(base, payload));
+    } catch (_error) {
+      return await attachLoginHistory(base);
+    }
+  }
+
+  function mergePayload(base, payload) {
+    return Object.assign({}, base || {}, payload || {}, {
+      kpis: Array.isArray(payload?.kpis) && payload.kpis.length ? payload.kpis : base?.kpis,
+      files: base?.files || payload?.files || [],
+      cache: base?.cache || payload?.cache || [],
+    });
+  }
+
+  async function attachLoginHistory(payload) {
+    const baseRows = Array.isArray(payload?.loginHistory) ? payload.loginHistory : [];
+    let liveRows = [];
+    let status = "static_snapshot";
+    const session = getSupabaseAuthSession();
+    if (session.accessToken) {
+      try {
+        const response = await callAdminApi("/login-history/list", { limit: 80 }, session);
+        liveRows = normalizeLoginHistoryRows(response?.result?.rows || response?.rows || []);
+        status = "supabase_edge";
+      } catch (error) {
+        status = `edge_read_failed:${errorText(error)}`;
+      }
+    } else if (state.loginHistoryOverrides.length) {
+      status = "local_preview";
+    }
+    const mergedRows = mergeLoginHistoryRows(liveRows, state.loginHistoryOverrides, normalizeLoginHistoryRows(baseRows)).slice(0, 80);
+    return Object.assign({}, payload || {}, {
+      loginHistory: mergedRows,
+      loginHistoryStatus: status,
+    });
+  }
+
+  async function recordAdminEvent(eventType, status) {
+    const session = getSupabaseAuthSession();
+    const pending = makeLocalLoginHistoryRow(eventType, status, session, session.accessToken ? "edge_pending" : "local_preview");
+    state.loginHistoryOverrides = mergeLoginHistoryRows([pending], state.loginHistoryOverrides).slice(0, 80);
+    if (!session.accessToken) return;
+    try {
+      const response = await callAdminApi("/login-history/record", {
+        eventType,
+        status,
+        email: session.email || "",
+        staffName: session.staffName || session.email || "",
+      }, session);
+      const saved = normalizeLoginHistoryRow(response?.result?.row || response?.row || pending);
+      state.loginHistoryOverrides = mergeLoginHistoryRows([saved], state.loginHistoryOverrides.filter((row) => row.loginEventId !== pending.loginEventId)).slice(0, 80);
+    } catch (error) {
+      pending.status = "local_only";
+      pending.source = `local_preview:${errorText(error)}`;
+      state.loginHistoryOverrides = mergeLoginHistoryRows([pending], state.loginHistoryOverrides).slice(0, 80);
+    }
+  }
+
+  async function callAdminApi(path, body, session) {
+    const auth = session || getSupabaseAuthSession();
+    if (!auth.accessToken) throw new Error("supabase_auth_session_missing");
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 5000);
+    const response = await fetch(`${ADMIN_API_URL}${path}`, {
+      method: "POST",
+      cache: "no-store",
+      signal: controller.signal,
+      headers: {
+        apikey: SUPABASE_PUBLISHABLE_KEY,
+        Authorization: `Bearer ${auth.accessToken}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body || {}),
+    }).finally(() => clearTimeout(timer));
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || payload?.ok === false) {
+      throw new Error(payload?.error || `admin_api_http_${response.status}`);
+    }
+    return payload;
+  }
+
+  function getSupabaseAuthSession() {
+    const candidates = [];
+    const projectRef = (() => {
+      try {
+        return new URL(SUPABASE_URL).hostname.split(".")[0];
+      } catch (_error) {
+        return "";
+      }
+    })();
+    const explicitKeys = [
+      "ll.supabase.access_token",
+      "ll.supabase.session",
+      projectRef ? `sb-${projectRef}-auth-token` : "",
+    ].filter(Boolean);
+    [sessionStorage, localStorage].forEach((store) => {
+      try {
+        explicitKeys.forEach((key) => {
+          const raw = store.getItem(key);
+          if (raw) candidates.push({ raw, key });
+        });
+        for (let index = 0; index < store.length; index += 1) {
+          const key = store.key(index) || "";
+          if (/^sb-.*-auth-token$/.test(key) && !explicitKeys.includes(key)) {
+            const raw = store.getItem(key);
+            if (raw) candidates.push({ raw, key });
+          }
+        }
+      } catch (_error) {
+        // Ignore blocked storage in private or embedded browsing contexts.
+      }
+    });
+    for (const candidate of candidates) {
+      const parsed = parseStoredAuth(candidate.raw);
+      if (parsed.accessToken) return Object.assign({ storageKey: candidate.key }, parsed);
+    }
+    return { accessToken: "", email: "", staffName: "" };
+  }
+
+  function parseStoredAuth(raw) {
+    const value = String(raw || "").trim();
+    if (!value) return {};
+    if (/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/.test(value)) {
+      const claims = decodeJwtPayload(value);
+      return { accessToken: value, email: claims.email || "", staffName: claims.name || claims.email || "" };
+    }
+    try {
+      const parsed = JSON.parse(value);
+      const session = parsed.currentSession || parsed.session || parsed;
+      const accessToken = session.access_token || session.accessToken || "";
+      const user = session.user || parsed.user || {};
+      const claims = accessToken ? decodeJwtPayload(accessToken) : {};
+      return {
+        accessToken,
+        email: user.email || claims.email || "",
+        staffName: user.user_metadata?.name || user.user_metadata?.staffName || claims.name || user.email || claims.email || "",
+      };
+    } catch (_error) {
+      return {};
+    }
+  }
+
+  function decodeJwtPayload(token) {
+    try {
+      const payload = String(token || "").split(".")[1] || "";
+      const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
+      const decoded = decodeURIComponent(Array.from(atob(normalized.padEnd(Math.ceil(normalized.length / 4) * 4, "="))).map((char) => `%${char.charCodeAt(0).toString(16).padStart(2, "0")}`).join(""));
+      return JSON.parse(decoded);
+    } catch (_error) {
+      return {};
+    }
+  }
+
+  function makeLocalLoginHistoryRow(eventType, status, session, source) {
+    const now = new Date().toISOString();
+    return {
+      loginEventId: `local_${now}_${Math.random().toString(36).slice(2)}`,
+      eventAt: now,
+      staffName: session.staffName || session.email || "local_admin_preview",
+      email: session.email || "",
+      eventType,
+      status,
+      source,
+    };
+  }
+
+  function normalizeLoginHistoryRows(rows) {
+    return (Array.isArray(rows) ? rows : []).map(normalizeLoginHistoryRow).filter(Boolean);
+  }
+
+  function normalizeLoginHistoryRow(row) {
+    if (!row || typeof row !== "object") return null;
+    const sourcePayload = row.source_payload || row.sourcePayload || {};
+    return {
+      loginEventId: row.loginEventId || row.login_event_id || `${row.event_at || row.eventAt || ""}:${row.email || ""}:${row.event_type || row.eventType || ""}`,
+      eventAt: row.eventAt || row.event_at || "",
+      staffName: row.staffName || row.staff_name || "",
+      email: row.email || "",
+      eventType: row.eventType || row.event_type || "",
+      status: row.status || "",
+      source: row.source || sourcePayload.source || "supabase_edge",
+    };
+  }
+
+  function mergeLoginHistoryRows(...groups) {
+    const seen = new Set();
+    return groups.flat()
+      .filter(Boolean)
+      .map(normalizeLoginHistoryRow)
+      .filter(Boolean)
+      .filter((row) => {
+        const key = row.loginEventId || `${row.eventAt}:${row.email}:${row.eventType}:${row.source}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .sort((left, right) => String(right.eventAt || "").localeCompare(String(left.eventAt || "")));
+  }
+
+  function errorText(error) {
+    return error && error.message ? error.message : String(error || "unknown_error");
   }
 
   async function loadSnapshotWithFallback(tab, entityId, fallbackPath) {
@@ -728,7 +994,7 @@
         `)}
         ${section("자산 위치", "Home", `
           ${renderMapPanel(mapPoints, "home_map")}
-          ${renderInteractiveTable("home_map_points", mapPoints, ["assetName", "address", "latitude", "longitude", "issueCount"], 20)}
+          ${renderMapPointTable("home_map_points", "home_map", mapPoints, ["assetName", "address", "coordinateStatus", "latitude", "longitude", "issueCount"], 20)}
         `)}
         ${renderHomeParitySections(home)}
       </div>
@@ -741,7 +1007,7 @@
     return `
       <div class="page-stack">
         ${section(title, "Asset", `
-          ${kpiGrid(normalizeKpis(asset.kpis), "asset_kpi")}
+          ${kpiGrid(buildAssetKpis(asset), "asset_kpi")}
           ${actionStrip([
             actionButton("층별/구역 상세", { "data-asset-stacking-detail": "1", "data-action": "asset-panel", "data-asset": overview.assetId || title }, { stackingPlan: asset.stackingPlan || [], rows: asset.rows || [] }, "Asset 층별/구역 상세"),
             actionButton("E.NOC 상세", { "data-asset-enoc-detail": "1" }, { topTenants: asset.topTenants || [], rows: asset.rows || [] }, "Asset E.NOC 상세"),
@@ -759,6 +1025,66 @@
         ${renderAssetParitySections(asset)}
       </div>
     `;
+  }
+
+  function buildAssetKpis(asset) {
+    const rows = Array.isArray(asset?.rows) ? asset.rows : [];
+    const filtered = (Array.isArray(asset?.kpis) ? asset.kpis : []).filter((item) => {
+      const key = Array.isArray(item) ? "" : String(item?.key || "");
+      const label = Array.isArray(item) ? String(item[0] || "") : String(item?.label || "");
+      return key !== "monthly_total_cost"
+        && label !== "월 임관리비 총액"
+        && !["average_rent_per_py", "averageRentPerPy", "average_mf_per_py", "averageMfPerPy"].includes(key)
+        && !["평당 임대료 평균", "평당 관리비 평균"].includes(label);
+    });
+    const weighted = calculatePerPyAverages(rows);
+    filtered.push({
+      key: "averageRentPerPy",
+      label: "평당 임대료 평균",
+      value: weighted.hasArea ? weighted.averageRentPerPy : "자료 없음",
+      status: weighted.hasArea ? "임대면적 가중평균" : "임대차계약 없음",
+    });
+    filtered.push({
+      key: "averageMfPerPy",
+      label: "평당 관리비 평균",
+      value: weighted.hasArea ? weighted.averageMfPerPy : "자료 없음",
+      status: weighted.hasArea ? "임대면적 가중평균" : "임대차계약 없음",
+    });
+    return normalizeKpis(filtered);
+  }
+
+  function calculatePerPyAverages(rows) {
+    const totals = (Array.isArray(rows) ? rows : []).reduce((acc, row) => {
+      const areaPy = leasedAreaPy(row);
+      if (!areaPy) return acc;
+      const rent = moneyValue(row, ["currentMonthlyRentTotal", "monthlyRentTotal"]);
+      const mf = moneyValue(row, ["currentMonthlyMfTotal", "monthlyMfTotal"]);
+      acc.areaPy += areaPy;
+      acc.rent += rent;
+      acc.mf += mf;
+      return acc;
+    }, { areaPy: 0, rent: 0, mf: 0 });
+    return {
+      hasArea: totals.areaPy > 0,
+      averageRentPerPy: totals.areaPy > 0 ? totals.rent / totals.areaPy : null,
+      averageMfPerPy: totals.areaPy > 0 ? totals.mf / totals.areaPy : null,
+    };
+  }
+
+  function leasedAreaPy(row) {
+    const explicit = Number(row?.leasedAreaPy);
+    if (Number.isFinite(explicit) && explicit > 0) return explicit;
+    const sqm = Number(row?.leasedAreaSqm);
+    if (Number.isFinite(sqm) && sqm > 0) return sqm / 3.305785;
+    return 0;
+  }
+
+  function moneyValue(row, keys) {
+    for (const key of keys) {
+      const value = Number(row?.[key]);
+      if (Number.isFinite(value)) return value;
+    }
+    return 0;
   }
 
   function renderCompany(company) {
@@ -785,7 +1111,7 @@
         `)}
         ${section("임차 자산", "Company", `
           ${renderMapPanel(company.mapPoints || [], "company_map")}
-          ${renderSearchableInteractiveTable("company_assets", company.leasedAssets || [], ["assetName", "leasedAreaSqm", "monthlyCostTotal", "latestExpiry", "sector", "goodsType"], 40, { placeholder: "자산명 검색" })}
+          ${renderCompanyAssetStatus(company, "company_assets")}
         `)}
         ${section("계약 행", "Company", renderInteractiveTable("company_rows", company.rows || [], ["assetName", "floorLabel", "detailAreaLabel", "leasedAreaSqm", "monthlyRentTotal", "monthlyMfTotal", "currentMonthlyCostTotal", "currentStartDate", "currentEndDate"], 80))}
         ${section("DART/재무 정보", "Company", renderRecordOrTable("company_financials", company.financials || {}))}
@@ -919,6 +1245,13 @@
           </div>
         `)}
         ${section("Runtime", "Admin", keyValueGrid(payload.runtime))}
+        ${section("기능 권한 관리", "Admin", renderStaffPermissionsTable(payload.userPermissions || []))}
+        ${section("로그인 이력", "Admin", renderInteractiveTable("admin-login-history", payload.loginHistory || [], ["eventAt", "staffName", "email", "eventType", "status", "source"], 80))}
+        ${section("신규 자산 펀드/대주 정보", "Admin", `
+          ${renderInteractiveTable("admin-new-assets", payload.newAssets || [], ["assetCode", "assetName", "fundCode", "fundName", "buildingRegisterStatus", "buildingRegisterNote"], 20)}
+          ${renderInteractiveTable("admin-fund-beneficiaries", payload.fundBeneficiaries || [], ["assetName", "fundName", "beneficiaryName", "investmentAmountKrw"], 40)}
+          ${renderInteractiveTable("admin-fund-lenders", payload.fundLenders || [], ["assetName", "loanType", "tranche", "lenderName", "drawnAmountKrw", "drawnAt", "maturityAt", "loanRatePct"], 40)}
+        `)}
         ${section("사용 가능한 데이터", "Admin", renderInteractiveTable("admin_files", payload.files, ["name", "rows", "status"], 80))}
         ${renderAdminParitySections(payload)}
       </div>
@@ -935,6 +1268,40 @@
           </div>
         `)}
         ${section("Cache", "Admin", renderInteractiveTable("admin_data_cache", payload.cache, ["key", "status"], 80))}
+      </div>
+    `;
+  }
+
+  function renderStaffPermissionsTable(rows) {
+    const list = (Array.isArray(rows) ? rows : [])
+      .slice()
+      .sort((left, right) => String(left.staffName || "").localeCompare(String(right.staffName || ""), "ko-KR"));
+    if (!list.length) return renderEmpty("표시할 권한 데이터가 없습니다.");
+    const columns = ["staffName", "email", "organization", "assetCount", "assetNames", "assignedRead", "assignedCreate", "assignedUpdate", "assignedDelete", "otherRead", "otherCreate", "otherUpdate", "otherDelete"];
+    return `
+      <div class="table-wrap compact-table staff-permission-table" data-table-scope="admin-permissions">
+        <table>
+          <thead>
+            <tr>
+              <th>사진</th>
+              ${columns.map((header) => `<th><button class="table-sort-button" type="button" data-sort-table="admin-permissions" data-sort-key="${escapeAttr(header)}">${escapeHtml(labelize(header))}</button></th>`).join("")}
+              <th class="action-col">상세</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${list.map((row) => {
+              const detailKey = registerDetail("admin-permissions", row, row.staffName || row.email || "권한 상세");
+              const photo = row.photoUrl || "default_avatar.svg";
+              return `
+                <tr tabindex="0" data-detail-key="${escapeAttr(detailKey)}">
+                  <td><img class="staff-avatar" src="${escapeAttr(photo)}" alt="${escapeAttr(row.staffName || "직원")}" onerror="this.onerror=null;this.src='default_avatar.svg';"></td>
+                  ${columns.map((key) => `<td>${formatCellHtml(Array.isArray(row?.[key]) ? row[key].join(", ") : row?.[key])}</td>`).join("")}
+                  <td class="action-col"><button class="row-action" type="button" data-detail-key="${escapeAttr(detailKey)}">보기</button></td>
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+        </table>
       </div>
     `;
   }
@@ -962,7 +1329,10 @@
           actionButton("좌표 보유 자산 목록", { "data-action": "home-map-list" }, { mapPoints }, "좌표 보유 자산 목록"),
           actionButton("지도 상세", { "data-action": "home-map-detail" }, { mapPoints }, "포트폴리오 지도 상세"),
         ])}
-        ${renderMapPanel(mapPoints, "home-map-detail")}
+        <div class="portfolio-map-layout">
+          ${renderMapPanel(mapPoints, "home-map-detail")}
+          ${renderMapPointTable("home-portfolio-map-points", "home-map-detail", mapPoints, ["assetName", "address", "coordinateStatus", "latitude", "longitude", "issueCount"], 20)}
+        </div>
       `)}
       ${section("관리자 검토 포인트", "Home", renderInteractiveTable("home-review-table", reviewRows, ["자산명", "공실면적", "공실률", "검토사항"], 20))}
       ${section("포트폴리오 스냅샷", "Home", `
@@ -1051,7 +1421,7 @@
     const exposureValueKey = exposureMode === "area" ? "leasedAreaSqm" : exposureMode === "expiry" ? "monthsToExpiry" : "monthlyCostTotal";
     const exposureTitle = exposureMode === "area" ? "자산별 임차면적" : exposureMode === "expiry" ? "자산별 잔여 개월" : "자산별 월 임관리비";
     return `
-      ${section("임차 자산 현황", "Company", renderInteractiveTable("company-assets-table", leasedAssets, ["assetName", "leasedAreaSqm", "monthlyCostTotal", "latestExpiry", "sector", "goodsType"], 60))}
+      ${section("임차 자산 현황", "Company", renderCompanyAssetStatus(company, "company-assets-table"))}
       ${section("회사별 임차 자산 지도", "Company", `
         ${actionStrip([
           actionButton("임차 자산 수", { "data-action": "company-map-detail" }, { mapPoints }, "임차 자산 수"),
@@ -1063,7 +1433,7 @@
           actionButton("자산별 노출도", { "data-action": "company-exposure-detail" }, { rows: exposureRows }, "자산별 노출도"),
         ])}
         ${renderBarChart("company-exposure-chart", exposureRows, "assetName", exposureValueKey, { title: exposureTitle })}
-        ${renderInteractiveTable("company-exposure-table", exposureRows, ["assetName", "leasedAreaSqm", "monthlyCostTotal", "latestExpiry"], 40)}
+        ${renderInteractiveTable("company-exposure-table", buildCompanyExposureRows(company), ["assetName", "leasedAreaPy", "averageRentPerPy", "averageMfPerPy", "monthlyRentTotal", "monthlyMfTotal", "monthlyCostTotal", "areaRatio", "monthlyCostRatio"], 60)}
       `)}
       ${section("DART 상세 정보", "Company", `
         ${actionStrip([
@@ -1072,6 +1442,105 @@
         ${renderRecordOrTable("company-dart-table", company.financials || {})}
       `)}
     `;
+  }
+
+  function renderCompanyAssetStatus(company, scope) {
+    const rows = buildCompanyAssetRows(company);
+    const columns = ["assetName", "floorLabel", "detailAreaLabel", "leasedAreaPy", "averageRentPerPy", "averageMfPerPy", "monthlyRentTotal", "monthlyMfTotal", "monthlyCostTotal", "areaRatio", "monthlyCostRatio", "latestExpiry"];
+    return `
+      <details class="collapsible-panel" open>
+        <summary>임차 자산 현황</summary>
+        ${renderSearchableInteractiveTable(scope, rows, columns, 120, { placeholder: "자산명, 층, 구역 검색" })}
+      </details>
+    `;
+  }
+
+  function buildCompanyAssetRows(company) {
+    const detailRows = Array.isArray(company?.rows) ? company.rows : [];
+    const leasedAssets = Array.isArray(company?.leasedAssets) ? company.leasedAssets : [];
+    const sourceRows = detailRows.length ? detailRows : leasedAssets;
+    const mapped = sourceRows.map((row) => {
+      const areaPy = leasedAreaPy(row);
+      const rent = moneyValue(row, ["currentMonthlyRentTotal", "monthlyRentTotal"]);
+      const mf = moneyValue(row, ["currentMonthlyMfTotal", "monthlyMfTotal"]);
+      const cost = moneyValue(row, ["currentMonthlyCostTotal", "monthlyCostTotal"]) || rent + mf;
+      return Object.assign({}, row, {
+        assetName: row.assetName || row.asset?.assetName || "",
+        floorLabel: row.floorLabel || (Array.isArray(row.floorLabels) ? row.floorLabels.join(", ") : ""),
+        detailAreaLabel: row.detailAreaLabel || (Array.isArray(row.detailAreaLabels) ? row.detailAreaLabels.join(", ") : ""),
+        leasedAreaPy: areaPy,
+        monthlyRentTotal: rent,
+        monthlyMfTotal: mf,
+        monthlyCostTotal: cost,
+        averageRentPerPy: areaPy > 0 ? rent / areaPy : null,
+        averageMfPerPy: areaPy > 0 ? mf / areaPy : null,
+        latestExpiry: row.latestExpiry || row.currentEndDate || "",
+      });
+    });
+    const totals = mapped.reduce((acc, row) => {
+      acc.areaPy += Number(row.leasedAreaPy) || 0;
+      acc.monthlyCostTotal += Number(row.monthlyCostTotal) || 0;
+      return acc;
+    }, { areaPy: 0, monthlyCostTotal: 0 });
+    return mapped
+      .map((row) => Object.assign({}, row, {
+        areaRatio: totals.areaPy > 0 ? formatPercent((Number(row.leasedAreaPy) || 0) / totals.areaPy) : "-",
+        monthlyCostRatio: totals.monthlyCostTotal > 0 ? formatPercent((Number(row.monthlyCostTotal) || 0) / totals.monthlyCostTotal) : "-",
+      }))
+      .sort(compareCompanyAssetStatusRows);
+  }
+
+  function buildCompanyExposureRows(company) {
+    const sourceRows = Array.isArray(company?.leasedAssets) && company.leasedAssets.length
+      ? company.leasedAssets
+      : buildCompanyAssetRows(company);
+    const rows = sourceRows.map((row) => {
+      const areaPy = leasedAreaPy(row);
+      const rent = moneyValue(row, ["monthlyRentTotal", "currentMonthlyRentTotal"]);
+      const mf = moneyValue(row, ["monthlyMfTotal", "currentMonthlyMfTotal"]);
+      const cost = moneyValue(row, ["monthlyCostTotal", "currentMonthlyCostTotal", "monthlyCombinedTotal"]);
+      return {
+        assetName: row.assetName || "",
+        leasedAreaPy: areaPy,
+        averageRentPerPy: areaPy > 0 ? rent / areaPy : null,
+        averageMfPerPy: areaPy > 0 ? mf / areaPy : null,
+        monthlyRentTotal: rent,
+        monthlyMfTotal: mf,
+        monthlyCostTotal: cost,
+      };
+    });
+    const totals = rows.reduce((acc, row) => {
+      acc.areaPy += Number(row.leasedAreaPy) || 0;
+      acc.monthlyCostTotal += Number(row.monthlyCostTotal) || 0;
+      return acc;
+    }, { areaPy: 0, monthlyCostTotal: 0 });
+    return rows.map((row) => Object.assign({}, row, {
+      areaRatio: totals.areaPy > 0 ? formatPercent((Number(row.leasedAreaPy) || 0) / totals.areaPy) : "-",
+      monthlyCostRatio: totals.monthlyCostTotal > 0 ? formatPercent((Number(row.monthlyCostTotal) || 0) / totals.monthlyCostTotal) : "-",
+    })).sort((left, right) => String(left.assetName || "").localeCompare(String(right.assetName || ""), "ko-KR"));
+  }
+
+  function compareCompanyAssetStatusRows(left, right) {
+    const byAsset = String(left.assetName || "").localeCompare(String(right.assetName || ""), "ko-KR");
+    if (byAsset) return byAsset;
+    const leftFloor = `${left.floorLabel || ""} ${left.detailAreaLabel || ""}`.trim();
+    const rightFloor = `${right.floorLabel || ""} ${right.detailAreaLabel || ""}`.trim();
+    return compareFloorLabel(rightFloor, leftFloor);
+  }
+
+  function compareFloorLabel(left, right) {
+    const leftNum = parseFloorNumber(left);
+    const rightNum = parseFloorNumber(right);
+    if (Number.isFinite(leftNum) && Number.isFinite(rightNum) && leftNum !== rightNum) return leftNum - rightNum;
+    return String(left).localeCompare(String(right), "ko-KR");
+  }
+
+  function parseFloorNumber(value) {
+    const text = String(value || "").toUpperCase();
+    const basement = text.match(/B\s*(\d+)/);
+    if (basement) return -Number(basement[1]);
+    const number = text.match(/-?\d+/);
+    return number ? Number(number[0]) : NaN;
   }
 
   function renderSectorParitySections(sector) {
@@ -1414,11 +1883,11 @@
     if (!list.length) return renderEmpty("표시할 행이 없습니다.");
     const keys = preferredKeys && preferredKeys.length ? preferredKeys : inferKeys(list);
     return `
-      <div class="table-wrap compact-table" data-table-scope="${escapeAttr(scope)}">
+      <div id="${escapeAttr(scope)}" class="table-wrap compact-table" data-table-scope="${escapeAttr(scope)}" data-testid="table-${escapeAttr(scope)}">
         <table>
           <thead>
             <tr>
-              ${keys.map((header) => `<th>${escapeHtml(labelize(header))}</th>`).join("")}
+              ${keys.map((header) => `<th><button class="table-sort-button" type="button" data-sort-table="${escapeAttr(scope)}" data-sort-key="${escapeAttr(header)}">${escapeHtml(labelize(header))}</button></th>`).join("")}
               <th class="action-col">상세</th>
             </tr>
           </thead>
@@ -1492,25 +1961,137 @@
     if (!list.length) return renderEmpty("표시할 지도 좌표가 없습니다.");
     const lats = list.map((point) => Number(point.latitude)).filter(Number.isFinite);
     const lngs = list.map((point) => Number(point.longitude)).filter(Number.isFinite);
-    const minLat = Math.min(...lats);
-    const maxLat = Math.max(...lats);
-    const minLng = Math.min(...lngs);
-    const maxLng = Math.max(...lngs);
+    const fullMinLat = Math.min(...lats);
+    const fullMaxLat = Math.max(...lats);
+    const fullMinLng = Math.min(...lngs);
+    const fullMaxLng = Math.max(...lngs);
+    const focusKey = state.mapFocus?.[scope] || "";
+    const focusPoint = focusKey ? list.find((point) => mapPointKey(point) === focusKey) : null;
+    const fullLatSpan = Math.max(fullMaxLat - fullMinLat, 0.01);
+    const fullLngSpan = Math.max(fullMaxLng - fullMinLng, 0.01);
+    const focusLatSpan = Math.max(fullLatSpan * 0.18, 0.08);
+    const focusLngSpan = Math.max(fullLngSpan * 0.18, 0.08);
+    const minLat = focusPoint ? Number(focusPoint.latitude) - focusLatSpan / 2 : fullMinLat;
+    const maxLat = focusPoint ? Number(focusPoint.latitude) + focusLatSpan / 2 : fullMaxLat;
+    const minLng = focusPoint ? Number(focusPoint.longitude) - focusLngSpan / 2 : fullMinLng;
+    const maxLng = focusPoint ? Number(focusPoint.longitude) + focusLngSpan / 2 : fullMaxLng;
     const latSpan = Math.max(maxLat - minLat, 0.01);
     const lngSpan = Math.max(maxLng - minLng, 0.01);
+    const layer = state.mapLayers?.[scope] || "road";
+    const activeTool = state.mapTools?.[scope] || "";
     return `
-      <div id="${escapeAttr(scope)}" class="map-panel" role="group" aria-label="자산 위치 지도" data-map-scope="${escapeAttr(scope)}" data-testid="map-${escapeAttr(scope)}">
+      <div id="${escapeAttr(scope)}" class="map-panel map-layer-${escapeAttr(layer)}${focusPoint ? " is-focused" : ""}" role="group" aria-label="자산 위치 지도" data-map-scope="${escapeAttr(scope)}" data-testid="map-${escapeAttr(scope)}">
         <div class="map-grid"></div>
+        ${renderMapControls(scope, layer, activeTool)}
+        ${focusPoint ? `<div class="map-focus-label">${escapeHtml(focusPoint.assetName || focusPoint.address || "선택 자산")}</div>` : ""}
+        ${activeTool ? `<div class="map-tool-status">${escapeHtml(mapToolLabel(activeTool))}</div>` : ""}
         ${list.map((point, index) => {
           const left = clamp(((Number(point.longitude) - minLng) / lngSpan) * 86 + 7, 5, 93);
           const top = clamp((1 - ((Number(point.latitude) - minLat) / latSpan)) * 78 + 10, 8, 90);
           const detailKey = registerDetail(scope, point, point.assetName || `지도 지점 ${index + 1}`);
+          const pointKey = mapPointKey(point);
+          const focused = focusPoint && pointKey === mapPointKey(focusPoint);
           return `
-            <button class="map-marker" type="button" style="left:${left}%;top:${top}%" data-detail-key="${escapeAttr(detailKey)}" aria-label="${escapeAttr(`${point.assetName || "자산"} 상세`)}">
+            <button class="map-marker${focused ? " is-focused" : ""}" type="button" style="left:${left}%;top:${top}%" data-detail-key="${escapeAttr(detailKey)}" data-map-asset-id="${escapeAttr(pointKey)}" aria-label="${escapeAttr(`${point.assetName || "자산"} 상세`)}">
               <span>${formatNumber(index + 1)}</span>
             </button>
           `;
         }).join("")}
+      </div>
+    `;
+  }
+
+  function renderMapControls(scope, layer, activeTool) {
+    const layerButtons = [
+      ["road", "일반지도"],
+      ["satellite", "위성지도"],
+      ["cadastral", "지적지도"],
+    ];
+    const toolGroups = [
+      [
+        ["theme", "□", "테마"],
+        ["save", "☆", "저장"],
+        ["cadastral", "▦", "지적편집도"],
+        ["roadview", "◇", "거리뷰"],
+      ],
+      [
+        ["radius", "⊙", "반경"],
+        ["area", "▣", "면적"],
+        ["distance", "▱", "거리"],
+      ],
+      [
+        ["download", "↓", "다운로드"],
+        ["print", "▤", "인쇄"],
+        ["share", "↗", "공유"],
+      ],
+    ];
+    return `
+      <div class="map-layer-control" aria-label="지도 종류">
+        ${layerButtons.map(([value, label]) => `
+          <button class="map-layer-btn${layer === value ? " is-active" : ""}" type="button" data-map-layer-scope="${escapeAttr(scope)}" data-map-layer="${escapeAttr(value)}" aria-pressed="${layer === value ? "true" : "false"}">
+            <span class="map-layer-thumb" aria-hidden="true"></span>
+            <span>${escapeHtml(label)}</span>
+          </button>
+        `).join("")}
+      </div>
+      <div class="map-tool-rail" aria-label="지도 도구">
+        ${toolGroups.map((group) => `
+          <div class="map-tool-group">
+            ${group.map(([value, icon, label]) => `
+              <button class="map-tool-btn${activeTool === value ? " is-active" : ""}" type="button" data-map-tool-scope="${escapeAttr(scope)}" data-map-tool="${escapeAttr(value)}" aria-pressed="${activeTool === value ? "true" : "false"}" title="${escapeAttr(label)}">
+                <span class="map-tool-icon" aria-hidden="true">${escapeHtml(icon)}</span>
+                <span>${escapeHtml(label)}</span>
+              </button>
+            `).join("")}
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
+  function mapToolLabel(tool) {
+    const labels = {
+      save: "저장 표시",
+      cadastral: "지적편집도 보기",
+      roadview: "거리뷰 위치 확인",
+      radius: "반경 측정 모드",
+      area: "면적 측정 모드",
+      distance: "거리 측정 모드",
+      download: "지도 좌표 다운로드",
+      print: "인쇄 준비",
+      share: "공유 링크 복사",
+    };
+    return labels[tool] || "";
+  }
+
+  function mapPointKey(point) {
+    return String(point?.assetId || point?.assetCode || point?.assetName || point?.address || "").trim();
+  }
+
+  function renderMapPointTable(scope, mapScope, rows, preferredKeys, limit = 20) {
+    const list = (Array.isArray(rows) ? rows : []).slice(0, limit);
+    if (!list.length) return renderEmpty("표시할 자산이 없습니다.");
+    const keys = preferredKeys && preferredKeys.length ? preferredKeys : inferKeys(list);
+    const focusedKey = state.mapFocus?.[mapScope] || "";
+    return `
+      <div class="table-wrap compact-table map-linked-table" data-table-scope="${escapeAttr(scope)}" data-map-table-scope="${escapeAttr(mapScope)}" data-testid="table-${escapeAttr(scope)}">
+        <table>
+          <thead>
+            <tr>${keys.map((header) => `<th>${escapeHtml(labelize(header))}</th>`).join("")}</tr>
+          </thead>
+          <tbody>
+            ${list.map((row) => {
+              const key = mapPointKey(row);
+              const isSelected = key && key === focusedKey;
+              const disabled = row?.latitude == null || row?.longitude == null;
+              return `
+                <tr tabindex="0" class="map-linked-row${isSelected ? " is-selected" : ""}${disabled ? " is-disabled" : ""}" data-map-focus-scope="${escapeAttr(mapScope)}" data-map-focus-id="${escapeAttr(key)}" aria-selected="${isSelected ? "true" : "false"}">
+                  ${keys.map((col) => `<td>${formatCellHtml(col === "coordinateStatus" && !row?.[col] ? (disabled ? "좌표 재확인 필요" : "좌표 보유") : row?.[col])}</td>`).join("")}
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+        </table>
       </div>
     `;
   }
@@ -1770,6 +2351,38 @@
       });
     });
     if (tab === "weekly") bindWeeklyLegacyRows(panel);
+    panel.querySelectorAll("[data-map-layer]").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const scope = button.dataset.mapLayerScope || "";
+        if (!scope) return;
+        state.mapLayers[scope] = button.dataset.mapLayer || "road";
+        renderPayload(tab, payload);
+      });
+    });
+    panel.querySelectorAll("[data-map-tool]").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        handleMapTool(button.dataset.mapToolScope, button.dataset.mapTool, tab, payload);
+      });
+    });
+    panel.querySelectorAll("[data-map-focus-id]").forEach((node) => {
+      node.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (node.classList.contains("is-disabled")) return;
+        focusMapPoint(node.dataset.mapFocusScope, node.dataset.mapFocusId, tab, payload);
+      });
+      node.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          if (node.classList.contains("is-disabled")) return;
+          focusMapPoint(node.dataset.mapFocusScope, node.dataset.mapFocusId, tab, payload);
+        }
+      });
+    });
     panel.querySelectorAll("[data-detail-key]").forEach((node) => {
       node.addEventListener("click", (event) => {
         event.stopPropagation();
@@ -1788,6 +2401,74 @@
     panel.querySelectorAll("[data-sort-table]").forEach((button) => {
       button.addEventListener("click", () => sortTableRows(button.dataset.sortTable, button.dataset.sortKey));
     });
+  }
+
+  function focusMapPoint(scope, pointId, tab, payload) {
+    if (!scope || !pointId) return;
+    state.mapFocus[scope] = pointId;
+    renderPayload(tab, payload);
+  }
+
+  function handleMapTool(scope, tool, tab, payload) {
+    if (!scope || !tool) return;
+    if (tool === "theme") {
+      const current = state.mapLayers[scope] || "road";
+      state.mapLayers[scope] = current === "road" ? "satellite" : current === "satellite" ? "cadastral" : "road";
+      renderPayload(tab, payload);
+      return;
+    }
+    if (tool === "cadastral") {
+      state.mapLayers[scope] = "cadastral";
+      state.mapTools[scope] = tool;
+      renderPayload(tab, payload);
+      return;
+    }
+    if (tool === "print") {
+      state.mapTools[scope] = tool;
+      renderPayload(tab, payload);
+      window.setTimeout(() => window.print(), 80);
+      return;
+    }
+    if (tool === "share") {
+      state.mapTools[scope] = tool;
+      copyShareLink();
+      renderPayload(tab, payload);
+      return;
+    }
+    if (tool === "download") {
+      state.mapTools[scope] = tool;
+      downloadMapPoints(scope, payload);
+      renderPayload(tab, payload);
+      return;
+    }
+    state.mapTools[scope] = state.mapTools[scope] === tool ? "" : tool;
+    renderPayload(tab, payload);
+  }
+
+  function mapPointsForPayload(payload) {
+    if (Array.isArray(payload?.mapPoints)) return payload.mapPoints;
+    if (payload?.overview) return [payload.overview];
+    return [];
+  }
+
+  function downloadMapPoints(scope, payload) {
+    const rows = mapPointsForPayload(payload);
+    const blob = new Blob([JSON.stringify({ scope, generatedAt: new Date().toISOString(), rows }, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `${scope || "map"}-points.json`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function copyShareLink() {
+    const text = window.location.href;
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
   }
 
   function openPlaygroundResultDrawer(panel, playground) {
@@ -1838,7 +2519,7 @@
         <table>
           <thead>
             <tr>
-              ${keys.map((header) => `<th>${escapeHtml(labelize(header))}</th>`).join("")}
+              ${keys.map((header) => `<th><button class="table-sort-button" type="button" data-sort-table="${escapeAttr(scope)}" data-sort-key="${escapeAttr(header)}">${escapeHtml(labelize(header))}</button></th>`).join("")}
               <th class="action-col">상세</th>
             </tr>
           </thead>
@@ -1905,13 +2586,56 @@
     const headers = Array.from(table.querySelectorAll("thead th")).map((th) => th.textContent.trim());
     const columnIndex = headers.findIndex((header) => header === headerLabel || header === key);
     if (columnIndex < 0) return;
+    const nextDir = table.dataset.sortKey === key && table.dataset.sortDir === "asc" ? "desc" : "asc";
+    table.dataset.sortKey = key;
+    table.dataset.sortDir = nextDir;
+    table.querySelectorAll("[data-sort-table]").forEach((button) => {
+      const active = button.dataset.sortKey === key;
+      button.setAttribute("aria-sort", active ? nextDir : "none");
+      button.classList.toggle("is-active", active);
+    });
     const tbody = table.querySelector("tbody");
     const rows = Array.from(tbody?.querySelectorAll("tr") || []);
-    rows.sort((a, b) => compareCellText(b.children[columnIndex]?.textContent || "", a.children[columnIndex]?.textContent || ""));
+    rows.sort((a, b) => {
+      const result = compareTableCellText(a.children[columnIndex]?.textContent || "", b.children[columnIndex]?.textContent || "", key);
+      return nextDir === "asc" ? result : -result;
+    });
     rows.forEach((row) => tbody.appendChild(row));
   }
 
-  function compareCellText(left, right) {
+  function compareTableCellText(left, right, key) {
+    if (key === "floorLabel" || key === "floor") {
+      return compareFloorLabel({ floorLabel: left }, { floorLabel: right });
+    }
+    if (/date|at$/i.test(key) || /Date$/.test(key)) {
+      const leftTime = Date.parse(left);
+      const rightTime = Date.parse(right);
+      if (Number.isFinite(leftTime) && Number.isFinite(rightTime)) return leftTime - rightTime;
+    }
+    const numericKeys = new Set([
+      "leasedAreaPy",
+      "leasedAreaSqm",
+      "grossFloorAreaSqm",
+      "exclusiveAreaSqm",
+      "monthlyRentTotal",
+      "monthlyMfTotal",
+      "monthlyCostTotal",
+      "currentMonthlyCostTotal",
+      "averageRentPerPy",
+      "averageMfPerPy",
+      "areaRatio",
+      "monthlyCostRatio",
+      "vacancyRate",
+      "occupancyRate",
+      "assetCount",
+      "rowCount",
+      "monthsToExpiry",
+    ]);
+    if (numericKeys.has(key)) return compareNumericCellText(left, right);
+    return String(left).localeCompare(String(right), "ko-KR");
+  }
+
+  function compareNumericCellText(left, right) {
     const leftNumber = Number(String(left).replace(/[^0-9.\-]/g, ""));
     const rightNumber = Number(String(right).replace(/[^0-9.\-]/g, ""));
     if (Number.isFinite(leftNumber) && Number.isFinite(rightNumber)) return leftNumber - rightNumber;

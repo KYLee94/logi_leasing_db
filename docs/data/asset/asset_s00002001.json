@@ -1255,6 +1255,7 @@
     "generatedAt": "2026-04-27T16:07:14",
     "refreshedAt": "2026-04-27T16:07:14"
   },
+  "sourceSystem": "google_sheets",
   "stackingPlan": [
     {
       "tenants": [
@@ -1313,8 +1314,7 @@
     "otherCommonAreaSqm": 4401.25,
     "otherExclusiveAreaSqm": 808.23
   },
-  "schemaVersion": "docs_static_v1",
   "payloadSource": "supabase_snapshot",
-  "dataSourceMode": "supabase_snapshot",
-  "sourceSystem": "google_sheets"
+  "schemaVersion": "docs_static_v1",
+  "dataSourceMode": "supabase_snapshot"
 }
